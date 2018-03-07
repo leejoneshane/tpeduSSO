@@ -17,6 +17,12 @@ ENV REDIS_PORT 6379
 ENV REDIS_PASSWORD null
 ENV CACHE_DRIVER redis
 ENV SESSION_DRIVER redis
+ENV MAIL_DRIVER smtp
+ENV MAIL_HOST smtp.gmail.com
+ENV MAIL_PORT 587
+ENV MAIL_USERNAME your@gmail.com
+ENV MAIL_PASSWORD password
+ENV MAIL_ENCRYPTION tls
 
 COPY htdocs /var/www/localhost/htdocs
 RUN composer update \
