@@ -19,4 +19,5 @@ ENV CACHE_DRIVER redis
 ENV SESSION_DRIVER redis
 
 COPY htdocs /var/www/localhost/htdocs
-RUN chown -R apache:apache /var/www 
+RUN composer update \
+    && chown -R apache:apache /var/www 
