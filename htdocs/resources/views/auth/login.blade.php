@@ -6,7 +6,7 @@
         <img src="{{ asset('img/TaipeiEduLogo.png') }}" class="img-fluid logo" alt="Responsive image">
         <h1><strong><font style="color:white">臺北市政府教育局</font></strong></h1>
         <div class="description">
-    	    <p><strong><font style="color:white;font-size:24pt;">教育人員統一身份驗證服務</font></strong></p>
+    	    <p><strong><font style="color:white;font-size:24pt;">教育人員單一身份驗證服務</font></strong></p>
     	</div>
     </div>
 </div>

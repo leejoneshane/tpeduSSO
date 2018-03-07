@@ -1,0 +1,15 @@
+/htdocs/node_modules
+/htdocs/public/hot
+/htdocs/public/storage
+/htdocs/storage/*.key
+/htdocs/vendor
+/htdocs/database_is_ready
+/htdocs/.idea
+/htdocs/.vscode
+/htdocs/.vagrant
+/htdocs/Homestead.json
+/htdocs/Homestead.yaml
+/htdocs/npm-debug.log
+/htdocs/yarn-error.log
+/htdocs/.env
+.DS_Store
