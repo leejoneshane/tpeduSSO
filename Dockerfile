@@ -1,5 +1,7 @@
 FROM leejoneshane/laravel
 
+ENV FETCH no
+ENV INIT no
 ENV DOMAIN ldap.tp.edu.tw
 ENV MAIL your@gmail.com
 ENV WEB_PASSWORD password
