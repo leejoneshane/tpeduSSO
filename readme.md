@@ -19,6 +19,10 @@ docker-compose up
 
 打開瀏覽器連到 https://localhost ，查看程式執行結果。
 
+請使用測試帳號登入系統:
+- 帳號：meps123456789，密碼：test，身份：老師
+- 帳號：meps106001，密碼：test，身份：學生 
+
 ## 關於 docker
 
 Docker Community Edition (CE) is ideal for developers and small teams looking to get started with Docker and experimenting with container-based apps. Available for many popular infrastructure platforms like desktop, cloud and open source operating systems, Docker CE provides an installer for a simple and quick install so you can start developing immediately. Docker CE is integrated and optimized to the infrastructure so you can maintain a native app experience while getting started with Docker. Build the first container, share with team members and automate the dev pipeline, all with Docker Community Edition.
