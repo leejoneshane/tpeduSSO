@@ -13,3 +13,4 @@
 /htdocs/yarn-error.log
 /htdocs/.env
 .DS_Store
+htdocs/.rnd
