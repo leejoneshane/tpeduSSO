@@ -11,7 +11,7 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-sm-6 col-sm-offset-3 form-box">
+    <div class="col-sm-4 col-sm-offset-4 form-box">
 	<div class="form-top">
             <div class="form-top-left">
                 <h3>歡迎使用</h3>
@@ -30,7 +30,7 @@
                 @csrf
                 <div class="form-group">
                     <label for="username" class="sr-only">登入名稱</label>
-                    <input id="username" type="text" placeholder="使用者名稱..." class="form-username form-control{{ $errors->has('username') ? ' is-invalid' : '' }}" name="username" value="{{ old('username') }}" required autofocus>
+                    <input id="username" type="text" placeholder="使用者名稱、電子郵件或手機號碼..." class="form-username form-control{{ $errors->has('username') ? ' is-invalid' : '' }}" name="username" value="{{ old('username') }}" required autofocus>
                     @if ($errors->has('username'))
                         <span class="invalid-feedback">
                             <strong>{{ $errors->first('username') }}</strong>
@@ -47,11 +47,11 @@
                     @endif
                 </div>
                 <div class="form-group">
-                    <div class="pull-left">
-                	<input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> 記住我的帳號
-                        <p>網頁設計：臺北市福星國小　黃永銘</p>
-                    </div>
-            	    <a class="btn-link pull-right" href="{{ route('password.request') }}">忘記密碼？</a>
+                    <div class="col-sm-6 pull-left">
+                	<input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> 記住我<br>
+                	<!--p>網頁設計：臺北市福星國小　黃永銘</p-->
+            	    </div>
+            	    <a class="btn-link pull-right" href="{{ route('password.request') }}">忘記帳號、密碼？</a>
                 </div>
                 <button type="submit" index="0" role="button" class="btn">登入</button>
             </form>
@@ -61,8 +61,8 @@
 <div class="row">					  
     <div class="col-sm-6 col-sm-offset-3 credits">        
 	<p>臺北市政府教育局</p>
-	<p>地址：臺北市信義區市府路1號4樓</p>
-	<p>電話：1999#1234　信箱：<a href="mailto:edu_ict.19@mail.taipei.gov.tw" target="_top">edu_ict.19@mail.taipei.gov.tw</a></p>
+	<p>地址：臺北市信義區市府路1號8樓</p>
+	<p>電話：1999（外縣市請撥02-27208889）#1234</p> <p>信箱：<a href="mailto:edu_ict.19@mail.taipei.gov.tw" target="_top">edu_ict.19@mail.taipei.gov.tw</a></p>
 	<!--<p>網頁版型設計：<a href="http://www.fhps.tp.edu.tw" title="臺北市福星國小">臺北市福星國小</a> 黃永銘</p>-->
     </div>
 </div>
