@@ -4,9 +4,6 @@ services:
     image: leejoneshane/openldap
     container_name: openldap
     hostname: ldap
-    ports:
-      - "389:389"
-      - "636:636"
     restart: always
     
   mysql:
@@ -15,8 +12,6 @@ services:
     environment:
       MYSQL_DATABASE: laravel
       MYSQL_ROOT_PASSWORD: dbpassword
-    ports:
-      - "3306:3306"
     restart: always
     
   redis:
@@ -35,15 +30,14 @@ services:
       WEB_PASSWORD: password
       CACHE_DRIVER: redis
       SESSION_DRIVER: redis
-      REDIS_HOST: cache
+      REDIS_HOST: redis
       REDIS_PORT: 6379
-      REDIS_PASSWORD: null
-      DB_HOST: db
+      DB_HOST: mysql
       DB_PORT: 3306
       DB_DATABASE: laravel
       DB_USERNAME: root
       DB_PASSWORD: dbpassword
-      LDAP_HOST: ldaps://openldap
+      LDAP_HOST: ldap://openldap
       LDAP_ROOTDN: cn=admin,dc=tp,dc=edu,dc=tw
       LDAP_ROOTPWD: test
       MAIL_DRIVER: smtp
@@ -52,10 +46,6 @@ services:
       MAIL_USERNAME: your@gmail.com
       MAIL_PASSWORD: password
       MAIL_ENCRYPTION: tls
-    links:
-      - mysql:db
-      - redis:cache
-      - openldap:openldap
     ports:
       - "80:80"
       - "443:443"
