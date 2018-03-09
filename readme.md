@@ -12,7 +12,7 @@ docker-compose up
 ```
 稍待幾分鐘，系統將為您啟動 openldap server、mysql server 和 redis server，然後您就可以開始撰寫或修改程式碼。
 
-打開瀏覽器連到 https://localhost，查看程式執行結果。
+打開瀏覽器連到 https://localhost ，查看程式執行結果。
 
 ## 關於 docker
 
