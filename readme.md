@@ -2,13 +2,17 @@
 
 ## 開發模式
 
-請在開發工作站上安裝 [docker](https://github.com/docker/docker-ce)，請用 docker pull [leejoneshane/laravel](https://github.com/leejoneshane/laravel) 下載開發容器，有關容器的詳細使用方法請看 github 專頁。
+請先在工作站上安裝 docker([安裝文件](https://docs.docker.com/install/)) 以及 docker-compose([安裝文件](https://docs.docker.com/compose/install/))。
 
-請使用 git clone https://github.com/leejoneshane/tpeduLdap.git 下載本專案到開發工作站上，使用
+請使用 git clone https://github.com/leejoneshane/tpeduLdap.git 下載本專案到開發工作站上。
+
+請切換到專案的根目錄下，執行底下指令：
 ```
-docker run -v htdocs:/var/www/localhost/htdocs -d leejoneshane/laravel
+docker-compose up
 ```
-啟動容器，此指令會將本專案資料夾掛載到容器中執行，只要修改程式碼，就會立即從網頁看到執行結果。
+稍待幾分鐘，系統將為您啟動 openldap server、mysql server 和 redis server，然後您就可以開始撰寫或修改程式碼。
+
+打開瀏覽器連到 https://localhost，查看程式執行結果。
 
 ## 關於 docker
 
