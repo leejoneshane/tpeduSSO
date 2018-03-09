@@ -1,3 +1,4 @@
+LDAP_LOG_LEVEL: 256
 LDAP_DOMAIN: tp.edu.tw
 LDAP_BASE_DN: dc=tp,dc=edu,dc=tw
 LDAP_ADMIN_PASSWORD: test

@@ -1,0 +1,13 @@
+dn: olcDatabase={1}{{ LDAP_BACKEND }},cn=config
+changetype:  modify
+replace: olcDbIndex
+olcDbIndex: dc eq
+olcDbIndex: ou eq
+olcDbIndex: cn eq
+olcDbIndex: uid eq
+olcDbIndex: mail eq,sub
+olcDbIndex: mobile eq
+olcDbIndex: memberOf eq
+olcDbIndex: entryCSN eq
+olcDbIndex: entryUUID eq
+olcDbIndex: objectClass eq

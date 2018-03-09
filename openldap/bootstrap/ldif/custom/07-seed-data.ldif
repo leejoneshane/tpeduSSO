@@ -1,14 +1,44 @@
-# extended LDIF
-#
-# LDAPv3
-# base <dc=meps,dc=tp,dc=edu,dc=tw> with scope subtree
-# filter: (objectclass=*)
-# requesting: ALL
-#
+dn: ou=people,{{ LDAP_BASE_DN }}
+ou: people
+objectClass: organizationalUnit
+objectClass: top
 
-# meps.tp.edu.tw
-dn: dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=account,{{ LDAP_BASE_DN }}
+ou: account
+objectClass: organizationalUnit
+objectClass: top
+
+dn: ou=group,{{ LDAP_BASE_DN }}
+ou: groups
+objectClass: organizationalUnit
+objectClass: top
+
+dn: dc=bureau,{{ LDAP_BASE_DN }}
+businesscategory:: 5Li7566h5qmf6Zec
+dc: bureau
+description:: 6Ie65YyX5biC5pS/5bqc5pWZ6IKy5bGA
+facsimiletelephonenumber: 27251989
+o: bureau
+objectclass: tpeduSchool
+objectclass: top
+postalcode: 11008
+tpUniformNumbers: 399999
+st:: 5L+h576p5Y2A
+street:: 6Ie65YyX5biC5L+h576p5Y2A5biC5bqc6LevMeiZnzjmqJPopb/ljJfljYA=
+telephonenumber: 27208889
+userpassword: {SSHA}KzztlcQnNmgEurEFLolV6wgIWh95QaqE
+wwwhomepage: http://www.doe.gov.taipei/
+
+dn: ou=it,dc=bureau,{{ LDAP_BASE_DN }}
+businesscategory:: 6KGM5pS/6YOo6ZaA
+description:: 6LOH6KiK5pWZ6IKy56eR
+objectclass: organizationalUnit
+objectclass: top
+ou: it
+
+dn: dc=meps,{{ LDAP_BASE_DN }}
 objectClass: tpeduSchool
+objectclass: top
 dc: meps
 o: meps
 tpUniformNumbers: 353604
@@ -23,1011 +53,880 @@ postalCode: 100
 tpAdministrator: A123456789
 userPassword: {SSHA}98N8Ea6JLe2MxOUHwXNWyO7mJ5PM0IIW
 
-# dept01, meps.tp.edu.tw
-dn: ou=dept01,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=dept01,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
+objectclass: top
 ou: dept01
 businessCategory:: 6KGM5pS/6YOo6ZaA
 description:: 5qCh6ZW35a6k
 
-# dept02, meps.tp.edu.tw
-dn: ou=dept02,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=dept02,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
+objectclass: top
 ou: dept02
 businessCategory:: 6KGM5pS/6YOo6ZaA
 description:: 5pWZ5YuZ6JmV
 
-# dept03, meps.tp.edu.tw
-dn: ou=dept03,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=dept03,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
+objectclass: top
 ou: dept03
 businessCategory:: 6KGM5pS/6YOo6ZaA
 description:: 5a245YuZ6JmV
 
-# dept04, meps.tp.edu.tw
-dn: ou=dept04,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=dept04,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
+objectclass: top
 ou: dept04
 businessCategory:: 6KGM5pS/6YOo6ZaA
 description:: 57i95YuZ6JmV
 
-# dept05, meps.tp.edu.tw
-dn: ou=dept05,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=dept05,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
+objectclass: top
 ou: dept05
 businessCategory:: 6KGM5pS/6YOo6ZaA
 description:: 6LyU5bCO5a6k
 
-# dept06, meps.tp.edu.tw
-dn: ou=dept06,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=dept06,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
+objectclass: top
 ou: dept06
 businessCategory:: 6KGM5pS/6YOo6ZaA
 description:: 57Sa5Lu75bCO5bir
 
-# dept07, meps.tp.edu.tw
-dn: ou=dept07,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=dept07,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
+objectclass: top
 ou: dept07
 businessCategory:: 6KGM5pS/6YOo6ZaA
 description:: 56eR5Lu75pWZ5bir
 
-# dept08, meps.tp.edu.tw
-dn: ou=dept08,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=dept08,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
+objectclass: top
 ou: dept08
 businessCategory:: 6KGM5pS/6YOo6ZaA
 description:: 5bm856ia5ZyS
 
-# dept10, meps.tp.edu.tw
-dn: ou=dept10,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=dept10,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
+objectclass: top
 ou: dept10
 businessCategory:: 6KGM5pS/6YOo6ZaA
 description:: 5Lq65LqL5a6k
 
-# dept11, meps.tp.edu.tw
-dn: ou=dept11,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=dept11,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
+objectclass: top
 ou: dept11
 businessCategory:: 6KGM5pS/6YOo6ZaA
 description:: 5pyD6KiI5a6k
 
-# dept12, meps.tp.edu.tw
-dn: ou=dept12,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=dept12,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
+objectclass: top
 ou: dept12
 businessCategory:: 6KGM5pS/6YOo6ZaA
 description:: 5ZyW5pu45a6k
 
-# dept14, meps.tp.edu.tw
-dn: ou=dept14,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=dept14,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
+objectclass: top
 ou: dept14
 businessCategory:: 6KGM5pS/6YOo6ZaA
 description:: 56CU56m26JmV
 
-# dept15, meps.tp.edu.tw
-dn: ou=dept15,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=dept15,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
+objectclass: top
 ou: dept15
 businessCategory:: 6KGM5pS/6YOo6ZaA
 description:: 5b+X5bel6ZqK
 
-# dept16, meps.tp.edu.tw
-dn: ou=dept16,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=dept16,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
+objectclass: top
 ou: dept16
 businessCategory:: 6KGM5pS/6YOo6ZaA
 description:: 5pWZ5bir55SE6Kmm
 
-# role001, dept01, meps.tp.edu.tw
-dn: cn=role001,ou=dept01,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role001,ou=dept01,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role001
 ou: dept01
 description:: 5qCh6ZW3
 
-# role002, dept02, meps.tp.edu.tw
-dn: cn=role002,ou=dept02,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role002,ou=dept02,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role002
 ou: dept02
 description:: 5pWZ5YuZ6JmV5Li75Lu7
 
-# role003, dept02, meps.tp.edu.tw
-dn: cn=role003,ou=dept02,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role003,ou=dept02,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role003
 ou: dept02
 description:: 5pWZ5a2457WE6ZW3
 
-# role004, dept05, meps.tp.edu.tw
-dn: cn=role004,ou=dept05,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role004,ou=dept05,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role004
 ou: dept05
 description:: 6Ki75YaK57WE6ZW3
 
-# role005, dept02, meps.tp.edu.tw
-dn: cn=role005,ou=dept02,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role005,ou=dept02,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role005
 ou: dept02
 description:: 6LOH6KiK57WE6ZW3
 
-# role006, dept02, meps.tp.edu.tw
-dn: cn=role006,ou=dept02,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role006,ou=dept02,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role006
 ou: dept02
 description:: 6Kit5YKZ57WE6ZW3
 
-# role007, dept03, meps.tp.edu.tw
-dn: cn=role007,ou=dept03,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role007,ou=dept03,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role007
 ou: dept03
 description:: 5a245YuZ6JmV5Li75Lu7
 
-# role008, dept03, meps.tp.edu.tw
-dn: cn=role008,ou=dept03,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role008,ou=dept03,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role008
 ou: dept03
 description:: 6KiT6IKy57WE6ZW3
 
-# role009, dept03, meps.tp.edu.tw
-dn: cn=role009,ou=dept03,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role009,ou=dept03,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role009
 ou: dept03
 description:: 55Sf5pWZ57WE6ZW3
 
-# role010, dept03, meps.tp.edu.tw
-dn: cn=role010,ou=dept03,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role010,ou=dept03,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role010
 ou: dept03
 description:: 6auU6IKy57WE6ZW3
 
-# role011, dept03, meps.tp.edu.tw
-dn: cn=role011,ou=dept03,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role011,ou=dept03,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role011
 ou: dept03
 description:: 6KGb55Sf57WE6ZW3
 
-# role012, dept03, meps.tp.edu.tw
-dn: cn=role012,ou=dept03,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role012,ou=dept03,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role012
 ou: dept03
 description:: 6K2355CG5bir
 
-# role013, dept04, meps.tp.edu.tw
-dn: cn=role013,ou=dept04,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role013,ou=dept04,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role013
 ou: dept04
 description:: 57i95YuZ6JmV5Li75Lu7
 
-# role014, dept04, meps.tp.edu.tw
-dn: cn=role014,ou=dept04,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role014,ou=dept04,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role014
 ou: dept04
 description:: 5paH5pu457WE6ZW3
 
-# role015, dept04, meps.tp.edu.tw
-dn: cn=role015,ou=dept04,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role015,ou=dept04,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role015
 ou: dept04
 description:: 5Ye657SN57WE6ZW3
 
-# role016, dept04, meps.tp.edu.tw
-dn: cn=role016,ou=dept04,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role016,ou=dept04,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role016
 ou: dept04
 description:: 5LqL5YuZ57WE6ZW3
 
-# role017, dept05, meps.tp.edu.tw
-dn: cn=role017,ou=dept05,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role017,ou=dept05,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role017
 ou: dept05
 description:: 6LyU5bCO6JmV5Li75Lu7
 
-# role018, dept05, meps.tp.edu.tw
-dn: cn=role018,ou=dept05,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role018,ou=dept05,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role018
 ou: dept05
 description:: 6LyU5bCO57WE6ZW3
 
-# role020, dept05, meps.tp.edu.tw
-dn: cn=role020,ou=dept05,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role020,ou=dept05,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role020
 ou: dept05
 description:: 54m55pWZ57WE6ZW3
 
-# role021, dept06, meps.tp.edu.tw
-dn: cn=role021,ou=dept06,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role021,ou=dept06,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role021
 ou: dept06
 description:: 57Sa5Lu75bCO5bir
 
-# role022, dept07, meps.tp.edu.tw
-dn: cn=role022,ou=dept07,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role022,ou=dept07,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role022
 ou: dept07
 description:: 56eR5Lu75pWZ5bir
 
-# role024, dept08, meps.tp.edu.tw
-dn: cn=role024,ou=dept08,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role024,ou=dept08,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role024
 ou: dept08
 description:: 5bm856ia5ZyS5ZyS6ZW3
 
-# role027, dept10, meps.tp.edu.tw
-dn: cn=role027,ou=dept10,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role027,ou=dept10,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role027
 ou: dept10
 description:: 5Lq65LqL5Li75Lu7
 
-# role029, dept11, meps.tp.edu.tw
-dn: cn=role029,ou=dept11,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role029,ou=dept11,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role029
 ou: dept11
 description:: 5pyD6KiI5Li75Lu7
 
-# role031, dept12, meps.tp.edu.tw
-dn: cn=role031,ou=dept12,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role031,ou=dept12,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role031
 ou: dept12
 description:: 566h55CG5Lq65ZOh
 
-# role036, dept02, meps.tp.edu.tw
-dn: cn=role036,ou=dept02,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=role036,ou=dept02,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: role036
 ou: dept02
 description:: 5pWZ5YuZ6JmV5bm55LqL
 
-# roleC01, dept14, meps.tp.edu.tw
-dn: cn=roleC01,ou=dept14,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC01,ou=dept14,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC01
 ou: dept14
 description:: 56CU56m26JmV5Li75Lu7
 
-# roleC02, dept14, meps.tp.edu.tw
-dn: cn=roleC02,ou=dept14,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC02,ou=dept14,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC02
 ou: dept14
 description:: 5pWZ6LyU57WE6ZW3
 
-# roleC03, dept14, meps.tp.edu.tw
-dn: cn=roleC03,ou=dept14,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC03,ou=dept14,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC03
 ou: dept14
 description:: 5a+m56CU57WE6ZW3
 
-# roleC04, dept14, meps.tp.edu.tw
-dn: cn=roleC04,ou=dept14,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC04,ou=dept14,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC04
 ou: dept14
 description:: 5o6o5buj57WE6ZW3
 
-# roleC05, dept02, meps.tp.edu.tw
-dn: cn=roleC05,ou=dept02,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC05,ou=dept02,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC05
 ou: dept02
 description:: 6Kqy56iL57WE6ZW3
 
-# roleC09, dept02, meps.tp.edu.tw
-dn: cn=roleC09,ou=dept02,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC09,ou=dept02,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC09
 ou: dept02
 description:: 5ZyW5pu45a6k5bm55LqL
 
-# roleC10, dept02, meps.tp.edu.tw
-dn: cn=roleC10,ou=dept02,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC10,ou=dept02,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC10
 ou: dept02
 description:: 5ZyW5pu45a6k5rWB6YCa
 
-# roleC11, dept15, meps.tp.edu.tw
-dn: cn=roleC11,ou=dept15,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC11,ou=dept15,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC11
 ou: dept15
 description:: 566h55CG57WE
 
-# roleC13, dept15, meps.tp.edu.tw
-dn: cn=roleC13,ou=dept15,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC13,ou=dept15,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC13
 ou: dept15
 description:: 55Kw5L+d57WE
 
-# roleC14, dept05, meps.tp.edu.tw
-dn: cn=roleC14,ou=dept05,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC14,ou=dept05,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC14
 ou: dept05
 description:: 5aKe572u5pWZ5bir
 
-# roleC15, dept02, meps.tp.edu.tw
-dn: cn=roleC15,ou=dept02,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC15,ou=dept02,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC15
 ou: dept02
 description:: 5aKe572u5pWZ5bir
 
-# roleC16, dept05, meps.tp.edu.tw
-dn: cn=roleC16,ou=dept05,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC16,ou=dept05,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC16
 ou: dept05
 description:: 6LyU5bCO5pWZ5bir
 
-# roleC17, dept02, meps.tp.edu.tw
-dn: cn=roleC17,ou=dept02,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC17,ou=dept02,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC17
 ou: dept02
 description:: 57O757Wx566h55CG5bir
 
-# roleC19, dept15, meps.tp.edu.tw
-dn: cn=roleC19,ou=dept15,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC19,ou=dept15,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC19
 ou: dept15
 description:: 5Lqk6YCa5bCO6K2357WE
 
-# roleC20, dept15, meps.tp.edu.tw
-dn: cn=roleC20,ou=dept15,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC20,ou=dept15,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC20
 ou: dept15
 description:: 6LOH6KiK57WE
 
-# roleC21, dept15, meps.tp.edu.tw
-dn: cn=roleC21,ou=dept15,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC21,ou=dept15,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC21
 ou: dept15
 description:: 6KqN6LyU57WE
 
-# roleC22, dept15, meps.tp.edu.tw
-dn: cn=roleC22,ou=dept15,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC22,ou=dept15,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC22
 ou: dept15
 description:: 5pmo6Zax57WE
 
-# roleC23, dept15, meps.tp.edu.tw
-dn: cn=roleC23,ou=dept15,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC23,ou=dept15,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC23
 ou: dept15
 description:: 5Yuk5YuZ57WE
 
-# roleC24, dept15, meps.tp.edu.tw
-dn: cn=roleC24,ou=dept15,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC24,ou=dept15,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC24
 ou: dept15
 description:: 5pWF5LqL5oiy5YqH57WE
 
-# roleC25, dept15, meps.tp.edu.tw
-dn: cn=roleC25,ou=dept15,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC25,ou=dept15,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC25
 ou: dept15
 description:: 5a+m5bm857WE
 
-# roleC26, dept15, meps.tp.edu.tw
-dn: cn=roleC26,ou=dept15,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC26,ou=dept15,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC26
 ou: dept15
 description:: 566h55CG56WW
 
-# roleC28, dept04, meps.tp.edu.tw
-dn: cn=roleC28,ou=dept04,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC28,ou=dept04,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC28
 ou: dept04
 description:: 57i95YuZ6JmV5bm55LqL
 
-# roleC29, dept04, meps.tp.edu.tw
-dn: cn=roleC29,ou=dept04,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC29,ou=dept04,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC29
 ou: dept04
 description:: 5bel5Y+L
 
-# roleC30, dept07, meps.tp.edu.tw
-dn: cn=roleC30,ou=dept07,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC30,ou=dept07,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC30
 ou: dept07
 description:: 5Y+v5oSb5a625pWZ5bir
 
-# roleC31, dept07, meps.tp.edu.tw
-dn: cn=roleC31,ou=dept07,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC31,ou=dept07,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC31
 ou: dept07
 description:: 5Ym15oSP57WE5pWZ5bir
 
-# roleC33, dept04, meps.tp.edu.tw
-dn: cn=roleC33,ou=dept04,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC33,ou=dept04,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC33
 ou: dept04
 description:: 6K2m6KGb5a6k
 
-# roleC34, dept08, meps.tp.edu.tw
-dn: cn=roleC34,ou=dept08,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC34,ou=dept08,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC34
 ou: dept08
 description:: 5bm856ia5ZyS5pWZ5bir
 
-# roleC35, dept10, meps.tp.edu.tw
-dn: cn=roleC35,ou=dept10,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC35,ou=dept10,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC35
 ou: dept10
 description:: 5pu46KiY
 
-# roleC36, dept07, meps.tp.edu.tw
-dn: cn=roleC36,ou=dept07,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC36,ou=dept07,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC36
 ou: dept07
 description:: 5ZyL6Kqe6aCY5Z+f5pWZ5bir
 
-# roleC37, dept07, meps.tp.edu.tw
-dn: cn=roleC37,ou=dept07,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC37,ou=dept07,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC37
 ou: dept07
 description:: 6Iux6Kqe6aCY5Z+f5pWZ5bir
 
-# roleC38, dept07, meps.tp.edu.tw
-dn: cn=roleC38,ou=dept07,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC38,ou=dept07,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC38
 ou: dept07
 description:: 6YSJ6Kqe6aCY5Z+f5pWZ5bir
 
-# roleC39, dept07, meps.tp.edu.tw
-dn: cn=roleC39,ou=dept07,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC39,ou=dept07,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC39
 ou: dept07
 description:: 5pW45a246aCY5Z+f5pWZ5bir
 
-# roleC40, dept07, meps.tp.edu.tw
-dn: cn=roleC40,ou=dept07,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC40,ou=dept07,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC40
 ou: dept07
 description:: 56S+5pyD6aCY5Z+f5pWZ5bir
 
-# roleC41, dept07, meps.tp.edu.tw
-dn: cn=roleC41,ou=dept07,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC41,ou=dept07,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC41
 ou: dept07
 description:: 6Ieq54S26aCY5Z+f5pWZ5bir
 
-# roleC42, dept07, meps.tp.edu.tw
-dn: cn=roleC42,ou=dept07,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC42,ou=dept07,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC42
 ou: dept07
 description:: 576O5Yue6aCY5Z+f5pWZ5bir
 
-# roleC43, dept07, meps.tp.edu.tw
-dn: cn=roleC43,ou=dept07,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC43,ou=dept07,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC43
 ou: dept07
 description:: 6Z+z5qiC6aCY5Z+f5pWZ5bir
 
-# roleC44, dept07, meps.tp.edu.tw
-dn: cn=roleC44,ou=dept07,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC44,ou=dept07,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC44
 ou: dept07
 description:: 6auU6IKy6aCY5Z+f5pWZ5bir
 
-# roleC45, dept07, meps.tp.edu.tw
-dn: cn=roleC45,ou=dept07,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC45,ou=dept07,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC45
 ou: dept07
 description:: 57ac5ZCI6aCY5Z+f5pWZ5bir
 
-# roleC46, dept07, meps.tp.edu.tw
-dn: cn=roleC46,ou=dept07,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC46,ou=dept07,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC46
 ou: dept07
 description:: 6LOH6KiK6aCY5Z+f5pWZ5bir
 
-# roleC48, dept16, meps.tp.edu.tw
-dn: cn=roleC48,ou=dept16,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC48,ou=dept16,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC48
 ou: dept16
 description:: 5pWZ55SE6ICD55Sf
 
-# roleC49, dept14, meps.tp.edu.tw
-dn: cn=roleC49,ou=dept14,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC49,ou=dept14,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC49
 ou: dept14
 description:: 5a+m57+S6ICB5bir
 
-# roleC50, dept15, meps.tp.edu.tw
-dn: cn=roleC50,ou=dept15,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC50,ou=dept15,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC50
 ou: dept15
 description:: 5ZyW5pu457WE
 
-# roleC51, dept05, meps.tp.edu.tw
-dn: cn=roleC51,ou=dept05,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC51,ou=dept05,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC51
 ou: dept05
 description:: 5b+D55CG5bir
 
-# roleC52, dept11, meps.tp.edu.tw
-dn: cn=roleC52,ou=dept11,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC52,ou=dept11,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC52
 ou: dept11
 description:: 5L2Q55CG5ZOh
 
-# roleC53, dept02, meps.tp.edu.tw
-dn: cn=roleC53,ou=dept02,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC53,ou=dept02,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC53
 ou: dept02
 description:: 5pu45rOV5pWZ5bir
 
-# roleC54, dept02, meps.tp.edu.tw
-dn: cn=roleC54,ou=dept02,dc=meps,dc=tp,dc=edu,dc=tw
+dn: cn=roleC54,ou=dept02,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalRole
 cn: roleC54
 ou: dept02
 description:: 5ZyW5pu45pWZ5bir
 
-# 101, meps.tp.edu.tw
-dn: ou=101,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=101,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 101
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: MeW5tDHnj60=
 
-# 102, meps.tp.edu.tw
-dn: ou=102,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=102,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 102
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: MeW5tDLnj60=
 
-# 103, meps.tp.edu.tw
-dn: ou=103,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=103,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 103
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: MeW5tDPnj60=
 
-# 104, meps.tp.edu.tw
-dn: ou=104,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=104,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 104
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: MeW5tDTnj60=
 
-# 105, meps.tp.edu.tw
-dn: ou=105,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=105,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 105
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: MeW5tDXnj60=
 
-# 106, meps.tp.edu.tw
-dn: ou=106,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=106,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 106
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: MeW5tDbnj60=
 
-# 107, meps.tp.edu.tw
-dn: ou=107,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=107,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 107
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: MeW5tDfnj60=
 
-# 108, meps.tp.edu.tw
-dn: ou=108,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=108,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 108
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: MeW5tDjnj60=
 
-# 109, meps.tp.edu.tw
-dn: ou=109,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=109,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 109
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: MeW5tDnnj60=
 
-# 201, meps.tp.edu.tw
-dn: ou=201,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=201,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 201
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: MuW5tDHnj60=
 
-# 202, meps.tp.edu.tw
-dn: ou=202,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=202,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 202
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: MuW5tDLnj60=
 
-# 203, meps.tp.edu.tw
-dn: ou=203,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=203,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 203
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: MuW5tDPnj60=
 
-# 204, meps.tp.edu.tw
-dn: ou=204,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=204,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 204
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: MuW5tDTnj60=
 
-# 205, meps.tp.edu.tw
-dn: ou=205,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=205,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 205
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: MuW5tDXnj60=
 
-# 206, meps.tp.edu.tw
-dn: ou=206,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=206,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 206
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: MuW5tDbnj60=
 
-# 207, meps.tp.edu.tw
-dn: ou=207,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=207,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 207
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: MuW5tDfnj60=
 
-# 208, meps.tp.edu.tw
-dn: ou=208,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=208,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 208
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: MuW5tDjnj60=
 
-# 209, meps.tp.edu.tw
-dn: ou=209,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=209,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 209
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: MuW5tDnnj60=
 
-# 301, meps.tp.edu.tw
-dn: ou=301,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=301,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 301
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: M+W5tDHnj60=
 
-# 302, meps.tp.edu.tw
-dn: ou=302,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=302,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 302
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: M+W5tDLnj60=
 
-# 303, meps.tp.edu.tw
-dn: ou=303,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=303,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 303
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: M+W5tDPnj60=
 
-# 304, meps.tp.edu.tw
-dn: ou=304,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=304,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 304
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: M+W5tDTnj60=
 
-# 305, meps.tp.edu.tw
-dn: ou=305,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=305,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 305
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: M+W5tDXnj60=
 
-# 306, meps.tp.edu.tw
-dn: ou=306,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=306,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 306
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: M+W5tDbnj60=
 
-# 307, meps.tp.edu.tw
-dn: ou=307,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=307,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 307
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: M+W5tDfnj60=
 
-# 308, meps.tp.edu.tw
-dn: ou=308,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=308,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 308
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: M+W5tDjnj60=
 
-# 309, meps.tp.edu.tw
-dn: ou=309,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=309,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 309
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: M+W5tDnnj60=
 
-# 401, meps.tp.edu.tw
-dn: ou=401,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=401,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 401
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NOW5tDHnj60=
 
-# 402, meps.tp.edu.tw
-dn: ou=402,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=402,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 402
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NOW5tDLnj60=
 
-# 403, meps.tp.edu.tw
-dn: ou=403,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=403,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 403
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NOW5tDPnj60=
 
-# 404, meps.tp.edu.tw
-dn: ou=404,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=404,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 404
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NOW5tDTnj60=
 
-# 405, meps.tp.edu.tw
-dn: ou=405,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=405,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 405
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NOW5tDXnj60=
 
-# 406, meps.tp.edu.tw
-dn: ou=406,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=406,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 406
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NOW5tDbnj60=
 
-# 407, meps.tp.edu.tw
-dn: ou=407,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=407,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 407
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NOW5tDfnj60=
 
-# 408, meps.tp.edu.tw
-dn: ou=408,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=408,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 408
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NOW5tDjnj60=
 
-# 409, meps.tp.edu.tw
-dn: ou=409,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=409,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 409
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NOW5tDnnj60=
 
-# 410, meps.tp.edu.tw
-dn: ou=410,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=410,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 410
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NOW5tDEw54+t
 
-# 501, meps.tp.edu.tw
-dn: ou=501,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=501,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 501
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NeW5tDHnj60=
 
-# 502, meps.tp.edu.tw
-dn: ou=502,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=502,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 502
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NeW5tDLnj60=
 
-# 503, meps.tp.edu.tw
-dn: ou=503,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=503,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 503
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NeW5tDPnj60=
 
-# 504, meps.tp.edu.tw
-dn: ou=504,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=504,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 504
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NeW5tDTnj60=
 
-# 505, meps.tp.edu.tw
-dn: ou=505,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=505,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 505
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NeW5tDXnj60=
 
-# 506, meps.tp.edu.tw
-dn: ou=506,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=506,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 506
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NeW5tDbnj60=
 
-# 507, meps.tp.edu.tw
-dn: ou=507,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=507,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 507
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NeW5tDfnj60=
 
-# 508, meps.tp.edu.tw
-dn: ou=508,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=508,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 508
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NeW5tDjnj60=
 
-# 509, meps.tp.edu.tw
-dn: ou=509,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=509,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 509
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NeW5tDnnj60=
 
-# 510, meps.tp.edu.tw
-dn: ou=510,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=510,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 510
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NeW5tDEw54+t
 
-# 601, meps.tp.edu.tw
-dn: ou=601,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=601,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 601
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NuW5tDHnj60=
 
-# 602, meps.tp.edu.tw
-dn: ou=602,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=602,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 602
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NuW5tDLnj60=
 
-# 603, meps.tp.edu.tw
-dn: ou=603,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=603,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 603
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NuW5tDPnj60=
 
-# 604, meps.tp.edu.tw
-dn: ou=604,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=604,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 604
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NuW5tDTnj60=
 
-# 605, meps.tp.edu.tw
-dn: ou=605,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=605,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 605
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NuW5tDXnj60=
 
-# 606, meps.tp.edu.tw
-dn: ou=606,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=606,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 606
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NuW5tDbnj60=
 
-# 607, meps.tp.edu.tw
-dn: ou=607,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=607,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 607
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NuW5tDfnj60=
 
-# 608, meps.tp.edu.tw
-dn: ou=608,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=608,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 608
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NuW5tDjnj60=
 
-# 609, meps.tp.edu.tw
-dn: ou=609,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=609,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 609
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NuW5tDnnj60=
 
-# 610, meps.tp.edu.tw
-dn: ou=610,dc=meps,dc=tp,dc=edu,dc=tw
+dn: ou=610,dc=meps,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: 610
 businessCategory:: 5pWZ5a2454+t57Sa
 description:: NuW5tDEw54+t
 
-dn: cn=A123456789,ou=people,dc=tp,dc=edu,dc=tw
+dn: cn=A123456789,ou=people,{{ LDAP_BASE_DN }}
 objectClass: tpeduPerson
-objectClass: inetUser
-inetUserStatus: Active
 cn: A123456789
 userPassword: {SSHA}98N8Ea6JLe2MxOUHwXNWyO7mJ5PM0IIW
 uid: meps123456789
@@ -1045,15 +944,14 @@ birthDate: 19631218000000Z
 mail: admin@admin.com
 mobile: 0911000001
 
-dn: cn=B123456789,ou=people,dc=tp,dc=edu,dc=tw
+
+dn: cn=B123456789,ou=people,{{ LDAP_BASE_DN }}
 objectClass: tpeduPerson
-objectClass: inetUser
-inetUserStatus: Active
 cn: B123456789
 userPassword: {SSHA}98N8Ea6JLe2MxOUHwXNWyO7mJ5PM0IIW
 employeeNumber: 106001
 tpClass: 101
-tpSeat: 01
+tpSeat: 1
 uid: meps106001
 o: meps
 info:: eyJzaWQiOjM1MzYwNCwicm9sZSI6IuWtuOeUnyJ9
@@ -1064,14 +962,15 @@ displayName: 學生帳號
 gender: 2
 birthDate: 20110417000000Z
 
-dn: uid=meps123456789,ou=account,dc=tp,dc=edu,dc=tw
+
+dn: uid=meps123456789,ou=account,{{ LDAP_BASE_DN }}
 objectClass: radiusObjectProfile
 cn: A123456789
 description:: 5qCh5YuZ6KGM5pS/57O757Wx5LmL6Ieq6KiC5biz6Jmf
 uid: meps123456789
 userPassword: {SSHA}98N8Ea6JLe2MxOUHwXNWyO7mJ5PM0IIW
 
-dn: uid=meps106001,ou=account,dc=tp,dc=edu,dc=tw
+dn: uid=meps106001,ou=account,{{ LDAP_BASE_DN }}
 objectClass: radiusObjectProfile
 cn: B123456789
 description:: 5qCh5YuZ6KGM5pS/57O757Wx5LmL6Ieq6KiC5biz6Jmf
