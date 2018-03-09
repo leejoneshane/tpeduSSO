@@ -28,7 +28,7 @@ services:
     image: leejoneshane/laravel
     container_name: laravel
     volumes:
-      - htdocs:/var/www/localhost/htdocs
+      - ./htdocs:/var/www/localhost/htdocs
     environment:
       DOMAIN: ldap.tp.edu.tw
       MAIL: your@gmail.com
