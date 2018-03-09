@@ -3,7 +3,7 @@ __臺北市教育人員目錄服務__，為臺北市政府教育局所發展教�
 這個資料夾內的資料是用來建置一台 openldap server 的 Docker 映像檔，基礎映像檔為 [osixia/openldap](https://github.com/osixia/docker-openldap)，
 相關技術文件資料請前往該專案的 Github 頁面查閱。
 
-為了提供臺北市教育人員身份識別資訊的單一存放倉庫，採用臺北市自訂之 schema，新增了 tpeduPerson 和 tpeduSchool 兩種物件，其中的資料欄位詳細定義，請參考 [bootstrap/schema](https://github.com/leejoneshane/tpeduLdap/tree/master/openldap/bootstrap/schema) 資料夾，
+為了提供臺北市教育人員身份識別資訊的單一存放倉庫，本專案採用臺北市自訂之 schema，新增了 tpeduPerson 和 tpeduSchool 兩種物件，其中的資料欄位詳細定義，請參考 [bootstrap/schema](https://github.com/leejoneshane/tpeduLdap/tree/master/openldap/bootstrap/schema) 資料夾，
 映像檔內的資料為測試資料，僅作為開發測試使用，如果您需要填入自己的測試資料，請參考 [bootstrap/ldif/custom](https://github.com/leejoneshane/tpeduLdap/tree/master/openldap/bootstrap/ldif/custom) 資料夾內之文件。
 容器啟動時之相關環境設置，請參考 [my-env.yaml](https://github.com/leejoneshane/tpeduLdap/blob/master/openldap/environment/my_env.yaml) 文件。
 
