@@ -1,0 +1,97 @@
+dn: cn=module,cn=config
+objectClass: olcModuleList
+cn: module
+olcModulePath: /usr/lib/ldap
+olcModuleLoad: dyngroup
+
+dn: cn=dyngroup,cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: dyngroup
+olcObjectIdentifier: {0}NetscapeRoot 2.16.840.1.113730
+olcObjectIdentifier: {1}NetscapeLDAP NetscapeRoot:3
+olcObjectIdentifier: {2}NetscapeLDAPattributeType NetscapeLDAP:1
+olcObjectIdentifier: {3}NetscapeLDAPobjectClass NetscapeLDAP:2
+olcObjectIdentifier: {4}OpenLDAPExp11 1.3.6.1.4.1.4203.666.11
+olcObjectIdentifier: {5}DynGroupBase OpenLDAPExp11:8
+olcObjectIdentifier: {6}DynGroupAttr DynGroupBase:1
+olcObjectIdentifier: {7}DynGroupOC DynGroupBase:2
+olcAttributeTypes: {0}( NetscapeLDAPattributeType:198 NAME 'memberURL' DESC 'I
+ dentifies an URL associated with each member of a group. Any type of labeled 
+ URL can be used.' SUP labeledURI )
+olcAttributeTypes: {1}( DynGroupAttr:1 NAME 'dgIdentity' DESC 'Identity to use
+  when processing the memberURL' SUP distinguishedName SINGLE-VALUE )
+olcAttributeTypes: {2}( DynGroupAttr:2 NAME 'dgAuthz' DESC 'Optional authoriza
+ tion rules that determine who is allowed to assume the dgIdentity' EQUALITY a
+ uthzMatch SYNTAX 1.3.6.1.4.1.4203.666.2.7 X-ORDERED 'VALUES' )
+olcObjectClasses: {0}( NetscapeLDAPobjectClass:33 NAME 'groupOfURLs' SUP top S
+ TRUCTURAL MUST cn MAY ( memberURL $ businessCategory $ description $ o $ ou $
+  owner $ seeAlso ) )
+olcObjectClasses: {1}( DynGroupOC:1 NAME 'dgIdentityAux' SUP top AUXILIARY MAY
+  ( dgIdentity $ dgAuthz ) )
+
+dn: cn=inetuser,cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: inetuser
+olcAttributeTypes: ( 2.16.840.1.113730.3.1.692 NAME 'inetUserStatus' DESC '"act
+ ive", "inactive", or "deleted" status of a user' EQUALITY caseIgnoreMatch SYNT
+ AX 1.3.6.1.4.1.1466.115.121.1.15 SINGLE-VALUE X-ORIGIN 'Nortel subscriber inte
+ roperability' )
+olcAttributeTypes: ( 2.16.840.1.113730.3.1.693 NAME 'inetUserHttpURL' DESC 'A u
+ sers Web addresses' SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 X-ORIGIN 'Nortel subs
+ criber interoperability' )
+olcObjectClasses: ( 2.16.840.1.113730.3.2.130 NAME 'inetUser' DESC 'Auxiliary c
+ lass which has to be present in an entry for delivery of subscriber services' 
+ SUP top AUXILIARY MAY ( uid $ inetUserStatus $ inetUserHttpURL $ userPassword 
+ ) X-ORIGIN 'Nortel subscriber interoperability' )
+
+dn: cn=tpeduperson,cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: tpeduperson
+olcAttributeTypes: ( 1.3.6.1.4.1.33592.1.3.5 NAME 'gender' EQUALITY integerMatc
+ h ORDERING integerOrderingMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.27 SINGLE-VA
+ LUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.33592.1.3.2 NAME 'birthDate' DESC 'The date of
+  birth of the contact represented by the directory entry.' EQUALITY generalize
+ dTimeMatch ORDERING generalizedTimeOrderingMatch SYNTAX 1.3.6.1.4.1.1466.115.1
+ 21.1.24 SINGLE-VALUE )
+olcAttributeTypes: ( 2.5.4.100 NAME 'tpClass' DESC 'An integer uniquely identif
+ ying a class id for student' EQUALITY integerMatch SYNTAX 1.3.6.1.4.1.1466.115
+ .121.1.27 )
+olcAttributeTypes: ( 2.5.4.107 NAME 'tpClassTitle' DESC 'An utf-8 string identi
+ fying a class name for student' EQUALITY caseIgnoreMatch SYNTAX 1.3.6.1.4.1.14
+ 66.115.121.1.15 )
+olcAttributeTypes: ( 2.5.4.101 NAME 'tpSeat' DESC 'An integer uniquely identify
+ ing a seat number for student' EQUALITY integerMatch SYNTAX 1.3.6.1.4.1.1466.1
+ 15.121.1.27 )
+olcAttributeTypes: ( 2.5.4.102 NAME 'tpCharacter' DESC 'An utf-8 string identif
+ ying the special character for student' EQUALITY caseIgnoreMatch SYNTAX 1.3.6.
+ 1.4.1.1466.115.121.1.15 )
+olcAttributeTypes: ( 2.5.4.103 NAME 'tpTeachClass' DESC 'An integer uniquely id
+ entifying a class id for teacher' EQUALITY integerMatch SYNTAX 1.3.6.1.4.1.146
+ 6.115.121.1.27 )
+olcAttributeTypes: ( 1.2.840.113556.1.2.464 NAME 'wWWHomePage' DESC 'An URL lin
+ k to a personal home page' EQUALITY caseExactMatch SYNTAX 1.3.6.1.4.1.1466.115
+ .121.1.15 )
+olcObjectClasses: ( 2.5.4.110 NAME 'tpeduPerson' DESC 'Custom Shema for Taipei 
+ Education people use.' SUP inetOrgPerson STRUCTURAL MAY ( birthDate $ gender $
+ info $ tpClass $ tpClassTitle $ tpSeat $ tpCharacter $ tpTeachClass $ uidNumbe
+ r $ wWWHomePage ) )
+
+dn: cn=tpeduschool,cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: tpeduschool
+olcAttributeTypes: ( 2.5.4.104 NAME 'tpUniformNumbers' DESC 'An integer uniquel
+ y identifying a school' EQUALITY integerMatch SYNTAX 1.3.6.1.4.1.1466.115.121.
+ 1.27 SINGLE-VALUE )
+olcAttributeTypes: ( 2.5.4.105 NAME 'tpIPv4' DESC 'A string identifying the IPv
+ 4 range for school' EQUALITY caseIgnoreMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1
+ .15 )
+olcAttributeTypes: ( 2.5.4.106 NAME 'tpIPv6' DESC 'A string identifying the IPv
+ 6 range for school' EQUALITY caseIgnoreMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1
+ .15 )
+olcAttributeTypes: ( 2.5.4.108 NAME 'tpAdministrator' DESC 'the idno of school m
+ anager' EQUALITY caseIgnoreMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+olcObjectClasses: ( 2.5.4.111 NAME 'tpeduSchool' DESC 'Custom Shema for Taipei 
+ Education school use.' SUP Organization STRUCTURAL MUST dc MAY ( tpUniformNumb
+ ers $ tpIPv4 $ tpIPv6 $ wWWHomePage $ tpAdministrator ) )
+ 
