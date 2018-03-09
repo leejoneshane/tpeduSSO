@@ -1,8 +1,3 @@
-dn: cn=config
-changetype: add
-add: olcTLSVerifyClient
-olcTLSVerifyClient: never
-
 dn: olcDatabase={1}{{ LDAP_BACKEND }},cn=config
 changetype:  modify
 replace: olcDbIndex
