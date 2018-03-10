@@ -12,71 +12,57 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
-                </a>
+        <nav class="navbar navbar-expand-md navbar-light navbar-laravel" style="margin-bottom: 0">
+            <div class="container-fluid">
+			<div class="navbar-header">
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                <a class="navbar-brand" href="{{ url('/') }}">
+                    {{ config('app.name', 'Laravel') }}
+                </a>
+			</div>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <!-- Left Side Of Navbar -->
+                <ul class="navbar-nav navbar-left">
+				</ul>
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav mr-auto">
-
-                    </ul>
-
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ml-auto">
-                        <!-- Authentication Links -->
+                <!-- Right Side Of Navbar -->
+				<ul class="navbar-nav navbar-right ml-auto">
                         @guest
                             <li><a class="nav-link" href="{{ route('login') }}">登入</a></li>
                             <li><a class="nav-link" href="{{ route('register') }}">註冊（暫不開放）</a></li>
                         @else
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    {{ Auth::user()->name }} <span class="caret"></span>
+                                    <i class="fa fa-user fa-fw"></i>{{ Auth::user()->name }} 
                                 </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <ul  style="min-width:50px; top:120%" class="dropdown-menu" aria-labelledby="navbarDropdown">
                             	    @if (Auth::user()->ldap['is_schoolAdmin'])
-                            	    <a class="dropdown-item" href="{{ route('schoolAdmin') }}">
-                                	設定學校管理員
-                            	    </a>
+                            	    <li><a class="dropdown-item" href="{{ route('school') }}"><i class="fa fa-university fa-fw"></i>學校管理</a></li>
                             	    @endif
-                                    <a class="dropdown-item" href="{{ route('oauth') }}">
-                                	金鑰管理
-                                    </a>
-                                    <a class="dropdown-item" href="{{ route('profile') }}">
-                                	修改個資
-                                    </a>
-                                    <a class="dropdown-item" href="{{ route('changeAccount') }}">
-                                	變更帳號
-                                    </a>
-                                    <a class="dropdown-item" href="{{ route('changePassword') }}">
-                                	變更密碼
-                                    </a>
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                    <li><a class="dropdown-item" href="{{ route('oauth') }}"><i class="fa fa-key fa-fw"></i>金鑰管理</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('profile') }}"><i class="fa fa-edit fa-fw"></i>修改個資</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('changeAccount') }}"><i class="fa fa-tag fa-fw"></i>變更帳號</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('changePassword') }}"><i class="fa fa-lock fa-fw"></i>變更密碼</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
-                                        	document.getElementById('logout-form').submit();">
-                                        登出
-                                    </a>
-
+                                        	document.getElementById('logout-form').submit();"><i class="fa fa-sign-out fa-fw"></i>登出</a></li>
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                         @csrf
                                     </form>
                                 </div>
                             </li>
                         @endguest
-                    </ul>
-                </div>
-            </div>
+				</ul>
+			</div>
         </nav>
-
-        <main class="py-4">
+        <main>
             @yield('content')
         </main>
     </div>

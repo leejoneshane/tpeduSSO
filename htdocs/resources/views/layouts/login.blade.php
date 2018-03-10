@@ -28,13 +28,13 @@
     </div>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/jquery-1.11.1.min.js') }}"></script>
-    <script src="{{ asset('js/jquery.backstretch.min.js') }}"></script>
-    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-backstretch/2.0.4/jquery.backstretch.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js"></script>
     <script src="{{ asset('js/scripts.js') }}"></script>
-    <script src="{{ asset('js/requirejs-2.1.14-min.js') }}"></script>
     <!--[if lt IE 10]>
-	<script src="{{ asset('js/placeholder.js') }}"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-placeholder/2.3.1/jquery.placeholder.min.js"></script>
     <![endif]-->
 </body>
 </html>
