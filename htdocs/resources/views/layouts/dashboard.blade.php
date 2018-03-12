@@ -26,7 +26,7 @@
                             <a href="{{ route('school.unit') }}"><i class="fa fa-sitemap fa-fw"></i> 行政部門管理</a>
                         </li>
                         <li {{ (Request::is('/school/class') ? 'class="active"' : '') }}>
-                            <a href="{{ route('school.class') }}"><i class="fa fa-sitemap fa-fw"></i> 班級管理</a>
+                            <a href="{{ route('school.class') }}"><i class="fa fa-graduation-cap fa-fw"></i> 班級管理</a>
                         </li>
                         <li {{ (Request::is('/school/role') ? 'class="active"' : '') }}>
                             <a href="{{ route('school.role') }}"><i class="fa fa-suitcase fa-fw"></i> 職稱管理</a>
