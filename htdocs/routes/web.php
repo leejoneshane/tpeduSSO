@@ -43,5 +43,8 @@ Route::group(['middleware' => 'auth'], function () {
 
 Route::group(['middleware' => 'auth.school'], function () {
     Route::get('/school', 'SchoolController@index')->name('school');
+	Route::get('/school/admin', 'SchoolController@schoolAdminForm')->name('school.admin');
+	Route::get('/school/profile', 'SchoolController@schoolProfileForm');
+	Route::post('/school/profile', 'SchoolController@updateSchoolProfile')->name('school.profile');
 });
 

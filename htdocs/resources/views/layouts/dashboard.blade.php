@@ -16,11 +16,11 @@
                             </div>
                             <!-- /input-group -->
                         </li-->
-                        <li {{ (Request::is('/schoolAdmin') ? 'class="active"' : '') }}>
-                            <a href="{{ route('schoolAdmin') }}"><i class="fa fa-user-md fa-fw"></i> 設定管理員</a>
+                        <li {{ (Request::is('/school/admin') ? 'class="active"' : '') }}>
+                            <a href="{{ route('school.admin') }}"><i class="fa fa-user-md fa-fw"></i> 設定管理員</a>
                         </li>
-                        <li {{ (Request::is('/') ? 'class="active"' : '') }}>
-                            <a href="{{ url('') }}"><i class="fa fa-list-alt fa-fw"></i> 學校基本資料</a>
+                        <li {{ (Request::is('/school/profile') ? 'class="active"' : '') }}>
+                            <a href="{{ route('school.profile') }}"><i class="fa fa-list-alt fa-fw"></i> 學校基本資料</a>
                         </li>
                         <li {{ (Request::is('*charts') ? 'class="active"' : '') }}>
                             <a href="{{ url('charts') }}"><i class="fa fa-sitemap fa-fw"></i> 組織單位管理</a>
