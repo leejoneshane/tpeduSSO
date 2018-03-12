@@ -21,6 +21,12 @@ class LdapServiceProvider extends ServiceProvider
             $this->groupList = $this->getGroupList();
     }
 
+    public function error()
+    {
+        if (is_null(self::$ldapConnectId)) return;
+        return ldap_error(self::$ldapConnectId);
+    }
+
     public function connect()
     {
         if ($ldapconn = @ldap_connect(Config::get('ldap.host')))
@@ -338,13 +344,15 @@ class LdapServiceProvider extends ServiceProvider
 		$filter = "objectClass=organizationalRole";
 		$resource = ldap_search(self::$ldapConnectId, $ou_dn, $filter);
 		$entry = ldap_first_entry(self::$ldapConnectId, $resource);
-		do {
-	    	$role = new \stdClass();
-	    	$info = self::getRoleData($entry);
-	    	$role->cn = $info['cn'];
-	    	$role->description = $info['description'];
-	    	$roles[] = $role;
-		} while ($entry=ldap_next_entry(self::$ldapConnectId, $entry));
+		if ($entry) {
+			do {
+		    	$role = new \stdClass();
+		    	$info = self::getRoleData($entry);
+	    		$role->cn = $info['cn'];
+	    		$role->description = $info['description'];
+	    		$roles[] = $role;
+			} while ($entry=ldap_next_entry(self::$ldapConnectId, $entry));
+		}
 		return $roles;
     }
     
@@ -536,7 +544,7 @@ class LdapServiceProvider extends ServiceProvider
     {
 		$dn = $info['dn'];
 		unset($info['dn']);
-		$value = @ldap_delete(self::$ldapConnectId, $dn, $info);
+		$value = @ldap_add(self::$ldapConnectId, $dn, $info);
 		return $value;
     }
 

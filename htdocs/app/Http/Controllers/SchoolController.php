@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Config;
 use Illuminate\Http\Request;
 use App\Providers\LdapServiceProvider;
 use App\Rules\idno;
 use App\Rules\ipv4cidr;
 use App\Rules\ipv6cidr;
-use Log;
 
 class SchoolController extends Controller
 {
@@ -30,21 +30,88 @@ class SchoolController extends Controller
         return view('school');
     }
     
+    public function schoolUnitForm(Request $request)
+    {
+		$dc = $request->user()->ldap['o'];
+		$openldap = new LdapServiceProvider();
+		$data = $openldap->getOus($dc, '行政部門');
+		return view('admin.schoolunit', [ 'ous' => $data ]);
+    }
+
+    public function createSchoolUnit(Request $request)
+    {
+		$dc = $request->user()->ldap['o'];
+		$validatedData = $request->validate([
+			'new-ou' => 'required|string',
+			'new-desc' => 'required|string',
+		]);
+		$info = array();
+		$info['objectClass'] = 'organizationalUnit';
+		$info['businessCategory']='行政部門'; //右列選一:行政部門,教學領域,教師社群或社團,學生社團或營隊
+		$info['ou'] = $request->get('new-ou');
+		$info['description'] = $request->get('new-desc');
+		$info['dn'] = "ou=".$info['ou'].",dc=$dc,".Config::get('ldap.rdn');
+		$openldap = new LdapServiceProvider();
+		$result = $openldap->createEntry($info);
+		if ($result) {
+			return redirect()->back()->with("success", "已經為您建立行政部門！");
+		} else {
+			return redirect()->back()->with("error", "行政部門建立失敗！".$openldap->error());
+		}
+    }
+
+    public function updateSchoolUnit(Request $request, $ou)
+    {
+		$dc = $request->user()->ldap['o'];
+		$validatedData = $request->validate([
+			'ou' => 'required|string',
+			'description' => 'required|string',
+		]);
+		$info = array();
+		$info['ou'] = $request->get('ou');
+		$info['description'] = $request->get('description');
+		
+		$openldap = new LdapServiceProvider();
+		$entry = $openldap->getOUEntry($dc, $ou);
+		$result = $openldap->updateData($entry, $info);
+		if ($result) {
+			return redirect()->back()->with("success", "已經為您更新行政部門資訊！");
+		} else {
+			return redirect()->back()->with("error", "行政部門資訊更新失敗！".$openldap->error());
+		}
+    }
+
+    public function removeSchoolUnit(Request $request, $ou)
+    {
+		$dc = $request->user()->ldap['o'];
+		$openldap = new LdapServiceProvider();
+		$entry = $openldap->getOUEntry($dc, $ou);
+		$roles = $openldap->getRoles($dc, $ou);
+		foreach ($roles as $role) {
+			$role_entry = $openldap->getRoleEntry($dc, $ou, $role->cn);
+			$openldap->deleteEntry($role_entry);
+		}
+		$result = $openldap->deleteEntry($entry);
+		if ($result) {
+			return redirect()->back()->with("success", "已經為您移除行政部門！");
+		} else {
+			return redirect()->back()->with("error", "行政部門刪除失敗！".$openldap->error());
+		}
+    }
+
     public function schoolProfileForm(Request $request)
     {
 		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getOrgEntry($dc);
 		$data = $openldap->getOrgData($entry);
-		return view('admin.schoolprofile', [ 'data' => $data, 'dc' => $dc ]);
+		return view('admin.schoolprofile', [ 'data' => $data ]);
     }
 
     public function updateSchoolProfile(Request $request)
     {
-		$dc = $request->get('dc');
+		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
-		$messages = '';
-		$result = true;
 		$validatedData = $request->validate([
 			'description' => 'required|string',
 			'businessCategory' => 'required|string',
@@ -78,7 +145,7 @@ class SchoolController extends Controller
 		if ($result) {
 			return redirect()->back()->with("success", "已經為您更新學校基本資料！");
 		} else {
-			return redirect()->back()->with("error", "學校基本資料變更失敗！");
+			return redirect()->back()->with("error", "學校基本資料變更失敗！".$openldap->error());
 		}
     }
 
@@ -166,7 +233,7 @@ class SchoolController extends Controller
 		if ($result1 && $result2) {
 			return redirect()->back()->with("success", $messages);
 		} else {
-			return redirect()->back()->with("error", $messages);
+			return redirect()->back()->with("error", $messages.$openldap->error());
 		}
     }
     
@@ -180,7 +247,7 @@ class SchoolController extends Controller
 	    	if ($result) {
 				return redirect()->back()->with("success","已經為您刪除學校管理員！");
 		    } else {
-				return redirect()->back()->with("error","管理員刪除失敗，請稍後再試一次！");
+				return redirect()->back()->with("error","管理員刪除失敗，請稍後再試一次！".$openldap->error());
 	    	}
 		}
     }

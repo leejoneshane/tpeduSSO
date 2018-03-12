@@ -21,7 +21,6 @@
 		@endif
 		<form role="form" method="POST" action="{{ route('school.profile') }}">
 		    {{ csrf_field() }}
-		    <input type="hidden" name="dc" value="{{ $dc }}">
 		    <div class="form-group{{ $errors->has('description') ? ' has-error' : '' }}">
 			<label>學校全銜</label>
 			<input id="description" type="text" class="form-control" name="description" value="{{ array_key_exists('description', $data) ? $data['description'] : old('description') }}">
