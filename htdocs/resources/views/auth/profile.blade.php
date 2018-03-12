@@ -102,7 +102,7 @@
             		    <div class="col-md-6">{{ $user->ldap['department'] }}</div>
                 	</div>
                 	@endif
-                	@if (array_key_exists('department', $user->ldap))
+                	@if (array_key_exists('titleName', $user->ldap))
             		<div class="row">
             		    <div class="col-md-4 text-md-right">職稱</div>
             		    <div class="col-md-6">{{ $user->ldap['titleName'] }}</div>

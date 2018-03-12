@@ -25,11 +25,11 @@
                         <li {{ (Request::is('/school/unit') ? 'class="active"' : '') }}>
                             <a href="{{ route('school.unit') }}"><i class="fa fa-sitemap fa-fw"></i> 行政部門管理</a>
                         </li>
-                        <li {{ (Request::is('*charts') ? 'class="active"' : '') }}>
-                            <a href="{{ url('charts') }}"><i class="fa fa-sitemap fa-fw"></i> 班級管理</a>
+                        <li {{ (Request::is('/school/class') ? 'class="active"' : '') }}>
+                            <a href="{{ route('school.class') }}"><i class="fa fa-sitemap fa-fw"></i> 班級管理</a>
                         </li>
-                        <li {{ (Request::is('*tables') ? 'class="active"' : '') }}>
-                            <a href="{{ url('tables') }}"><i class="fa fa-suitcase fa-fw"></i> 職稱管理</a>
+                        <li {{ (Request::is('/school/role') ? 'class="active"' : '') }}>
+                            <a href="{{ route('school.role') }}"><i class="fa fa-suitcase fa-fw"></i> 職稱管理</a>
                         </li>
                         <li {{ (Request::is('*forms') ? 'class="active"' : '') }}>
                             <a href="#"><i class="fa fa-female fa-fw"></i> 教師管理<span class="fa arrow"></span></a>

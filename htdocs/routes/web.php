@@ -50,5 +50,13 @@ Route::group(['middleware' => 'auth.school'], function () {
 	Route::post('/school/unit', 'SchoolController@createSchoolUnit')->name('school.unit');
 	Route::post('/school/unit/{ou}', 'SchoolController@updateSchoolUnit')->name('school.updateunit');
 	Route::get('/school/unit/{ou}', 'SchoolController@removeSchoolUnit')->name('school.removeunit');
+	Route::get('/school/class', 'SchoolController@schoolClassForm');
+	Route::post('/school/class', 'SchoolController@createSchoolClass')->name('school.class');
+	Route::post('/school/class/{ou}', 'SchoolController@updateSchoolClass')->name('school.updateclass');
+	Route::get('/school/class/{ou}', 'SchoolController@removeSchoolClass')->name('school.removeclass');
+	Route::get('/school/role', 'SchoolController@schoolRoleForm');
+	Route::post('/school/role', 'SchoolController@createSchoolRole')->name('school.role');
+	Route::post('/school/role/{rid}', 'SchoolController@updateSchoolRole')->name('school.updaterole');
+	Route::get('/school/role/{rid}', 'SchoolController@removeSchoolRole')->name('school.removerole');
 });
 

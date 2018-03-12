@@ -30,6 +30,176 @@ class SchoolController extends Controller
         return view('school');
     }
     
+    public function schoolRoleForm(Request $request)
+    {
+		$dc = $request->user()->ldap['o'];
+		$openldap = new LdapServiceProvider();
+		$data = $openldap->getOus($dc, '行政部門');
+		$my_ou = $request->get('ou', $data[0]->ou);
+		$ous = array();
+		foreach ($data as $ou) {
+			if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
+		}
+		$roles = $openldap->getRoles($dc, $my_ou);
+		return view('admin.schoolrole', [ 'my_ou' => $my_ou, 'ous' => $ous, 'roles' => $roles ]);
+    }
+
+    public function createSchoolRole(Request $request)
+    {
+		$dc = $request->user()->ldap['o'];
+		$ou = $request->get('ou');
+		$validatedData = $request->validate([
+			'new-role' => 'required|string',
+			'new-desc' => 'required|string',
+		]);
+		$info = array();
+		$info['objectClass'] = 'organizationalRole';
+		$info['cn'] = $request->get('new-role');
+		$info['ou'] = $ou;
+		$info['description'] = $request->get('new-desc');
+		$info['dn'] = "cn=".$info['cn'].",ou=$ou,dc=$dc,".Config::get('ldap.rdn');
+		$openldap = new LdapServiceProvider();
+		$result = $openldap->createEntry($info);
+		if ($result) {
+			return redirect()->back()->with("success", "已經為您建立職務！");
+		} else {
+			return redirect()->back()->with("error", "職務建立失敗！".$openldap->error());
+		}
+    }
+
+    public function updateSchoolRole(Request $request, $role)
+    {
+		$dc = $request->user()->ldap['o'];
+		$ou = $request->get('ou');
+		$validatedData = $request->validate([
+			'role' => 'required|string',
+			'description' => 'required|string',
+		]);
+		$info = array();
+		$info['cn'] = $request->get('role');
+		$info['description'] = $request->get('description');
+		
+		$openldap = new LdapServiceProvider();
+		if ($role != $info['role']) {
+			$users = $openldap->findUsers("(&(o=$dc)(ou=$ou)(title=$role))", "cn");
+			for ($i=0;$i < $users['count'];$i++) {
+	    		$idno = $students[$i]['cn'][0];
+	    		$user_entry = $openldap->getUserEntry($idno);
+	    		$openldap->updateData($user_entry, ['title' => $info['cn'] ]);
+			}
+		}
+		$entry = $openldap->getRoleEntry($dc, $ou, $role);
+		$result = $openldap->updateData($entry, $info);
+		if ($result) {
+			return redirect()->back()->with("success", "已經為您更新職務資訊！");
+		} else {
+			return redirect()->back()->with("error", "職務資訊更新失敗！".$openldap->error());
+		}
+    }
+
+    public function removeSchoolRole(Request $request, $role)
+    {
+		$dc = $request->user()->ldap['o'];
+		$ou = $request->get('ou');
+		$openldap = new LdapServiceProvider();
+		$users = $openldap->findUsers("(&(o=$dc)(ou=$ou)(title=$role))", "cn");
+		if ($users && $users['count']>0) {
+			return redirect()->back()->with("error", "尚有人員從事該職務，因此無法刪除！");
+		}
+		$entry = $openldap->getRoleEntry($dc, $ou, $role);
+		$result = $openldap->deleteEntry($entry);
+		if ($result) {
+			return redirect()->back()->with("success", "已經為您移除職務！");
+		} else {
+			return redirect()->back()->with("error", "職務刪除失敗！".$openldap->error());
+		}
+    }
+
+    public function schoolClassForm(Request $request)
+    {
+		$dc = $request->user()->ldap['o'];
+		$my_grade = $request->get('grade', 1);
+		$openldap = new LdapServiceProvider();
+		$data = $openldap->getOus($dc, '教學班級');
+		$grades = array();
+		$classes = array();
+		foreach ($data as $class) {
+			$grade = substr($class->ou, 0, 1);
+			if (!in_array($grade, $grades)) $grades[] = $grade;
+			if ($grade == $my_grade) $classes[] = $class;
+		}
+		return view('admin.schoolclass', [ 'my_grade' => $my_grade, 'grades' => $grades, 'classes' => $classes ]);
+    }
+
+    public function createSchoolClass(Request $request)
+    {
+		$dc = $request->user()->ldap['o'];
+		$validatedData = $request->validate([
+			'new-ou' => 'required|digits:3',
+			'new-desc' => 'required|string',
+		]);
+		$info = array();
+		$info['objectClass'] = 'organizationalUnit';
+		$info['businessCategory']='教學班級'; //右列選一:行政部門,教學領域,教師社群或社團,學生社團或營隊
+		$info['ou'] = $request->get('new-ou');
+		$info['description'] = $request->get('new-desc');
+		$info['dn'] = "ou=".$info['ou'].",dc=$dc,".Config::get('ldap.rdn');
+		$openldap = new LdapServiceProvider();
+		$result = $openldap->createEntry($info);
+		if ($result) {
+			return redirect()->back()->with("success", "已經為您建立班級！");
+		} else {
+			return redirect()->back()->with("error", "班級建立失敗！".$openldap->error());
+		}
+	}
+	
+    public function updateSchoolClass(Request $request, $class)
+    {
+		$dc = $request->user()->ldap['o'];
+		$validatedData = $request->validate([
+			'description' => 'required|string',
+		]);
+		$info = array();
+		$info['description'] = $request->get('description');
+		
+		$openldap = new LdapServiceProvider();
+		$users = $openldap->findUsers("(&(o=$dc)(tpClass=$class))", "cn");
+		for ($i=0;$i < $users['count'];$i++) {
+	    	$idno = $students[$i]['cn'][0];
+	    	$user_entry = $openldap->getUserEntry($idno);
+	    	$openldap->updateData($user_entry, ['tpClassTitle' => $info['description'] ]);
+		}
+		$entry = $openldap->getOUEntry($dc, $class);
+		$result = $openldap->updateData($entry, $info);
+		if ($result) {
+			return redirect()->back()->with("success", "已經為您更新班級資訊！");
+		} else {
+			return redirect()->back()->with("error", "班級資訊更新失敗！".$openldap->error());
+		}
+	}
+	
+    public function removeSchoolClass(Request $request, $class)
+    {
+		$dc = $request->user()->ldap['o'];
+		$openldap = new LdapServiceProvider();
+		$users = $openldap->findUsers("(&(o=$dc)(|(tpClass=$class)(tpTeachClass=$class)))", "cn");
+		if ($users && $users['count']>0) {
+			return redirect()->back()->with("error", "尚有人員隸屬於該行政部門，因此無法刪除！");
+		}
+		$entry = $openldap->getOUEntry($dc, $class);
+		$roles = $openldap->getRoles($dc, $class);
+		foreach ($roles as $role) {
+			$role_entry = $openldap->getRoleEntry($dc, $class, $role->cn);
+			$openldap->deleteEntry($role_entry);
+		}
+		$result = $openldap->deleteEntry($entry);
+		if ($result) {
+			return redirect()->back()->with("success", "已經為您移除班級！");
+		} else {
+			return redirect()->back()->with("error", "班級刪除失敗！".$openldap->error());
+		}
+	}
+	
     public function schoolUnitForm(Request $request)
     {
 		$dc = $request->user()->ldap['o'];
@@ -72,6 +242,14 @@ class SchoolController extends Controller
 		$info['description'] = $request->get('description');
 		
 		$openldap = new LdapServiceProvider();
+		if ($ou != $info['ou']) {
+			$users = $openldap->findUsers("(&(o=$dc)(ou=$ou))", "cn");
+			for ($i=0;$i < $users['count'];$i++) {
+	    		$idno = $students[$i]['cn'][0];
+	    		$user_entry = $openldap->getUserEntry($idno);
+	    		$openldap->updateData($user_entry, ['ou' => $info['ou'] ]);
+			}
+		}
 		$entry = $openldap->getOUEntry($dc, $ou);
 		$result = $openldap->updateData($entry, $info);
 		if ($result) {
@@ -85,6 +263,10 @@ class SchoolController extends Controller
     {
 		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
+		$users = $openldap->findUsers("(&(o=$dc)(ou=$ou))", "cn");
+		if ($users && $users['count']>0) {
+			return redirect()->back()->with("error", "尚有人員隸屬於該行政部門，因此無法刪除！");
+		}
 		$entry = $openldap->getOUEntry($dc, $ou);
 		$roles = $openldap->getRoles($dc, $ou);
 		foreach ($roles as $role) {

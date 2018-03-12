@@ -409,11 +409,20 @@ class LdapServiceProvider extends ServiceProvider
 		return $value[0];
     }
     
-    public function findUsers($filter)
+    public function findUsers($filter, $attr = null)
     {
+		$fields = array();
+		if (is_null($attr))
+			$fields[] = 'entryUUID';
+		else
+			if (is_array($attr))
+				$fields = $attr;
+			else
+				$fields[] = $attr;
+		
 		self::administrator();
 		$base_dn = Config::get('ldap.userdn');
-		$resource = ldap_search(self::$ldapConnectId, $base_dn, $filter, array("*","entryUUID"));
+		$resource = ldap_search(self::$ldapConnectId, $base_dn, $filter, $fields);
 		$entries = ldap_get_entries(self::$ldapConnectId, $resource);
 		return $entries;
     }
