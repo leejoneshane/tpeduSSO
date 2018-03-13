@@ -59,10 +59,11 @@ Route::group(['middleware' => 'auth.school'], function () {
 	Route::post('school/role/{rid}', 'SchoolController@updateSchoolRole')->name('school.updateRole');
 	Route::get('school/role/{rid}', 'SchoolController@removeSchoolRole')->name('school.removeRole');
 	Route::get('school/teacher', 'SchoolController@schoolTeacherSearchForm')->name('school.teacher');
-	Route::get('school/teacher/{uuid}?/edit', 'SchoolController@schoolTeacherEditForm')->name('school.editTeacher');
+	Route::get('school/teacher/{uuid}', 'SchoolController@schoolTeacherEditForm');
+	Route::post('school/teacher/{uuid}', 'SchoolController@updateSchoolTeacher')->name('school.updateTeacher');
+	Route::get('school/teacher/remove/{uuid}', 'SchoolController@removeSchoolTeacher')->name('school.removeTeacher');
+	Route::get('school/teacher/new', 'SchoolController@schoolTeacherEditForm');
 	Route::post('school/teacher/new', 'SchoolController@createSchoolTeacher')->name('school.createTeacher');
-	Route::post('school/teacher/{uuid}/update', 'SchoolController@updateSchoolTeacher')->name('school.updateTeacher');
-	Route::get('school/teacher/{uuid}/remove', 'SchoolController@removeSchoolTeacher')->name('school.removeTeacher');
 	Route::get('school/teacher/json', 'SchoolController@schoolTeacherJSONForm');
 	Route::post('school/teacher/json', 'SchoolController@importSchoolTeacher')->name('school.jsonTeacher');
 });

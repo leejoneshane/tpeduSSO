@@ -29,7 +29,7 @@
                                 <li {{ (Request::is('school/teacher/new') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.createTeacher' ) }}">新增教師</a>
                                 </li>
-                                <li {{ (Request::is('school/json') ? 'class="active"' : '') }}>
+                                <li {{ (Request::is('school/teacher/json') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.jsonTeacher' ) }}">匯入JSON</a>
                                 </li>
                             </ul>

@@ -49,9 +49,9 @@
 			<table class="table table-hover">
 				<thead>
 					<tr>
+						<th>UUID</th>
 						<th>身分證字號</th>
 						<th>姓名</th>
-						<th>登入名稱</th>
 						<th>單位</th>
 						<th>職稱</th>
 						<th>管理</th>
@@ -61,16 +61,14 @@
 					@for ($i=0;$i<$teachers['count'];$i++)
 					<tr>
 						<td style="vertical-align: inherit;">
+							<span>{{ $teachers[$i]['entryuuid'][0] }}</span>
+						</td>
+						<td style="vertical-align: inherit;">
 							<span>{{ $teachers[$i]['cn'][0] }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<span>{{ $teachers[$i]['displayname'][0] }}</span>
-						</td>
-						<td style="vertical-align: inherit;">
 							<span>
-							@for ($j=0;$j<$teachers[$i]['uid']['count'];$j++)
-								{{  $teachers[$i]['uid'][$j] }}　
-							@endfor	
+							<span>{{ $teachers[$i]['displayname'][0] }}</span>
 							</span>
 						</td>
 						<td style="vertical-align: inherit;">

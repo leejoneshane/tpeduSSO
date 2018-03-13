@@ -56,7 +56,7 @@ class SchoolController extends Controller
 		} elseif ($my_field == 'mobile' && !empty($keywords)) {
 			$filter = "(&(o=$dc)(employeeType=教師)(mobile=*".$keywords."*))";
 		}
-		$teachers = $openldap->findUsers($filter, ["cn","displayName","uid","o","ou","title","entryUUID"]);
+		$teachers = $openldap->findUsers($filter, ["cn","displayName","o","ou","title","entryUUID"]);
 		for ($i=0;$i<$teachers['count'];$i++) {
 			$dc = $teachers[$i]['o'][0];
 			$teachers[$i]['school']['count'] = 1;
