@@ -5,17 +5,6 @@
            <nav class="navbar-light sidebar" style="margin-top: 0px" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
-                        <!--li class="sidebar-search">
-                            <div class="input-group custom-search-form">
-                                <input type="text" class="form-control" placeholder="Search...">
-                                <span class="input-group-btn">
-                                	<button class="btn btn-default" type="button">
-                                    	<i class="fa fa-search"></i>
-                                	</button>
-                            	</span>
-                            </div>
-                            <!-- /input-group -->
-                        </li-->
                         <li {{ (Request::is('/school/admin') ? 'class="active"' : '') }}>
                             <a href="{{ route('school.admin') }}"><i class="fa fa-user-md fa-fw"></i> 設定管理員</a>
                         </li>

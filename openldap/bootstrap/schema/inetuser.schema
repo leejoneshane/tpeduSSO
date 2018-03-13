@@ -1,0 +1,22 @@
+attributetype ( 2.16.840.1.113730.3.1.692
+	NAME 'inetUserStatus'
+	DESC '"active", "inactive", or "deleted" status of a user'
+	EQUALITY caseIgnoreMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+	SINGLE-VALUE
+	X-ORIGIN 'Nortel subscriber interoperability' )
+
+attributetype ( 2.16.840.1.113730.3.1.693
+	NAME 'inetUserHttpURL'
+	DESC 'A users Web addresses'
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26
+	X-ORIGIN 'Nortel subscriber interoperability' )
+
+objectclass ( 2.16.840.1.113730.3.2.130
+	NAME 'inetUser'
+	DESC 'Auxiliary class which has to be present in an entry for delivery of subscriber services'
+	SUP top
+	AUXILIARY
+		MAY (
+			uid $ inetUserStatus $ inetUserHttpURL $ userPassword ) 
+	X-ORIGIN 'Nortel subscriber interoperability' )

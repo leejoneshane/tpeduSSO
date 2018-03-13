@@ -1,0 +1,37 @@
+dn: ou=people,{{ LDAP_BASE_DN }}
+ou: people
+objectClass: organizationalUnit
+objectClass: top
+
+dn: ou=account,{{ LDAP_BASE_DN }}
+ou: account
+objectClass: organizationalUnit
+objectClass: top
+
+dn: ou=group,{{ LDAP_BASE_DN }}
+ou: groups
+objectClass: organizationalUnit
+objectClass: top
+
+dn: dc=bureau,{{ LDAP_BASE_DN }}
+businesscategory:: 5Li7566h5qmf6Zec
+dc: bureau
+description:: 6Ie65YyX5biC5pS/5bqc5pWZ6IKy5bGA
+facsimiletelephonenumber: 27251989
+o: bureau
+objectclass: tpeduSchool
+objectclass: top
+postalcode: 11008
+tpUniformNumbers: 399999
+st:: 5L+h576p5Y2A
+street:: 6Ie65YyX5biC5L+h576p5Y2A5biC5bqc6LevMeiZnzjmqJPopb/ljJfljYA=
+telephonenumber: 27208889
+userpassword: {SSHA}KzztlcQnNmgEurEFLolV6wgIWh95QaqE
+wwwhomepage: http://www.doe.gov.taipei/
+
+dn: ou=it,dc=bureau,{{ LDAP_BASE_DN }}
+businesscategory:: 6KGM5pS/6YOo6ZaA
+description:: 6LOH6KiK5pWZ6IKy56eR
+objectclass: organizationalUnit
+objectclass: top
+ou: it
