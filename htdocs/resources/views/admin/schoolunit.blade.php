@@ -34,7 +34,7 @@
 				<tbody>
 					@foreach ($ous as $ou)
 					<tr>
-						<form role="form" method="POST" action="{{ route('school.updateunit', [ 'ou' => $ou->ou ]) }}">
+						<form role="form" method="POST" action="{{ route('school.updateUnit', [ 'ou' => $ou->ou ]) }}">
 		    			{{ csrf_field() }}
 						<td>
 							<input id="ou" type="text" class="form-control" name="ou" value="{{ $ou->ou ? $ou->ou : old('ou') }}">
@@ -44,7 +44,7 @@
 						</td>
 						<td>
 							<button type="submit" class="btn btn-primary">修改</button>
-							<a href="{{ route('school.removeunit', [ 'ou' => $ou->ou ]) }}" class="btn btn-danger">刪除</a>
+							<a href="{{ route('school.removeUnit', [ 'ou' => $ou->ou ]) }}" class="btn btn-danger">刪除</a>
 						</td>
 						</form>
 					</tr>

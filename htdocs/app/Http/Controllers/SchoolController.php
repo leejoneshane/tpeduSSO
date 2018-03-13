@@ -30,6 +30,75 @@ class SchoolController extends Controller
         return view('school');
     }
     
+    public function schoolTeacherSearchForm(Request $request)
+    {
+		$dc = $request->user()->ldap['o'];
+		$openldap = new LdapServiceProvider();
+		$data = $openldap->getOus($dc, '行政部門');
+		$my_ou = $data[0]->ou;
+		$my_field = $request->get('field', "ou=$my_ou");
+		$keywords = $request->get('keywords');
+		$ous = array();
+		foreach ($data as $ou) {
+			if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
+		}
+		if (substr($my_field,0,3) == 'ou=') {
+			$my_ou = substr($my_field,3);
+			$filter = "(&(o=$dc)(ou=$my_ou)(employeeType=教師))";
+		} elseif ($my_field == 'uuid' && !empty($keywords)) {
+			$filter = "(&(o=$dc)(employeeType=教師)(entryUUID=*".$keywords."*))";
+		} elseif ($my_field == 'idno' && !empty($keywords)) {
+			$filter = "(&(o=$dc)(employeeType=教師)(cn=*".$keywords."*))";
+		} elseif ($my_field == 'name' && !empty($keywords)) {
+			$filter = "(&(o=$dc)(employeeType=教師)(displayName=*".$keywords."*))";
+		} elseif ($my_field == 'mail' && !empty($keywords)) {
+			$filter = "(&(o=$dc)(employeeType=教師)(mail=*".$keywords."*))";
+		} elseif ($my_field == 'mobile' && !empty($keywords)) {
+			$filter = "(&(o=$dc)(employeeType=教師)(mobile=*".$keywords."*))";
+		}
+		$teachers = $openldap->findUsers($filter, ["cn","displayName","uid","o","ou","title","entryUUID"]);
+		for ($i=0;$i<$teachers['count'];$i++) {
+			$dc = $teachers[$i]['o'][0];
+			$teachers[$i]['school']['count'] = 1;
+			$teachers[$i]['school'][0] = $openldap->getOrgTitle($dc);
+			if ($teachers[$i]['ou']['count']>0)  {
+				$ou = $teachers[$i]['ou'][0];
+				$teachers[$i]['department']['count'] = 1;
+				$teachers[$i]['department'][0] = $openldap->getOuTitle($dc, $ou);
+				if ($teachers[$i]['title']['count']>0)  {
+					$role = $teachers[$i]['title'][0];
+					$teachers[$i]['titlename']['count'] = 1;
+					$teachers[$i]['titlename'][0] = $openldap->getRoleTitle($dc, $ou, $role);
+				}
+			}
+		}
+		return view('admin.schoolteacher', [ 'my_field' => $my_field, 'keywords' => $keywords, 'ous' => $ous, 'teachers' => $teachers ]);
+    }
+
+    public function schoolTeacherJSONForm(Request $request)
+    {
+	}
+	
+    public function importSchoolTeacher(Request $request)
+    {
+	}
+	
+    public function schoolTeacherEditForm(Request $request, $uuid)
+    {
+	}
+	
+    public function createSchoolTeacher(Request $request)
+    {
+	}
+	
+    public function updateSchoolTeacher(Request $request, $uuid)
+    {
+	}
+	
+    public function removeSchoolTeacher(Request $request, $uuid)
+    {
+	}
+	
     public function schoolRoleForm(Request $request)
     {
 		$dc = $request->user()->ldap['o'];

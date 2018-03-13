@@ -41,7 +41,7 @@
 				<tbody>
 					@foreach ($roles as $role)
 					<tr>
-						<form role="form" method="POST" action="{{ route('school.updaterole', [ 'role' => $role->cn ]) }}">
+						<form role="form" method="POST" action="{{ route('school.updateRole', [ 'role' => $role->cn ]) }}">
 		    			{{ csrf_field() }}
 						<input type="hidden" name="ou" value="{{ $my_ou }}">
 						<td>
@@ -52,7 +52,7 @@
 						</td>
 						<td>
 							<button type="submit" class="btn btn-primary">修改</button>
-							<a href="{{ route('school.removerole', [ 'role' => $role->cn ]) }}?ou={{ $my_ou }}" class="btn btn-danger">刪除</a>
+							<a href="{{ route('school.removeRole', [ 'role' => $role->cn ]) }}?ou={{ $my_ou }}" class="btn btn-danger">刪除</a>
 						</td>
 						</form>
 					</tr>

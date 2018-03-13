@@ -261,6 +261,15 @@ class LdapServiceProvider extends ServiceProvider
 		return $info;
     }
     
+    public function getOrgTitle($dc)
+    {
+		self::administrator();
+		$resource = ldap_search(self::$ldapConnectId, Config::get('ldap.rdn'), "o=$dc");
+		$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+		$value = @ldap_get_values(self::$ldapConnectId, $entry, "description");
+		return $value[0];
+    }
+    
     public function getOus($dc, $category)
     {
 		$ous = array();
@@ -511,17 +520,13 @@ class LdapServiceProvider extends ServiceProvider
 
 		if (isset($userinfo['o'])) {
 	    	$dc = $userinfo['o'];
-	    	$entry = $this->getOrgEntry($dc);
-	    	$value = $this->getOrgData($entry, "description");
-	    	$userinfo['school'] = $value['description'];
+	    	$userinfo['school'] = $this->getOrgTitle($dc);
 	    	if (isset($userinfo['ou'])) {
 				$ou = $userinfo['ou'];
-				$value = $this->getOuTitle($dc, $ou);
-				$userinfo['department'] = $value;
+				$userinfo['department'] = $this->getOuTitle($dc, $ou);
 				if (isset($userinfo['title'])) {
 		    		$role = $userinfo['title'];
-		    		$value = $this->getRoleTitle($dc, $ou, $role);
-		    		$userinfo['titleName'] = $value;
+		    		$userinfo['titleName'] = $this->getRoleTitle($dc, $ou, $role);
 				}
 	    	}
 		}

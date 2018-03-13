@@ -27,36 +27,43 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
 Route::get('/', 'HomeController@index')->middleware(['auth', 'auth.email'])->name('home');
 
-Route::get('/schoolAdmin', 'SchoolController@showSchoolAdminSettingForm');
-Route::post('/schoolAdmin', 'SchoolController@addSchoolAdmin')->name('schoolAdmin');
-Route::post('/schoolAdminRemove', 'SchoolController@delSchoolAdmin')->name('schoolAdminRemove');
+Route::get('schoolAdmin', 'SchoolController@showSchoolAdminSettingForm');
+Route::post('schoolAdmin', 'SchoolController@addSchoolAdmin')->name('schoolAdmin');
+Route::post('schoolAdminRemove', 'SchoolController@delSchoolAdmin')->name('schoolAdminRemove');
 
 Route::group(['middleware' => 'auth'], function () {
-    Route::get('/changePassword', 'HomeController@showChangePasswordForm');
-    Route::post('/changePassword', 'HomeController@changePassword')->name('changePassword');
-    Route::get('/changeAccount', 'HomeController@showChangeAccountForm');
-    Route::post('/changeAccount', 'HomeController@changeAccount')->name('changeAccount');
-    Route::get('/profile', 'HomeController@showProfileForm');
-    Route::post('/profile', 'HomeController@changeProfile')->name('profile');
-    Route::get('/oauth', 'oauthController@index')->name('oauth');
+    Route::get('changePassword', 'HomeController@showChangePasswordForm');
+    Route::post('changePassword', 'HomeController@changePassword')->name('changePassword');
+    Route::get('changeAccount', 'HomeController@showChangeAccountForm');
+    Route::post('changeAccount', 'HomeController@changeAccount')->name('changeAccount');
+    Route::get('profile', 'HomeController@showProfileForm');
+    Route::post('profile', 'HomeController@changeProfile')->name('profile');
+    Route::get('oauth', 'oauthController@index')->name('oauth');
 });
 
 Route::group(['middleware' => 'auth.school'], function () {
-    Route::get('/school', 'SchoolController@index')->name('school');
-	Route::get('/school/admin', 'SchoolController@schoolAdminForm')->name('school.admin');
-	Route::get('/school/profile', 'SchoolController@schoolProfileForm');
-	Route::post('/school/profile', 'SchoolController@updateSchoolProfile')->name('school.profile');
-	Route::get('/school/unit', 'SchoolController@schoolUnitForm');
-	Route::post('/school/unit', 'SchoolController@createSchoolUnit')->name('school.unit');
-	Route::post('/school/unit/{ou}', 'SchoolController@updateSchoolUnit')->name('school.updateunit');
-	Route::get('/school/unit/{ou}', 'SchoolController@removeSchoolUnit')->name('school.removeunit');
-	Route::get('/school/class', 'SchoolController@schoolClassForm');
-	Route::post('/school/class', 'SchoolController@createSchoolClass')->name('school.class');
-	Route::post('/school/class/{ou}', 'SchoolController@updateSchoolClass')->name('school.updateclass');
-	Route::get('/school/class/{ou}', 'SchoolController@removeSchoolClass')->name('school.removeclass');
-	Route::get('/school/role', 'SchoolController@schoolRoleForm');
-	Route::post('/school/role', 'SchoolController@createSchoolRole')->name('school.role');
-	Route::post('/school/role/{rid}', 'SchoolController@updateSchoolRole')->name('school.updaterole');
-	Route::get('/school/role/{rid}', 'SchoolController@removeSchoolRole')->name('school.removerole');
+    Route::get('school', 'SchoolController@index')->name('school');
+	Route::get('school/admin', 'SchoolController@schoolAdminForm')->name('school.admin');
+	Route::get('school/profile', 'SchoolController@schoolProfileForm');
+	Route::post('school/profile', 'SchoolController@updateSchoolProfile')->name('school.profile');
+	Route::get('school/unit', 'SchoolController@schoolUnitForm');
+	Route::post('school/unit', 'SchoolController@createSchoolUnit')->name('school.unit');
+	Route::post('school/unit/{ou}', 'SchoolController@updateSchoolUnit')->name('school.updateUnit');
+	Route::get('school/unit/{ou}', 'SchoolController@removeSchoolUnit')->name('school.removeUnit');
+	Route::get('school/class', 'SchoolController@schoolClassForm');
+	Route::post('school/class', 'SchoolController@createSchoolClass')->name('school.class');
+	Route::post('school/class/{ou}', 'SchoolController@updateSchoolClass')->name('school.updateClass');
+	Route::get('school/class/{ou}', 'SchoolController@removeSchoolClass')->name('school.removeClass');
+	Route::get('school/role', 'SchoolController@schoolRoleForm');
+	Route::post('school/role', 'SchoolController@createSchoolRole')->name('school.role');
+	Route::post('school/role/{rid}', 'SchoolController@updateSchoolRole')->name('school.updateRole');
+	Route::get('school/role/{rid}', 'SchoolController@removeSchoolRole')->name('school.removeRole');
+	Route::get('school/teacher', 'SchoolController@schoolTeacherSearchForm')->name('school.teacher');
+	Route::get('school/teacher/{uuid}?/edit', 'SchoolController@schoolTeacherEditForm')->name('school.editTeacher');
+	Route::post('school/teacher/new', 'SchoolController@createSchoolTeacher')->name('school.createTeacher');
+	Route::post('school/teacher/{uuid}/update', 'SchoolController@updateSchoolTeacher')->name('school.updateTeacher');
+	Route::get('school/teacher/{uuid}/remove', 'SchoolController@removeSchoolTeacher')->name('school.removeTeacher');
+	Route::get('school/teacher/json', 'SchoolController@schoolTeacherJSONForm');
+	Route::post('school/teacher/json', 'SchoolController@importSchoolTeacher')->name('school.jsonTeacher');
 });
 

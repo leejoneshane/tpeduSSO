@@ -41,7 +41,7 @@
 				<tbody>
 					@foreach ($classes as $class)
 					<tr>
-						<form role="form" method="POST" action="{{ route('school.updateclass', [ 'ou' => $class->ou ]) }}">
+						<form role="form" method="POST" action="{{ route('school.updateClass', [ 'ou' => $class->ou ]) }}">
 		    			{{ csrf_field() }}
 						<td>
 							<label class="form-control">{{ $class->ou }}</label>
@@ -51,7 +51,7 @@
 						</td>
 						<td>
 							<button type="submit" class="btn btn-primary">修改</button>
-							<a href="{{ route('school.removeclass', [ 'ou' => $class->ou ]) }}" class="btn btn-danger">刪除</a>
+							<a href="{{ route('school.removeClass', [ 'ou' => $class->ou ]) }}" class="btn btn-danger">刪除</a>
 						</td>
 						</form>
 					</tr>
