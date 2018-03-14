@@ -86,10 +86,21 @@
 							 	onclick="$('#form').attr('action','{{ route('school.updateTeacher', [ 'uuid' => $teachers[$i]['entryuuid'][0] ]) }}?field={{ $my_field }}&keywords={{ $keywords }}');
 										 $('#form').attr('method', 'GET');
 										 $('#form').submit();">編輯</button>
+							@if ($teachers[$i]['inetuserstatus'][0] != '已刪除')
+							<button type="button" class="btn btn-warning"
+							 	onclick="$('#form').attr('action','{{ route('school.toggleTeacher', [ 'uuid' => $teachers[$i]['entryuuid'][0] ]) }}?field={{ $my_field }}&keywords={{ $keywords }}');
+										 $('#form').attr('method', 'POST');
+										 $('#form').submit();">{{ $teachers[$i]['inetuserstatus'][0] == '啟用' ? '停用' : '啟用' }}</button>
 							<button type="button" class="btn btn-danger"
 							 	onclick="$('#form').attr('action','{{ route('school.removeTeacher', [ 'uuid' => $teachers[$i]['entryuuid'][0] ]) }}?field={{ $my_field }}&keywords={{ $keywords }}');
 										 $('#form').attr('method', 'POST');
 										 $('#form').submit();">刪除</button>
+							@else
+							<button type="button" class="btn btn-danger"
+							 	onclick="$('#form').attr('action','{{ route('school.removeTeacher', [ 'uuid' => $teachers[$i]['entryuuid'][0] ]) }}?field={{ $my_field }}&keywords={{ $keywords }}');
+										 $('#form').attr('method', 'POST');
+										 $('#form').submit();">救回</button>
+							@endif
 						</td>
 					</tr>
 					@endfor

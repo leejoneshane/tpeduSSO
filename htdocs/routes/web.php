@@ -62,6 +62,8 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
 	Route::get('teacher/{uuid}/update', 'SchoolController@schoolTeacherEditForm');
 	Route::post('teacher/{uuid}/update', 'SchoolController@updateSchoolTeacher')->name('school.updateTeacher');
 	Route::post('teacher/{uuid}/remove', 'SchoolController@removeSchoolTeacher')->name('school.removeTeacher');
+	Route::post('teacher/{uuid}/toggle', 'SchoolController@toggleSchoolTeacher')->name('school.toggleTeacher');
+	Route::post('teacher/{uuid}/undo', 'SchoolController@undoSchoolTeacher')->name('school.undoTeacher');
 	Route::get('teacher/new', 'SchoolController@schoolTeacherEditForm');
 	Route::post('teacher/new', 'SchoolController@createSchoolTeacher')->name('school.createTeacher');
 	Route::get('teacher/json', 'SchoolController@schoolTeacherJSONForm');

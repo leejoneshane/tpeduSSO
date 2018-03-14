@@ -26,9 +26,6 @@
                                 <li {{ (Request::is('school/class/teacher') ? 'class="active"' : '') }}>
                                     <a href="{{ url('class/teacher') }}">指派任教老師</a>
                                 </li>
-                                <li {{ (Request::is('school/class/student') ? 'class="active"' : '') }}>
-                                    <a href="{{ url('class/student') }}">指派學生</a>
-                                </li>
                             </ul>
                         </li>
                         <li {{ (Request::is('school/teacher') ? 'class="active"' : '') }}>

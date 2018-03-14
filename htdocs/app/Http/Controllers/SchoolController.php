@@ -47,7 +47,7 @@ class SchoolController extends Controller
 			if ($my_ou == 'deleted')
 				$filter = "(&(o=$dc)(inetUserStatus=deleted)(employeeType=教師))";
 			else
-				$filter = "(&(o=$dc)(ou=$my_ou)(employeeType=教師))";
+				$filter = "(&(o=$dc)(ou=$my_ou)(employeeType=教師)(!(inetUserStatus=deleted)))";
 		} elseif ($my_field == 'uuid' && !empty($keywords)) {
 			$filter = "(&(o=$dc)(employeeType=教師)(entryUUID=*".$keywords."*))";
 		} elseif ($my_field == 'idno' && !empty($keywords)) {
@@ -104,25 +104,148 @@ class SchoolController extends Controller
     {
 	}
 	
-    public function schoolTeacherEditForm(Request $request, $uuid)
+    public function schoolTeacherEditForm(Request $request, $uuid = null)
     {
+		$dc = $request->user()->ldap['o'];
 		$my_field = $request->get('field');
 		$keywords = $request->get('keywords');
-    	if ($uuid != 'new') {//edit
-    		$openldap = new LdapServiceProvider();
+		$openldap = new LdapServiceProvider();
+		$data = $openldap->getOus($dc, '行政部門');
+		$my_ou = '';
+		$ous = array();
+		foreach ($data as $ou) {
+			if (empty($my_ou)) $my_ou = $ou->ou;
+			if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
+		}
+    	if (!is_null($uuid)) {//edit
     		$entry = $openldap->getUserEntry($uuid);
     		$user = $openldap->getUserData($entry);
-			return view('admin.schoolteacheredit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'user' => $user ]);
+    		$data = $openldap->getRoles($dc, $user['ou']);
+			$roles = array();
+			foreach ($data as $role) {
+				if (!array_key_exists($role->cn, $roles)) $roles[$role->cn] = $role->description;
+			}
+			return view('admin.schoolteacheredit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'dc' => $dc, 'ous' => $ous, 'roles' => $roles, 'user' => $user ]);
 		} else //add
-			return view('admin.schoolteacheredit', [ 'my_field' => $my_field, 'keywords' => $keywords ]);
+    		$data = $openldap->getRoles($dc, $my_ou);
+			$roles = array();
+			foreach ($data as $role) {
+				if (!array_key_exists($role->cn, $roles)) $roles[$role->cn] = $role->description;
+			}
+			return view('admin.schoolteacheredit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'dc' => $dc, 'ous' => $ous, 'roles' => $roles ]);
 	}
 	
     public function createSchoolTeacher(Request $request)
     {
+		$dc = $request->user()->ldap['o'];
+		$openldap = new LdapServiceProvider();
+		$entry = $openldap->getOrgEntry($dc);
+		$sid = $openldap->getOrgData($entry, 'tpUniformNumbers');
+		$validatedData = $request->validate([
+			'idno' => 'required|string|size:10',
+			'sn' => 'required|string',
+			'gn' => 'required|string',
+			'mail' => 'nullable|email',
+			'mobile' => 'nullable|digits:10',
+			'fax' => 'nullable|string',
+			'otel' => 'nullable|string',
+			'htel' => 'nullable|string',
+			'raddress' => 'nullable|string',
+			'address' => 'nullable|string',
+			'www' => 'nullable|url',
+		]);
+		$info = array();
+		$info['objectClass'] = array('tpeduPerson', 'inetUser');
+		$info['o'] = $dc;
+		$info['employeeType'] = '教師';
+		$info['inetUserStatus'] = 'active';
+		$info['info'] = '{"sid":"'.$sid['tpUniformNumbers'].'", "role":"教師"}';
+		$info['cn'] = $request->get('idno');
+		$info['dn'] = Config::get('ldap.userattr').'='.$info['cn'].','.Config::get('ldap.userdn');
+		$info['ou'] = $request->get('ou');
+		$info['title'] = $request->get('role');
+		$info['sn'] = $request->get('sn');
+		$info['givenName'] = $request->get('gn');
+		$info['displayName'] = $info['sn'].$info['givenName'];
+		$info['gender'] = $request->get('gender');
+		$info['birthDate'] = $request->get('birth');
+		$info['mail'] = $info['mail'];
+		if ($request->has('mobile')) $info['mobile'] = $request->get('mobile');
+		if ($request->has('fax')) $info['fax'] = $request->get('fax');
+		if ($request->has('otel')) $info['telephoneNumber'] = $request->get('otel');
+		if ($request->has('htel')) $info['homePhone'] = $request->get('htel');
+		if ($request->has('raddress')) $info['registeredAddress'] = $request->get('raddress');
+		if ($request->has('address')) $info['homePostalAddress'] = $request->get('address');
+		if ($request->has('www')) $info['wWWHomePage'] = $request->get('www');
+		if ($request->has('class')) $info['tpTeachClass'] = explode(' ', $request->get('class'));
+		$result = $openldap->createEntry($info);
+		if ($result) {
+			return redirect()->back()->with("success", "已經為您建立教師資料！");
+		} else {
+			return redirect()->back()->with("error", "教師新增失敗！".$openldap->error());
+		}
 	}
 	
     public function updateSchoolTeacher(Request $request, $uuid)
     {
+		$dc = $request->user()->ldap['o'];
+		$openldap = new LdapServiceProvider();
+		$validatedData = $request->validate([
+			'idno' => 'required|string|size:10',
+			'sn' => 'required|string',
+			'gn' => 'required|string',
+			'mail' => 'nullable|email',
+			'mobile' => 'nullable|digits:10',
+			'fax' => 'nullable|string',
+			'otel' => 'nullable|string',
+			'htel' => 'nullable|string',
+			'raddress' => 'nullable|string',
+			'address' => 'nullable|string',
+			'www' => 'nullable|url',
+		]);
+		$info = array();
+		$info['cn'] = $request->get('idno');
+		$info['ou'] = $request->get('ou');
+		$info['title'] = $request->get('role');
+		$info['sn'] = $request->get('sn');
+		$info['givenName'] = $request->get('gn');
+		$info['displayName'] = $info['sn'].$info['givenName'];
+		$info['gender'] = $request->get('gender');
+		$info['birthDate'] = $request->get('birth');
+		$info['mail'] = $info['mail'];
+		if ($request->has('mobile')) $info['mobile'] = $request->get('mobile');
+		if ($request->has('fax')) $info['fax'] = $request->get('fax');
+		if ($request->has('otel')) $info['telephoneNumber'] = $request->get('otel');
+		if ($request->has('htel')) $info['homePhone'] = $request->get('htel');
+		if ($request->has('raddress')) $info['registeredAddress'] = $request->get('raddress');
+		if ($request->has('address')) $info['homePostalAddress'] = $request->get('address');
+		if ($request->has('www')) $info['wWWHomePage'] = $request->get('www');
+		if ($request->has('class')) $info['tpTeachClass'] = explode(' ', $request->get('class'));
+		$entry = $openldap->getUserEntry($uuid);
+		$result = $openldap->updateData($entry, $info);
+		if ($result) {
+			return redirect()->back()->with("success", "已經為您更新教師基本資料！");
+		} else {
+			return redirect()->back()->with("error", "教師基本資料變更失敗！".$openldap->error());
+		}
+	}
+	
+    public function toggleSchoolTeacher(Request $request, $uuid)
+    {
+		$info = array();
+		$openldap = new LdapServiceProvider();
+		$entry = $openldap->getUserEntry($uuid);
+		$data = $openldap->getUserData($entry, 'inetUserStatus');
+		if (array_key_exists('inetUserStatus', $data) && $data['inetUserStatus'] == 'active')
+			$info['inetUserStatus'] = 'inactive';
+		else
+			$info['inetUserStatus'] = 'active';
+		$result = $openldap->updateData($entry, $info);
+		if ($result) {
+			return redirect()->back()->with("success", "已經將該師標註為".($info['inetUserStatus'] == 'active' ? '啟用' : '停用')."！");
+		} else {
+			return redirect()->back()->with("error", "無法變更人員狀態！".$openldap->error());
+		}
 	}
 	
     public function removeSchoolTeacher(Request $request, $uuid)
@@ -130,13 +253,24 @@ class SchoolController extends Controller
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getUserEntry($uuid);
 		$info = array();
-		$info['ou'] = [];
-		$info['title'] = [];
-		$info['tpTeachClass'] = [];
 		$info['inetUserStatus'] = 'deleted';
 		$result = $openldap->updateData($entry, $info);
 		if ($result) {
 			return redirect()->back()->with("success", "已經將該師標註為刪除！");
+		} else {
+			return redirect()->back()->with("error", "無法變更人員狀態！".$openldap->error());
+		}
+	}
+	
+    public function undoSchoolTeacher(Request $request, $uuid)
+    {
+		$openldap = new LdapServiceProvider();
+		$entry = $openldap->getUserEntry($uuid);
+		$info = array();
+		$info['inetUserStatus'] = 'active';
+		$result = $openldap->updateData($entry, $info);
+		if ($result) {
+			return redirect()->back()->with("success", "已經將該師標註為啟用！");
 		} else {
 			return redirect()->back()->with("error", "無法變更人員狀態！".$openldap->error());
 		}
