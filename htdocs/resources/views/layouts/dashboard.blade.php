@@ -14,11 +14,22 @@
                         <li {{ (Request::is('school/unit') ? 'class="active"' : '') }}>
                             <a href="{{ route('school.unit') }}"><i class="fa fa-sitemap fa-fw"></i> 行政部門管理</a>
                         </li>
-                        <li {{ (Request::is('school/class') ? 'class="active"' : '') }}>
-                            <a href="{{ route('school.class') }}"><i class="fa fa-graduation-cap fa-fw"></i> 班級管理</a>
-                        </li>
                         <li {{ (Request::is('school/role') ? 'class="active"' : '') }}>
-                            <a href="{{ route('school.role') }}"><i class="fa fa-suitcase fa-fw"></i> 職稱管理</a>
+                            <a href="{{ route('school.role', [ 'ou' => 'null' ]) }}"><i class="fa fa-suitcase fa-fw"></i> 職稱管理</a>
+                        </li>
+                        <li {{ (Request::is('school/class') ? 'class="active"' : '') }}>
+                            <a href="#"><i class="fa fa-graduation-cap fa-fw"></i> 班級管理<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li {{ (Request::is('school/class') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('school.class') }}">變更班級名稱</a>
+                                </li>
+                                <li {{ (Request::is('school/class/teacher') ? 'class="active"' : '') }}>
+                                    <a href="{{ url('class/teacher') }}">指派任教老師</a>
+                                </li>
+                                <li {{ (Request::is('school/class/student') ? 'class="active"' : '') }}>
+                                    <a href="{{ url('class/student') }}">指派學生</a>
+                                </li>
+                            </ul>
                         </li>
                         <li {{ (Request::is('school/teacher') ? 'class="active"' : '') }}>
                             <a href="#"><i class="fa fa-female fa-fw"></i> 教師管理<span class="fa arrow"></span></a>
@@ -27,10 +38,10 @@
                                     <a href="{{ route('school.teacher') }}">瀏覽及搜尋</a>
                                 </li>
                                 <li {{ (Request::is('school/teacher/new') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.createTeacher' ) }}">新增教師</a>
+                                    <a href="{{ route('school.createTeacher') }}">新增教師</a>
                                 </li>
                                 <li {{ (Request::is('school/teacher/json') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.jsonTeacher' ) }}">匯入JSON</a>
+                                    <a href="{{ route('school.jsonTeacher') }}">匯入JSON</a>
                                 </li>
                             </ul>
                         </li>

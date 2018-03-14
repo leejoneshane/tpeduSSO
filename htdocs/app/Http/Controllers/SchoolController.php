@@ -44,7 +44,10 @@ class SchoolController extends Controller
 		}
 		if (substr($my_field,0,3) == 'ou=') {
 			$my_ou = substr($my_field,3);
-			$filter = "(&(o=$dc)(ou=$my_ou)(employeeType=教師))";
+			if ($my_ou == 'deleted')
+				$filter = "(&(o=$dc)(inetUserStatus=deleted)(employeeType=教師))";
+			else
+				$filter = "(&(o=$dc)(ou=$my_ou)(employeeType=教師))";
 		} elseif ($my_field == 'uuid' && !empty($keywords)) {
 			$filter = "(&(o=$dc)(employeeType=教師)(entryUUID=*".$keywords."*))";
 		} elseif ($my_field == 'idno' && !empty($keywords)) {
@@ -56,20 +59,38 @@ class SchoolController extends Controller
 		} elseif ($my_field == 'mobile' && !empty($keywords)) {
 			$filter = "(&(o=$dc)(employeeType=教師)(mobile=*".$keywords."*))";
 		}
-		$teachers = $openldap->findUsers($filter, ["cn","displayName","o","ou","title","entryUUID"]);
+		$teachers = $openldap->findUsers($filter, ["cn","displayName","o","ou","title","entryUUID","inetUserStatus"]);
 		for ($i=0;$i<$teachers['count'];$i++) {
 			$dc = $teachers[$i]['o'][0];
 			$teachers[$i]['school']['count'] = 1;
 			$teachers[$i]['school'][0] = $openldap->getOrgTitle($dc);
-			if ($teachers[$i]['ou']['count']>0)  {
+			if (array_key_exists('ou', $teachers[$i]) && $teachers[$i]['ou']['count']>0)  {
 				$ou = $teachers[$i]['ou'][0];
 				$teachers[$i]['department']['count'] = 1;
 				$teachers[$i]['department'][0] = $openldap->getOuTitle($dc, $ou);
-				if ($teachers[$i]['title']['count']>0)  {
+				if (array_key_exists('title', $teachers[$i]) && $teachers[$i]['title']['count']>0)  {
 					$role = $teachers[$i]['title'][0];
 					$teachers[$i]['titlename']['count'] = 1;
 					$teachers[$i]['titlename'][0] = $openldap->getRoleTitle($dc, $ou, $role);
+				} else {
+					$teachers[$i]['titlename']['count'] = 1;
+					$teachers[$i]['titlename'][0] = '無';
 				}
+			} else {
+				$teachers[$i]['department']['count'] = 1;
+				$teachers[$i]['department'][0] = '無';
+				$teachers[$i]['titlename']['count'] = 1;
+				$teachers[$i]['titlename'][0] = '無';
+			}
+			if (!array_key_exists('inetuserstatus', $teachers[$i]) || $teachers[$i]['inetuserstatus']['count'] == 0) {
+				$teachers[$i]['inetuserstatus']['count'] = 1;
+				$teachers[$i]['inetuserstatus'][0] = '啟用';
+			} elseif ($teachers[$i]['inetuserstatus'][0] == 'active') {
+				$teachers[$i]['inetuserstatus'][0] = '啟用';
+			} elseif ($teachers[$i]['inetuserstatus'][0] == 'inactive') {
+				$teachers[$i]['inetuserstatus'][0] = '停用';
+			} elseif ($teachers[$i]['inetuserstatus'][0] == 'deleted') {
+				$teachers[$i]['inetuserstatus'][0] = '已刪除';
 			}
 		}
 		return view('admin.schoolteacher', [ 'my_field' => $my_field, 'keywords' => $keywords, 'ous' => $ous, 'teachers' => $teachers ]);
@@ -85,6 +106,15 @@ class SchoolController extends Controller
 	
     public function schoolTeacherEditForm(Request $request, $uuid)
     {
+		$my_field = $request->get('field');
+		$keywords = $request->get('keywords');
+    	if ($uuid != 'new') {//edit
+    		$openldap = new LdapServiceProvider();
+    		$entry = $openldap->getUserEntry($uuid);
+    		$user = $openldap->getUserData($entry);
+			return view('admin.schoolteacheredit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'user' => $user ]);
+		} else //add
+			return view('admin.schoolteacheredit', [ 'my_field' => $my_field, 'keywords' => $keywords ]);
 	}
 	
     public function createSchoolTeacher(Request $request)
@@ -97,14 +127,27 @@ class SchoolController extends Controller
 	
     public function removeSchoolTeacher(Request $request, $uuid)
     {
+		$openldap = new LdapServiceProvider();
+		$entry = $openldap->getUserEntry($uuid);
+		$info = array();
+		$info['ou'] = [];
+		$info['title'] = [];
+		$info['tpTeachClass'] = [];
+		$info['inetUserStatus'] = 'deleted';
+		$result = $openldap->updateData($entry, $info);
+		if ($result) {
+			return redirect()->back()->with("success", "已經將該師標註為刪除！");
+		} else {
+			return redirect()->back()->with("error", "無法變更人員狀態！".$openldap->error());
+		}
 	}
 	
-    public function schoolRoleForm(Request $request)
+    public function schoolRoleForm(Request $request, $my_ou)
     {
 		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getOus($dc, '行政部門');
-		$my_ou = $request->get('ou', $data[0]->ou);
+		if ($my_ou == 'null') $my_ou = $data[0]->ou;
 		$ous = array();
 		foreach ($data as $ou) {
 			if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
@@ -113,10 +156,9 @@ class SchoolController extends Controller
 		return view('admin.schoolrole', [ 'my_ou' => $my_ou, 'ous' => $ous, 'roles' => $roles ]);
     }
 
-    public function createSchoolRole(Request $request)
+    public function createSchoolRole(Request $request, $ou)
     {
 		$dc = $request->user()->ldap['o'];
-		$ou = $request->get('ou');
 		$validatedData = $request->validate([
 			'new-role' => 'required|string',
 			'new-desc' => 'required|string',
@@ -136,10 +178,9 @@ class SchoolController extends Controller
 		}
     }
 
-    public function updateSchoolRole(Request $request, $role)
+    public function updateSchoolRole(Request $request, $ou, $role)
     {
 		$dc = $request->user()->ldap['o'];
-		$ou = $request->get('ou');
 		$validatedData = $request->validate([
 			'role' => 'required|string',
 			'description' => 'required|string',
@@ -166,10 +207,9 @@ class SchoolController extends Controller
 		}
     }
 
-    public function removeSchoolRole(Request $request, $role)
+    public function removeSchoolRole(Request $request, $ou, $role)
     {
 		$dc = $request->user()->ldap['o'];
-		$ou = $request->get('ou');
 		$openldap = new LdapServiceProvider();
 		$users = $openldap->findUsers("(&(o=$dc)(ou=$ou)(title=$role))", "cn");
 		if ($users && $users['count']>0) {

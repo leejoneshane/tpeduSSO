@@ -67,11 +67,11 @@
 			<h4>新增行政部門</h4>
 		</div>
 		<div class="panel-body">
-			<form role="form" method="POST" action="{{ route('school.unit') }}">
+			<form role="form" method="POST" action="{{ route('school.createUnit') }}">
 		    	@csrf
 			    <div class="form-group{{ $errors->has('new-ou') ? ' has-error' : '' }}">
 					<label>處室代號</label>
-					<input id="new-ou" type="text" class="form-control" name="new-ou" value="{{ $errors->has('new-ou') ? old('new-ou') : '' }}">
+					<input id="new-ou" type="text" class="form-control" name="new-ou" value="{{ $errors->has('new-ou') ? old('new-ou') : '' }}" required>
 					@if ($errors->has('new-ou'))
 						<p class="help-block">
 							<strong>{{ $errors->first('new-ou') }}</strong>
@@ -80,7 +80,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('new-desc') ? ' has-error' : '' }}">
 					<label>處室全銜</label>
-					<input id="new-desc" type="text" class="form-control" name="new-desc" value="{{ $errors->has('new-desc') ? old('new-desc') : '' }}">
+					<input id="new-desc" type="text" class="form-control" name="new-desc" value="{{ $errors->has('new-desc') ? old('new-desc') : '' }}" required>
 					@if ($errors->has('new-desc'))
 						<p class="help-block">
 							<strong>{{ $errors->first('new-desc') }}</strong>

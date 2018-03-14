@@ -48,20 +48,20 @@ class LoginController extends Controller
     {
         $this->validateLogin($request);
 
-	$openldap = new LdapServiceProvider();
-	$username = $request->get('username');
-	$password = $request->get('password');
-	if (substr($username,0,3) == 'dc=') {
-	    if (!$openldap->checkSchoolAdmin($username))
-		return redirect()->back()->with("error","學校代號不存在！");
-	    if ($openldap->schoolLogin($username, $password)) {
-		$dc = substr($username,3);
-		$request->session()->put('dc', $dc);
-		return redirect()->route('schoolAdmin');
-	    } else {
-		return redirect()->back()->with("error","學校管理密碼不正確！");
-	    }
-	}
+		$openldap = new LdapServiceProvider();
+		$username = $request->get('username');
+		$password = $request->get('password');
+		if (substr($username,0,3) == 'dc=') {
+	    	if (!$openldap->checkSchoolAdmin($username))
+				return redirect()->back()->with("error","學校代號不存在！");
+	    	if ($openldap->schoolLogin($username, $password)) {
+				$dc = substr($username,3);
+				$request->session()->put('dc', $dc);
+				return redirect()->route('schoolAdmin');
+	    	} else {
+				return redirect()->back()->with("error","學校管理密碼不正確！");
+	    	}
+		}
 	
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and

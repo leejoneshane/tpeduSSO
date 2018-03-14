@@ -889,6 +889,8 @@ description:: NuW5tDEw54+t
 
 dn: cn=A123456789,ou=people,{{ LDAP_BASE_DN }}
 objectClass: tpeduPerson
+objectClass: inetUser
+inetUserStatus: active
 cn: A123456789
 userPassword: {SSHA}98N8Ea6JLe2MxOUHwXNWyO7mJ5PM0IIW
 uid: meps123456789
@@ -906,9 +908,10 @@ birthDate: 19631218000000Z
 mail: admin@admin.com
 mobile: 0911000001
 
-
 dn: cn=B123456789,ou=people,{{ LDAP_BASE_DN }}
 objectClass: tpeduPerson
+objectClass: inetUser
+inetUserStatus: active
 cn: B123456789
 userPassword: {SSHA}98N8Ea6JLe2MxOUHwXNWyO7mJ5PM0IIW
 employeeNumber: 106001

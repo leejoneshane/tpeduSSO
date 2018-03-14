@@ -44,7 +44,7 @@
 						<form role="form" method="POST" action="{{ route('school.updateClass', [ 'ou' => $class->ou ]) }}">
 		    			@csrf
 						<td style="vertical-align: inherit;">
-							{{ $class->ou }}
+							<label>{{ $class->ou }}</label>
 						</td>
 						<td>
 							<input id="description" type="text" class="form-control" name="description" value="{{ $class->description ? $class->description : old('description') }}">
@@ -78,7 +78,7 @@
 		    	@csrf
 			    <div class="form-group{{ $errors->has('new-ou') ? ' has-error' : '' }}">
 					<label>班級代號</label>
-					<input id="new-ou" type="text" class="form-control" name="new-ou" value="{{ $errors->has('new-ou') ? old('new-ou') : '' }}">
+					<input id="new-ou" type="text" pattern="[0-9]{3,5}" class="form-control" name="new-ou" value="{{ $errors->has('new-ou') ? old('new-ou') : '' }}" placeholder="請輸入 3 到 5 位數字" required>
 					@if ($errors->has('new-ou'))
 						<p class="help-block">
 							<strong>{{ $errors->first('new-ou') }}</strong>
@@ -87,7 +87,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('new-desc') ? ' has-error' : '' }}">
 					<label>班級名稱</label>
-					<input id="new-desc" type="text" class="form-control" name="new-desc" value="{{ $errors->has('new-desc') ? old('new-desc') : '' }}">
+					<input id="new-desc" type="text" class="form-control" name="new-desc" value="{{ $errors->has('new-desc') ? old('new-desc') : '' }}" required>
 					@if ($errors->has('new-desc'))
 						<p class="help-block">
 							<strong>{{ $errors->first('new-desc') }}</strong>

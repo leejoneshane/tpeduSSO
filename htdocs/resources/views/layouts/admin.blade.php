@@ -63,6 +63,7 @@
     </div>
 
     <!-- Scripts -->
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 	<script src="{{ asset('assets/scripts/frontend.js') }}" type="text/javascript"></script>
 </body>
 </html>

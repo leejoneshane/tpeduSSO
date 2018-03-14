@@ -90,7 +90,7 @@ class LdapServiceProvider extends ServiceProvider
 	    	if (!$entry) return false;
 	    	$resource = @ldap_get_values(self::$ldapConnectId, $entry, "tpAdministrator");
 	    	if ($resource) return false;
-	    	return "0000000000";
+	    	return true;
 		}
         return false;
     }
@@ -457,6 +457,7 @@ class LdapServiceProvider extends ServiceProvider
 	    	$fields = $attr;
 		} elseif ($attr == '') {
 	    	$fields[] = 'entryUUID';
+	    	$fields[] = 'cn';
 	    	$fields[] = 'o';
 	    	$fields[] = 'ou';
 	    	$fields[] = 'uid';
@@ -482,6 +483,7 @@ class LdapServiceProvider extends ServiceProvider
 	    	$fields[] = 'tpSeat';
 	    	$fields[] = 'tpTeachClass';
 	    	$fields[] = 'tpCharacter';
+	    	$fields[] = 'inetUserStatus';
 		} elseif ($attr == 'uid')  {
 	    	$fields[] = 'uid';
 	    	$fields[] = 'mail';

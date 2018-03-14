@@ -28,7 +28,7 @@
 				@foreach ($ous as $ou => $desc)
 			    	<option value="ou={{ $ou }}" {{ $my_field == 'ou='.$ou ? 'selected' : '' }}>{{ $desc }}</option>
 			    @endforeach
-			    <option value="uid" {{ $my_field == 'uid' ? 'selected' : '' }}>登入名稱</option>
+			    <option value="ou=deleted" {{ $my_field == 'ou=deleted' ? 'selected' : '' }}>已刪除</option>
 			</select>
         	<input type="text" class="form-control" style="width:auto" id="keywords" name="keywords" placeholder="搜尋..." value="{{ old('keywords') }}">
             <span class="input-group-btn" style="width: auto">
@@ -49,6 +49,7 @@
 			<table class="table table-hover">
 				<thead>
 					<tr>
+						<th>狀態</th>
 						<th>UUID</th>
 						<th>身分證字號</th>
 						<th>姓名</th>
@@ -60,6 +61,9 @@
 				<tbody>
 					@for ($i=0;$i<$teachers['count'];$i++)
 					<tr>
+						<td style="vertical-align: inherit;">
+							<span>{{ $teachers[$i]['inetuserstatus'][0] }}</span>
+						</td>
 						<td style="vertical-align: inherit;">
 							<span>{{ $teachers[$i]['entryuuid'][0] }}</span>
 						</td>
@@ -81,7 +85,7 @@
 							<button type="button" class="btn btn-primary"
 							 	onclick="$('#form').attr('action','{{ route('school.updateTeacher', [ 'uuid' => $teachers[$i]['entryuuid'][0] ]) }}?field={{ $my_field }}&keywords={{ $keywords }}');
 										 $('#form').attr('method', 'GET');
-										 $('#form').submit();">修改</button>
+										 $('#form').submit();">編輯</button>
 							<button type="button" class="btn btn-danger"
 							 	onclick="$('#form').attr('action','{{ route('school.removeTeacher', [ 'uuid' => $teachers[$i]['entryuuid'][0] ]) }}?field={{ $my_field }}&keywords={{ $keywords }}');
 										 $('#form').attr('method', 'POST');

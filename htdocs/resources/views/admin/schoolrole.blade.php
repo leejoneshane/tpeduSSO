@@ -41,9 +41,8 @@
 				<tbody>
 					@foreach ($roles as $role)
 					<tr>
-						<form role="form" method="POST" action="{{ route('school.updateRole', [ 'role' => $role->cn ]) }}">
+						<form role="form" method="POST" action="{{ route('school.updateRole', [ 'ou' => $my_ou, 'role' => $role->cn ]) }}">
 		    			@csrf
-						<input type="hidden" name="ou" value="{{ $my_ou }}">
 						<td>
 							<input id="role" type="text" class="form-control" name="role" value="{{ $role->cn ? $role->cn : old('role') }}">
 						</td>
@@ -53,7 +52,7 @@
 						<td>
 							<button type="submit" class="btn btn-primary">修改</button>
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#remove-form').attr('action','{{ route('school.removeRole', [ 'role' => $role->cn ]) }}?ou={{ $my_ou }}');
+							 	onclick="$('#remove-form').attr('action','{{ route('school.removeRole', [ 'ou' => $my_ou, 'role' => $role->cn ]) }}');
 										 $('#remove-form').submit();">刪除</button>
 						</td>
 						</form>
@@ -75,12 +74,11 @@
 			<h4>新增職務</h4>
 		</div>
 		<div class="panel-body">
-			<form role="form" method="POST" action="{{ route('school.role') }}">
+			<form role="form" method="POST" action="{{ route('school.createRole', [ 'ou' => $my_ou ]) }}">
 		    	@csrf
-				<input type="hidden" name="ou" value="{{ $my_ou }}">
 			    <div class="form-group{{ $errors->has('new-role') ? ' has-error' : '' }}">
 					<label>職務代號</label>
-					<input id="new-role" type="text" class="form-control" name="new-role" value="{{ $errors->has('new-role') ? old('new-role') : '' }}">
+					<input id="new-role" type="text" class="form-control" name="new-role" value="{{ $errors->has('new-role') ? old('new-role') : '' }}" required>
 					@if ($errors->has('new-role'))
 						<p class="help-block">
 							<strong>{{ $errors->first('new-role') }}</strong>
@@ -89,7 +87,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('new-desc') ? ' has-error' : '' }}">
 					<label>職稱</label>
-					<input id="new-desc" type="text" class="form-control" name="new-desc" value="{{ $errors->has('new-desc') ? old('new-desc') : '' }}">
+					<input id="new-desc" type="text" class="form-control" name="new-desc" value="{{ $errors->has('new-desc') ? old('new-desc') : '' }}" required>
 					@if ($errors->has('new-desc'))
 						<p class="help-block">
 							<strong>{{ $errors->first('new-desc') }}</strong>
