@@ -42,7 +42,7 @@
 					@foreach ($roles as $role)
 					<tr>
 						<form role="form" method="POST" action="{{ route('school.updateRole', [ 'role' => $role->cn ]) }}">
-		    			{{ csrf_field() }}
+		    			@csrf
 						<input type="hidden" name="ou" value="{{ $my_ou }}">
 						<td>
 							<input id="role" type="text" class="form-control" name="role" value="{{ $role->cn ? $role->cn : old('role') }}">
@@ -52,7 +52,9 @@
 						</td>
 						<td>
 							<button type="submit" class="btn btn-primary">修改</button>
-							<a href="{{ route('school.removeRole', [ 'role' => $role->cn ]) }}?ou={{ $my_ou }}" class="btn btn-danger">刪除</a>
+							<button type="button" class="btn btn-danger"
+							 	onclick="$('#remove-form').attr('action','{{ route('school.removeRole', [ 'role' => $role->cn ]) }}?ou={{ $my_ou }}');
+										 $('#remove-form').submit();">刪除</button>
 						</td>
 						</form>
 					</tr>
@@ -62,6 +64,11 @@
 		</div>
 		</div>
 	</div>
+
+    <form id="remove-form" action="" method="POST" style="display: none;">
+    @csrf
+    </form>
+
 	<div class="col-sm-6">
 		<div class="panel panel-default">
 		<div class="panel-heading">
@@ -69,7 +76,7 @@
 		</div>
 		<div class="panel-body">
 			<form role="form" method="POST" action="{{ route('school.role') }}">
-		    	{{ csrf_field() }}
+		    	@csrf
 				<input type="hidden" name="ou" value="{{ $my_ou }}">
 			    <div class="form-group{{ $errors->has('new-role') ? ' has-error' : '' }}">
 					<label>職務代號</label>

@@ -4,23 +4,23 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card card-default">
+            <div class="card card-default" style="margin-top: 20px">
                 <div class="card-header">修改個資</div>
 
                 <div class="card-body">
-		@if (session('error'))
-		    <div class="alert alert-danger">
-			{{ session('error') }}
-		    </div>
-		@endif
-		@if (session('success'))
-		    <div class="alert alert-success">
-			{{ session('success') }}
-		    </div>
-		@endif
-            	    <form method="POST" action="{{ route('profile') }}">
-            	    @csrf
-            	    
+				@if (session('error'))
+		    		<div class="alert alert-danger">
+					{{ session('error') }}
+		    		</div>
+				@endif
+				@if (session('success'))
+		    		<div class="alert alert-success">
+					{{ session('success') }}
+		    		</div>
+				@endif
+
+            	<form method="POST" action="{{ route('profile') }}">
+            	@csrf
             	    <div class="row">
             		<div class="col-md-4 text-md-right">身份別</div>
             		<div class="col-md-6 text-md-left">{{ $user->ldap['employeeType'] }}</div>

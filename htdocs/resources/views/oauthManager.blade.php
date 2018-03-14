@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-    @section('content')
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2">
+@section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8" style="margin-top: 20px">
         	@if (Auth::user()->is_admin)
                 <passport-clients></passport-clients>
                 @endif
@@ -11,5 +11,6 @@
                 <passport-personal-access-tokens></passport-personal-access-tokens>
             </div>
         </div>
-    </div>
-    @endsection
+	</div>
+</div>
+@endsection

@@ -35,7 +35,7 @@
 					@foreach ($ous as $ou)
 					<tr>
 						<form role="form" method="POST" action="{{ route('school.updateUnit', [ 'ou' => $ou->ou ]) }}">
-		    			{{ csrf_field() }}
+		    			@csrf
 						<td>
 							<input id="ou" type="text" class="form-control" name="ou" value="{{ $ou->ou ? $ou->ou : old('ou') }}">
 						</td>
@@ -44,7 +44,9 @@
 						</td>
 						<td>
 							<button type="submit" class="btn btn-primary">修改</button>
-							<a href="{{ route('school.removeUnit', [ 'ou' => $ou->ou ]) }}" class="btn btn-danger">刪除</a>
+							<button type="button" class="btn btn-danger"
+							 	onclick="$('#remove-form').attr('action','{{ route('school.removeUnit', [ 'ou' => $ou->ou ]) }}');
+										 $('#remove-form').submit();">刪除</button>
 						</td>
 						</form>
 					</tr>
@@ -54,6 +56,11 @@
 		</div>
 		</div>
 	</div>
+    
+    <form id="remove-form" action="" method="POST" style="display: none;">
+    @csrf
+    </form>
+
 	<div class="col-sm-6">
 		<div class="panel panel-default">
 		<div class="panel-heading">
@@ -61,7 +68,7 @@
 		</div>
 		<div class="panel-body">
 			<form role="form" method="POST" action="{{ route('school.unit') }}">
-		    	{{ csrf_field() }}
+		    	@csrf
 			    <div class="form-group{{ $errors->has('new-ou') ? ' has-error' : '' }}">
 					<label>處室代號</label>
 					<input id="new-ou" type="text" class="form-control" name="new-ou" value="{{ $errors->has('new-ou') ? old('new-ou') : '' }}">

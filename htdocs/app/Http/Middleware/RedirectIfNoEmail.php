@@ -10,8 +10,9 @@ class RedirectIfNoEmail
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {
-            $email = Auth::guard($guard)->user()->email;
-            if (empty($email)) return redirect()->route('profile');
+        	$user = Auth::guard($guard)->user();
+            if (empty($user->email)) return redirect()->route('profile');
+            if (!isset($user->ldap['uid'])) return redirect()->route('changeAccount');
         }
         return $next($request);
     }

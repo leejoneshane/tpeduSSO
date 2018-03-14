@@ -30,7 +30,7 @@
 			    @endforeach
 			    <option value="uid" {{ $my_field == 'uid' ? 'selected' : '' }}>登入名稱</option>
 			</select>
-        	<input type="text" class="form-control" style="width:150px" id="keywords" name="keywords" placeholder="搜尋..." value="{{ old('keywords') }}">
+        	<input type="text" class="form-control" style="width:auto" id="keywords" name="keywords" placeholder="搜尋..." value="{{ old('keywords') }}">
             <span class="input-group-btn" style="width: auto">
             	<button class="btn btn-default" type="button" onclick="location='{{ url()->current() }}?field=' + $('#field').val() + '&keywords=' + $('#keywords').val();">
             		<i class="fa fa-search"></i>
@@ -78,12 +78,20 @@
 							<span>{{ $teachers[$i]['titlename'][0] }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<a href="{{ route('school.updateTeacher', [ 'uuid' => $teachers[$i]['entryuuid'][0] ]) }}?field={{ $my_field }}&keywords={{ $keywords }}" class="btn btn-primary">修改</a>
-							<a href="{{ route('school.removeTeacher', [ 'uuid' => $teachers[$i]['entryuuid'][0] ]) }}?field={{ $my_field }}&keywords={{ $keywords }}" class="btn btn-danger">刪除</a>
+							<button type="button" class="btn btn-primary"
+							 	onclick="$('#form').attr('action','{{ route('school.updateTeacher', [ 'uuid' => $teachers[$i]['entryuuid'][0] ]) }}?field={{ $my_field }}&keywords={{ $keywords }}');
+										 $('#form').attr('method', 'GET');
+										 $('#form').submit();">修改</button>
+							<button type="button" class="btn btn-danger"
+							 	onclick="$('#form').attr('action','{{ route('school.removeTeacher', [ 'uuid' => $teachers[$i]['entryuuid'][0] ]) }}?field={{ $my_field }}&keywords={{ $keywords }}');
+										 $('#form').attr('method', 'POST');
+										 $('#form').submit();">刪除</button>
 						</td>
-						</form>
 					</tr>
 					@endfor
+					<form id="form" action="" method="" style="display: none;">
+					@csrf
+    				</form>
 				</tbody>
 			</table>
 		</div>
