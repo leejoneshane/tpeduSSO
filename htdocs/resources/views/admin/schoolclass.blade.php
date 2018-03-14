@@ -43,8 +43,8 @@
 					<tr>
 						<form role="form" method="POST" action="{{ route('school.updateClass', [ 'ou' => $class->ou ]) }}">
 		    			@csrf
-						<td>
-							<label class="form-control">{{ $class->ou }}</label>
+						<td style="vertical-align: inherit;">
+							{{ $class->ou }}
 						</td>
 						<td>
 							<input id="description" type="text" class="form-control" name="description" value="{{ $class->description ? $class->description : old('description') }}">
