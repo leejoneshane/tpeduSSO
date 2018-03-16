@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('page_heading')
-{{ isset($user) ? '編輯' : '新增' }}教師資訊
+{{ isset($user) ? '編輯' : '新增' }}學生資訊
 @endsection
 
 @section('section')
@@ -20,10 +20,10 @@
 	<div class="col-sm-8">
 		<div class="panel panel-default">	  
 		<div class="panel-heading">
-			<h4>{{ isset($user) ? '編輯' : '新增' }}教師資訊</h4>
+			<h4>{{ isset($user) ? '編輯' : '新增' }}學生資訊</h4>
 		</div>
 		<div class="panel-body">
-			<form role="form" method="POST" action="{{ isset($user) ? route('school.updateTeacher', [ 'uuid' => $user['entryUUID'] ]) : route('school.createTeacher') }}">
+			<form role="form" method="POST" action="{{ isset($user) ? route('school.updateStudent', [ 'uuid' => $user['entryUUID'] ]) : route('school.createStudent') }}">
 		    	@csrf
 		    	@if (isset($user))
 				<input type="hidden" name="uuid" value="{{ $user['entryUUID'] }}">
@@ -55,29 +55,39 @@
 						</p>
 					@endif
 				</div>
-			    <div class="form-group">
-					<label>隸屬單位</label>
-					<select id="ou" type="text" class="form-control" name="ou" onchange="refresh_roles()">
-					@foreach ($ous as $ou => $desc)
-			    		<option value="{{ $ou }}" {{ isset($user) && array_key_exists('ou', $user) && $ou == $user['ou'] ? 'selected' : '' }}>{{ $desc }}</option>
-			    	@endforeach
-					</select>
-				</div>
-			    <div class="form-group">
-					<label>主要職稱</label>
-					<select id="role" type="text" class="form-control" name="role">
-					@foreach ($roles as $role => $desc)
-			    		<option value="{{ $role }}" {{ isset($user) && array_key_exists('title', $user) && $role == $user['title'] ? 'selected' : '' }}>{{ $desc }}</option>
-			    	@endforeach
-					</select>
+			    <div class="form-group{{ $errors->has('stdno') ? ' has-error' : '' }}">
+					<label>學號</label>
+					<input id="stdno" type="text" class="form-control" name="stdno" value="{{ isset($user) && array_key_exists('employeeNumber', $user) ? $user['employeeNumber'] : '' }}" required>
+					@if ($errors->has('stdno'))
+						<p class="help-block">
+							<strong>{{ $errors->first('stdno') }}</strong>
+						</p>
+					@endif
 				</div>
 			    <div class="form-group{{ $errors->has('tclass') ? ' has-error' : '' }}">
-					<label>任教班級</label>
-					<input id="tclass" type="text" class="form-control" name="tclass" value="{{ isset($user) && array_key_exists('tpTeachClass', $user) ? $user['tpTeachClass'] : '' }}"
-					 placeholder="若任教多班，請在班級與班級之間使用半形空白加以區隔...">
-					@if ($errors->has('tclass'))
+					<label>就讀班級</label>
+					<select id="tclass" type="text" class="form-control" name="tclass">
+					@foreach ($ous as $ou => $desc)
+			    		<option value="{{ $ou }}" {{ isset($user) && array_key_exists('tpClass', $user) && $ou == $user['tpClass'] ? 'selected' : '' }}>{{ $desc }}</option>
+			    	@endforeach
+					</select>
+				</div>
+			    <div class="form-group{{ $errors->has('seat') ? ' has-error' : '' }}">
+					<label>座號</label>
+					<input id="seat" type="text" class="form-control" name="seat" value="{{ isset($user) && array_key_exists('tpSeat', $user) ? $user['tpSeat'] : '' }}" required>
+					@if ($errors->has('seat'))
 						<p class="help-block">
-							<strong>{{ $errors->first('tclass') }}</strong>
+							<strong>{{ $errors->first('seat') }}</strong>
+						</p>
+					@endif
+				</div>
+			    <div class="form-group{{ $errors->has('character') ? ' has-error' : '' }}">
+					<label>特殊身份註記</label>
+					<input id="character" type="text" class="form-control" name="character" value="{{ isset($user) && array_key_exists('tpCharacter', $user) ? $user['tpCharacter'] : '' }}"  
+					placeholder="請用中文描述，例如：特殊生、清寒學生...，多重身份中間請使用半形空白隔開，無則省略。">
+					@if ($errors->has('character'))
+						<p class="help-block">
+							<strong>{{ $errors->first('character') }}</strong>
 						</p>
 					@endif
 				</div>
@@ -175,20 +185,6 @@
 					<button type="submit" class="btn btn-success">{{ isset($user) ? '變更' : '新增' }}</button>
 				</div>
 			</form>
-			<script type="text/javascript">
-				function refresh_roles() {
-					axios.get('/api/roles/{{ $dc }}/' + $('#ou').val())
-    					.then(response => {
-    						$('#role').find('option').remove();
-        					response.data.forEach(
-        						function add_option(role) { $('#role').append('<option value="' + role.cn + '">' + role.description + '</option>'); }
-        					);
-    					})
-						.catch(function (error) {
-							console.log(error);
-  						});
-      			}
-			</script>
 		</div>
 		</div>
 	</div>

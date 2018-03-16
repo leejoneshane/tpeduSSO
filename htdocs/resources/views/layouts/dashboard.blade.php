@@ -23,8 +23,8 @@
                                 <li {{ (Request::is('school/class') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.class') }}">變更班級名稱</a>
                                 </li>
-                                <li {{ (Request::is('school/class/teacher') ? 'class="active"' : '') }}>
-                                    <a href="{{ url('class/teacher') }}">指派任教老師</a>
+                                <li {{ (Request::is('school/class/assign') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('school.assignClass') }}">指派任教老師</a>
                                 </li>
                             </ul>
                         </li>
@@ -42,17 +42,17 @@
                                 </li>
                             </ul>
                         </li>
-                        <li {{ (Request::is('*forms') ? 'class="active"' : '') }}>
+                        <li {{ (Request::is('school/student') ? 'class="active"' : '') }}>
                             <a href="#"><i class="fa fa-child fa-fw"></i> 學生管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                                <li {{ (Request::is('*panels') ? 'class="active"' : '') }}>
-                                    <a href="{{ url('panels') }}">瀏覽及搜尋</a>
+                                <li {{ (Request::is('school/student') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('school.student') }}">瀏覽及搜尋</a>
                                 </li>
-                                <li {{ (Request::is('*buttons') ? 'class="active"' : '') }}>
-                                    <a href="{{ url('buttons' ) }}">新增學生</a>
+                                <li {{ (Request::is('school/student/new') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('school.createStudent') }}">新增學生</a>
                                 </li>
-                                <li {{ (Request::is('*notifications') ? 'class="active"' : '') }}>
-                                    <a href="{{ url('notifications') }}">匯入JSON</a>
+                                <li {{ (Request::is('school/student/json') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('school.jsonStudent') }}">匯入JSON</a>
                                 </li>
                             </ul>
                         </li>

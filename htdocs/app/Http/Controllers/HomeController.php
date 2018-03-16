@@ -114,10 +114,10 @@ class HomeController extends Controller
 			}
 		}
 		if(strcmp($request->get('current-account'), $request->get('new-account')) == 0)
-	    	return redirect()->back()->with("error","新帳號不可以跟舊的帳號相同，請重新想一個新帳號再試一次！");
+	    return redirect()->back()->with("error","新帳號不可以跟舊的帳號相同，請重新想一個新帳號再試一次！");
 		$validatedData = $request->validate([
 			'new-account' => 'required|string|min:6|confirmed',
-			]);
+		]);
 		$openldap = new LdapServiceProvider();
 		if (!$openldap->accountAvailable($user->idno, $request->get('new-account')))
 	    	return redirect()->back()->with("error","您輸入的帳號已經被別人使用，請您重新輸入一次！");

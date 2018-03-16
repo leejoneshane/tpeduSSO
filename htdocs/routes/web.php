@@ -58,6 +58,8 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
 	Route::post('class', 'SchoolController@createSchoolClass')->name('school.createClass');
 	Route::post('class/{ou}/update', 'SchoolController@updateSchoolClass')->name('school.updateClass');
 	Route::post('class/{ou}/remove', 'SchoolController@removeSchoolClass')->name('school.removeClass');
+	Route::get('class/assign', 'SchoolController@schoolClassAssignForm');
+	Route::post('class/assign', 'SchoolController@assignSchoolClass')->name('school.assignClass');
 	Route::get('teacher', 'SchoolController@schoolTeacherSearchForm')->name('school.teacher');
 	Route::get('teacher/{uuid}/update', 'SchoolController@schoolTeacherEditForm');
 	Route::post('teacher/{uuid}/update', 'SchoolController@updateSchoolTeacher')->name('school.updateTeacher');
@@ -68,5 +70,15 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
 	Route::post('teacher/new', 'SchoolController@createSchoolTeacher')->name('school.createTeacher');
 	Route::get('teacher/json', 'SchoolController@schoolTeacherJSONForm');
 	Route::post('teacher/json', 'SchoolController@importSchoolTeacher')->name('school.jsonTeacher');
+	Route::get('student', 'SchoolController@schoolStudentSearchForm')->name('school.student');
+	Route::get('student/{uuid}/update', 'SchoolController@schoolStudentEditForm');
+	Route::post('student/{uuid}/update', 'SchoolController@updateSchoolStudent')->name('school.updateStudent');
+	Route::post('student/{uuid}/remove', 'SchoolController@removeSchoolTeacher')->name('school.removeStudent');
+	Route::post('student/{uuid}/toggle', 'SchoolController@toggleSchoolTeacher')->name('school.toggleStudent');
+	Route::post('student/{uuid}/undo', 'SchoolController@undoSchoolTeacher')->name('school.undoStudent');
+	Route::get('student/new', 'SchoolController@schoolStudentEditForm');
+	Route::post('student/new', 'SchoolController@createSchoolStudent')->name('school.createStudent');
+	Route::get('student/json', 'SchoolController@schoolStudentJSONForm');
+	Route::post('student/json', 'SchoolController@importSchoolStudent')->name('school.jsonStudent');
 });
 
