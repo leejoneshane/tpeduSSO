@@ -1130,6 +1130,9 @@ class SchoolController extends Controller
 			if ($act == 'add') {
 				$result = $openldap->addData($entry, $info);
 				if (!$result) $erros[] = $tname['displayName']."：新增任教班級失敗！";
+			} elseif ($act == 'rep') {
+				$result = $openldap->updateData($entry, $info);
+				if (!$result) $erros[] = $tname['displayName']."：取代任教班級失敗！";
 			} elseif ($act == 'del') {
 				$result = $openldap->deleteData($entry, $info);
 				if (!$result) $erros[] = $tname['displayName']."：移除任教班級失敗！";
@@ -1139,9 +1142,11 @@ class SchoolController extends Controller
 			return redirect()->back()->with('grade', $request->get('grade'))->with('ou', $request->get('ou'))->with("error", $errors);
 		} else {
 			if ($act == 'add') {
-				return redirect()->back()->with('grade', $request->get('grade'))->with('ou', $request->get('ou'))->with("success", "已經為您新增任教老師！");
+				return redirect()->back()->with('grade', $request->get('grade'))->with('ou', $request->get('ou'))->with("success", "已經為您新增教師與任教班級之對應關係！");
+			} elseif ($act == 'rep') {
+				return redirect()->back()->with('grade', $request->get('grade'))->with('ou', $request->get('ou'))->with("success", "已經為您修改教師與任教班級之對應關係！");
 			} elseif ($act == 'del') {
-				return redirect()->back()->with('grade', $request->get('grade'))->with('ou', $request->get('ou'))->with("success", "已經為您移除任教老師！");
+				return redirect()->back()->with('grade', $request->get('grade'))->with('ou', $request->get('ou'))->with("success", "已經為您移除教師與任教班級之對應關係！");
 			}
 		}
 	}

@@ -78,7 +78,8 @@
 		</div>
 		<div class="panel-body">
 			<div class="form-group">
-				<button type="submit" class="btn btn-primary" name="act" value="add">新增指派</button>
+				<button type="submit" class="btn btn-success" name="act" value="add">新增指派</button>
+				<button type="submit" class="btn btn-primary" name="act" value="rep">取代指派</button>
 				<button type="submit" class="btn btn-danger" name="act" value="del">移除指派</button>
 			</div>
 		</div>
