@@ -38,5 +38,3 @@ Route::group(['middleware' => 'clientid:school'], function () {
     Route::get('school/{dc}/class/{class_id}/teachers', 'Api\schoolController@allTeachers');
     Route::get('school/{dc}/class/{class_id}/students', 'Api\schoolController@allStudents');
 });
-
-Route::get('roles/{dc}/{ou_id}', 'Api\schoolController@allRole');

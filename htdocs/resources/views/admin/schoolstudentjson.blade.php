@@ -13,8 +13,10 @@
 	    </div>
 	@endif
 	@if (session('success'))
-	    <div class="alert alert-success">
-		{{ session('success') }}
+	    <div class="alert alert-info">
+	    @foreach (session('success') as $line)
+		{{ $line }}<br>
+		@endforeach
 	    </div>
 	@endif
 	<div class="col-sm-12">
@@ -119,7 +121,7 @@
 			<h4>匯入 JSON</h4>
 		</div>
 		<div class="panel-body">
-			<form role="form" method="POST" action="{{ route('school.jsonStudent') }}">
+			<form role="form" method="POST" action="{{ route('school.jsonStudent') }}" enctype="multipart/form-data">
 		    	@csrf
 			    <div class="form-group{{ $errors->has('json') ? ' has-error' : '' }}">
 					<input id="json" type="file" class="form-control" name="json" required>

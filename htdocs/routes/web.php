@@ -80,5 +80,8 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
 	Route::post('student/new', 'SchoolController@createSchoolStudent')->name('school.createStudent');
 	Route::get('student/json', 'SchoolController@schoolStudentJSONForm');
 	Route::post('student/json', 'SchoolController@importSchoolStudent')->name('school.jsonStudent');
+	Route::get('roles/{dc}/{ou_id}', 'Api\schoolController@allRole');
+	Route::get('classes/{dc}/{grade}', 'Api\schoolController@listClasses');
+	Route::get('teachers/{dc}/{ou}', 'Api\schoolController@listTeachers');
 });
 

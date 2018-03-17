@@ -64,11 +64,37 @@ class schoolController extends Controller
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
+    public function listClasses($dc, $grade)
+    {
+		$openldap = new LdapServiceProvider();
+		$data = $openldap->getOus($dc, "教學班級");
+		$classes = array();
+		foreach ($data as $class) {
+			if ($grade == substr($class->ou, 0, 1)) $classes[] = $class;
+		}
+		return json_encode($classes, JSON_UNESCAPED_UNICODE);
+    }
+
     public function oneClass($dc, $class_id)
     {
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getOuEntry($dc,$class_id);
 		$json = $openldap->getOuData($entry);
+		return json_encode($json, JSON_UNESCAPED_UNICODE);
+    }
+
+    public function listTeachers($dc, $ou)
+    {
+		$json = array();
+		$openldap = new LdapServiceProvider();
+		$data = $openldap->findUsers("(&(o=$dc)(ou=$ou))", ["cn","displayName","o","ou","title"]);
+		for ($i=0;$i<$data['count'];$i++) {
+			$teacher = new \stdClass;
+			$teacher->idno = $data[$i]['cn'][0];
+			$teacher->name = $data[$i]['displayname'][0];
+			$teacher->title = $openldap->getRoleTitle($dc, $data[$i]['ou'][0], $data[$i]['title'][0]);
+			$json[] = $teacher;
+		}
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 

@@ -73,7 +73,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('tclass') ? ' has-error' : '' }}">
 					<label>任教班級</label>
-					<input id="tclass" type="text" class="form-control" name="tclass" value="{{ isset($user) && array_key_exists('tpTeachClass', $user) ? $user['tpTeachClass'] : '' }}"
+					<input id="tclass" type="text" class="form-control" name="tclass" value="{{ isset($user) && array_key_exists('tpTeachClass', $user) ? (is_array($user['tpTeachClass']) ? implode(' ', $user['tpTeachClass']) : $user['tpTeachClass']) : '' }}"
 					 placeholder="若任教多班，請在班級與班級之間使用半形空白加以區隔...">
 					@if ($errors->has('tclass'))
 						<p class="help-block">
@@ -101,7 +101,8 @@
 				</div>
 			    <div class="form-group{{ $errors->has('mail') ? ' has-error' : '' }}">
 					<label>電子郵件</label>
-					<input id="mail" type="email" class="form-control" name="mail" value="{{ isset($user) && array_key_exists('mail', $user) ? $user['mail'] : '' }}" placeholder="用來傳送密碼重設連結，請務必填寫" required>
+					<input id="mail" type="email" class="form-control" name="mail" value="{{ isset($user) && array_key_exists('mail', $user) ? (is_array($user['mail']) ? $user['mail'][0] : $user['mail']) : '' }}"
+					 placeholder="用來傳送密碼重設連結，請務必填寫" required>
 					@if ($errors->has('mail'))
 						<p class="help-block">
 							<strong>{{ $errors->first('mail') }}</strong>
@@ -110,7 +111,8 @@
 				</div>
 			    <div class="form-group{{ $errors->has('mobile') ? ' has-error' : '' }}">
 					<label>手機號碼</label>
-					<input id="mobile" type="text" pattern="09[0-9]{8}" class="form-control" name="mobile" value="{{ isset($user) && array_key_exists('mobile', $user) ? $user['mobile'] : '' }}" placeholder="格式如右：0921000111">
+					<input id="mobile" type="text" pattern="09[0-9]{8}" class="form-control" name="mobile" value="{{ isset($user) && array_key_exists('mobile', $user) ? (is_array($user['mobile']) ? $user['mobile'][0] : $user['mobile']) : '' }}"
+					 placeholder="格式如右：0921000111">
 					@if ($errors->has('mobile'))
 						<p class="help-block">
 							<strong>{{ $errors->first('mobile') }}</strong>
@@ -119,7 +121,8 @@
 				</div>
 			    <div class="form-group{{ $errors->has('fax') ? ' has-error' : '' }}">
 					<label>傳真號碼</label>
-					<input id="fax" type="text" pattern="^([0-9]{2,3})[0-9]{8}" class="form-control" name="fax" value="{{ isset($user) && array_key_exists('fax', $user) ? $user['fax'] : '' }}" placeholder="格式如右：(02)23456789">
+					<input id="fax" type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" name="fax" value="{{ isset($user) && array_key_exists('fax', $user) ? (is_array($user['fax']) ? $user['fax'][0] : $user['fax']) : '' }}"
+					 placeholder="格式如右：(02)23456789">
 					@if ($errors->has('fax'))
 						<p class="help-block">
 							<strong>{{ $errors->first('fax') }}</strong>
@@ -128,7 +131,8 @@
 				</div>
 			    <div class="form-group{{ $errors->has('otel') ? ' has-error' : '' }}">
 					<label>辦公電話</label>
-					<input id="otel" type="text" pattern="^([0-9]{2,3})[0-9]{8}" class="form-control" name="otel" value="{{ isset($user) && array_key_exists('telephoneNumber', $user) ? $user['telephoneNumber'] : '' }}" placeholder="格式如右：(02)23456789">
+					<input id="otel" type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" name="otel" value="{{ isset($user) && array_key_exists('telephoneNumber', $user) ? (is_array($user['telephoneNumber']) ? $user['telephoneNumber'][0] : $user['telephoneNumber']) : '' }}"
+					 placeholder="格式如右：(02)23456789">
 					@if ($errors->has('otel'))
 						<p class="help-block">
 							<strong>{{ $errors->first('otel') }}</strong>
@@ -137,7 +141,8 @@
 				</div>
 			    <div class="form-group{{ $errors->has('htel') ? ' has-error' : '' }}">
 					<label>住家電話</label>
-					<input id="htel" type="text" pattern="^([0-9]{2,3})[0-9]{8}" class="form-control" name="htel" value="{{ isset($user) && array_key_exists('homePhone', $user) ? $user['homePhone'] : '' }}" placeholder="格式如右：(02)23456789">
+					<input id="htel" type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" name="htel" value="{{ isset($user) && array_key_exists('homePhone', $user) ? (is_array($user['homePhone']) ? $user['homePhone'][0] : $user['homePhone']) : '' }}"
+					 placeholder="格式如右：(02)23456789">
 					@if ($errors->has('htel'))
 						<p class="help-block">
 							<strong>{{ $errors->first('htel') }}</strong>
@@ -146,7 +151,8 @@
 				</div>
 			    <div class="form-group{{ $errors->has('raddress') ? ' has-error' : '' }}">
 					<label>戶籍地址</label>
-					<input id="raddress" type="text" class="form-control" name="raddress" value="{{ isset($user) && array_key_exists('registeredAddress', $user) ? $user['registeredAddress'] : '' }}" placeholder="請包含里鄰資訊...">
+					<input id="raddress" type="text" class="form-control" name="raddress" value="{{ isset($user) && array_key_exists('registeredAddress', $user) ? $user['registeredAddress'] : '' }}"
+					 placeholder="請包含里鄰資訊...">
 					@if ($errors->has('raddress'))
 						<p class="help-block">
 							<strong>{{ $errors->first('raddress') }}</strong>
@@ -176,8 +182,11 @@
 				</div>
 			</form>
 			<script type="text/javascript">
+				window.axios.defaults.headers.common = {
+					'X-Requested-With': 'XMLHttpRequest',
+				};
 				function refresh_roles() {
-					axios.get('/api/roles/{{ $dc }}/' + $('#ou').val())
+					axios.get('/school/roles/{{ $dc }}/' + $('#ou').val())
     					.then(response => {
     						$('#role').find('option').remove();
         					response.data.forEach(
