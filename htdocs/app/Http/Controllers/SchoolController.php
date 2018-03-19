@@ -379,23 +379,64 @@ class SchoolController extends Controller
 		$info['displayName'] = $info['sn'].$info['givenName'];
 		$info['gender'] = $request->get('gender');
 		$info['birthDate'] = $request->get('birth');
-		$info['mail'] = $info['mail'];
-		if (!is_null($request->get('mobile'))) $info['mobile'] = $request->get('mobile');
-		if (!is_null($request->get('fax'))) $info['fax'] = $request->get('fax');
-		if (!is_null($request->get('otel'))) $info['telephoneNumber'] = $request->get('otel');
-		if (!is_null($request->get('htel'))) $info['homePhone'] = $request->get('htel');
 		if (!is_null($request->get('raddress'))) $info['registeredAddress'] = $request->get('raddress');
 		if (!is_null($request->get('address'))) $info['homePostalAddress'] = $request->get('address');
 		if (!is_null($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
 		if (!is_null($request->get('character'))) {
-			$characters = array();
-			$data = explode(' ', $request->get('character'));
-			foreach ($data as $character) {
-	    		if ($openldap->getOuEntry($dc, $character)) $characters[] = $character;
+			$data = array();
+			if (is_array($request->get('character'))) {
+	    		$data = $request->get('character');
+			} else {
+	    		$data[] = $request->get('character');
 			}
-			$info['tpCharacter'] = $characters;
+			$info['tpCharacter'] = $data;
 		}
-		
+		if (!is_null($request->get('mail'))) {
+			$data = array();
+			if (is_array($request->get('mail'))) {
+	    		$data = $request->get('mail');
+			} else {
+	    		$data[] = $request->get('mail');
+			}
+			$info['mail'] = $data;
+		}
+		if (!is_null($request->get('mobile'))) {
+			$data = array();
+			if (is_array($request->get('mobile'))) {
+	    		$data = $request->get('mobile');
+			} else {
+	    		$data[] = $request->get('mobile');
+			}
+			$info['mobile'] = $data;
+		}
+		if (!is_null($request->get('fax'))) {
+			$data = array();
+			if (is_array($request->get('fax'))) {
+	    		$data = $request->get('fax');
+			} else {
+	    		$data[] = $request->get('fax');
+			}
+			$info['fax'] = $data;
+		}
+		if (!is_null($request->get('otel'))) {
+			$data = array();
+			if (is_array($request->get('otel'))) {
+	    		$data = $request->get('otel');
+			} else {
+	    		$data[] = $request->get('otel');
+			}
+			$info['telephoneNumber'] = $data;
+		}
+		if (!is_null($request->get('htel'))) {
+			$data = array();
+			if (is_array($request->get('htel'))) {
+	    		$data = $request->get('htel');
+			} else {
+	    		$data[] = $request->get('htel');
+			}
+			$info['homePhone'] = $data;
+		}
+				
 		$result = $openldap->createEntry($info);
 		if ($result) {
 			return redirect('school/teacher?field='.$my_field)->with("success", "已經為您建立學生資料！");
@@ -436,23 +477,64 @@ class SchoolController extends Controller
 		$info['displayName'] = $info['sn'].$info['givenName'];
 		$info['gender'] = (int) $request->get('gender');
 		$info['birthDate'] = str_replace('-', '', $request->get('birth')).'000000Z';
-		$info['mail'] = $request->get('mail');
-		if (!is_null($request->get('mobile'))) $info['mobile'] = $request->get('mobile');
-		if (!is_null($request->get('fax'))) $info['fax'] = $request->get('fax');
-		if (!is_null($request->get('otel'))) $info['telephoneNumber'] = $request->get('otel');
-		if (!is_null($request->get('htel'))) $info['homePhone'] = $request->get('htel');
 		if (!is_null($request->get('raddress'))) $info['registeredAddress'] = $request->get('raddress');
 		if (!is_null($request->get('address'))) $info['homePostalAddress'] = $request->get('address');
 		if (!is_null($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
 		if (!is_null($request->get('character'))) {
-			$characters = array();
-			$data = explode(' ', $request->get('character'));
-			foreach ($data as $character) {
-	    		if ($openldap->getOuEntry($dc, $character)) $characters[] = $character;
+			$data = array();
+			if (is_array($request->get('character'))) {
+	    		$data = $request->get('character');
+			} else {
+	    		$data[] = $request->get('character');
 			}
-			$info['tpCharacter'] = $characters;
+			$info['tpCharacter'] = $data;
 		}
-		
+		if (!is_null($request->get('mail'))) {
+			$data = array();
+			if (is_array($request->get('mail'))) {
+	    		$data = $request->get('mail');
+			} else {
+	    		$data[] = $request->get('mail');
+			}
+			$info['mail'] = $data;
+		}
+		if (!is_null($request->get('mobile'))) {
+			$data = array();
+			if (is_array($request->get('mobile'))) {
+	    		$data = $request->get('mobile');
+			} else {
+	    		$data[] = $request->get('mobile');
+			}
+			$info['mobile'] = $data;
+		}
+		if (!is_null($request->get('fax'))) {
+			$data = array();
+			if (is_array($request->get('fax'))) {
+	    		$data = $request->get('fax');
+			} else {
+	    		$data[] = $request->get('fax');
+			}
+			$info['fax'] = $data;
+		}
+		if (!is_null($request->get('otel'))) {
+			$data = array();
+			if (is_array($request->get('otel'))) {
+	    		$data = $request->get('otel');
+			} else {
+	    		$data[] = $request->get('otel');
+			}
+			$info['telephoneNumber'] = $data;
+		}
+		if (!is_null($request->get('htel'))) {
+			$data = array();
+			if (is_array($request->get('htel'))) {
+	    		$data = $request->get('htel');
+			} else {
+	    		$data[] = $request->get('htel');
+			}
+			$info['homePhone'] = $data;
+		}
+				
 		$entry = $openldap->getUserEntry($uuid);
 		$orginal = $openldap->getUserData($entry, 'cn');
 		$result = $openldap->updateData($entry, $info);
@@ -848,21 +930,64 @@ class SchoolController extends Controller
 		$info['displayName'] = $info['sn'].$info['givenName'];
 		$info['gender'] = $request->get('gender');
 		$info['birthDate'] = $request->get('birth');
-		$info['mail'] = $info['mail'];
-		if (!is_null($request->get('mobile'))) $info['mobile'] = $request->get('mobile');
-		if (!is_null($request->get('fax'))) $info['fax'] = $request->get('fax');
-		if (!is_null($request->get('otel'))) $info['telephoneNumber'] = $request->get('otel');
-		if (!is_null($request->get('htel'))) $info['homePhone'] = $request->get('htel');
 		if (!is_null($request->get('raddress'))) $info['registeredAddress'] = $request->get('raddress');
 		if (!is_null($request->get('address'))) $info['homePostalAddress'] = $request->get('address');
 		if (!is_null($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
 		if (!is_null($request->get('tclass'))) {
 			$classes = array();
-			$data = explode(' ', $request->get('tclass'));
-			foreach ($data as $class) {
-	    		if ($openldap->getOuEntry($dc, $class)) $classes[] = $class;
+			if (is_array($request->get('tclass'))) {
+				foreach ($request->get('tclass') as $class) {
+	    			if ($openldap->getOuEntry($dc, $class)) $classes[] = $class;
+				}
+			} else {
+	    		if ($openldap->getOuEntry($dc, $request->get('tclass'))) $classes[] = $request->get('tclass');
 			}
 			$info['tpTeachClass'] = $classes;
+		}
+		if (!is_null($request->get('mail'))) {
+			$data = array();
+			if (is_array($request->get('mail'))) {
+	    		$data = $request->get('mail');
+			} else {
+	    		$data[] = $request->get('mail');
+			}
+			$info['mail'] = $data;
+		}
+		if (!is_null($request->get('mobile'))) {
+			$data = array();
+			if (is_array($request->get('mobile'))) {
+	    		$data = $request->get('mobile');
+			} else {
+	    		$data[] = $request->get('mobile');
+			}
+			$info['mobile'] = $data;
+		}
+		if (!is_null($request->get('fax'))) {
+			$data = array();
+			if (is_array($request->get('fax'))) {
+	    		$data = $request->get('fax');
+			} else {
+	    		$data[] = $request->get('fax');
+			}
+			$info['fax'] = $data;
+		}
+		if (!is_null($request->get('otel'))) {
+			$data = array();
+			if (is_array($request->get('otel'))) {
+	    		$data = $request->get('otel');
+			} else {
+	    		$data[] = $request->get('otel');
+			}
+			$info['telephoneNumber'] = $data;
+		}
+		if (!is_null($request->get('htel'))) {
+			$data = array();
+			if (is_array($request->get('htel'))) {
+	    		$data = $request->get('htel');
+			} else {
+	    		$data[] = $request->get('htel');
+			}
+			$info['homePhone'] = $data;
 		}
 
 		$result = $openldap->createEntry($info);
@@ -901,21 +1026,64 @@ class SchoolController extends Controller
 		$info['displayName'] = $info['sn'].$info['givenName'];
 		$info['gender'] = (int) $request->get('gender');
 		$info['birthDate'] = str_replace('-', '', $request->get('birth')).'000000Z';
-		$info['mail'] = $request->get('mail');
-		if (!is_null($request->get('mobile'))) $info['mobile'] = $request->get('mobile');
-		if (!is_null($request->get('fax'))) $info['fax'] = $request->get('fax');
-		if (!is_null($request->get('otel'))) $info['telephoneNumber'] = $request->get('otel');
-		if (!is_null($request->get('htel'))) $info['homePhone'] = $request->get('htel');
 		if (!is_null($request->get('raddress'))) $info['registeredAddress'] = $request->get('raddress');
 		if (!is_null($request->get('address'))) $info['homePostalAddress'] = $request->get('address');
 		if (!is_null($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
 		if (!is_null($request->get('tclass'))) {
 			$classes = array();
-			$data = explode(' ', $request->get('tclass'));
-			foreach ($data as $class) {
-	    		if ($openldap->getOuEntry($dc, $class)) $classes[] = $class;
+			if (is_array($request->get('tclass'))) {
+				foreach ($request->get('tclass') as $class) {
+	    			if ($openldap->getOuEntry($dc, $class)) $classes[] = $class;
+				}
+			} else {
+	    		if ($openldap->getOuEntry($dc, $request->get('tclass'))) $classes[] = $request->get('tclass');
 			}
 			$info['tpTeachClass'] = $classes;
+		}
+		if (!is_null($request->get('mail'))) {
+			$data = array();
+			if (is_array($request->get('mail'))) {
+	    		$data = $request->get('mail');
+			} else {
+	    		$data[] = $request->get('mail');
+			}
+			$info['mail'] = $data;
+		}
+		if (!is_null($request->get('mobile'))) {
+			$data = array();
+			if (is_array($request->get('mobile'))) {
+	    		$data = $request->get('mobile');
+			} else {
+	    		$data[] = $request->get('mobile');
+			}
+			$info['mobile'] = $data;
+		}
+		if (!is_null($request->get('fax'))) {
+			$data = array();
+			if (is_array($request->get('fax'))) {
+	    		$data = $request->get('fax');
+			} else {
+	    		$data[] = $request->get('fax');
+			}
+			$info['fax'] = $data;
+		}
+		if (!is_null($request->get('otel'))) {
+			$data = array();
+			if (is_array($request->get('otel'))) {
+	    		$data = $request->get('otel');
+			} else {
+	    		$data[] = $request->get('otel');
+			}
+			$info['telephoneNumber'] = $data;
+		}
+		if (!is_null($request->get('htel'))) {
+			$data = array();
+			if (is_array($request->get('htel'))) {
+	    		$data = $request->get('htel');
+			} else {
+	    		$data[] = $request->get('htel');
+			}
+			$info['homePhone'] = $data;
 		}
 		
 		$entry = $openldap->getUserEntry($uuid);

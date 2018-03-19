@@ -72,9 +72,17 @@
 					</select>
 				</div>
 			    <div class="form-group{{ $errors->has('tclass') ? ' has-error' : '' }}">
-					<label>任教班級</label>
-					<input id="tclass" type="text" class="form-control" name="tclass" value="{{ isset($user) && array_key_exists('tpTeachClass', $user) ? (is_array($user['tpTeachClass']) ? implode(' ', $user['tpTeachClass']) : $user['tpTeachClass']) : '' }}"
-					 placeholder="若任教多班，請在班級與班級之間使用半形空白加以區隔...">
+					<label style="display:block">任教班級</label>
+					@if (isset($user) && array_key_exists('tpTeachClass', $user))
+						@if (is_array($user['tpTeachClass']))
+							@foreach ($user['tpTeachClass'] as $class)
+							<input type="text" class="form-control" style="width:50%;display:inline" name="tclass[]" value="{{ $class }}" placeholder="請輸入班級代號"><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
+							@endforeach
+						@else
+							<input type="text" class="form-control" style="width:50%;display:inline" name="tclass[]" value="{{ $user['tpTeachClass'] }}" placeholder="請輸入班級代號"><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
+						@endif
+					@endif
+						<button id="nclass" type="button" class="btn btn-primary btn-circle" onclick="add_tclass()"><i class="fa fa-plus"></i></button>
 					@if ($errors->has('tclass'))
 						<p class="help-block">
 							<strong>{{ $errors->first('tclass') }}</strong>
@@ -100,9 +108,17 @@
 					@endif
 				</div>
 			    <div class="form-group{{ $errors->has('mail') ? ' has-error' : '' }}">
-					<label>電子郵件</label>
-					<input id="mail" type="email" class="form-control" name="mail" value="{{ isset($user) && array_key_exists('mail', $user) ? (is_array($user['mail']) ? $user['mail'][0] : $user['mail']) : '' }}"
-					 placeholder="用來傳送密碼重設連結，請務必填寫" required>
+					<label style="display:block">電子郵件</label>
+					@if (isset($user) && array_key_exists('mail', $user))
+						@if (is_array($user['mail']))
+							@foreach ($user['mail'] as $mail)
+							<input type="text" class="form-control" style="width:50%;display:inline" name="mail[]" value="{{ $mail }}" placeholder="用來傳送密碼重設連結，請務必填寫" required><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
+							@endforeach
+						@else
+							<input type="text" class="form-control" style="width:50%;display:inline" name="mail[]" value="{{ $user['mail'] }}" placeholder="用來傳送密碼重設連結，請務必填寫" required><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
+						@endif
+					@endif
+						<button id="nmail" type="button" class="btn btn-primary btn-circle" onclick="add_mail()"><i class="fa fa-plus"></i></button>
 					@if ($errors->has('mail'))
 						<p class="help-block">
 							<strong>{{ $errors->first('mail') }}</strong>
@@ -110,9 +126,17 @@
 					@endif
 				</div>
 			    <div class="form-group{{ $errors->has('mobile') ? ' has-error' : '' }}">
-					<label>手機號碼</label>
-					<input id="mobile" type="text" pattern="09[0-9]{8}" class="form-control" name="mobile" value="{{ isset($user) && array_key_exists('mobile', $user) ? (is_array($user['mobile']) ? $user['mobile'][0] : $user['mobile']) : '' }}"
-					 placeholder="格式如右：0921000111">
+					<label style="display:block">手機號碼</label>
+					@if (isset($user) && array_key_exists('mobile', $user))
+						@if (is_array($user['mobile']))
+							@foreach ($user['mobile'] as $mobile)
+							<input type="text" pattern="09[0-9]{8}" class="form-control" style="width:50%;display:inline" name="mobile[]" value="{{ $mobile }}" placeholder="格式如右：0921000111"><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
+							@endforeach
+						@else
+							<input type="text" pattern="09[0-9]{8}" class="form-control" style="width:50%;display:inline" name="mobile[]" value="{{ $user['mobile'] }}" placeholder="格式如右：0921000111"><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
+						@endif
+					@endif
+						<button id="nmobile" type="button" class="btn btn-primary btn-circle" onclick="add_mobile()"><i class="fa fa-plus"></i></button>
 					@if ($errors->has('mobile'))
 						<p class="help-block">
 							<strong>{{ $errors->first('mobile') }}</strong>
@@ -120,9 +144,17 @@
 					@endif
 				</div>
 			    <div class="form-group{{ $errors->has('fax') ? ' has-error' : '' }}">
-					<label>傳真號碼</label>
-					<input id="fax" type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" name="fax" value="{{ isset($user) && array_key_exists('fax', $user) ? (is_array($user['fax']) ? $user['fax'][0] : $user['fax']) : '' }}"
-					 placeholder="格式如右：(02)23456789">
+					<label style="display:block">傳真號碼</label>
+					@if (isset($user) && array_key_exists('fax', $user))
+						@if (is_array($user['fax']))
+							@foreach ($user['fax'] as $fax)
+							<input type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" style="width:50%;display:inline" name="fax[]" value="{{ $fax }}" placeholder="格式如右：(02)23456789"><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
+							@endforeach
+						@else
+							<input type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" style="width:50%;display:inline" name="fax[]" value="{{ $user['fax'] }}" placeholder="格式如右：(02)23456789"><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
+						@endif
+					@endif
+						<button id="nfax" type="button" class="btn btn-primary btn-circle" onclick="add_fax()"><i class="fa fa-plus"></i></button>
 					@if ($errors->has('fax'))
 						<p class="help-block">
 							<strong>{{ $errors->first('fax') }}</strong>
@@ -130,9 +162,17 @@
 					@endif
 				</div>
 			    <div class="form-group{{ $errors->has('otel') ? ' has-error' : '' }}">
-					<label>辦公電話</label>
-					<input id="otel" type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" name="otel" value="{{ isset($user) && array_key_exists('telephoneNumber', $user) ? (is_array($user['telephoneNumber']) ? $user['telephoneNumber'][0] : $user['telephoneNumber']) : '' }}"
-					 placeholder="格式如右：(02)23456789">
+					<label style="display:block">辦公電話</label>
+					@if (isset($user) && array_key_exists('otel', $user))
+						@if (is_array($user['otel']))
+							@foreach ($user['otel'] as $otel)
+							<input type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" style="width:50%;display:inline" name="otel[]" value="{{ $otel }}" placeholder="格式如右：(02)23456789"><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
+							@endforeach
+						@else
+							<input type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" style="width:50%;display:inline" name="otel[]" value="{{ $user['otel'] }}" placeholder="格式如右：(02)23456789"><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
+						@endif
+					@endif
+						<button id="notel" type="button" class="btn btn-primary btn-circle" onclick="add_otel()"><i class="fa fa-plus"></i></button>
 					@if ($errors->has('otel'))
 						<p class="help-block">
 							<strong>{{ $errors->first('otel') }}</strong>
@@ -140,9 +180,17 @@
 					@endif
 				</div>
 			    <div class="form-group{{ $errors->has('htel') ? ' has-error' : '' }}">
-					<label>住家電話</label>
-					<input id="htel" type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" name="htel" value="{{ isset($user) && array_key_exists('homePhone', $user) ? (is_array($user['homePhone']) ? $user['homePhone'][0] : $user['homePhone']) : '' }}"
-					 placeholder="格式如右：(02)23456789">
+					<label style="display:block">住家電話</label>
+					@if (isset($user) && array_key_exists('htel', $user))
+						@if (is_array($user['htel']))
+							@foreach ($user['htel'] as $htel)
+							<input type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" style="width:50%;display:inline" name="htel[]" value="{{ $htel }}" placeholder="格式如右：(02)23456789"><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
+							@endforeach
+						@else
+							<input type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" style="width:50%;display:inline" name="htel[]" value="{{ $user['htel'] }}" placeholder="格式如右：(02)23456789"><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
+						@endif
+					@endif
+						<button id="nhtel" type="button" class="btn btn-primary btn-circle" onclick="add_htel()"><i class="fa fa-plus"></i></button>
 					@if ($errors->has('htel'))
 						<p class="help-block">
 							<strong>{{ $errors->first('htel') }}</strong>
@@ -150,7 +198,7 @@
 					@endif
 				</div>
 			    <div class="form-group{{ $errors->has('raddress') ? ' has-error' : '' }}">
-					<label>戶籍地址</label>
+					<label style="display:block">戶籍地址</label>
 					<input id="raddress" type="text" class="form-control" name="raddress" value="{{ isset($user) && array_key_exists('registeredAddress', $user) ? $user['registeredAddress'] : '' }}"
 					 placeholder="請包含里鄰資訊...">
 					@if ($errors->has('raddress'))
@@ -160,7 +208,7 @@
 					@endif
 				</div>
 			    <div class="form-group{{ $errors->has('address') ? ' has-error' : '' }}">
-					<label>郵寄地址</label>
+					<label style="display:block">郵寄地址</label>
 					<input id="address" type="text" class="form-control" name="address" value="{{ isset($user) && array_key_exists('homePostalAddress', $user) ? $user['homePostalAddress'] : '' }}">
 					@if ($errors->has('address'))
 						<p class="help-block">
@@ -196,9 +244,38 @@
 						.catch(function (error) {
 							console.log(error);
   						});
-      			}
+      			};
+      			
+      			function add_tclass() {
+					$('#nclass').before('<input type="text" class="form-control" style="width:50%;display:inline" name="tclass[]" placeholder="請輸入班級代號">');
+					$('#nclass').before('<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>');
+				};
+
+      			function add_mail() {
+					$('#nmail').before('<input type="text" class="form-control" style="width:50%;display:inline" name="mail[]" placeholder="用來傳送密碼重設連結，請務必填寫" required>');
+					$('#nmail').before('<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>');
+				};
+
+      			function add_mobile() {
+					$('#nmobile').before('<input type="text" pattern="09[0-9]{8}" class="form-control" style="width:50%;display:inline" name="mobile[]" placeholder="格式如右：0921000111">');
+					$('#nmobile').before('<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>');
+				};
+
+      			function add_fax() {
+					$('#nfax').before('<input type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" style="width:50%;display:inline" name="fax[]" placeholder="格式如右：(02)23456789">');
+					$('#nfax').before('<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>');
+				};
+
+      			function add_otel() {
+					$('#notel').before('<input type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" style="width:50%;display:inline" name="otel[]" placeholder="格式如右：(02)23456789">');
+					$('#notel').before('<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>');
+				};
+
+      			function add_htel() {
+					$('#nhtel').before('<input type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" style="width:50%;display:inline" name="htel[]" placeholder="格式如右：(02)23456789">');
+					$('#nhtel').before('<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>');
+				};
 			</script>
-		</div>
 		</div>
 	</div>
 	</div>
