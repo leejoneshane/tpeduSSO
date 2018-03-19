@@ -30,7 +30,7 @@
                 @csrf
                 <div class="form-group">
                     <label for="username" class="sr-only">登入名稱</label>
-                    <input id="username" type="text" placeholder="使用者名稱、電子郵件或手機號碼..." class="form-username form-control{{ $errors->has('username') ? ' is-invalid' : '' }}" name="username" value="{{ old('username') }}" required autofocus>
+                    <input id="username" type="text" placeholder="自訂帳號、電子郵件或手機號碼..." class="form-username form-control{{ $errors->has('username') ? ' is-invalid' : '' }}" name="username" value="{{ old('username') }}" required autofocus>
                     @if ($errors->has('username'))
                         <span class="invalid-feedback">
                             <strong>{{ $errors->first('username') }}</strong>
