@@ -21,9 +21,9 @@
 		<div class="panel panel-default">	  
 		<div class="panel-heading">
 			<h4>
-				<select id="ou" name="ou" onchange="location='{{ url()->current() }}?ou=' + $(this).val();">
+				<select id="ou" name="ou" onchange="location=$(this).val();">
 				@foreach ($ous as $ou => $desc)
-			    	<option value="{{ $ou }}" {{ $my_ou == $ou ? 'selected' : '' }}>{{ $desc }}</option>
+			    	<option value="{{ route('school.role', [ 'ou' => $ou ]) }}" {{ $my_ou == $ou ? 'selected' : '' }}>{{ $desc }}</option>
 			    @endforeach
 				</select>
 				職務一覽表

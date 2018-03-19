@@ -416,7 +416,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('fax');
 			}
-			$info['fax'] = $data;
+			$info['facsimileTelephoneNumber'] = $data;
 		}
 		if (!is_null($request->get('otel'))) {
 			$data = array();
@@ -514,7 +514,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('fax');
 			}
-			$info['fax'] = $data;
+			$info['facsimileTelephoneNumber'] = $data;
 		}
 		if (!is_null($request->get('otel'))) {
 			$data = array();
@@ -969,7 +969,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('fax');
 			}
-			$info['fax'] = $data;
+			$info['facsimileTelephoneNumber'] = $data;
 		}
 		if (!is_null($request->get('otel'))) {
 			$data = array();
@@ -1065,7 +1065,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('fax');
 			}
-			$info['fax'] = $data;
+			$info['facsimileTelephoneNumber'] = $data;
 		}
 		if (!is_null($request->get('otel'))) {
 			$data = array();
@@ -1500,7 +1500,7 @@ class SchoolController extends Controller
 		$info['description'] = $request->get('description');
 		$info['businessCategory'] = $request->get('businessCategory');
 		$info['st'] = $request->get('st');
-		if ($request->has('fax')) $info['fax'] = $request->get('fax');
+		if ($request->has('fax')) $info['facsimileTelephoneNumber'] = $request->get('fax');
 		$info['telephoneNumber'] = $request->get('telephoneNumber');
 		$info['postalCode'] = $request->get('postalCode');
 		$info['street'] = $request->get('street');
