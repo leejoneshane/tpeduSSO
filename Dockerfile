@@ -28,4 +28,7 @@ ENV MAIL_ENCRYPTION tls
 
 COPY htdocs /var/www/localhost/htdocs
 RUN composer update \
-    && chown -R apache:apache /var/www 
+    && php artisan config:cache \
+    && php artisan route:cache \
+    && composer dumpautoload --classmap-authoritative \
+    && chown -R apache:apache /var/www
