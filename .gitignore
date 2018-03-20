@@ -2,8 +2,6 @@
 /htdocs/public/hot
 /htdocs/public/storage
 /htdocs/storage/*.key
-/htdocs/vendor
-/htdocs/database_is_ready
 /htdocs/.idea
 /htdocs/.vscode
 /htdocs/.vagrant
