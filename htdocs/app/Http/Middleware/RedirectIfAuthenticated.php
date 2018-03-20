@@ -4,9 +4,12 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
+use KingStarter\LaravelSaml\Http\Traits\SamlAuth;
 
 class RedirectIfAuthenticated
 {
+    use SamlAuth;
+
     /**
      * Handle an incoming request.
      *
@@ -17,6 +20,9 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
+        if (Auth::check() && isset($request['SAMLRequest'])) {  
+            $this->handleSamlLoginRequest($request);
+        }
         if (Auth::guard($guard)->check()) {
             return redirect('/');
         }

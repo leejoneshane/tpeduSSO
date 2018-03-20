@@ -28,6 +28,9 @@
 	<div class="form-bottom">
             <form role="form" method="POST" action="{{ route('login') }}" class="login-form" data-stage="DataStore1">
                 @csrf
+                @if(isset($_GET['SAMLRequest']))
+        			<input type="hidden" id="SAMLRequest" name="SAMLRequest" value="{{ $_GET['SAMLRequest'] }}">
+    			@endif
                 <div class="form-group">
                     <label for="username" class="sr-only">登入名稱</label>
                     <input id="username" type="text" placeholder="自訂帳號、電子郵件或手機號碼..." class="form-username form-control{{ $errors->has('username') ? ' is-invalid' : '' }}" name="username" value="{{ old('username') }}" required autofocus>
