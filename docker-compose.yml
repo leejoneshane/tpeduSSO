@@ -27,7 +27,6 @@ services:
     environment:
       DOMAIN: ldap.tp.edu.tw
       MAIL: your@gmail.com
-      WEB_PASSWORD: password
       CACHE_DRIVER: redis
       SESSION_DRIVER: redis
       REDIS_HOST: redis
