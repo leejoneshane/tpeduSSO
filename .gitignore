@@ -9,6 +9,5 @@
 /htdocs/Homestead.yaml
 /htdocs/npm-debug.log
 /htdocs/yarn-error.log
-/htdocs/.env
 .DS_Store
 htdocs/.rnd
