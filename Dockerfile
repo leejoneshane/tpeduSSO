@@ -2,9 +2,6 @@ FROM leejoneshane/laravel
 
 ENV FETCH no
 ENV INIT no
-ENV DOMAIN ldap.tp.edu.tw
-ENV MAIL your@gmail.com
-ENV WEB_PASSWORD password
 ENV TZ Asia/Taipei
 ENV DB_HOST 163.21.249.80
 ENV DB_PORT 3306
