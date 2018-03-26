@@ -139,6 +139,8 @@ class ComposerStaticInit7c803cc5a9a1f08f55cb3629baa4af2c
         ),
         'A' => 
         array (
+            'Appstract\\Opcache\\' => 18,
+            'Appstract\\LushHttp\\' => 19,
             'App\\' => 4,
         ),
     );
@@ -386,6 +388,14 @@ class ComposerStaticInit7c803cc5a9a1f08f55cb3629baa4af2c
         array (
             0 => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon',
         ),
+        'Appstract\\Opcache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/appstract/laravel-opcache/src',
+        ),
+        'Appstract\\LushHttp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/appstract/lush-http/src',
+        ),
         'App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app',
@@ -485,6 +495,33 @@ class ComposerStaticInit7c803cc5a9a1f08f55cb3629baa4af2c
         'App\\Rules\\ipv4cidr' => __DIR__ . '/../..' . '/app/Rules/ipv4cidr.php',
         'App\\Rules\\ipv6cidr' => __DIR__ . '/../..' . '/app/Rules/ipv6cidr.php',
         'App\\User' => __DIR__ . '/../..' . '/app/User.php',
+        'Appstract\\LushHttp\\Events\\RequestEvent' => __DIR__ . '/..' . '/appstract/lush-http/src/Events/RequestEvent.php',
+        'Appstract\\LushHttp\\Events\\RequestExceptionEvent' => __DIR__ . '/..' . '/appstract/lush-http/src/Events/RequestExceptionEvent.php',
+        'Appstract\\LushHttp\\Events\\ResponseEvent' => __DIR__ . '/..' . '/appstract/lush-http/src/Events/ResponseEvent.php',
+        'Appstract\\LushHttp\\Exception\\BaseException' => __DIR__ . '/..' . '/appstract/lush-http/src/Exception/BaseException.php',
+        'Appstract\\LushHttp\\Exception\\LushException' => __DIR__ . '/..' . '/appstract/lush-http/src/Exception/LushException.php',
+        'Appstract\\LushHttp\\Exception\\LushRequestException' => __DIR__ . '/..' . '/appstract/lush-http/src/Exception/LushRequestException.php',
+        'Appstract\\LushHttp\\Lush' => __DIR__ . '/..' . '/appstract/lush-http/src/Lush.php',
+        'Appstract\\LushHttp\\LushFacade' => __DIR__ . '/..' . '/appstract/lush-http/src/LushFacade.php',
+        'Appstract\\LushHttp\\Request\\Adapter\\AdapterInterface' => __DIR__ . '/..' . '/appstract/lush-http/src/Request/Adapter/AdapterInterface.php',
+        'Appstract\\LushHttp\\Request\\Adapter\\Curl' => __DIR__ . '/..' . '/appstract/lush-http/src/Request/Adapter/Curl.php',
+        'Appstract\\LushHttp\\Request\\Adapter\\CurlMock' => __DIR__ . '/..' . '/appstract/lush-http/src/Request/Adapter/CurlMock.php',
+        'Appstract\\LushHttp\\Request\\CurlRequest' => __DIR__ . '/..' . '/appstract/lush-http/src/Request/CurlRequest.php',
+        'Appstract\\LushHttp\\Request\\LushRequest' => __DIR__ . '/..' . '/appstract/lush-http/src/Request/LushRequest.php',
+        'Appstract\\LushHttp\\Request\\RequestGetters' => __DIR__ . '/..' . '/appstract/lush-http/src/Request/RequestGetters.php',
+        'Appstract\\LushHttp\\Request\\RequestOptions' => __DIR__ . '/..' . '/appstract/lush-http/src/Request/RequestOptions.php',
+        'Appstract\\LushHttp\\Response\\LushResponse' => __DIR__ . '/..' . '/appstract/lush-http/src/Response/LushResponse.php',
+        'Appstract\\LushHttp\\Response\\ResponseGetters' => __DIR__ . '/..' . '/appstract/lush-http/src/Response/ResponseGetters.php',
+        'Appstract\\Opcache\\Commands\\Clear' => __DIR__ . '/..' . '/appstract/laravel-opcache/src/Commands/Clear.php',
+        'Appstract\\Opcache\\Commands\\Config' => __DIR__ . '/..' . '/appstract/laravel-opcache/src/Commands/Config.php',
+        'Appstract\\Opcache\\Commands\\Optimize' => __DIR__ . '/..' . '/appstract/laravel-opcache/src/Commands/Optimize.php',
+        'Appstract\\Opcache\\Commands\\Status' => __DIR__ . '/..' . '/appstract/laravel-opcache/src/Commands/Status.php',
+        'Appstract\\Opcache\\CreatesRequest' => __DIR__ . '/..' . '/appstract/laravel-opcache/src/CreatesRequest.php',
+        'Appstract\\Opcache\\Http\\Controllers\\OpcacheController' => __DIR__ . '/..' . '/appstract/laravel-opcache/src/Http/Controllers/OpcacheController.php',
+        'Appstract\\Opcache\\Http\\Middleware\\Request' => __DIR__ . '/..' . '/appstract/laravel-opcache/src/Http/Middleware/Request.php',
+        'Appstract\\Opcache\\OpcacheClass' => __DIR__ . '/..' . '/appstract/laravel-opcache/src/OpcacheClass.php',
+        'Appstract\\Opcache\\OpcacheFacade' => __DIR__ . '/..' . '/appstract/laravel-opcache/src/OpcacheFacade.php',
+        'Appstract\\Opcache\\OpcacheServiceProvider' => __DIR__ . '/..' . '/appstract/laravel-opcache/src/OpcacheServiceProvider.php',
         'Carbon\\Carbon' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Carbon.php',
         'Carbon\\CarbonInterval' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/CarbonInterval.php',
         'Carbon\\Exceptions\\InvalidDateException' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Exceptions/InvalidDateException.php',
