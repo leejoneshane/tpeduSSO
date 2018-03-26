@@ -28,6 +28,7 @@ ENV MAIL_ENCRYPTION tls
 
 COPY htdocs /var/www/localhost/htdocs
 RUN composer update \
+    && php artisan storage:link \
     && php artisan passport:key \
     && php artisan config:cache \
     && php artisan route:cache \
