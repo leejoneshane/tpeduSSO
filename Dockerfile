@@ -34,3 +34,4 @@ RUN composer update \
     && php artisan route:cache \
     && composer dumpautoload --classmap-authoritative \
     && chown -R apache:apache /var/www
+VOLUME /var/www/localhost/htdocs/storage
