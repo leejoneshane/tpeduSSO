@@ -66,6 +66,7 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
 	Route::post('teacher/{uuid}/remove', 'SchoolController@removeSchoolTeacher')->name('school.removeTeacher');
 	Route::post('teacher/{uuid}/toggle', 'SchoolController@toggleSchoolTeacher')->name('school.toggleTeacher');
 	Route::post('teacher/{uuid}/undo', 'SchoolController@undoSchoolTeacher')->name('school.undoTeacher');
+	Route::post('teacher/{uuid}/resetpass', 'SchoolController@resetpass')->name('school.resetpassTeacher');
 	Route::get('teacher/new', 'SchoolController@schoolTeacherEditForm');
 	Route::post('teacher/new', 'SchoolController@createSchoolTeacher')->name('school.createTeacher');
 	Route::get('teacher/json', 'SchoolController@schoolTeacherJSONForm');
@@ -76,6 +77,7 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
 	Route::post('student/{uuid}/remove', 'SchoolController@removeSchoolTeacher')->name('school.removeStudent');
 	Route::post('student/{uuid}/toggle', 'SchoolController@toggleSchoolTeacher')->name('school.toggleStudent');
 	Route::post('student/{uuid}/undo', 'SchoolController@undoSchoolTeacher')->name('school.undoStudent');
+	Route::post('student/{uuid}/resetpass', 'SchoolController@resetpass')->name('school.resetpassStudent');
 	Route::get('student/new', 'SchoolController@schoolStudentEditForm');
 	Route::post('student/new', 'SchoolController@createSchoolStudent')->name('school.createStudent');
 	Route::get('student/json', 'SchoolController@schoolStudentJSONForm');

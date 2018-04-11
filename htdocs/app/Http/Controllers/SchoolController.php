@@ -1143,6 +1143,36 @@ class SchoolController extends Controller
 		}
 	}
 	
+    public function resetpass(Request $request, $uuid)
+    {
+		$openldap = new LdapServiceProvider();
+		$entry = $openldap->getUserEntry($uuid);
+		$data = $openldap->getUserData($entry, array('cn', 'uid', 'mail', 'mobile'));
+		if (array_key_exists('cn', $data)) {
+			$idno = $data['cn'];
+			$info = array();
+			$info['userPassword'] = $openldap->make_ssha_password(substr($idno,-6));
+		
+			if (array_key_exists('cn', $data)) {
+				if (is_array($data['uid'])) {
+					foreach ($account as $data['uid']) {
+						$account_entry = $openldap->getAccountEntry($account);
+						$openldap->updateData($account_entry, $info);
+					}
+				} else {
+					$account_entry = $openldap->getAccountEntry($data['uid']);
+					$openldap->updateData($account_entry, $info);
+				}
+			}
+			$result = $openldap->updateData($entry, $info);
+			if ($result) {
+				return redirect()->back()->with("success", "已經將人員密碼重設為身分證字號後六碼！");
+			} else {
+				return redirect()->back()->with("error", "無法變更人員密碼！".$openldap->error());
+			}
+		}
+	}
+	
     public function schoolRoleForm(Request $request, $my_ou)
     {
 		$dc = $request->user()->ldap['o'];

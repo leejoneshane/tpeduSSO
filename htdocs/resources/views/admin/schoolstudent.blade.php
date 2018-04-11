@@ -101,6 +101,10 @@
 										 $('#form').attr('method', 'POST');
 										 $('#form').submit();">救回</button>
 							@endif
+							<button type="button" class="btn btn-danger"
+							 	onclick="$('#form').attr('action','{{ route('school.resetpassStudent', [ 'uuid' => $students[$i]['entryuuid'][0] ]) }}');
+										 $('#form').attr('method', 'POST');
+										 $('#form').submit();">回復密碼</button>
 						</td>
 					</tr>
 					@endfor

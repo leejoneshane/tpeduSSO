@@ -61,7 +61,8 @@ class HomeController extends Controller
 	    	$user->mobile = $userinfo['mobile'];
 		}
 		$entry = $openldap->getUserEntry($user->idno);
-		$openldap->updateData($entry, $userinfo);
+		$result = $openldap->updateData($entry, $userinfo);
+		if (!$result) return redirect()->back()->with("error", "無法變更人員資訊！".$openldap->error());
 		if ($request->has('login-by-email')) {
 	    	if (array_key_exists('mail', $userinfo)) {
 				$openldap->updateAccount($entry, $user->email, $userinfo['mail'], $user->idno, '電子郵件登入');
