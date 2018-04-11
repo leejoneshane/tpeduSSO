@@ -116,13 +116,27 @@ class Factory implements ArrayAccess
      *
      * @param  string  $class
      * @param  callable  $callback
+     * @param  string  $name
      * @return $this
      */
-    public function afterMaking($class, $callback)
+    public function afterMaking($class, callable $callback, $name = 'default')
     {
-        $this->afterMaking[$class][] = $callback;
+        $this->afterMaking[$class][$name][] = $callback;
 
         return $this;
+    }
+
+    /**
+     * Define a callback to run after making a model with given state.
+     *
+     * @param  string  $class
+     * @param  string  $state
+     * @param  callable  $callback
+     * @return $this
+     */
+    public function afterMakingState($class, $state, callable $callback)
+    {
+        return $this->afterMaking($class, $callback, $state);
     }
 
     /**
@@ -130,13 +144,27 @@ class Factory implements ArrayAccess
      *
      * @param  string  $class
      * @param  callable  $callback
+     * @param  string $name
      * @return $this
      */
-    public function afterCreating($class, $callback)
+    public function afterCreating($class, callable $callback, $name = 'default')
     {
-        $this->afterCreating[$class][] = $callback;
+        $this->afterCreating[$class][$name][] = $callback;
 
         return $this;
+    }
+
+    /**
+     * Define a callback to run after creating a model with given state.
+     *
+     * @param  string  $class
+     * @param  string  $state
+     * @param  callable  $callback
+     * @return $this
+     */
+    public function afterCreatingState($class, $state, callable $callback)
+    {
+        return $this->afterCreating($class, $callback, $state);
     }
 
     /**

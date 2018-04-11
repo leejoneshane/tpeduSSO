@@ -21,6 +21,7 @@ interface Highlighter
     /**
      * Highlights the provided content.
      *
+     * @param  string $content
      * @param  int $line
      *
      * @return string

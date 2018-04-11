@@ -44,20 +44,13 @@ class IncompleteTestCase extends TestCase
      */
     protected $useOutputBuffering = false;
 
-    /**
-     * @param string $className
-     * @param string $methodName
-     * @param string $message
-     */
-    public function __construct($className, $methodName, $message = '')
+    public function __construct(string $className, string $methodName, string $message = '')
     {
-        $this->message = $message;
         parent::__construct($className . '::' . $methodName);
+
+        $this->message = $message;
     }
 
-    /**
-     * @return string
-     */
     public function getMessage(): string
     {
         return $this->message;
@@ -67,8 +60,6 @@ class IncompleteTestCase extends TestCase
      * Returns a string representation of the test case.
      *
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return string
      */
     public function toString(): string
     {
