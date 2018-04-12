@@ -96,7 +96,7 @@
     				$('#classes').find('label').remove();
    					response.data.forEach(
     					function add_checkbox(myclass) { 
-    						$('#classes').append('<label class="checkbox-inline"><input type="checkbox" name="classes" value="' + myclass.ou + '">' + myclass.description + '</label>');
+    						$('#classes').append('<label class="checkbox-inline"><input type="checkbox" name="classes[]" value="' + myclass.ou + '">' + myclass.description + '</label>');
     					}
         			);
 				})
@@ -110,7 +110,7 @@
     				$('#teachers').find('label').remove();
    					response.data.forEach(
     					function add_checkbox(teacher) {
-    						$('#teachers').append('<label class="checkbox-inline"><input type="checkbox" name="teachers" value="' + teacher.idno + '">' + teacher.name + '（' + teacher.title + '）</label>');
+    						$('#teachers').append('<label class="checkbox-inline"><input type="checkbox" name="teachers[]" value="' + teacher.idno + '">' + teacher.name + '（' + teacher.title + '）</label>');
     					}
         			);
 				})
