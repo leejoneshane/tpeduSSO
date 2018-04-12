@@ -39,7 +39,7 @@
 			<div id="classes" class="form-group">
 				@foreach ($classes as $class)
 					<label class="checkbox-inline">
-						<input type="checkbox" name="classes" value="{{ $class->ou }}">{{ $class->description }}
+						<input type="checkbox" name="classes[]" value="{{ $class->ou }}">{{ $class->description }}
 					</label>
 				@endforeach
 			</div>
@@ -63,7 +63,7 @@
 			<div id="teachers" class="form-group">
 				@foreach ($teachers as $teacher)
 					<label class="checkbox-inline">
-						<input type="checkbox" name="teachers" value="{{ $teacher->idno }}">{{ $teacher->name }}（{{ $teacher->title }}）
+						<input type="checkbox" name="teachers[]" value="{{ $teacher->idno }}">{{ $teacher->name }}（{{ $teacher->title }}）
 					</label>
 				@endforeach
 			</div>
