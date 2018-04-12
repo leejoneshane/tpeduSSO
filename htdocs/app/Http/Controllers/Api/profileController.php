@@ -14,6 +14,7 @@ class profileController extends Controller
     {
 	$user = $request->user();
 	$json = new \stdClass();
+	$json->role = $user->ldap['employeeType'];
 	$json->uuid = $user->uuid;
 	$json->name = $user->name;
 	$json->email = $user->email;
