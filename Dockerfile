@@ -4,7 +4,7 @@ ENV FETCH no
 ENV INIT no
 ENV TZ Asia/Taipei
 ENV DOMAIN ldap.tp.edu.tw
-ENV APP_URL ldap.tp.edu.tw
+ENV APP_URL https://ldap.tp.edu.tw
 ENV MAIL your@gmail.com	
 ENV WEB_PASSWORD password
 ENV DB_HOST 163.21.xx.xx
