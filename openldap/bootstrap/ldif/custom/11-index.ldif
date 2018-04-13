@@ -11,3 +11,6 @@ olcDbIndex: memberOf eq
 olcDbIndex: entryCSN eq
 olcDbIndex: entryUUID eq
 olcDbIndex: objectClass eq
+-
+replace: olcDbMaxSize
+olcDbMaxSize: 2147483648
