@@ -5,7 +5,7 @@ olcDbIndex: o eq
 olcDbIndex: ou eq
 olcDbIndex: cn eq
 olcDbIndex: uid eq
-olcDbIndex: mail eq,sub
+olcDbIndex: mail eq
 olcDbIndex: mobile eq
 olcDbIndex: memberOf eq
 olcDbIndex: entryCSN eq
