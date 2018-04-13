@@ -2,6 +2,7 @@ dn: olcDatabase={1}{{ LDAP_BACKEND }},cn=config
 changetype:  modify
 replace: olcDbIndex
 olcDbIndex: o eq
+olcDbIndex: dc eq
 olcDbIndex: ou eq
 olcDbIndex: cn eq
 olcDbIndex: uid eq
