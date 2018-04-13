@@ -1,7 +1,7 @@
 version: '2'
 services:
   openldap:
-    image: leejoneshane/openldap
+    image: leejoneshane/tpedusso:openldap
     container_name: openldap
     hostname: ldap
     restart: always
