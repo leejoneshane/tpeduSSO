@@ -118,7 +118,7 @@
 					@endif
 				</div>
 			    <div class="form-group{{ $errors->has('mail') ? ' has-error' : '' }}">
-					<label style="display:block">電子郵件</label>
+					<label style="display:block">電子郵件（只有主要電子郵件可用於登入和重設密碼）</label>
 					@if (isset($user) && array_key_exists('mail', $user))
 						@if (is_array($user['mail']))
 							@foreach ($user['mail'] as $mail)
@@ -136,7 +136,7 @@
 					@endif
 				</div>
 			    <div class="form-group{{ $errors->has('mobile') ? ' has-error' : '' }}">
-					<label style="display:block">手機號碼</label>
+					<label style="display:block">手機號碼（只有主要手機號碼可用於登入和重設密碼）</label>
 					@if (isset($user) && array_key_exists('mobile', $user))
 						@if (is_array($user['mobile']))
 							@foreach ($user['mobile'] as $mobile)
