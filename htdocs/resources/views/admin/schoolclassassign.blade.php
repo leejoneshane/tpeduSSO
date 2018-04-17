@@ -61,11 +61,18 @@
 				</select>
 			</div>
 			<div id="teachers" class="form-group">
+				<table><tbody><tr>
+				<?php $i = 0; ?>
 				@foreach ($teachers as $teacher)
-					<label class="checkbox-inline">
+				    <?php $i++; ?>
+					<td> <!--label class="checkbox-inline"-->
 						<input type="checkbox" name="teachers[]" value="{{ $teacher->idno }}">{{ $teacher->name }}（{{ $teacher->title }}）
-					</label>
+					</td>
+					@if ($i % 6 == 0)
+					</tr><tr>
+					@endif
 				@endforeach
+				</tr></tbody></table>
 			</div>
 		</div>
 		</div>
@@ -107,10 +114,21 @@
 		function refresh_teachers() {
 			axios.get('/school/teachers/{{ $dc }}/' + $('#ou').val())
     			.then(response => {
-    				$('#teachers').find('label').remove();
+    				$('#teachers').find('tr').remove();
+    				i=0;
    					response.data.forEach(
     					function add_checkbox(teacher) {
-    						$('#teachers').append('<label class="checkbox-inline"><input type="checkbox" name="teachers[]" value="' + teacher.idno + '">' + teacher.name + '（' + teacher.title + '）</label>');
+    						i++;
+    						switch (i % 6) {
+    							case 0:
+    								$('#teachers tbody').append('<td><input type="checkbox" name="teachers[]" value="' + teacher.idno + '">' + teacher.name + '（' + teacher.title + '）</td></tr><tr>');
+    								break;
+    							case 1:
+    								$('#teachers tbody').append('<tr><td><input type="checkbox" name="teachers[]" value="' + teacher.idno + '">' + teacher.name + '（' + teacher.title + '）</td>');
+    								break;
+    							default:
+    								$('#teachers tbody').append('<td><input type="checkbox" name="teachers[]" value="' + teacher.idno + '">' + teacher.name + '（' + teacher.title + '）</td>');
+    						}
     					}
         			);
 				})
