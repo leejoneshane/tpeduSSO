@@ -94,6 +94,7 @@ class LdapServiceProvider extends ServiceProvider
 		else
 			return true;
 	}
+	return false;
     }
 
     public function checkAccount($username)
