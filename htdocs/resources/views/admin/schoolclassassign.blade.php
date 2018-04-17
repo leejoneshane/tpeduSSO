@@ -116,18 +116,18 @@
     			.then(response => {
     				$('#teachers').find('tr').remove();
     				i=0;
+    				j=0;
    					response.data.forEach(
     					function add_checkbox(teacher) {
     						i++;
     						switch (i % 6) {
-    							case 0:
-    								$('#teachers tbody').append('<td><input type="checkbox" name="teachers[]" value="' + teacher.idno + '">' + teacher.name + '（' + teacher.title + '）</td></tr><tr>');
-    								break;
     							case 1:
-    								$('#teachers tbody').append('<tr><td><input type="checkbox" name="teachers[]" value="' + teacher.idno + '">' + teacher.name + '（' + teacher.title + '）</td>');
+    								j++;
+    								$('#teachers tbody').append('<tr id="tr' + j + '"></tr>');
+    								$('#tr' + j).append('<td><input type="checkbox" name="teachers[]" value="' + teacher.idno + '">' + teacher.name + '（' + teacher.title + '）</td>');
     								break;
     							default:
-    								$('#teachers tbody').append('<td><input type="checkbox" name="teachers[]" value="' + teacher.idno + '">' + teacher.name + '（' + teacher.title + '）</td>');
+    								$('#tr' + j).append('<td><input type="checkbox" name="teachers[]" value="' + teacher.idno + '">' + teacher.name + '（' + teacher.title + '）</td>');
     						}
     					}
         			);
