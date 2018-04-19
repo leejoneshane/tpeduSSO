@@ -1,0 +1,10 @@
+dn: cn=tpeduSubject,cn=schema,cn=config
+cn: tpeduSubject
+objectClass: olcSchemaConfig
+olcAttributeTypes: ( 2.5.4.113 NAME 'tpSubject' DESC 'A string identifying the course prog
+ ram for school' EQUALITY caseIgnoreMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 SINGLE-VALU
+ E )
+olcAttributeTypes: ( 2.5.4.114 NAME 'tpSubjectDomain' DESC 'The category of course program
+  for school.' EQUALITY caseIgnoreMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+olcObjectClasses: ( 2.5.4.112 NAME 'tpeduSubject' DESC 'Custom Shema for Education program
+  use.' SUP top STRUCTURAL MUST tpSubject MAY ( tpSubjectDomain $ description ) )

@@ -1,0 +1,22 @@
+attributetype ( 2.5.4.113
+	NAME 'tpSubect'
+	DESC 'A string identifying the course program for school'
+	EQUALITY caseIgnoreMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+	SINGLE-VALUE )
+	
+attributetype ( 2.5.4.114
+	NAME 'tpSubjectDomain'
+	DESC 'The category of course program for school.'
+	EQUALITY caseIgnoreMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+
+objectclass ( 2.5.4.112
+	NAME 'tpeduSubject'
+	DESC 'Custom Shema for Education program use.'
+	SUP top
+	STRUCTURAL
+		MUST tpSubject
+		MAY (
+			tpSubjectDomain $ description )
+	)

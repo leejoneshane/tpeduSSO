@@ -43,6 +43,12 @@ attributetype ( 2.5.4.103
 	EQUALITY integerMatch
 	SYNTAX 1.3.6.1.4.1.1466.115.121.1.27 )
 	
+attributetype ( 2.5.4.109
+	NAME 'tpTeachSubject'
+	DESC 'A string identifying a perform program for teacher'
+	EQUALITY caseIgnoreMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+	
 attributetype ( 1.2.840.113556.1.2.464
 	NAME 'wWWHomePage'
 	DESC 'An URL link to a personal home page'
@@ -55,5 +61,5 @@ objectclass ( 2.5.4.110
 	SUP inetOrgPerson
 	STRUCTURAL
 		MAY (
-			birthDate $ gender $info $ tpClass $ tpClassTitle $ tpSeat $ tpCharacter $ tpTeachClass $ uidNumber $ wWWHomePage )
+			birthDate $ gender $info $ tpClass $ tpClassTitle $ tpSeat $ tpCharacter $ tpTeachClass $ tpTeachSubject $ uidNumber $ wWWHomePage )
 		)
