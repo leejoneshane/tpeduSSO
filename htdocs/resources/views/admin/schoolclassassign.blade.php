@@ -113,9 +113,6 @@
 	</div>
 	</form>
 	<script type="text/javascript">
-		window.axios.defaults.headers.common = {
-			'X-Requested-With': 'XMLHttpRequest',
-		};
 		function refresh_classes() {
 			axios.get('/school/classes/{{ $dc }}/' + $('#grade').val())
     			.then(response => {

@@ -613,8 +613,7 @@ class SchoolController extends Controller
 		$user->password = 'My_p@ssw0rD';
 		$user->ou = 'dept02';
 		$user->role = 'role014';
-		$user->class = array('606', '607', '608', '609', '610');
-		$user->subject = array('sub01', 'sub01', 'sub01', 'sub01', 'sub01');
+		$user->assign = array('606,sub01', '607,sub01', '608,sub01', '609,sub01', '610,sub01');
 		$user->character = '巡迴教師 均一平台管理員';
 		$user->sn = '李';
 		$user->gn = '小明';

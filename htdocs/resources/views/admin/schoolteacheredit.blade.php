@@ -250,9 +250,6 @@
 				</div>
 			</form>
 			<script type="text/javascript">
-				window.axios.defaults.headers.common = {
-					'X-Requested-With': 'XMLHttpRequest',
-				};
 				function refresh_roles() {
 					axios.get('/school/roles/{{ $dc }}/' + $('#ou').val())
     					.then(response => {
