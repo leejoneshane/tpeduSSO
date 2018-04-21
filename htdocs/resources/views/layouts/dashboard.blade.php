@@ -17,6 +17,9 @@
                         <li {{ (Request::is('school/role') ? 'class="active"' : '') }}>
                             <a href="{{ route('school.role', [ 'ou' => 'null' ]) }}"><i class="fa fa-suitcase fa-fw"></i> 職稱管理</a>
                         </li>
+                        <li {{ (Request::is('school/subject') ? 'class="active"' : '') }}>
+                            <a href="{{ route('school.subject', [ 'subject' => 'null' ]) }}"><i class="fa fa-suitcase fa-fw"></i> 科目管理</a>
+                        </li>
                         <li {{ (Request::is('school/class') ? 'class="active"' : '') }}>
                             <a href="#"><i class="fa fa-graduation-cap fa-fw"></i> 班級管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
@@ -24,7 +27,7 @@
                                     <a href="{{ route('school.class') }}">變更班級名稱</a>
                                 </li>
                                 <li {{ (Request::is('school/class/assign') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.assignClass') }}">指派任教老師</a>
+                                    <a href="{{ route('school.assignClass') }}">管理班級配課</a>
                                 </li>
                             </ul>
                         </li>

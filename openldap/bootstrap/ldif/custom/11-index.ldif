@@ -4,9 +4,11 @@ replace: olcDbIndex
 olcDbIndex: o eq
 olcDbIndex: dc eq
 olcDbIndex: ou eq
+olcDbIndex: title eq
+olcDbIndex: tpSubject eq
 olcDbIndex: cn eq
 olcDbIndex: uid eq
-olcDbIndex: mail eq
+olcDbIndex: mail eq,sub
 olcDbIndex: mobile eq
 olcDbIndex: memberOf eq
 olcDbIndex: entryCSN eq

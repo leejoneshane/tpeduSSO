@@ -54,6 +54,10 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
 	Route::post('unit/{ou}/role', 'SchoolController@createSchoolRole')->name('school.createRole');
 	Route::post('unit/{ou}/role/{role}/update', 'SchoolController@updateSchoolRole')->name('school.updateRole');
 	Route::post('unit/{ou}/role/{role}/remove', 'SchoolController@removeSchoolRole')->name('school.removeRole');
+	Route::get('subject', 'SchoolController@schoolSubjectForm')->name('school.subject');
+	Route::post('subject', 'SchoolController@createSchoolSubject')->name('school.createSubject');
+	Route::post('subject/{subject}/update', 'SchoolController@updateSchoolSubject')->name('school.updateSubject');
+	Route::post('subject/{subject}/remove', 'SchoolController@removeSchoolSubject')->name('school.removeSubject');
 	Route::get('class', 'SchoolController@schoolClassForm')->name('school.class');
 	Route::post('class', 'SchoolController@createSchoolClass')->name('school.createClass');
 	Route::post('class/{ou}/update', 'SchoolController@updateSchoolClass')->name('school.updateClass');

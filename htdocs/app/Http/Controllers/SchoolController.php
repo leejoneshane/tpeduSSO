@@ -1398,6 +1398,73 @@ class SchoolController extends Controller
 		}
 	}
 	
+    public function schoolSubjectForm(Request $request)
+    {
+		$dc = $request->user()->ldap['o'];
+		$openldap = new LdapServiceProvider();
+		$data = $openldap->getSubjects($dc);
+		return view('admin.schoolsubject', [ 'subjs' => $data ]);
+    }
+
+    public function createSchoolSubject(Request $request)
+    {
+		$dc = $request->user()->ldap['o'];
+		$validatedData = $request->validate([
+			'new-subj' => 'required|string',
+			'new-desc' => 'required|string',
+		]);
+		$info = array();
+		$info['objectClass'] = 'tpeduSubject';
+		$info['tpSubject'] = $request->get('new-subj');
+		$info['tpSubjectDomain'] = $request->get('new-dom');
+		$info['description'] = $request->get('new-desc');
+		$info['dn'] = "tpSubject=".$info['tpSubject'].",dc=$dc,".Config::get('ldap.rdn');
+		$openldap = new LdapServiceProvider();
+		$result = $openldap->createEntry($info);
+		if ($result) {
+			return redirect()->back()->with("success", "已經為您建立科目！");
+		} else {
+			return redirect()->back()->with("error", "科目建立失敗！".$openldap->error());
+		}
+    }
+
+    public function updateSchoolSubject(Request $request, $subj)
+    {
+		$dc = $request->user()->ldap['o'];
+		$validatedData = $request->validate([
+			'description' => 'required|string',
+		]);
+		$info = array();
+		$info['tpSubjectDomain'] = $request->get('domain');
+		$info['description'] = $request->get('description');
+		
+		$openldap = new LdapServiceProvider();
+		$entry = $openldap->getSubjectEntry($dc, $subj);
+		$result = $openldap->updateData($entry, $info);
+		if ($result) {
+			return redirect()->back()->with("success", "已經為您更新科目資訊！");
+		} else {
+			return redirect()->back()->with("error", "科目資訊更新失敗！".$openldap->error());
+		}
+    }
+
+    public function removeSchoolSubject(Request $request, $subj)
+    {
+		$dc = $request->user()->ldap['o'];
+		$openldap = new LdapServiceProvider();
+		$users = $openldap->findUsers("(&(o=$dc)(tpTeachSubject=$subj))", "cn");
+		if ($users && $users['count']>0) {
+			return redirect()->back()->with("error", "此科目已經配課給老師和班級，因此無法刪除！");
+		}
+		$entry = $openldap->getSubjectEntry($dc, $subj);
+		$result = $openldap->deleteEntry($entry);
+		if ($result) {
+			return redirect()->back()->with("success", "已經為您移除科目！");
+		} else {
+			return redirect()->back()->with("error", "科目刪除失敗！".$openldap->error());
+		}
+    }
+
     public function schoolUnitForm(Request $request)
     {
 		$dc = $request->user()->ldap['o'];

@@ -927,7 +927,6 @@ displayName: 學生帳號
 gender: 2
 birthDate: 20110417000000Z
 
-
 dn: uid=meps123456789,ou=account,{{ LDAP_BASE_DN }}
 objectClass: radiusObjectProfile
 cn: A123456789

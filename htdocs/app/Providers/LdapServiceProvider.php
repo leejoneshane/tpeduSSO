@@ -351,6 +351,83 @@ class LdapServiceProvider extends ServiceProvider
 		return $value[0];
     }
     
+    public function getSubjects($dc)
+    {
+		$subjs = array();
+		self::administrator();
+		$base_dn = Config::get('ldap.rdn');
+		$sch_rdn = Config::get('ldap.schattr')."=".$dc;
+		$sch_dn = "$sch_rdn,$base_dn";
+		$filter = "objectClass=tpeduSubject";
+		$resource = ldap_search(self::$ldapConnectId, $sch_dn, $filter, ["tpSubject", "tpSubjectDomain", "description"]);
+		$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+		if ($entry) {
+			do {
+	    		$subj = new \stdClass();
+	    		$info = self::getSubjectData($entry);
+	    		$subj->subject = $info['tpSubject'];
+	    		$subj->domain = $info['tpSubjectDomain'];
+	    		$subj->description = $info['description'];
+	    		$subjs[] = $subj;
+			} while ($entry=ldap_next_entry(self::$ldapConnectId, $entry));
+		}
+		return $subjs;
+    }
+    
+    public function getSubjectEntry($dc, $subj)
+    {
+		self::administrator();
+		$base_dn = Config::get('ldap.rdn');
+		$sch_rdn = Config::get('ldap.schattr')."=".$dc;
+		$sch_dn = "$sch_rdn,$base_dn";
+		$filter = "tpSubject=$subj";
+		$resource = ldap_search(self::$ldapConnectId, $sch_dn, $filter);
+		if ($resource) {
+			$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+			return $entry;
+		}
+		return false;
+    }
+    
+    public function getSubjectData($entry, $attr='')
+    {
+		$fields = array();
+		if (is_array($attr)) {
+	    	$fields = $attr;
+		} elseif ($attr == '') {
+	    	$fields[] = 'tpSubject';
+	    	$fields[] = 'tpSubjectDomain';
+	    	$fields[] = 'description';
+		} else {
+	    	$fields[] = $attr;
+		}
+	
+		$info = array();
+        	foreach ($fields as $field) {
+	    	$value = @ldap_get_values(self::$ldapConnectId, $entry, $field);
+	    	if ($value) {
+				if ($value['count'] == 1) {
+		    		$info[$field] = $value[0];
+				} else {
+		    		unset($value['count']);
+		    		$info[$field] = $value;
+				}
+	    	}
+		}
+		return $info;
+    }
+    
+    public function getSubjectTitle($dc, $subj)
+    {
+		self::administrator();
+		$sch_dn = Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
+		$filter = "tpSubject=$subj";
+		$resource = ldap_search(self::$ldapConnectId, $sch_dn, $filter, array("description"));
+		$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+		$value = @ldap_get_values(self::$ldapConnectId, $entry, "description");
+		return $value[0];
+    }
+    
     public function getRoles($dc, $ou)
     {
 		$roles = array();
