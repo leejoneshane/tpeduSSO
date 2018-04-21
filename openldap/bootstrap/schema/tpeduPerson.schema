@@ -39,13 +39,7 @@ attributetype ( 2.5.4.102
 
 attributetype ( 2.5.4.103
 	NAME 'tpTeachClass'
-	DESC 'An integer uniquely identifying a class id for teacher'
-	EQUALITY integerMatch
-	SYNTAX 1.3.6.1.4.1.1466.115.121.1.27 )
-	
-attributetype ( 2.5.4.109
-	NAME 'tpTeachSubject'
-	DESC 'A string identifying a perform program for teacher'
+	DESC 'A pair string first is uniquely identifying a class, second is uniquely identifying a subject'
 	EQUALITY caseIgnoreMatch
 	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
 	
@@ -61,5 +55,5 @@ objectclass ( 2.5.4.110
 	SUP inetOrgPerson
 	STRUCTURAL
 		MAY (
-			birthDate $ gender $info $ tpClass $ tpClassTitle $ tpSeat $ tpCharacter $ tpTeachClass $ tpTeachSubject $ uidNumber $ wWWHomePage )
+			birthDate $ gender $info $ tpClass $ tpClassTitle $ tpSeat $ tpCharacter $ tpTeachClass $ uidNumber $ wWWHomePage )
 		)

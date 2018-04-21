@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('page_heading')
-指派任教老師
+管理班級配課
 @endsection
 
 @section('section')
@@ -40,6 +40,25 @@
 				@foreach ($classes as $class)
 					<label class="checkbox-inline">
 						<input type="checkbox" name="classes[]" value="{{ $class->ou }}">{{ $class->description }}
+					</label>
+				@endforeach
+			</div>
+		</div>
+		</div>
+	</div>
+
+	<div class="col-sm-12">
+		<div class="panel panel-default">
+		<div class="panel-heading">
+			<h4>請勾選要指派的科目：</h4>
+		</div>
+		<div class="panel-body">
+			<div class="form-group">
+				<?php $i = 0; ?>
+				@foreach ($subjects as $subj)
+				    <?php $i++; ?>
+					<label class="checkbox-inline">
+						<input type="checkbox" name="subjects[]" value="{{ $subj->subject }}">{{ $subj->description }}
 					</label>
 				@endforeach
 			</div>

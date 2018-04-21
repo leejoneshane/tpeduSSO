@@ -66,7 +66,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('tclass') ? ' has-error' : '' }}">
 					<label>就讀班級</label>
-					<select id="tclass" type="text" class="form-control" name="tclass">
+					<select id="tclass" class="form-control" name="tclass">
 					@foreach ($ous as $ou => $desc)
 			    		<option value="{{ $ou }}" {{ isset($user) && array_key_exists('tpClass', $user) && $ou == $user['tpClass'] ? 'selected' : '' }}>{{ $desc }}</option>
 			    	@endforeach
@@ -101,7 +101,7 @@
 				</div>
 			    <div class="form-group">
 					<label>性別</label>
-					<select id="gender" type="text" class="form-control" name="gender">
+					<select id="gender" class="form-control" name="gender">
 						<option value="0"{{ isset($user) && $user['gender'] == 0 ? ' selected' : '' }}>未知</option>
 						<option value="1"{{ isset($user) && $user['gender'] == 1 ? ' selected' : '' }}>男</option>
 						<option value="2"{{ isset($user) && $user['gender'] == 2 ? ' selected' : '' }}>女</option>

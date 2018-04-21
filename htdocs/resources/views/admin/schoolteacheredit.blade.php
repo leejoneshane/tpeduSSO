@@ -57,30 +57,32 @@
 				</div>
 			    <div class="form-group">
 					<label>隸屬單位</label>
-					<select id="ou" type="text" class="form-control" name="ou" onchange="refresh_roles()">
+					<select id="ou" class="form-control" name="ou" onchange="refresh_roles()">
 					@foreach ($ous as $ou => $desc)
-			    		<option value="{{ $ou }}" {{ isset($user) && array_key_exists('ou', $user) && $ou == $user['ou'] ? 'selected' : '' }}>{{ $desc }}</option>
+			    		<option value="{{ $ou }}"{{ isset($user) && array_key_exists('ou', $user) && $ou == $user['ou'] ? ' selected' : '' }}>{{ $desc }}</option>
 			    	@endforeach
 					</select>
 				</div>
 			    <div class="form-group">
 					<label>主要職稱</label>
-					<select id="role" type="text" class="form-control" name="role">
+					<select id="role" class="form-control" name="role">
 					@foreach ($roles as $role => $desc)
-			    		<option value="{{ $role }}" {{ isset($user) && array_key_exists('title', $user) && $role == $user['title'] ? 'selected' : '' }}>{{ $desc }}</option>
+			    		<option value="{{ $role }}"{{ isset($user) && array_key_exists('title', $user) && $role == $user['title'] ? ' selected' : '' }}>{{ $desc }}</option>
 			    	@endforeach
 					</select>
 				</div>
 			    <div class="form-group{{ $errors->has('tclass') ? ' has-error' : '' }}">
-					<label style="display:block">任教班級</label>
-					@if (isset($user) && array_key_exists('tpTeachClass', $user))
-						@if (is_array($user['tpTeachClass']))
-							@foreach ($user['tpTeachClass'] as $class)
-							<input type="text" class="form-control" style="width:50%;display:inline" name="tclass[]" value="{{ $class }}" placeholder="請輸入班級代號"><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
-							@endforeach
-						@else
-							<input type="text" class="form-control" style="width:50%;display:inline" name="tclass[]" value="{{ $user['tpTeachClass'] }}" placeholder="請輸入班級代號"><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
-						@endif
+					<label style="display:block">配課資訊</label>
+					@if (isset($assign))
+						@foreach ($assign as $pair)
+						<input type="text" class="form-control" style="width:25%;display:inline" name="tclass[]" value="{{ $pair['class'] }}" placeholder="請輸入班級代號">
+						<select class="form-control" style="width:25%;display:inline" name="subj[]">
+						@foreach ($subjects as $id => $name)
+				    		<option value="{{ $id }}"{{ isset($pair['subject']) && $pair['subject'] == $id ? ' selected' : '' }}>{{ $name }}</option>
+				    	@endforeach
+						</select>
+						<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().prev().remove();$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
+						@endforeach
 					@endif
 						<button id="nclass" type="button" class="btn btn-primary btn-circle" onclick="add_tclass()"><i class="fa fa-plus"></i></button>
 					@if ($errors->has('tclass'))
@@ -89,9 +91,27 @@
 						</p>
 					@endif
 				</div>
+			    <div class="form-group{{ $errors->has('character') ? ' has-error' : '' }}">
+					<label style="display:block">特殊身份註記</label>
+					@if (isset($user) && array_key_exists('tpCharacter', $user))
+						@if (is_array($user['tpCharacter']))
+							@foreach ($user['tpCharacter'] as $character)
+							<input type="text" class="form-control" style="width:50%;display:inline" name="character[]" value="{{ $character }}" placeholder="請用中文描述，例如：巡迴教師、均一平台管理員...，無則省略。" required><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
+							@endforeach
+						@else
+							<input type="text" class="form-control" style="width:50%;display:inline" name="character[]" value="{{ $user['tpCharacter'] }}" placeholder="請用中文描述，例如：巡迴教師、均一平台管理員...，無則省略。" required><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
+						@endif
+					@endif
+						<button id="ncharacter" type="button" class="btn btn-primary btn-circle" onclick="add_character()"><i class="fa fa-plus"></i></button>
+					@if ($errors->has('character'))
+						<p class="help-block">
+							<strong>{{ $errors->first('character') }}</strong>
+						</p>
+					@endif
+				</div>
 			    <div class="form-group">
 					<label>性別</label>
-					<select id="gender" type="text" class="form-control" name="gender">
+					<select id="gender" class="form-control" name="gender">
 						<option value="0"{{ isset($user) && $user['gender'] == 0 ? ' selected' : '' }}>未知</option>
 						<option value="1"{{ isset($user) && $user['gender'] == 1 ? ' selected' : '' }}>男</option>
 						<option value="2"{{ isset($user) && $user['gender'] == 2 ? ' selected' : '' }}>女</option>
@@ -246,9 +266,21 @@
   						});
       			};
       			
+      			function add_character() {
+					$('#ncharacter').before('<input type="text" class="form-control" style="width:50%;display:inline" name="character[]" placeholder="請用中文描述，例如：巡迴教師、均一平台管理員...，無則省略。" required>');
+					$('#ncharacter').before('<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>');
+				};
+
       			function add_tclass() {
-					$('#nclass').before('<input type="text" class="form-control" style="width:50%;display:inline" name="tclass[]" placeholder="請輸入班級代號">');
-					$('#nclass').before('<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>');
+      				my_item = '<div></div>';
+					my_item += '<input type="text" class="form-control" style="width:25%;display:inline" name="tclass[]" placeholder="請輸入班級代號">';
+      				my_item += '<select class="form-control" style="width:25%;display:inline" name="subj[]">';
+					@foreach ($subjects as $id => $name)
+				    my_item += '<option value="{{ $id }}">{{ $name }}</option>';
+				    @endforeach
+					my_item += '</select>';
+					my_item += '<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().prev().remove();$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>';
+					$('#nclass').before(my_item);
 				};
 
       			function add_mail() {

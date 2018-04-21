@@ -577,7 +577,6 @@ class LdapServiceProvider extends ServiceProvider
 	    	$fields[] = 'tpClassTitle';
 	    	$fields[] = 'tpSeat';
 	    	$fields[] = 'tpTeachClass';
-	    	$fields[] = 'tpTeachSubject';
 	    	$fields[] = 'tpCharacter';
 	    	$fields[] = 'inetUserStatus';
 		} elseif ($attr == 'uid')  {
