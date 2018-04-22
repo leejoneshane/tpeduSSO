@@ -876,10 +876,12 @@ class SchoolController extends Controller
     		if (array_key_exists('tpTeachClass', $user)) {
     			$assign = array();
     			if (is_array($user['tpTeachClass'])) {
+    				$i = 0;
     				foreach ($user['tpTeachClass'] as $pair) {
     					$part = explode(',', $pair);
-    					$assign[]['class'] = $part[0];
-    					if (isset($part[1])) $assign[]['subject'] = $part[1];
+    					$assign[$i]['class'] = $part[0];
+    					if (isset($part[1])) $assign[$i]['subject'] = $part[1];
+    					$i++;
     				}
     			} else {
     				$part = explode(',', $user['tpTeachClass']);
@@ -887,7 +889,6 @@ class SchoolController extends Controller
     				if (isset($part[1])) $assign[0]['subject'] = $part[1];
     			}
     		}
-    		
     		if (array_key_exists('ou', $user))
     			$data = $openldap->getRoles($dc, $user['ou']);
     		else
@@ -1042,15 +1043,15 @@ class SchoolController extends Controller
 		if (!is_null($request->get('address'))) $info['homePostalAddress'] = $request->get('address');
 		if (!is_null($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
 		if (!is_null($request->get('tclass'))) {
-			$classes = array();
-			if (is_array($request->get('tclass'))) {
-				foreach ($request->get('tclass') as $class) {
-	    			if ($openldap->getOuEntry($dc, $class)) $classes[] = $class;
-				}
-			} else {
-	    		if ($openldap->getOuEntry($dc, $request->get('tclass'))) $classes[] = $request->get('tclass');
+			$classes = $request->get('tclass');
+			$subjects = $request->get('subj');
+			$assign = array();
+			for ($i=0;$i<count($classes);$i++) {
+	    		if ($openldap->getOuEntry($dc, $classes[$i])) {
+	    			$assign[] = $classes[$i].','.$subjects[$i];
+	    		}
 			}
-			$info['tpTeachClass'] = $classes;
+			$info['tpTeachClass'] = $assign;
 		}
 		if (!is_null($request->get('character'))) {
 			$data = array();
@@ -1506,7 +1507,7 @@ class SchoolController extends Controller
     {
 		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
-		$users = $openldap->findUsers("(&(o=$dc)(tpTeachSubject=$subj))", "cn");
+		$users = $openldap->findUsers("(&(o=$dc)(tpTeachClass=*$subj))", "cn");
 		if ($users && $users['count']>0) {
 			return redirect()->back()->with("error", "此科目已經配課給老師和班級，因此無法刪除！");
 		}

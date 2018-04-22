@@ -6,8 +6,10 @@ olcDbIndex: dc eq
 olcDbIndex: ou eq
 olcDbIndex: title eq
 olcDbIndex: tpSubject eq
+olcDbIndex: tpTeachClass sub
 olcDbIndex: cn eq
 olcDbIndex: uid eq
+olcDbIndex: displayName eq,sub
 olcDbIndex: mail eq,sub
 olcDbIndex: mobile eq
 olcDbIndex: memberOf eq

@@ -75,13 +75,12 @@
 					<label style="display:block">配課資訊</label>
 					@if (isset($assign))
 						@foreach ($assign as $pair)
-						<input type="text" class="form-control" style="width:25%;display:inline" name="tclass[]" value="{{ $pair['class'] }}" placeholder="請輸入班級代號">
-						<select class="form-control" style="width:25%;display:inline" name="subj[]">
+						<div></div>
+						<input type="text" class="form-control" style="width:25%;display:inline" name="tclass[]" value="{{ $pair['class'] }}" placeholder="請輸入班級代號"><select class="form-control" style="width:25%;display:inline" name="subj[]">
 						@foreach ($subjects as $id => $name)
 				    		<option value="{{ $id }}"{{ isset($pair['subject']) && $pair['subject'] == $id ? ' selected' : '' }}>{{ $name }}</option>
 				    	@endforeach
-						</select>
-						<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().prev().remove();$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
+						</select><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().prev().remove();$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
 						@endforeach
 					@endif
 						<button id="nclass" type="button" class="btn btn-primary btn-circle" onclick="add_tclass()"><i class="fa fa-plus"></i></button>
