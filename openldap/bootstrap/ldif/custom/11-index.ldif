@@ -1,21 +1,21 @@
 dn: olcDatabase={1}{{ LDAP_BACKEND }},cn=config
 changetype:  modify
-replace: olcDbIndex
-olcDbIndex: o eq
-olcDbIndex: dc eq
-olcDbIndex: ou eq
-olcDbIndex: title eq
-olcDbIndex: tpSubject eq
-olcDbIndex: tpTeachClass sub
-olcDbIndex: cn eq
-olcDbIndex: uid eq
-olcDbIndex: displayName eq,sub
-olcDbIndex: mail eq,sub
-olcDbIndex: mobile eq
-olcDbIndex: memberOf eq
-olcDbIndex: entryCSN eq
-olcDbIndex: entryUUID eq
-olcDbIndex: objectClass eq
+replace: olcdbindex
+olcdbindex: o eq
+olcdbindex: dc eq
+olcdbindex: ou eq
+olcdbindex: title eq
+olcdbindex: tpSubject eq
+olcdbindex: tpTeachClass sub
+olcdbindex: cn eq
+olcdbindex: uid eq
+olcdbindex: displayName eq
+olcdbindex: mail eq,sub
+olcdbindex: mobile eq
+olcdbindex: memberOf eq
+olcdbindex: entryCSN eq
+olcdbindex: entryUUID eq
+olcdbindex: objectClass eq
 -
 replace: olcDbMaxSize
 olcDbMaxSize: 2147483648
