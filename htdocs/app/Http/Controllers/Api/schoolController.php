@@ -42,6 +42,21 @@ class schoolController extends Controller
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
+    public function allSubject($dc)
+    {
+		$openldap = new LdapServiceProvider();
+		$json = $openldap->getSubjects($dc);
+		return json_encode($json, JSON_UNESCAPED_UNICODE);
+    }
+
+    public function oneSubject($dc, $subj_id)
+    {
+		$openldap = new LdapServiceProvider();
+		$entry = $openldap->getSubjectEntry($dc,$subj_id);
+		$json = $openldap->getSubjectData($entry);
+		return json_encode($json, JSON_UNESCAPED_UNICODE);
+    }
+
     public function allRole($dc, $ou_id)
     {
 		$openldap = new LdapServiceProvider();
@@ -146,6 +161,7 @@ class schoolController extends Controller
 		$schoolinfo['tpUniformNumbers'] = $request->get('uno');
 		$schoolinfo['tpIpv4'] = $request->get('ipv4');
 		$schoolinfo['tpIpv6'] = $request->get('ipv6');
+		$schoolinfo['subjects'] = $request->get('subjects');
 		$schoolinfo['ous'] = $request->get('ous');
 		$schoolinfo['roles'] = $request->get('roles');
 		$schoolinfo['tpAdministrator'] = $request->get('admins');
@@ -176,6 +192,11 @@ class schoolController extends Controller
 		$info['o'] = $request->get('school');
 		$info['ou'] = $request->get('unit');
 		$info['title'] = $request->get('role');
+		$info['tpTeachClass'] = $request->get('tclass');
+		$info['tpCharacter'] = $request->get('memo');
+		$info['employeeNumber'] = $request->get('stdno');
+		$info['tpClass'] = $request->get('class');
+		$info['tpSeat'] = $request->get('seat');
 		$info['info'] = $request->get('info');
 		$info['employeeType'] = $request->get('type');
 		$info['sn'] = $request->get('lastname');
@@ -213,6 +234,11 @@ class schoolController extends Controller
 		$info['o'] = $request->get('school');
 		$info['ou'] = $request->get('unit');
 		$info['title'] = $request->get('role');
+		$info['tpTeachClass'] = $request->get('tclass');
+		$info['tpCharacter'] = $request->get('memo');
+		$info['employeeNumber'] = $request->get('stdno');
+		$info['tpClass'] = $request->get('class');
+		$info['tpSeat'] = $request->get('seat');
 		$info['info'] = $request->get('info');
 		$info['employeeType'] = $request->get('type');
 		$info['sn'] = $request->get('lastname');

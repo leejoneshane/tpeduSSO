@@ -29,6 +29,8 @@ Route::group(['middleware' => 'auth:api'], function () {
 Route::group(['middleware' => 'clientid:school'], function () {
     Route::get('school', 'Api\schoolController@all');
     Route::get('school/{dc}', 'Api\schoolController@one');
+    Route::get('school/{dc}/subject', 'Api\schoolController@allSubject');
+    Route::get('school/{dc}/subject/{subj_id}', 'Api\schoolController@oneSubject');
     Route::get('school/{dc}/ou', 'Api\schoolController@allOu');
     Route::get('school/{dc}/ou/{ou_id}', 'Api\schoolController@oneOu');
     Route::get('school/{dc}/ou/{ou_id}/role', 'Api\schoolController@allRole');
