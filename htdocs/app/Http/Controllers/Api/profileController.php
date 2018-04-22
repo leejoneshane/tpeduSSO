@@ -41,16 +41,17 @@ class profileController extends Controller
 	if (array_key_exists('birthDate', $user->ldap)) $json->birthDate = $user->ldap['birthDate'];
 	if (array_key_exists('school', $user->ldap)) $json->organization = $user->ldap['school'];
 	if ($json->role == '學生') {
-	    if (array_key_exists('employeeNumber', $user->ldap)) $json->student_id = $user->ldap['employeeNumber'];
+	    if (array_key_exists('employeeNumber', $user->ldap)) $json->studentId = $user->ldap['employeeNumber'];
 	    if (array_key_exists('tpClass', $user->ldap)) $json->class = $user->ldap['tpClass'];
-	    if (array_key_exists('tpClassTitle', $user->ldap)) $json->class_name = $user->ldap['tpClassTitle'];
+	    if (array_key_exists('tpClassTitle', $user->ldap)) $json->className = $user->ldap['tpClassTitle'];
 	    if (array_key_exists('tpSeat', $user->ldap)) $json->seat = $user->ldap['tpSeat'];
 	} else {
 	    if (array_key_exists('department', $user->ldap)) $json->unit = $user->ldap['department'];
 	    if (array_key_exists('titleName', $user->ldap)) $json->title = $user->ldap['titleName'];
 	    if (array_key_exists('tpTeachClass', $user->ldap)) $json->teachClass = $user->ldap['tpTeachClass'];
 	}
-        return json_encode($json, JSON_UNESCAPED_UNICODE);
+	if (array_key_exists('tpCharacter', $user->ldap)) $json->character = $user->ldap['tpCharacter'];
+    return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
     public function updateUser(Request $request)
