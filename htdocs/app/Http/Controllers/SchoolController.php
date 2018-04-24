@@ -439,7 +439,7 @@ class SchoolController extends Controller
 		}
 	}
 	
-    public function updateSchoolStudent(Request $request)
+    public function updateSchoolStudent(Request $request, $uuid)
 	{
 		$dc = $request->user()->ldap['o'];
 		$my_field = $request->session()->get('field');
@@ -568,39 +568,40 @@ class SchoolController extends Controller
 		$teachers = array();
 		if (!empty($filter))
 			$teachers = $openldap->findUsers($filter, ["cn","displayName","o","ou","title","entryUUID","inetUserStatus"]);
-		for ($i=0;$i<$teachers['count'];$i++) {
-			$dc = $teachers[$i]['o'][0];
-			$teachers[$i]['school']['count'] = 1;
-			$teachers[$i]['school'][0] = $openldap->getOrgTitle($dc);
-			if (array_key_exists('ou', $teachers[$i]) && $teachers[$i]['ou']['count']>0)  {
-				$ou = $teachers[$i]['ou'][0];
-				$teachers[$i]['department']['count'] = 1;
-				$teachers[$i]['department'][0] = $openldap->getOuTitle($dc, $ou);
-				if (array_key_exists('title', $teachers[$i]) && $teachers[$i]['title']['count']>0)  {
-					$role = $teachers[$i]['title'][0];
-					$teachers[$i]['titlename']['count'] = 1;
-					$teachers[$i]['titlename'][0] = $openldap->getRoleTitle($dc, $ou, $role);
-				} else {
-					$teachers[$i]['titlename']['count'] = 1;
-					$teachers[$i]['titlename'][0] = '無';
-				}
-			} else {
-				$teachers[$i]['department']['count'] = 1;
-				$teachers[$i]['department'][0] = '無';
-				$teachers[$i]['titlename']['count'] = 1;
-				$teachers[$i]['titlename'][0] = '無';
-			}
-			if (!array_key_exists('inetuserstatus', $teachers[$i]) || $teachers[$i]['inetuserstatus']['count'] == 0) {
-				$teachers[$i]['inetuserstatus']['count'] = 1;
-				$teachers[$i]['inetuserstatus'][0] = '啟用';
-			} elseif (strtolower($teachers[$i]['inetuserstatus'][0]) == 'active') {
-				$teachers[$i]['inetuserstatus'][0] = '啟用';
-			} elseif (strtolower($teachers[$i]['inetuserstatus'][0]) == 'inactive') {
-				$teachers[$i]['inetuserstatus'][0] = '停用';
-			} elseif (strtolower($teachers[$i]['inetuserstatus'][0]) == 'deleted') {
-				$teachers[$i]['inetuserstatus'][0] = '已刪除';
-			}
-		}
+		if (array_key_exists('count', $teachers))
+		    for ($i=0;$i<$teachers['count'];$i++) {
+			    $dc = $teachers[$i]['o'][0];
+			    $teachers[$i]['school']['count'] = 1;
+			    $teachers[$i]['school'][0] = $openldap->getOrgTitle($dc);
+			    if (array_key_exists('ou', $teachers[$i]) && $teachers[$i]['ou']['count']>0)  {
+				    $ou = $teachers[$i]['ou'][0];
+				    $teachers[$i]['department']['count'] = 1;
+				    $teachers[$i]['department'][0] = $openldap->getOuTitle($dc, $ou);
+				    if (array_key_exists('title', $teachers[$i]) && $teachers[$i]['title']['count']>0)  {
+					    $role = $teachers[$i]['title'][0];
+					    $teachers[$i]['titlename']['count'] = 1;
+					    $teachers[$i]['titlename'][0] = $openldap->getRoleTitle($dc, $ou, $role);
+				    } else {
+					    $teachers[$i]['titlename']['count'] = 1;
+					    $teachers[$i]['titlename'][0] = '無';
+				    }
+			    } else {
+				    $teachers[$i]['department']['count'] = 1;
+				    $teachers[$i]['department'][0] = '無';
+				    $teachers[$i]['titlename']['count'] = 1;
+				    $teachers[$i]['titlename'][0] = '無';
+			    }
+			    if (!array_key_exists('inetuserstatus', $teachers[$i]) || $teachers[$i]['inetuserstatus']['count'] == 0) {
+				    $teachers[$i]['inetuserstatus']['count'] = 1;
+				    $teachers[$i]['inetuserstatus'][0] = '啟用';
+			    } elseif (strtolower($teachers[$i]['inetuserstatus'][0]) == 'active') {
+				    $teachers[$i]['inetuserstatus'][0] = '啟用';
+			    } elseif (strtolower($teachers[$i]['inetuserstatus'][0]) == 'inactive') {
+				    $teachers[$i]['inetuserstatus'][0] = '停用';
+			    } elseif (strtolower($teachers[$i]['inetuserstatus'][0]) == 'deleted') {
+				    $teachers[$i]['inetuserstatus'][0] = '已刪除';
+			    }
+		    }
 		return view('admin.schoolteacher', [ 'my_field' => $my_field, 'keywords' => $keywords, 'ous' => $ous, 'teachers' => $teachers ]);
     }
 
