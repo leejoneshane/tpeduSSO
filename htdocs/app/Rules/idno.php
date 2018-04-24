@@ -32,7 +32,7 @@ class idno implements Rule
 	$wd_str="BAKJHGFEDCNMLVUTSRQPZWYX0000OI";   //關鍵在這行字串
 	$d1 = strpos($wd_str, $id[0])%10;
 	$sum = 0;
-	if($id[1] >= 'A') $id[1] = chr($id[1])-65; //第2碼非數字轉換依說明處理
+	if($id[1] >= 'A') $id[1] = ord($id[1])-65; //第2碼非數字轉換依說明處理
 	for($ii=1;$ii<9;$ii++)
     	    $sum += (int)$id[$ii]*(9-$ii);
 	$sum += $d1 + (int)$id[9];
