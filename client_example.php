@@ -33,7 +33,6 @@ if (!isset($_GET['code'])) {
     ];
     $response = http_post_fields('https://ldap.tp.edu.tw/oauth/token', $param);
     $token = json_decode($response);
-    ini_set("session.gc_maxlifetime", $token->expires_in);
     $_SESSION['token'] = $token->access_token;
     $_SESSION['refresh'] = $token->refresh_token;
     $_SESSION['expire'] = time() + $token->expires_in;
