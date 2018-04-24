@@ -5,7 +5,7 @@ if (!isset($_GET['code']) && !isset($_SESSION['token'])) {
         'client_id' => '3',
         'redirect_uri' => 'redirect_uri=https://yourapp.com/api/callback',
         'response_type' => 'code',
-        'scope' => 'user,profile',
+        'scope' => 'user profile',
     ];
     http_redirect('https://ldap.tp.edu.tw/oauth/authorize', $param);
     exit;
