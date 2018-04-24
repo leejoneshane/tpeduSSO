@@ -29,7 +29,7 @@ if (!isset($_GET['code']) && !isset($_SESSION['token'])) {
         'refresh_token' => $_SESSION['refresh'],
         'client_id' => '3',
         'client_secret' => '5uyghc0DpeRJHsv43Di567fjasuy083kf6hiDAT',
-        'scope' => 'user,profile',
+        'scope' => 'user profile',
     ];
     $response = http_post_fields('https://ldap.tp.edu.tw/oauth/token', $param);
     $token = json_decode($response);
