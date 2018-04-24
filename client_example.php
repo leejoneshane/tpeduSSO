@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_GET['code'])) {
+if (!isset($_GET['code']) && !isset($_SESSION['token'])) {
     $param = [
         'client_id' => '3',
         'redirect_uri' => 'redirect_uri=https://yourapp.com/api/callback',
