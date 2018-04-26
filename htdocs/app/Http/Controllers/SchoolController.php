@@ -544,10 +544,10 @@ class SchoolController extends Controller
 		}
 				
 		$entry = $openldap->getUserEntry($uuid);
-		$orginal = $openldap->getUserData($entry, 'cn');
+		$original = $openldap->getUserData($entry, 'cn');
 		$result = $openldap->updateData($entry, $info);
 		if ($result) {
-			if ($orginal['cn'] != $request->get('idno')) {
+			if ($original['cn'] != $request->get('idno')) {
 				$result = $openldap->renameUser($original['cn'], $request->get('idno'));
 				if ($result) {
 					return redirect('school/teacher?field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新學生基本資料！");
@@ -1158,10 +1158,10 @@ class SchoolController extends Controller
 		}
 		
 		$entry = $openldap->getUserEntry($uuid);
-		$orginal = $openldap->getUserData($entry, 'cn');
+		$original = $openldap->getUserData($entry, 'cn');
 		$result = $openldap->updateData($entry, $info);
 		if ($result) {
-			if ($orginal['cn'] != $request->get('idno')) {
+			if ($original['cn'] != $request->get('idno')) {
 				$result = $openldap->renameUser($original['cn'], $request->get('idno'));
 				if ($result) {
 					return redirect('school/teacher?field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新教師基本資料！");
