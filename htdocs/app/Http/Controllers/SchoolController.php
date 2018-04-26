@@ -895,8 +895,8 @@ class SchoolController extends Controller
     	if (!is_null($uuid)) {//edit
     		$entry = $openldap->getUserEntry($uuid);
     		$user = $openldap->getUserData($entry);
+    		$assign = array();
     		if (array_key_exists('tpTeachClass', $user)) {
-    			$assign = array();
     			if (is_array($user['tpTeachClass'])) {
     				$i = 0;
     				foreach ($user['tpTeachClass'] as $pair) {

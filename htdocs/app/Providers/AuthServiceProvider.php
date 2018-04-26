@@ -36,8 +36,8 @@ class AuthServiceProvider extends ServiceProvider
     	    'user' => '取得和修改目前登入者的識別代號、姓名、電子郵件、手機號碼等資訊',
     	    'idno' => '取得目前登入者的身分證字號',
     	    'profile' => '取得目前登入者的身份、所屬機構、單位職稱、就讀年班等資訊',
-	    'account' => '修改目前登入者的自訂帳號和密碼',
-	    'school' => '讀取學校公開資訊',
+	        'account' => '修改目前登入者的自訂帳號和密碼',
+	        'school' => '讀取學校公開資訊',
     	    'schoolAdmin' => '更新學校資訊，增刪修學校人員',
     	]);
 
