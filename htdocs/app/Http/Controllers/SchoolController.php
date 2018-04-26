@@ -456,7 +456,6 @@ class SchoolController extends Controller
 			'www' => 'nullable|url',
 		]);
 		$info = array();
-		$info['cn'] = $request->get('idno');
 		$info['employeeNumber'] = $request->get('stdno');
 		$info['tpClass'] = $request->get('tclass');
 		$info['tpSeat'] = $request->get('seat');
@@ -546,9 +545,16 @@ class SchoolController extends Controller
 				
 		$entry = $openldap->getUserEntry($uuid);
 		$orginal = $openldap->getUserData($entry, 'cn');
+		if ($orginal['cn'] != $request->get('idno')) {
+			$result = $openldap->renameUser($original['cn'], $request->get('idno'));
+			if ($result) {
+				$entry = $openldap->getUserEntry($request->get('idno'));
+			} else {
+				return redirect('school/teacher?field='.$my_field.'&keywords='.$keywords)->with("error", "學生身分證字號變更失敗！".$openldap->error());
+			}
+		}
 		$result = $openldap->updateData($entry, $info);
 		if ($result) {
-			if ($orginal['cn'] != $info['cn']) $openldap->renameUser($original['cn'], $info['cn']);
 			return redirect('school/teacher?field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新學生基本資料！");
 		} else {
 			return redirect('school/teacher?field='.$my_field.'&keywords='.$keywords)->with("error", "學生基本資料變更失敗！".$openldap->error());
@@ -1053,7 +1059,6 @@ class SchoolController extends Controller
 			'www' => 'nullable|url',
 		]);
 		$info = array();
-		$info['cn'] = $request->get('idno');
 		$info['ou'] = $request->get('ou');
 		$info['title'] = $request->get('role');
 		$info['sn'] = $request->get('sn');
@@ -1155,9 +1160,16 @@ class SchoolController extends Controller
 		
 		$entry = $openldap->getUserEntry($uuid);
 		$orginal = $openldap->getUserData($entry, 'cn');
+		if ($orginal['cn'] != $request->get('idno')) {
+			$result = $openldap->renameUser($original['cn'], $request->get('idno'));
+			if ($result) {
+				$entry = $openldap->getUserEntry($request->get('idno'));
+			} else {
+				return redirect('school/teacher?field='.$my_field.'&keywords='.$keywords)->with("error", "教師身分證字號變更失敗！".$openldap->error());
+			}
+		}
 		$result = $openldap->updateData($entry, $info);
 		if ($result) {
-			if ($orginal['cn'] != $info['cn']) $openldap->renameUser($original['cn'], $info['cn']);
 			return redirect('school/teacher?field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新教師基本資料！");
 		} else {
 			return redirect('school/teacher?field='.$my_field.'&keywords='.$keywords)->with("error", "教師基本資料變更失敗！".$openldap->error());
