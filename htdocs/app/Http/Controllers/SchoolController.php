@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Config;
 use Validator;
+use Auth;
 use Illuminate\Http\Request;
 use App\Providers\LdapServiceProvider;
 use App\Rules\idno;
@@ -550,6 +551,10 @@ class SchoolController extends Controller
 			if ($original['cn'] != $request->get('idno')) {
 				$result = $openldap->renameUser($original['cn'], $request->get('idno'));
 				if ($result) {
+					$user = $model->newQuery()
+	        		->where('idno', $original['cn'])
+	        		->first();
+	        		$user->delete();				
 					return redirect('school/teacher?field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新學生基本資料！");
 				} else {
 					return redirect('school/teacher?field='.$my_field.'&keywords='.$keywords)->with("error", "學生身分證字號變更失敗！".$openldap->error());
@@ -1164,6 +1169,11 @@ class SchoolController extends Controller
 			if ($original['cn'] != $request->get('idno')) {
 				$result = $openldap->renameUser($original['cn'], $request->get('idno'));
 				if ($result) {
+					$user = $model->newQuery()
+	        		->where('idno', $original['cn'])
+	        		->first();
+	        		$user->delete();
+					if ($request->user()->idno == $original['cn']) Auth::logout();
 					return redirect('school/teacher?field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新教師基本資料！");
 				} else {
 					return redirect('school/teacher?field='.$my_field.'&keywords='.$keywords)->with("error", "教師身分證字號變更失敗！".$openldap->error());
