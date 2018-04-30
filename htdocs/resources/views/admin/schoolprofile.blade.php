@@ -59,7 +59,7 @@
 		    </div>
 		    <div class="form-group{{ $errors->has('fax') ? ' has-error' : '' }}">
 			<label>傳真號碼</label>
-			<input id="fax" type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" name="fax" value="{{ array_key_exists('fax', $data) ? $data['fax'] : old('fax') }}" placeholder="格式如右：(02)23456789">
+			<input id="fax" type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" name="fax" value="{{ array_key_exists('facsimileTelephoneNumber', $data) ? $data['facsimileTelephoneNumber'] : old('fax') }}" placeholder="格式如右：(02)23456789">
 			@if ($errors->has('fax'))
 				<p class="help-block">
 					<strong>{{ $errors->first('fax') }}</strong>

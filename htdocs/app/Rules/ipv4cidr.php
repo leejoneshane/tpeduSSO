@@ -25,6 +25,7 @@ class ipv4cidr implements Rule
      */
     public function passes($attribute, $value)
     {
+    if (empty($value)) return true;
 	$ereg_pattern = '/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$/';
 	if (!preg_match($ereg_pattern, $value)) return false;
 	return true;

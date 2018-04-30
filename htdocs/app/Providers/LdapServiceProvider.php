@@ -234,7 +234,7 @@ class LdapServiceProvider extends ServiceProvider
 	    	$fields[] = 'businessCategory';
 	    	$fields[] = 'st';
 	    	$fields[] = 'description';
-	    	$fields[] = 'fax';
+	    	$fields[] = 'facsimileTelephoneNumber';
 	    	$fields[] = 'telephoneNumber';
 	    	$fields[] = 'postalCode';
 	    	$fields[] = 'street';
@@ -565,7 +565,7 @@ class LdapServiceProvider extends ServiceProvider
 	    	$fields[] = 'displayName';
 	    	$fields[] = 'mail';
 	    	$fields[] = 'mobile';
-	    	$fields[] = 'fax';
+	    	$fields[] = 'facsimileTelephoneNumber';
 	    	$fields[] = 'telephoneNumber';
 	    	$fields[] = 'homePhone';
 	    	$fields[] = 'registeredAddress';

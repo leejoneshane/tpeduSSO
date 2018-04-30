@@ -1697,16 +1697,20 @@ class SchoolController extends Controller
 		$info['description'] = $request->get('description');
 		$info['businessCategory'] = $request->get('businessCategory');
 		$info['st'] = $request->get('st');
-		if ($request->has('fax')) $info['facsimileTelephoneNumber'] = $request->get('fax');
+		$info['facsimileTelephoneNumber'] = [];
+		if (!empty($request->get('fax'))) $info['facsimileTelephoneNumber'] = $request->get('fax');
 		$info['telephoneNumber'] = $request->get('telephoneNumber');
 		$info['postalCode'] = $request->get('postalCode');
 		$info['street'] = $request->get('street');
 		$info['postOfficeBox'] = $request->get('postOfficeBox');
-		if ($request->has('wWWHomePage')) $info['wWWHomePage'] = $request->get('wWWHomePage');
+		$info['wWWHomePage'] = [];
+        if (!empty($request->get('wWWHomePage'))) $info['wWWHomePage'] = $request->get('wWWHomePage');
 		$info['tpUniformNumbers'] = $request->get('tpUniformNumbers');
-		$info['tpIpv4'] = $request->get('tpIpv4');
-		$info['tpIpv6'] = $request->get('tpIpv6');
-	
+		$info['tpIpv4'] = [];
+		if (!empty($request->get('tpIpv4'))) $info['tpIpv4'] = $request->get('tpIpv4');
+		$info['tpIpv6'] = [];
+		if (!empty($request->get('tpIpv6'))) $info['tpIpv6'] = $request->get('tpIpv6');
+
 		$entry = $openldap->getOrgEntry($dc);
 		$result = $openldap->updateData($entry, $info);
 		if ($result) {
