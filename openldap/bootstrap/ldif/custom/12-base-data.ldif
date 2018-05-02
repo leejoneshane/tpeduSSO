@@ -9,7 +9,7 @@ objectClass: organizationalUnit
 objectClass: top
 
 dn: ou=group,{{ LDAP_BASE_DN }}
-ou: groups
+ou: group
 objectClass: organizationalUnit
 objectClass: top
 
