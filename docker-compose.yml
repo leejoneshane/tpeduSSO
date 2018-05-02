@@ -6,6 +6,13 @@ services:
     hostname: ldap
     restart: always
     
+  ldapadmin:
+    image: leejoneshane/tpedusso:phpldapadmin
+    container_name: ldapadmin
+    restart: always
+    ports:
+      - "8080:80"
+    
   mysql:
     image: mysql
     container_name: mysql
