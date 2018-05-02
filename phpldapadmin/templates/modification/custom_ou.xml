@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE template SYSTEM "template.dtd">
+
+<template>
+<askcontainer>1</askcontainer>
+<description>編輯組織單位</description>
+<icon>ldap-ou.png</icon>
+<invalid>0</invalid>
+<rdn>ou</rdn>
+<regexp>^ou=.*,dc=.*,dc=tp,dc=edu,dc=tw</regexp>
+<title>學校單位</title>
+<visible>1</visible>
+
+<objectClasses>
+<objectClass id="organizationalUnit"></objectClass>
+</objectClasses>
+
+<attributes>
+<attribute id="ou">
+	<display>單位代號</display>
+	<order>1</order>
+	<page>1</page>
+</attribute>
+<attribute id="businessCategory">
+	<display>單位分類</display>
+	<type>select</type>
+	<value id="行政部門">行政部門</value>
+	<value id="教學班級">教學班級</value>
+	<order>2</order>
+	<page>1</page>
+</attribute>
+<attribute id="description">
+	<display>單位全銜</display>
+	<hint>請輸入學校處室或領域名稱，例如：教務處、藝術領域...</hint>
+	<icon>light.png</icon>
+	<order>3</order>
+	<spacer>1</spacer>
+</attribute>
+</attributes>
+
+</template>

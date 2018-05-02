@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE template SYSTEM "template.dtd">
+
+<template>
+<askcontainer>1</askcontainer>
+<description>新增單位職務</description>
+<icon>ldap-ou.png</icon>
+<invalid>0</invalid>
+<rdn>cn</rdn>
+<regexp>^cn=.*,dc=.*,dc=tp,dc=edu,dc=tw</regexp>
+<title>學校職務</title>
+<visible>1</visible>
+
+<objectClasses>
+<objectClass id="organizationalRole"></objectClass>
+</objectClasses>
+
+<attributes>
+<attribute id="cn">
+	<display>職務代號</display>
+	<order>1</order>
+	<spacer>1</spacer>
+</attribute>
+<attribute id="ou">
+	<display>隸屬單位</display>
+	<type>select</type>
+	<value><![CDATA[=php.PickList(.;(objectClass=ou);ou;%description%)]]></value>
+	<hint>請選取學校單位，若為通用職務，請留白。</hint>
+	<order>2</order>
+	<page>1</page>
+</attribute>
+<attribute id="description">
+	<display>職務全銜</display>
+	<icon>light.png</icon>
+	<order>3</order>
+	<spacer>1</spacer>
+</attribute>
+<attribute id="roleOccupant">
+	<display>包含人員</display>
+	<icon>ldap-user.png</icon>
+	<order>4</order>
+	<spacer>1</spacer>
+</attribute>
+</attributes>
+
+</template>

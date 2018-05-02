@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE template SYSTEM "template.dtd">
+
+<template>
+<askcontainer>1</askcontainer>
+<description>新增登入帳號</description>
+<icon>ldap-uid.png</icon>
+<invalid>0</invalid>
+<rdn>uid</rdn>
+<regexp>^uid=.*,ou=account,dc=tp,dc=edu,dc=tw</regexp>
+<title>登入帳號</title>
+<visible>1</visible>
+
+<objectClasses>
+<objectClass id="radiusObjectProfile"></objectClass>
+</objectClasses>
+
+<attributes>
+<attribute id="cn">
+	<display>身分證字號</display>
+	<order>1</order>
+	<page>1</page>
+</attribute>
+<attribute id="uid">
+	<display>登入帳號</display>
+	<icon>ldap-uid.png</icon>
+	<order>2</order>
+	<page>1</page>
+	<spacer>1</spacer>
+</attribute>
+<attribute id="userPassword">
+	<display>新密碼</display>
+	<icon>lock.png</icon>
+	<post><![CDATA[=php.PasswordEncrypt(%enc%;%userPassword%)]]></post>
+	<order>3</order>
+	<page>1</page>
+	<verify>1</verify>
+</attribute>
+<attribute id="description">
+	<display>用途說明</display>
+	<order>4</order>
+	<page>1</page>
+</attribute>
+</attributes>
+
+</template>

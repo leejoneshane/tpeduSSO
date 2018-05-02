@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE template SYSTEM "template.dtd">
+
+<template>
+<askcontainer>1</askcontainer>
+<description>新增學校組織</description>
+<icon>ldap-o.png</icon>
+<invalid>0</invalid>
+<rdn>dc</rdn>
+<regexp>^dc=.*,dc=tp,dc=edu,dc=tw</regexp>
+<title>臺北市學校</title>
+<visible>1</visible>
+
+<objectClasses>
+<objectClass id="tpeduSchool"></objectClass>
+</objectClasses>
+
+<attributes>
+<attribute id="dc">
+	<display>學校網域</display>
+	<onchange><![CDATA[=autoFill(o;%dc%)]]></onchange>
+	<order>1</order>
+	<page>1</page>
+</attribute>
+<attribute id="o">
+	<display>學校網域</display>
+	<hint>必須與上面欄位相同，請勿自行修改！</hint>
+	<order>2</order>
+	<page>1</page>
+</attribute>
+<attribute id="businessCategory">
+	<display>學校分類</display>
+	<type>select</type>
+	<value id="幼兒園">幼兒園</value>
+	<value id="國民小學">國民小學</value>
+	<value id="國民中學">國民中學</value>
+	<value id="高中">高中</value>
+	<value id="高職">高職</value>
+	<value id="大專院校">大專院校</value>
+	<value id="特殊教育">特殊教育</value>
+	<value id="主管機關">主管機關</value>
+	<order>3</order>
+	<page>1</page>
+</attribute>
+<attribute id="st">
+	<display>行政區</display>
+	<order>4</order>
+	<page>1</page>
+</attribute>
+<attribute id="description">
+	<display>學校全銜</display>
+	<icon>light.png</icon>
+	<order>5</order>
+	<spacer>1</spacer>
+</attribute>
+<attribute id="wWWHomePage">
+	<display>學校網址</display>
+	<icon>ldap-o.png</icon>
+	<order>6</order>
+	<page>1</page>
+</attribute>
+<attribute id="facsimileTelephoneNumber">
+	<display>傳真電話</display>
+	<order>7</order>
+	<page>1</page>
+</attribute>
+<attribute id="telephoneNumber">
+	<display>學校總機</display>
+	<order>8</order>
+	<page>1</page>
+</attribute>
+<attribute id="postalCode">
+	<display>郵遞區號</display>
+	<order>9</order>
+	<page>1</page>
+</attribute>
+<attribute id="street">
+	<display>學校地址</display>
+	<order>10</order>
+	<page>1</page>
+</attribute>
+<attribute id="postOfficeBox">
+	<display>教育局連絡箱</display>
+	<order>11</order>
+	<page>1</page>
+</attribute>
+<attribute id="tpUniformNumbers">
+	<display>學校統一編號</display>
+	<order>12</order>
+	<page>1</page>
+</attribute>
+<attribute id="tpIpv4">
+	<display>IPv4網段範圍</display>
+	<order>13</order>
+	<page>1</page>
+</attribute>
+<attribute id="tpIpv6">
+	<display>IPv6網段範圍</display>
+	<order>14</order>
+	<page>1</page>
+</attribute>
+<attribute id="tpAdministrator">
+	<display>管理員身分證字號</display>
+	<icon>lock.png</icon>
+	<order>15</order>
+	<page>1</page>
+</attribute>
+<attribute id="userPassword">
+	<display>管理密碼</display>
+	<icon>lock.png</icon>
+	<post><![CDATA[=php.PasswordEncrypt(%enc%;%userPassword%)]]></post>
+	<order>16</order>
+	<page>1</page>
+	<verify>1</verify>
+</attribute>
+</attributes>
+
+</template>

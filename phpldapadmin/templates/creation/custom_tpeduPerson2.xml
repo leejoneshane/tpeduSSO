@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE template SYSTEM "template.dtd">
+
+<template>
+<askcontainer>1</askcontainer>
+<description>新增學生個人資料</description>
+<icon>ldap-user.png</icon>
+<invalid>0</invalid>
+<rdn>cn</rdn>
+<regexp>^ou=people,dc=tp,dc=edu,dc=tw</regexp>
+<title>臺北市教育人員：學生</title>
+<visible>1</visible>
+
+<objectClasses>
+<objectClass id="tpeduPerson"></objectClass>
+<objectClass id="inetUser"></objectClass>
+</objectClasses>
+
+<attributes>
+<attribute id="cn">
+	<display>身分證字號</display>
+	<order>1</order>
+	<page>1</page>
+</attribute>
+<attribute id="sn">
+	<display>姓氏</display>
+	<icon>ldap-uid.png</icon>
+	<onchange><![CDATA[=autoFill(displayName;%sn%%givenName%)]]></onchange>
+	<order>2</order>
+	<page>1</page>
+	<spacer>1</spacer>
+</attribute>
+<attribute id="givenName">
+	<display>名字</display>
+	<onchange><![CDATA[=autoFill(displayName;%sn%%givenName%)]]></onchange>
+	<order>3</order>
+	<page>1</page>
+</attribute>
+<attribute id="displayName">
+	<display>全名</display>
+	<order>4</order>
+	<page>1</page>
+</attribute>
+<attribute id="gender">
+	<display>性別</display>
+	<type>select</type>
+	<value id="0">未知</value>
+	<value id="1">男</value>
+	<value id="2">女</value>
+	<value id="9">其他</value>
+	<order>5</order>
+	<page>1</page>
+</attribute>
+<attribute id="birthDate">
+	<display>生日</display>
+	<hint>請寫完整出生年月日，例如：<?php =date('Ymd')?></hint>
+	<post><![CDATA[=php.Join(;%birthDate%,'000000Z')]]></post>
+	<order>6</order>
+	<page>1</page>
+</attribute>
+<attribute id="jpegPhoto">
+	<display>大頭照</display>
+	<order>7</order>
+	<spacer>1</spacer>
+</attribute>
+<attribute id="o">
+	<display>所屬組織</display>
+	<type>select</type>
+	<value><![CDATA[=php.PickList(/;(&(objectClass=tpeduSchool));dc;%description%)]]></value>
+	<order>8</order>
+	<page>1</page>
+</attribute>
+<attribute id="employeeType">
+	<display>身分別</display>
+	<value>學生</value>
+	<order>9</order>
+	<page>1</page>
+	<hidden>1</hidden>
+</attribute>
+<attribute id="uidNumber">
+	<display>入學統一編號</display>
+	<order>10</order>
+	<page>1</page>
+</attribute>
+<attribute id="employeeNumber">
+	<display>學號</display>
+	<order>11</order>
+	<page>1</page>
+</attribute>
+<attribute id="tpClass">
+	<display>就讀班級代號</display>
+	<order>12</order>
+	<page>1</page>
+</attribute>
+<attribute id="tpClassTitle">
+	<display>就讀班級名稱</display>
+	<order>13</order>
+	<page>1</page>
+</attribute>
+<attribute id="tpSeat">
+	<display>座號</display>
+	<order>14</order>
+	<page>1</page>
+</attribute>
+<attribute id="tpCharacter">
+	<display>身份註記</display>
+	<order>15</order>
+	<page>1</page>
+</attribute>
+<attribute id="mail">
+	<display>電子郵件</display>
+	<icon>mail.png</icon>
+	<order>16</order>
+	<page>1</page>
+</attribute>
+<attribute id="wWWHomePage">
+	<display>個人網址</display>
+	<icon>ldap-o.png</icon>
+	<order>17</order>
+	<page>1</page>
+</attribute>
+<attribute id="homePhone">
+	<display>市話</display>
+	<order>18</order>
+	<page>1</page>
+</attribute>
+<attribute id="mobile">
+	<display>緊急聯絡電話</display>
+	<order>19</order>
+	<page>1</page>
+</attribute>
+<attribute id="registeredAddress">
+	<display>戶籍地址</display>
+	<order>20</order>
+	<page>1</page>
+</attribute>
+<attribute id="homePostalAddress">
+	<display>聯絡地址</display>
+	<order>21</order>
+	<page>1</page>
+</attribute>
+<attribute id="userPassword">
+	<display>管理密碼</display>
+	<icon>lock.png</icon>
+	<post><![CDATA[=php.PasswordEncrypt(%enc%;%userPassword%)]]></post>
+	<order>22</order>
+	<page>1</page>
+	<verify>1</verify>
+</attribute>
+<attribute id="inetUserStatus">
+	<display>帳號狀態</display>
+	<type>select</type>
+	<value id="active">啟用</value>
+	<value id="inactive">停用</value>
+	<value id="deleted">刪除</value>
+	<order>23</order>
+	<page>1</page>
+</attribute>
+
+</attributes>
+
+</template>

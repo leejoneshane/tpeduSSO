@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE template SYSTEM "template.dtd">
+
+<template>
+<askcontainer>1</askcontainer>
+<description>編輯教學科目</description>
+<icon>ldap-ou.png</icon>
+<invalid>0</invalid>
+<rdn>tpSubject</rdn>
+<regexp>^tpSubject=.*,dc=.*,dc=tp,dc=edu,dc=tw</regexp>
+<title>教學科目</title>
+<visible>1</visible>
+
+<objectClasses>
+<objectClass id="tpeduSubject"></objectClass>
+</objectClasses>
+
+<attributes>
+<attribute id="tpSubject">
+	<display>科目代號</display>
+	<order>1</order>
+	<page>1</page>
+</attribute>
+<attribute id="tpSubjectDomain">
+	<display>教學領域</display>
+	<type>select</type>
+	<value id="語文">語文</value>
+	<value id="數學">數學</value>
+	<value id="社會">社會</value>
+	<value id="自然科學">自然科學</value>
+	<value id="藝術">藝術</value>
+	<value id="綜合活動">綜合活動</value>
+	<value id="科技">科技</value>
+	<value id="健康與體育">健康與體育</value>
+	<order>2</order>
+	<page>1</page>
+</attribute>
+<attribute id="description">
+	<display>科目名稱</display>
+	<hint>請輸入科目名稱，例如：國語、數學...</hint>
+	<icon>light.png</icon>
+	<order>3</order>
+	<spacer>1</spacer>
+</attribute>
+</attributes>
+
+</template>
