@@ -10,6 +10,14 @@ use Illuminate\Http\Response;
 
 class profileController extends Controller
 {
+    public function email(Request $request)
+    {
+		$user = $request->user();
+        return response()->json([
+            "email" => $user->email,
+        ]);
+    }
+
     public function user(Request $request)
     {
 	$user = $request->user();

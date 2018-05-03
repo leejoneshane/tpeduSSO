@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 */
 
 Route::group(['middleware' => 'auth:api'], function () {
+    Route::get('email', 'Api\profileController@email')->middleware('scope:email');
     Route::get('user', 'Api\profileController@user')->middleware('scope:user');
     Route::patch('user', 'Api\profileController@updateUser')->middleware('scope:user');
     Route::get('idno', 'Api\profileController@idno')->middleware('scope:idno');
