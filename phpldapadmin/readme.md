@@ -10,7 +10,7 @@ __臺北市教育人員目錄服務 管理後台__，為臺北市政府教育局
 docker run -p 8080:80 -d leejoneshane/tpedusso:phpldapadmin
 ```
 
-連結到 http://localhost:8080，請使用 openldap 伺服器的測試帳號登入，帳號為 cn=admin,dc=tp,dc=edu,dc=tw，密碼為 test。
+連結到 http://localhost:8080 ，請使用 openldap 伺服器的測試帳號登入，帳號為 cn=admin,dc=tp,dc=edu,dc=tw，密碼為 test。
 
 您可以把這個執行中的容器，當成 [臺北市教育人員單一身份驗證服務平台](https://ldap.tp.edu.tw) 的目錄管理後台，以便於開發程式的過程中，進行各種測試。
 
