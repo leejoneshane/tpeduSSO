@@ -59,6 +59,7 @@
 					</tr>
 				</thead>
 				<tbody>
+					@if (!empty($teachers))
 					@for ($i=0;$i<$teachers['count'];$i++)
 					<tr>
 						<td style="vertical-align: inherit;">
@@ -111,6 +112,7 @@
 					<form id="form" action="" method="" style="display: none;">
 					@csrf
     				</form>
+    				@endif
 				</tbody>
 			</table>
 		</div>
