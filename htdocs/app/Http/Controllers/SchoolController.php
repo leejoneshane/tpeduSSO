@@ -215,9 +215,13 @@ class SchoolController extends Controller
 	   			$account["userPassword"] = $password;
 	   			$account_dn = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
 	   			$entry["userPassword"] = $password;
-		    	if (isset($person->character) && !empty($person->character))
-	    			$entry['tpCharacter'] = explode(' ', $person->character);
-		    	if (isset($person->mail) && !empty($person->mail)) {
+		    	if (isset($person->character)) {
+		    	    if (empty($person->character))
+	    			    $entry['tpCharacter'] = [];
+	    			else
+	    				$entry['tpCharacter'] = explode(' ', $person->character);
+	    		}
+		    	if (isset($person->mail)) {
 		    		$data = array();
 		    		$mails = array();
 		    		if (is_array($person->mail)) {
@@ -231,9 +235,9 @@ class SchoolController extends Controller
     					);
 	    				if ($validator->passes()) $mails[] = $mail;
 	    			}
-	    			if (count($mails) > 0) $entry['mail'] = $mails;
+	    			$entry['mail'] = $mails;
     			}
-			    if (isset($person->mobile) && !empty($person->mobile)) {
+			    if (isset($person->mobile)) {
 		    		$data = array();
 		    		$mobiles = array();
 			    	if (is_array($person->mobile)) {
@@ -247,9 +251,9 @@ class SchoolController extends Controller
     					);
 		    			if ($validator->passes()) $mobiles[] = $mobile;
 					}
-	   				if (count($mobiles) > 0) $entry['mobile'] = $mobiles;
+	   				$entry['mobile'] = $mobiles;
     			}
-			    if (isset($person->fax) && !empty($person->fax)) {
+			    if (isset($person->fax)) {
 			    	$data = array();
 			    	$fax = array();
 			    	if (is_array($person->fax)) {
@@ -260,9 +264,9 @@ class SchoolController extends Controller
 				    foreach ($data as $tel) {
 				    	$fax[] = self::convert_tel($tel);
   					}
-		    		if (count($fax) > 0) $entry['facsimileTelephoneNumber'] = $fax;
+		    		$entry['facsimileTelephoneNumber'] = $fax;
     			}
-			    if (isset($person->otel) && !empty($person->otel)) {
+			    if (isset($person->otel)) {
 			    	$data = array();
 			    	$otel = array();
 			    	if (is_array($person->otel)) {
@@ -273,9 +277,9 @@ class SchoolController extends Controller
 				    foreach ($data as $tel) {
 				    	$otel[] = self::convert_tel($tel);
   					}
-		    		if (count($otel) > 0) $entry['telephoneNumber'] = $otel;
+		    		$entry['telephoneNumber'] = $otel;
     			}
-			    if (isset($person->htel) && !empty($person->htel)) {
+			    if (isset($person->htel)) {
 			    	$data = array();
 			    	$htel = array();
 			    	if (is_array($person->htel)) {
@@ -286,7 +290,7 @@ class SchoolController extends Controller
 				    foreach ($data as $tel) {
 				    	$htel[] = self::convert_tel($tel);
   					}
-		    		if (count($htel) > 0) $entry['homePhone'] = $htel;
+		    		$entry['homePhone'] = $htel;
     			}
 			    if (isset($person->register) && !empty($person->register)) $entry["registeredAddress"]=self::chomp_address($person->register);
 	    		if (isset($person->address) && !empty($person->register)) $entry["homePostalAddress"]=self::chomp_address($person->address);
@@ -645,7 +649,7 @@ class SchoolController extends Controller
 		$user->password = 'My_p@ssw0rD';
 		$user->ou = 'dept02';
 		$user->role = 'role014';
-		$user->assign = array('606,sub01', '607,sub01', '608,sub01', '609,sub01', '610,sub01');
+		$user->class = array('606,sub01', '607,sub01', '608,sub01', '609,sub01', '610,sub01');
 		$user->character = '巡迴教師 均一平台管理員';
 		$user->sn = '李';
 		$user->gn = '小明';
@@ -756,7 +760,7 @@ class SchoolController extends Controller
 	   			$account["userPassword"] = $password;
 	   			$account_dn = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
 	   			$entry["userPassword"] = $password;
-		    	if (isset($person->class) && !empty($person->class)) {
+		    	if (isset($person->class)) {
 		    		$data = array();
 		    		$classes = array();
 		    		if (is_array($person->class)) {
@@ -767,11 +771,15 @@ class SchoolController extends Controller
 		    		foreach ($data as $class) {
 	    				if ($openldap->getOuEntry($dc, $class)) $classes[] = $class;
 	    			}
-	    			if (count($classes) > 0) $entry['tpTeachClass'] = $classes;
+	    			$entry['tpTeachClass'] = $classes;
     			}
-		    	if (isset($person->character) && !empty($person->character))
-	    			$entry['tpCharacter'] = explode(' ', $person->character);
-		    	if (isset($person->mail) && !empty($person->mail)) {
+		    	if (isset($person->character)) {
+		    	    if (empty($person->character))
+	    			    $entry['tpCharacter'] = [];
+		    	    else
+	    			    $entry['tpCharacter'] = explode(' ', $person->character);
+	    		}
+		    	if (isset($person->mail)) {
 		    		$data = array();
 		    		$mails = array();
 		    		if (is_array($person->mail)) {
@@ -785,9 +793,9 @@ class SchoolController extends Controller
     					);
 	    				if ($validator->passes()) $mails[] = $mail;
 	    			}
-	    			if (count($mails) > 0) $entry['mail'] = $mails;
+	    			$entry['mail'] = $mails;
     			}
-			    if (isset($person->mobile) && !empty($person->mobile)) {
+			    if (isset($person->mobile)) {
 		    		$data = array();
 		    		$mobiles = array();
 			    	if (is_array($person->mobile)) {
@@ -801,9 +809,9 @@ class SchoolController extends Controller
     					);
 		    			if ($validator->passes()) $mobiles[] = $mobile;
 					}
-	   				if (count($mobiles) > 0) $entry['mobile'] = $mobiles;
+	   				$entry['mobile'] = $mobiles;
     			}
-			    if (isset($person->fax) && !empty($person->fax)) {
+			    if (isset($person->fax)) {
 			    	$data = array();
 			    	$fax = array();
 			    	if (is_array($person->fax)) {
@@ -814,9 +822,9 @@ class SchoolController extends Controller
 				    foreach ($data as $tel) {
 				    	$fax[] = self::convert_tel($tel);
   					}
-		    		if (count($fax) > 0) $entry['facsimileTelephoneNumber'] = $fax;
+		    		$entry['facsimileTelephoneNumber'] = $fax;
     			}
-			    if (isset($person->otel) && !empty($person->otel)) {
+			    if (isset($person->otel)) {
 			    	$data = array();
 			    	$otel = array();
 			    	if (is_array($person->otel)) {
@@ -827,9 +835,9 @@ class SchoolController extends Controller
 				    foreach ($data as $tel) {
 				    	$otel[] = self::convert_tel($tel);
   					}
-		    		if (count($otel) > 0) $entry['telephoneNumber'] = $otel;
+		    		$entry['telephoneNumber'] = $otel;
     			}
-			    if (isset($person->htel) && !empty($person->htel)) {
+			    if (isset($person->htel)) {
 			    	$data = array();
 			    	$htel = array();
 			    	if (is_array($person->htel)) {
@@ -840,7 +848,7 @@ class SchoolController extends Controller
 				    foreach ($data as $tel) {
 				    	$htel[] = self::convert_tel($tel);
   					}
-		    		if (count($htel) > 0) $entry['homePhone'] = $htel;
+		    		$entry['homePhone'] = $htel;
     			}
 			    if (isset($person->register) && !empty($person->register)) $entry["registeredAddress"]=self::chomp_address($person->register);
 	    		if (isset($person->address) && !empty($person->register)) $entry["homePostalAddress"]=self::chomp_address($person->address);

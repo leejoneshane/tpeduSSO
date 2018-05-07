@@ -565,7 +565,7 @@ class LdapServiceProvider extends ServiceProvider
 	    	$fields[] = 'displayName';
 	    	$fields[] = 'mail';
 	    	$fields[] = 'mobile';
-	    	$fields[] = 'fax';
+	    	$fields[] = 'facsimileTelephoneNumber';
 	    	$fields[] = 'telephoneNumber';
 	    	$fields[] = 'homePhone';
 	    	$fields[] = 'registeredAddress';
