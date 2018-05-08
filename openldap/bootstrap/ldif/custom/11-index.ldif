@@ -3,7 +3,7 @@ changetype:  modify
 replace: olcdbindex
 olcdbindex: o eq
 olcdbindex: dc eq
-olcdbindex: area eq
+olcdbindex: st eq
 olcdbindex: ou eq
 olcdbindex: title eq
 olcdbindex: tpSubject eq
