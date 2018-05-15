@@ -29,7 +29,7 @@ services:
     restart: always
     
   laravel:
-    image: leejoneshane/laravel
+    image: leejoneshane/tpedusso
     container_name: laravel
     volumes:
       - ./htdocs:/var/www/localhost/htdocs

@@ -43,6 +43,9 @@
                                     <i class="fa fa-user fa-fw"></i>{{ Auth::user()->name }} 
                                 </a>
                                 <ul  style="min-width:50px; top:120%" class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            	    @if (Auth::user()->is_admin || Auth::user()->id == 1)
+                            	    <li><a class="dropdown-item" href="{{ route('bureau') }}"><i class="fa fa-eye fa-fw"></i>局端管理</a></li>
+                            	    @endif
                             	    @if (Auth::user()->ldap['is_schoolAdmin'])
                             	    <li><a class="dropdown-item" href="{{ route('school') }}"><i class="fa fa-university fa-fw"></i>學校管理</a></li>
                             	    @endif

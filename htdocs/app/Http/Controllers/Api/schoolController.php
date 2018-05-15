@@ -19,6 +19,17 @@ class schoolController extends Controller
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
     
+    public function listOrgs($area = '')
+    {
+		$openldap = new LdapServiceProvider();
+		$data = $openldap->getOrgs();
+		$orgs = array();
+		foreach ($data as $org) {
+			if (empty($area) || $area == $org->st) $orgs[] = $org;
+		}
+		return json_encode($orgs, JSON_UNESCAPED_UNICODE);
+    }
+    
     public function one($dc)
     {
 		$openldap = new LdapServiceProvider();
@@ -79,13 +90,13 @@ class schoolController extends Controller
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
-    public function listClasses($dc, $grade)
+    public function listClasses($dc, $grade = '')
     {
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getOus($dc, "教學班級");
 		$classes = array();
 		foreach ($data as $class) {
-			if ($grade == substr($class->ou, 0, 1)) $classes[] = $class;
+			if (empty($grade) || $grade == substr($class->ou, 0, 1)) $classes[] = $class;
 		}
 		return json_encode($classes, JSON_UNESCAPED_UNICODE);
     }

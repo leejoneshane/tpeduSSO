@@ -41,6 +41,12 @@
                     </a>
 					<ul class="dropdown-menu" style="min-width:50px;">
                         <li><a href="{{ url('/') }}"><i class="fa fa-home fa-fw"></i>回首頁</a></li>
+                        @if (Auth::user()->is_admin || Auth::user()->id == 1)
+                        <li><a class="dropdown-item" href="{{ route('bureau') }}"><i class="fa fa-eye fa-fw"></i>局端管理</a></li>
+                        @endif
+                        @if (Auth::user()->ldap['is_schoolAdmin'])
+                        <li><a class="dropdown-item" href="{{ route('school') }}"><i class="fa fa-university fa-fw"></i>學校管理</a></li>
+                        @endif
                         <li><a href="{{ route('oauth') }}"><i class="fa fa-key fa-fw"></i>金鑰管理</a></li>
                         <li><a href="{{ route('profile') }}"><i class="fa fa-edit fa-fw"></i>修改個資</a></li>
                         <li><a href="{{ route('changeAccount') }}"><i class="fa fa-tag fa-fw"></i>變更帳號</a></li>

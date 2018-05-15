@@ -1,7 +1,7 @@
-@extends('layouts.dashboard')
+@extends('layouts.superboard')
 
 @section('page_heading')
-匯入教師資訊
+匯入人員資訊
 @endsection
 
 @section('section')
@@ -34,7 +34,7 @@
 		</div>
 		<div class="panel panel-default">	  
 		<div class="panel-heading">
-			<h4>教師資訊 JSON 格式範例</h4>
+			<h4>人員資訊 JSON 格式範例</h4>
 		</div>
 		<div class="panel-body">
 			<div class="form-group">
@@ -49,6 +49,10 @@
 		<div class="panel-body">
 			<div class="form-group">
 			{{ json_encode($sample2, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) }}
+			</div>
+			或
+			<div class="form-group">
+			{{ json_encode($sample3, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) }}
 			</div>
 		</div>
 		</div>
@@ -67,12 +71,30 @@
 					<dd>帳號，是單一資料。最少 6 個字元，只允許英文字母加數字。可省略。省略時以學校代號加身分證字號後九碼為預設帳號。</dd>
 					<dt>password</dt>
 					<dd>密碼，是單一資料。最少 6 個字元。可省略。省略時以身分證字號後六碼為預設密碼。</dd>
-					<dt>ou</dt>
-					<dd>組織單位代號，是單一資料。由各校自訂，只允許英文字母加數字。可省略。</dd>
-					<dt>role</dt>
-					<dd>職稱代號，是單一資料。由各校自訂，只允許英文字母加數字。可省略。</dd>
-					<dt>tclass</dt>
-					<dd>任教班級及科目，允許多筆資料。班級代號與科目代號之間，使用 , 間隔，並用 " " 括起來，例如："601,SUB02"。未安排課務時可省略。</dd>
+					<dt>o</dt>
+					<dd>學校代號，是單一資料。預設為各級學校網域名稱。教育局使用 bureau。</dd>
+					<dt>type</dt>
+					<dd>身份別，是單一資料。右列擇一：教師、學生、校長、職工、主官管。</dd>
+					<hr>
+					<dt>若身份非學生，須包含：</dt>
+					<dd>
+						<dt>ou</dt>
+						<dd>組織單位代號，是單一資料。由各校自訂，只允許英文字母加數字。可省略。</dd>
+						<dt>role</dt>
+						<dd>職稱代號，是單一資料。由各校自訂，只允許英文字母加數字。可省略。</dd>
+						<dt>tclass</dt>
+						<dd>任教班級及科目，允許多筆資料。班級代號與科目代號之間，使用 , 間隔，並用 " " 括起來，例如："601,SUB02"。未安排課務時可省略。</dd>
+					</dd>
+					<dt>若身份是學生，須包含：</dt>
+					<dd>
+						<dt>stdno</dt>
+						<dd>學號，是單一資料。格式由各校自訂，只允許英文字母加數字。</dd>
+						<dt>class</dt>
+						<dd>就讀班級，是單一資料。請輸入班級代號，而非班級名稱。只允許數字。</dd>
+						<dt>seat</dt>
+						<dd>座號，是單一資料。使用整數數字，前面不加 0。</dd>
+					</dd>
+					<hr>
 					<dt>character</dt>
 					<dd>特殊身份註記，是單一資料。請使用中文描述，若有多重特殊身份，請中間用半形空白隔開，若無特殊身份可省略。</dd>
 					<dt>sn</dt>
@@ -123,7 +145,7 @@
 			<h4>匯入 JSON</h4>
 		</div>
 		<div class="panel-body">
-			<form role="form" method="POST" action="{{ route('school.jsonTeacher') }}" enctype="multipart/form-data">
+			<form role="form" method="POST" action="{{ route('bureau.jsonPeople') }}" enctype="multipart/form-data">
 		    	@csrf
 			    <div class="form-group{{ $errors->has('json') ? ' has-error' : '' }}">
 					<input id="json" type="file" class="form-control" name="json" required>

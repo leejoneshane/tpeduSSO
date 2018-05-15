@@ -41,6 +41,41 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('oauth', 'oauthController@index')->name('oauth');
 });
 
+Route::group(['prefix' => 'bureau', 'middleware' => 'auth.admin'], function () {
+    Route::get('/', 'BureauController@index')->name('bureau');
+	Route::get('admin', 'BureauController@bureauAdminForm')->name('bureau.admin');
+	Route::post('admin/new', 'BureauController@addBureauAdmin')->name('bureau.createAdmin');
+	Route::post('admin/remove', 'BureauController@delBureauAdmin')->name('bureau.removeAdmin');
+	Route::get('organization', 'BureauController@bureauOrgForm')->name('bureau.organization');
+	Route::get('organization/{dc}/update', 'BureauController@bureauOrgEditForm');
+	Route::post('organization/{dc}/update', 'BureauController@updateBureauOrg')->name('bureau.updateOrg');
+	Route::post('organization/{dc}/remove', 'BureauController@removeBureauOrg')->name('bureau.removeOrg');
+	Route::get('organization/new', 'BureauController@bureauOrgEditForm');
+	Route::post('organization/new', 'BureauController@createBureauOrg')->name('bureau.createOrg');
+	Route::get('organization/json', 'BureauController@bureauOrgJSONForm');
+	Route::post('organization/json', 'BureauController@importBureauOrg')->name('bureau.jsonOrg');
+	Route::get('group', 'BureauController@bureauGroupForm')->name('bureau.group');
+	Route::post('group', 'BureauController@createBureauGroup')->name('bureau.createGroup');
+	Route::post('group/{cn}/update', 'BureauController@updateBureauGroup')->name('bureau.updateGroup');
+	Route::post('group/{cn}/remove', 'BureauController@removeBureauGroup')->name('bureau.removeGroup');
+	Route::get('people', 'BureauController@bureauPeopleSearchForm')->name('bureau.people');
+	Route::get('people/{uuid}/update', 'BureauController@bureauPeopleEditForm')->name('bureau.updatePeople');
+	Route::post('teacher/{uuid}/update', 'BureauController@updateBureauTeacher')->name('bureau.updateTeacher');
+	Route::post('student/{uuid}/update', 'BureauController@updateBureauStudent')->name('bureau.updateStudent');
+	Route::post('people/{uuid}/remove', 'BureauController@removeBureauPeople')->name('bureau.removePeople');
+	Route::post('people/{uuid}/toggle', 'BureauController@toggleBureauPeople')->name('bureau.togglePeople');
+	Route::post('people/{uuid}/undo', 'BureauController@undoBureauPeople')->name('bureau.undoPeople');
+	Route::post('people/{uuid}/resetpass', 'BureauController@resetpass')->name('bureau.resetpassPeople');
+	Route::get('people/new', 'BureauController@bureauPeopleEditForm');
+	Route::post('people/new', 'BureauController@createBureauPeople')->name('bureau.createPeople');
+	Route::get('people/json', 'BureauController@bureauPeopleJSONForm');
+	Route::post('people/json', 'BureauController@importBureauPeople')->name('bureau.jsonPeople');
+	Route::get('orgs/{area}', 'Api\schoolController@listOrgs');
+	Route::get('units/{dc}', 'Api\schoolController@allOu');
+	Route::get('roles/{dc}/{ou_id}', 'Api\schoolController@allRole');
+	Route::get('classes/{dc}', 'Api\schoolController@listClasses');
+});
+
 Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () {
     Route::get('/', 'SchoolController@index')->name('school');
 	Route::get('admin', 'SchoolController@schoolAdminForm')->name('school.admin');
@@ -90,4 +125,3 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
 	Route::get('classes/{dc}/{grade}', 'Api\schoolController@listClasses');
 	Route::get('teachers/{dc}/{ou}', 'Api\schoolController@listTeachers');
 });
-

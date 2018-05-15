@@ -293,8 +293,8 @@ class SchoolController extends Controller
 		    		$entry['homePhone'] = $htel;
     			}
 			    if (isset($person->register) && !empty($person->register)) $entry["registeredAddress"]=self::chomp_address($person->register);
-	    		if (isset($person->address) && !empty($person->register)) $entry["homePostalAddress"]=self::chomp_address($person->address);
-	    		if (isset($person->www) && !empty($person->register)) $entry["wWWHomePage"]=$person->www;
+	    		if (isset($person->address) && !empty($person->address)) $entry["homePostalAddress"]=self::chomp_address($person->address);
+	    		if (isset($person->www) && !empty($person->www)) $entry["wWWHomePage"]=$person->www;
 				
 				$user_entry = $openldap->getUserEntry($entry['cn']);
 				if ($user_entry) {
@@ -649,7 +649,7 @@ class SchoolController extends Controller
 		$user->password = 'My_p@ssw0rD';
 		$user->ou = 'dept02';
 		$user->role = 'role014';
-		$user->class = array('606,sub01', '607,sub01', '608,sub01', '609,sub01', '610,sub01');
+		$user->tclass = array('606,sub01', '607,sub01', '608,sub01', '609,sub01', '610,sub01');
 		$user->character = '巡迴教師 均一平台管理員';
 		$user->sn = '李';
 		$user->gn = '小明';
@@ -760,13 +760,13 @@ class SchoolController extends Controller
 	   			$account["userPassword"] = $password;
 	   			$account_dn = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
 	   			$entry["userPassword"] = $password;
-		    	if (isset($person->class)) {
+		    	if (isset($person->tclass)) {
 		    		$data = array();
 		    		$classes = array();
-		    		if (is_array($person->class)) {
-		    			$data = $person->class;
+		    		if (is_array($person->tclass)) {
+		    			$data = $person->tclass;
 		    		} else {
-		    			$data[] = $person->class;
+		    			$data[] = $person->tclass;
 		    		}
 		    		foreach ($data as $class) {
 	    				if ($openldap->getOuEntry($dc, $class)) $classes[] = $class;
@@ -851,8 +851,8 @@ class SchoolController extends Controller
 		    		$entry['homePhone'] = $htel;
     			}
 			    if (isset($person->register) && !empty($person->register)) $entry["registeredAddress"]=self::chomp_address($person->register);
-	    		if (isset($person->address) && !empty($person->register)) $entry["homePostalAddress"]=self::chomp_address($person->address);
-	    		if (isset($person->www) && !empty($person->register)) $entry["wWWHomePage"]=$person->www;
+	    		if (isset($person->address) && !empty($person->address)) $entry["homePostalAddress"]=self::chomp_address($person->address);
+	    		if (isset($person->www) && !empty($person->www)) $entry["wWWHomePage"]=$person->www;
 			
 				$user_entry = $openldap->getUserEntry($entry['cn']);
 				if ($user_entry) {
@@ -903,6 +903,11 @@ class SchoolController extends Controller
 		foreach ($data as $subj) {
 			if (!array_key_exists($subj->subject, $subjects)) $subjects[$subj->subject] = $subj->description;
 		}
+		$data = $openldap->getOus($dc, '教學班級');
+		$classes = array();
+		foreach ($data as $class) {
+			if (!array_key_exists($class->ou, $classes)) $classes[$class->ou] = $class->description;
+		}
 		$data = $openldap->getOus($dc, '行政部門');
 		$my_ou = '';
 		$ous = array();
@@ -937,14 +942,14 @@ class SchoolController extends Controller
 			foreach ($data as $role) {
 				if (!array_key_exists($role->cn, $roles)) $roles[$role->cn] = $role->description;
 			}
-			return view('admin.schoolteacheredit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'dc' => $dc, 'subjects' => $subjects, 'ous' => $ous, 'roles' => $roles, 'user' => $user, 'assign' => $assign ]);
+			return view('admin.schoolteacheredit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'dc' => $dc, 'subjects' => $subjects, 'classes' => $classes, 'ous' => $ous, 'roles' => $roles, 'assign' => $assign, 'user' => $user ]);
 		} else { //add
     		$data = $openldap->getRoles($dc, $my_ou);
 			$roles = array();
 			foreach ($data as $role) {
 				if (!array_key_exists($role->cn, $roles)) $roles[$role->cn] = $role->description;
 			}
-			return view('admin.schoolteacheredit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'dc' => $dc, 'subjects' => $subjects, 'ous' => $ous, 'roles' => $roles ]);
+			return view('admin.schoolteacheredit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'dc' => $dc, 'subjects' => $subjects, 'classes' => $classes, 'ous' => $ous, 'roles' => $roles ]);
 		}
 	}
 	
@@ -1187,6 +1192,7 @@ class SchoolController extends Controller
 					return redirect('school/teacher?field='.$my_field.'&keywords='.$keywords)->with("error", "教師身分證字號變更失敗！".$openldap->error());
 				}
 			}
+			return redirect('school/teacher?field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新教師基本資料！");
 		} else {
 			return redirect('school/teacher?field='.$my_field.'&keywords='.$keywords)->with("error", "教師基本資料變更失敗！".$openldap->error());
 		}
@@ -1676,11 +1682,13 @@ class SchoolController extends Controller
 
     public function schoolProfileForm(Request $request)
     {
+		$category = [ '幼兒園', '國民小學', '國民中學', '高中', '高職', '大專院校', '特殊教育', '主管機關' ];
+		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getOrgEntry($dc);
 		$data = $openldap->getOrgData($entry);
-		return view('admin.schoolprofile', [ 'data' => $data ]);
+		return view('admin.schoolprofile', [ 'data' => $data, 'areas' => $areas, 'category' => $category ]);
     }
 
     public function updateSchoolProfile(Request $request)

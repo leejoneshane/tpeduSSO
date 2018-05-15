@@ -1,7 +1,7 @@
-@extends('layouts.dashboard')
+@extends('layouts.superboard')
 
 @section('page_heading')
-匯入教師資訊
+匯入教育機構
 @endsection
 
 @section('section')
@@ -34,7 +34,7 @@
 		</div>
 		<div class="panel panel-default">	  
 		<div class="panel-heading">
-			<h4>教師資訊 JSON 格式範例</h4>
+			<h4>機構資訊 JSON 格式範例</h4>
 		</div>
 		<div class="panel-body">
 			<div class="form-group">
@@ -62,58 +62,44 @@
 					<dt>通則</dt>
 					<dd>在 JSON 中，結構化的資料都視為物件，前後需使用 { } 括起來，物件是由多個欄位集合而成，欄位名稱與欄位值之間使用 : 隔開，欄位名稱前後須加 " "。欄位為單一資料時，若資料為數字，前後不加 " "；若為字串，前後需使用 " " 括起來。欄位為多筆資料時，用陣列表示，每筆資料中間用 , 間隔，前後需使用 [ ] 括起來。除了必填欄位外，未包含的欄位將忽略不處理，若要刪除欄位，請賦值空陣列，寫為 [] 。</dd>
 					<dt>id</dt>
-					<dd>身分證字號，是單一資料。</dd>
-					<dt>account</dt>
-					<dd>帳號，是單一資料。最少 6 個字元，只允許英文字母加數字。可省略。省略時以學校代號加身分證字號後九碼為預設帳號。</dd>
-					<dt>password</dt>
-					<dd>密碼，是單一資料。最少 6 個字元。可省略。省略時以身分證字號後六碼為預設密碼。</dd>
-					<dt>ou</dt>
-					<dd>組織單位代號，是單一資料。由各校自訂，只允許英文字母加數字。可省略。</dd>
-					<dt>role</dt>
-					<dd>職稱代號，是單一資料。由各校自訂，只允許英文字母加數字。可省略。</dd>
-					<dt>tclass</dt>
-					<dd>任教班級及科目，允許多筆資料。班級代號與科目代號之間，使用 , 間隔，並用 " " 括起來，例如："601,SUB02"。未安排課務時可省略。</dd>
-					<dt>character</dt>
-					<dd>特殊身份註記，是單一資料。請使用中文描述，若有多重特殊身份，請中間用半形空白隔開，若無特殊身份可省略。</dd>
-					<dt>sn</dt>
-					<dd>姓氏，是單一資料。</dd>
-					<dt>gn</dt>
-					<dd>名字，是單一資料。</dd>
+					<dd>系統代號，是單一資料。為各教育機構英文網域名稱的縮寫。</dd>
+					<dt>sid</dt>
+					<dd>統ㄧ編號，是單一資料。由教育部編定，固定使用 6 位數字。</dd>
 					<dt>name</dt>
-					<dd>全名，是單一資料。若省略，則由系統自動將姓氏與名字合併處理。</dd>
-					<dt>gender</dt>
-					<dd>性別，是單一資料。0 代表未知，1 代表男，2 代表女，9 代表其它。</dd>
-					<dt>birthdate</dt>
-					<dd>出生日期，是單一資料。請使用西元紀年，格式如：19911105。</dd>
-					<dt>mail</dt>
-					<dd>電子郵件，允許多筆資料。可省略。</dd>
-					<dt>mobile</dt>
-					<dd>手機號碼，允許多筆資料，格式如：0921000111。可省略。</dd>
+					<dd>機構全銜，是單一資料。</dd>
+					<dt>category</dt>
+					<dd>機構類別，是單一資料。請從右列資料擇一：幼兒園、國民小學、國民中學、高中、高職、大專院校、特殊教育、主管機關。</dd>
+					<dt>area</dt>
+					<dd>行政區，是單一資料。請從右列資料擇一：中正區、大同區、中山區、松山區、大安區、萬華區、信義區、士林區、北投區、內湖區、南港區、文山區。</dd>
 					<dt>fax</dt>
 					<dd>傳真電話，允許多筆資料，格式如：(02)23093736。可省略。</dd>
-					<dt>otel</dt>
-					<dd>辦公電話，允許多筆資料，可省略。</dd>
-					<dt>htel</dt>
-					<dd>住家電話，允許多筆資料，可省略。</dd>
-					<dt>register</dt>
-					<dd>戶籍地址，是單一資料。請包含里鄰資訊。可省略。</dd>
+					<dt>tel</dt>
+					<dd>聯絡電話，允許多筆資料，格式同上。可省略。</dd>
+					<dt>postal</dt>
+					<dd>郵遞區號，是單一資料。可省略。</dd>
 					<dt>address</dt>
 					<dd>郵寄地址，是單一資料。可省略。</dd>
+					<dt>mbox</dt>
+					<dd>教育局聯絡箱編號，是單一資料。由教育局編定，固定使用 3 位數字。可省略。</dd>
 					<dt>www</dt>
-					<dd>個人網頁，是單一資料。可省略。</dd>
+					<dd>機構官方網址，是單一資料。可省略。</dd>
+					<dt>ipv4</dt>
+					<dd>機構 IPv4 網路地址及遮罩，允許多筆資料，格式如：163.21.228.0/24。可省略。</dd>
+					<dt>ipv6</dt>
+					<dd>機構 IPv6 網路地址及遮罩，允許多筆資料，格式如：2001:288:12ce::/64。可省略。</dd>
 				</dl>
 			</div>
 		</div>
 		</div>
-		<div class="panel panel-default">	  
+		<div class="panel panel-default">
 		<div class="panel-heading">
 			<h4>批量匯入</h4>
 		</div>
 		<div class="panel-body">
 			<div class="form-group">
-			想要一次匯入多位老師嗎？一位老師的資料是一個物件，老師之間使用 , 間隔，表徵成陣列。例如：
+			想要一次匯入多個機構嗎？一個機構的資料是一個物件，機構之間使用 , 間隔，表徵成陣列。例如：
 			<p>
-			[第一位老師的JSON字串,第二位老師的JSON字串,......省略.....,最後一位老師的JSON字串]
+			[第一個機構的JSON字串,第二個機構的JSON字串,......省略.....,最後一個機構的JSON字串]
 			</p>
 			</div>
 		</div>
@@ -123,7 +109,7 @@
 			<h4>匯入 JSON</h4>
 		</div>
 		<div class="panel-body">
-			<form role="form" method="POST" action="{{ route('school.jsonTeacher') }}" enctype="multipart/form-data">
+			<form role="form" method="POST" action="{{ route('bureau.jsonOrg') }}" enctype="multipart/form-data">
 		    	@csrf
 			    <div class="form-group{{ $errors->has('json') ? ' has-error' : '' }}">
 					<input id="json" type="file" class="form-control" name="json" required>

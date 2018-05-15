@@ -23,7 +23,7 @@
 		    {{ csrf_field() }}
 		    <div class="form-group{{ $errors->has('description') ? ' has-error' : '' }}">
 			<label>學校全銜</label>
-			<input id="description" type="text" class="form-control" name="description" value="{{ array_key_exists('description', $data) ? $data['description'] : old('description') }}">
+			<input id="description" type="text" class="form-control" name="description" value="{{ array_key_exists('description', $data) ? $data['description'] : old('description') }}" required>
 			@if ($errors->has('description'))
 				<p class="help-block">
 					<strong>{{ $errors->first('description') }}</strong>
@@ -33,29 +33,18 @@
 		    <div class="form-group{{ $errors->has('businessCategory') ? ' has-error' : '' }}">
 			<label>學校類別</label>
 			<select id="businessCategory" class="form-control" name="businessCategory">
-			    <option value="幼兒園" {{ $data['businessCategory'] == '幼兒園' ? 'selected' : '' }}>幼兒園</option>
-			    <option value="國民小學" {{ $data['businessCategory'] == '國民小學' ? 'selected' : '' }}>國民小學</option>
-			    <option value="國民中學" {{ $data['businessCategory'] == '國民中學' ? 'selected' : '' }}>國民中學</option>
-			    <option value="高中" {{ $data['businessCategory'] == '高中' ? 'selected' : '' }}>高中</option>
-			    <option value="高職" {{ $data['businessCategory'] == '高職' ? 'selected' : '' }}>高職</option>
-			    <option value="大專院校" {{ $data['businessCategory'] == '大專院校' ? 'selected' : '' }}>大專院校</option>
-			    <option value="特殊教育" {{ $data['businessCategory'] == '特殊教育' ? 'selected' : '' }}>特殊教育</option>
-			    <option value="主管機關" {{ $data['businessCategory'] == '主管機關' ? 'selected' : '' }}>主管機關</option>
+			@foreach ($category as $type)
+			    <option value="{{ $type }}"{{ $data['businessCategory'] == $type ? ' selected' : '' }}>{{ $type }}</option>
+			@endforeach
 			</select>
-			@if ($errors->has('businessCategory'))
-				<p class="help-block">
-					<strong>{{ $errors->first('businessCategory') }}</strong>
-				</p>
-			@endif
 		    </div>
 		    <div class="form-group{{ $errors->has('st') ? ' has-error' : '' }}">
 			<label>行政區</label>
-			<input id="st" type="text" class="form-control" name="st" value="{{ array_key_exists('st', $data) ? $data['st'] : old('st') }}">
-			@if ($errors->has('st'))
-				<p class="help-block">
-					<strong>{{ $errors->first('st') }}</strong>
-				</p>
-			@endif
+			<select id="st" class="form-control" name="st">
+			@foreach ($areas as $area)
+			    <option value="{{ $area }}"{{ $data['st'] == $area ? ' selected' : '' }}>{{ $area }}</option>
+			@endforeach
+			</select>
 		    </div>
 		    <div class="form-group{{ $errors->has('fax') ? ' has-error' : '' }}">
 			<label>傳真號碼</label>
@@ -68,7 +57,7 @@
 		    </div>
 		    <div class="form-group{{ $errors->has('telephoneNumber') ? ' has-error' : '' }}">
 			<label>電話代表號</label>
-			<input id="telephoneNumber" type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" name="telephoneNumber" value="{{ array_key_exists('telephoneNumber', $data) ? $data['telephoneNumber'] : old('telephoneNumber') }}" placeholder="格式如右：(02)23456789">
+			<input id="telephoneNumber" type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" name="telephoneNumber" value="{{ array_key_exists('telephoneNumber', $data) ? $data['telephoneNumber'] : old('telephoneNumber') }}" placeholder="格式如右：(02)23456789" required>
 			@if ($errors->has('telephoneNumber'))
 				<p class="help-block">
 					<strong>{{ $errors->first('telephoneNumber') }}</strong>
@@ -77,7 +66,7 @@
 		    </div>
 		    <div class="form-group{{ $errors->has('postalCode') ? ' has-error' : '' }}">
 			<label>郵遞區號</label>
-			<input id="postalCode" type="text" class="form-control" name="postalCode" value="{{ array_key_exists('postalCode', $data) ? $data['postalCode'] : old('postalCode') }}">
+			<input id="postalCode" type="text" class="form-control" name="postalCode" value="{{ array_key_exists('postalCode', $data) ? $data['postalCode'] : old('postalCode') }}"  required>
 			@if ($errors->has('postalCode'))
 				<p class="help-block">
 					<strong>{{ $errors->first('postalCode') }}</strong>
@@ -86,7 +75,7 @@
 		    </div>
 		    <div class="form-group{{ $errors->has('street') ? ' has-error' : '' }}">
 			<label>地址</label>
-			<input id="street" type="text" class="form-control" name="street" value="{{ array_key_exists('street', $data) ? $data['street'] : old('street') }}">
+			<input id="street" type="text" class="form-control" name="street" value="{{ array_key_exists('street', $data) ? $data['street'] : old('street') }}"  required>
 			@if ($errors->has('street'))
 				<p class="help-block">
 					<strong>{{ $errors->first('street') }}</strong>
@@ -95,7 +84,7 @@
 		    </div>
 		    <div class="form-group{{ $errors->has('postOfficeBox') ? ' has-error' : '' }}">
 			<label>聯絡箱</label>
-			<input id="postOfficeBox" type="text" class="form-control" name="postOfficeBox" value="{{ array_key_exists('postOfficeBox', $data) ? $data['postOfficeBox'] : old('postOfficeBox') }}" placeholder="請輸入教育局聯絡箱編號">
+			<input id="postOfficeBox" type="text" class="form-control" name="postOfficeBox" value="{{ array_key_exists('postOfficeBox', $data) ? $data['postOfficeBox'] : old('postOfficeBox') }}" placeholder="請輸入教育局聯絡箱編號" required>
 			@if ($errors->has('postOfficeBox'))
 				<p class="help-block">
 					<strong>{{ $errors->first('postOfficeBox') }}</strong>
@@ -113,7 +102,7 @@
 		    </div>
 		    <div class="form-group{{ $errors->has('tpUniformNumbers') ? ' has-error' : '' }}">
 			<label>學校統一編號</label>
-			<input id="tpUniformNumbers" type="text" class="form-control" name="tpUniformNumbers" value="{{ array_key_exists('tpUniformNumbers', $data) ? $data['tpUniformNumbers'] : old('tpUniformNumbers') }}" placeholder="請輸入學校會計統一編號">
+			<input id="tpUniformNumbers" type="text" class="form-control" name="tpUniformNumbers" value="{{ array_key_exists('tpUniformNumbers', $data) ? $data['tpUniformNumbers'] : old('tpUniformNumbers') }}" placeholder="請輸入學校會計統一編號" required>
 			@if ($errors->has('tpUniformNumbers'))
 				<p class="help-block">
 					<strong>{{ $errors->first('tpUniformNumbers') }}</strong>

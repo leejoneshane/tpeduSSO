@@ -1,7 +1,7 @@
-@extends('layouts.dashboard')
+@extends('layouts.superboard')
 
 @section('page_heading')
-{{ isset($user) ? '編輯' : '新增' }}教師資訊
+編輯學生資訊
 @endsection
 
 @section('section')
@@ -20,17 +20,15 @@
 	<div class="col-sm-8">
 		<div class="panel panel-default">	  
 		<div class="panel-heading">
-			<h4>{{ isset($user) ? '編輯' : '新增' }}教師資訊</h4>
+			<h4>編輯學生資訊</h4>
 		</div>
 		<div class="panel-body">
-			<form role="form" method="POST" action="{{ isset($user) ? route('school.updateTeacher', [ 'uuid' => $user['entryUUID'] ]) : route('school.createTeacher') }}">
+			<form role="form" method="POST" action="{{ route('school.updateStudent', [ 'uuid' => $user['entryUUID'] ]) }}">
 		    	@csrf
-		    	@if (isset($user))
 				<input type="hidden" name="uuid" value="{{ $user['entryUUID'] }}">
-		    	@endif
 			    <div class="form-group{{ $errors->has('idno') ? ' has-error' : '' }}">
 					<label>身分證字號</label>
-					<input id="idno" type="text" class="form-control" name="idno" value="{{ isset($user) ? $user['cn'] : '' }}" required>
+					<input id="idno" type="text" class="form-control" name="idno" value="{{ $user['cn'] }}" required>
 					@if ($errors->has('idno'))
 						<p class="help-block">
 							<strong>{{ $errors->first('idno') }}</strong>
@@ -39,7 +37,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('sn') ? ' has-error' : '' }}">
 					<label>姓氏</label>
-					<input id="sn" type="text" class="form-control" name="sn" value="{{ isset($user) ? $user['sn'] : '' }}" required>
+					<input id="sn" type="text" class="form-control" name="sn" value="{{ $user['sn'] }}" required>
 					@if ($errors->has('sn'))
 						<p class="help-block">
 							<strong>{{ $errors->first('sn') }}</strong>
@@ -48,7 +46,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('gn') ? ' has-error' : '' }}">
 					<label>名字</label>
-					<input id="gn" type="text" class="form-control" name="gn" value="{{ isset($user) ? $user['givenName'] : '' }}" required>
+					<input id="gn" type="text" class="form-control" name="gn" value="{{ $user['givenName'] }}" required>
 					@if ($errors->has('gn'))
 						<p class="help-block">
 							<strong>{{ $errors->first('gn') }}</strong>
@@ -56,48 +54,53 @@
 					@endif
 				</div>
 			    <div class="form-group">
-					<label>隸屬單位</label>
-					<select id="ou" class="form-control" name="ou" onchange="refresh_roles()">
-					@foreach ($ous as $ou => $desc)
-			    		<option value="{{ $ou }}"{{ isset($user) && array_key_exists('ou', $user) && $ou == $user['ou'] ? ' selected' : '' }}>{{ $desc }}</option>
+					<label>隸屬機構</label>
+					<select id="area" class="form-control" name="area" onchange="refresh_orgs()">
+					@foreach ($areas as $st)
+			    		<option value="{{ $st }}"{{ $st == $area ? ' selected' : '' }}>{{ $st }}</option>
+			    	@endforeach
+					</select>
+					<select id="o" class="form-control" name="o" onchange="refresh_classes()">
+					@foreach ($schools as $dc => $desc)
+			    		<option value="{{ $dc }}"{{ array_key_exists('o', $user) && $dc == $user['o'] ? ' selected' : '' }}>{{ $desc }}</option>
 			    	@endforeach
 					</select>
 				</div>
-			    <div class="form-group">
-					<label>主要職稱</label>
-					<select id="role" class="form-control" name="role">
-					@foreach ($roles as $role => $desc)
-			    		<option value="{{ $role }}"{{ isset($user) && array_key_exists('title', $user) && $role == $user['title'] ? ' selected' : '' }}>{{ $desc }}</option>
-			    	@endforeach
-					</select>
+			    <div class="form-group{{ $errors->has('stdno') ? ' has-error' : '' }}">
+					<label>學號</label>
+					<input id="stdno" type="text" class="form-control" name="stdno" value="{{ array_key_exists('employeeNumber', $user) ? $user['employeeNumber'] : '' }}" required>
+					@if ($errors->has('stdno'))
+						<p class="help-block">
+							<strong>{{ $errors->first('stdno') }}</strong>
+						</p>
+					@endif
 				</div>
 			    <div class="form-group{{ $errors->has('tclass') ? ' has-error' : '' }}">
-					<label style="display:block">配課資訊</label>
-					@if (isset($assign))
-						@foreach ($assign as $pair)
-						<div></div>
-						<select class="form-control" style="width:25%;display:inline" name="tclass[]">
-						@foreach ($classes as $ou => $desc)
-				    		<option value="{{ $ou }}"{{ isset($pair['class']) && $pair['class'] == $ou ? ' selected' : '' }}>{{ $desc }}</option>
-				    	@endforeach
-						</select><select class="form-control" style="width:25%;display:inline" name="subj[]">
-						@foreach ($subjects as $id => $name)
-				    		<option value="{{ $id }}"{{ isset($pair['subject']) && $pair['subject'] == $id ? ' selected' : '' }}>{{ $name }}</option>
-				    	@endforeach
-						</select><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().prev().remove();$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
-						@endforeach
+					<label>就讀班級</label>
+					<select id="tclass" class="form-control" name="tclass">
+					@foreach ($classes as $ou => $desc)
+			    		<option value="{{ $ou }}" {{ array_key_exists('tpClass', $user) && $ou == $user['tpClass'] ? 'selected' : '' }}>{{ $desc }}</option>
+			    	@endforeach
+					</select>
+				</div>
+			    <div class="form-group{{ $errors->has('seat') ? ' has-error' : '' }}">
+					<label>座號</label>
+					<input id="seat" type="text" class="form-control" name="seat" value="{{ array_key_exists('tpSeat', $user) ? $user['tpSeat'] : '' }}" required>
+					@if ($errors->has('seat'))
+						<p class="help-block">
+							<strong>{{ $errors->first('seat') }}</strong>
+						</p>
 					@endif
-						<button id="nclass" type="button" class="btn btn-primary btn-circle" onclick="add_tclass()"><i class="fa fa-plus"></i></button>
 				</div>
 			    <div class="form-group{{ $errors->has('character') ? ' has-error' : '' }}">
 					<label style="display:block">特殊身份註記</label>
-					@if (isset($user) && array_key_exists('tpCharacter', $user))
+					@if (array_key_exists('tpCharacter', $user))
 						@if (is_array($user['tpCharacter']))
 							@foreach ($user['tpCharacter'] as $character)
-							<input type="text" class="form-control" style="width:50%;display:inline" name="character[]" value="{{ $character }}" placeholder="請用中文描述，例如：巡迴教師、均一平台管理員...，無則省略。" required><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
+							<input type="text" class="form-control" style="width:50%;display:inline" name="character[]" value="{{ $character }}" placeholder="請用中文描述，例如：特殊生、清寒學生...，無則省略。" required><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
 							@endforeach
 						@else
-							<input type="text" class="form-control" style="width:50%;display:inline" name="character[]" value="{{ $user['tpCharacter'] }}" placeholder="請用中文描述，例如：巡迴教師、均一平台管理員...，無則省略。" required><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
+							<input type="text" class="form-control" style="width:50%;display:inline" name="character[]" value="{{ $user['tpCharacter'] }}" placeholder="請用中文描述，例如：特殊生、清寒學生...，無則省略。" required><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
 						@endif
 					@endif
 						<button id="ncharacter" type="button" class="btn btn-primary btn-circle" onclick="add_character()"><i class="fa fa-plus"></i></button>
@@ -118,7 +121,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('birth') ? ' has-error' : '' }}">
 					<label>出生日期</label>
-					<input id="birth" type="date" class="form-control" name="birth" value="{{ isset($user) && array_key_exists('birthDate', $user) ? substr($user['birthDate'],0,4).'-'.substr($user['birthDate'],4,2).'-'.substr($user['birthDate'],6,2) : '' }}">
+					<input id="birth" type="date" class="form-control" name="birth" value="{{ array_key_exists('birthDate', $user) ? substr($user['birthDate'],0,4).'-'.substr($user['birthDate'],4,2).'-'.substr($user['birthDate'],6,2) : '' }}">
 					@if ($errors->has('birth'))
 						<p class="help-block">
 							<strong>{{ $errors->first('birth') }}</strong>
@@ -127,7 +130,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('mail') ? ' has-error' : '' }}">
 					<label style="display:block">電子郵件（只有主要電子郵件可用於登入和重設密碼）</label>
-					@if (isset($user) && array_key_exists('mail', $user))
+					@if (array_key_exists('mail', $user))
 						@if (is_array($user['mail']))
 							@foreach ($user['mail'] as $mail)
 							<input type="text" class="form-control" style="width:50%;display:inline" name="mail[]" value="{{ $mail }}" placeholder="用來傳送密碼重設連結，請務必填寫" required><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
@@ -145,7 +148,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('mobile') ? ' has-error' : '' }}">
 					<label style="display:block">手機號碼（只有主要手機號碼可用於登入和重設密碼）</label>
-					@if (isset($user) && array_key_exists('mobile', $user))
+					@if (array_key_exists('mobile', $user))
 						@if (is_array($user['mobile']))
 							@foreach ($user['mobile'] as $mobile)
 							<input type="text" pattern="09[0-9]{8}" class="form-control" style="width:50%;display:inline" name="mobile[]" value="{{ $mobile }}" placeholder="格式如右：0921000111"><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
@@ -163,7 +166,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('fax') ? ' has-error' : '' }}">
 					<label style="display:block">傳真號碼</label>
-					@if (isset($user) && array_key_exists('fax', $user))
+					@if (array_key_exists('fax', $user))
 						@if (is_array($user['fax']))
 							@foreach ($user['fax'] as $fax)
 							<input type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" style="width:50%;display:inline" name="fax[]" value="{{ $fax }}" placeholder="格式如右：(02)23456789"><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
@@ -181,7 +184,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('otel') ? ' has-error' : '' }}">
 					<label style="display:block">辦公電話</label>
-					@if (isset($user) && array_key_exists('otel', $user))
+					@if (array_key_exists('otel', $user))
 						@if (is_array($user['otel']))
 							@foreach ($user['otel'] as $otel)
 							<input type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" style="width:50%;display:inline" name="otel[]" value="{{ $otel }}" placeholder="格式如右：(02)23456789"><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
@@ -199,7 +202,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('htel') ? ' has-error' : '' }}">
 					<label style="display:block">住家電話</label>
-					@if (isset($user) && array_key_exists('htel', $user))
+					@if (array_key_exists('htel', $user))
 						@if (is_array($user['htel']))
 							@foreach ($user['htel'] as $htel)
 							<input type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" style="width:50%;display:inline" name="htel[]" value="{{ $htel }}" placeholder="格式如右：(02)23456789"><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
@@ -216,8 +219,8 @@
 					@endif
 				</div>
 			    <div class="form-group{{ $errors->has('raddress') ? ' has-error' : '' }}">
-					<label style="display:block">戶籍地址</label>
-					<input id="raddress" type="text" class="form-control" name="raddress" value="{{ isset($user) && array_key_exists('registeredAddress', $user) ? $user['registeredAddress'] : '' }}"
+					<label>戶籍地址</label>
+					<input id="raddress" type="text" class="form-control" name="raddress" value="{{ array_key_exists('registeredAddress', $user) ? $user['registeredAddress'] : '' }}"
 					 placeholder="請包含里鄰資訊...">
 					@if ($errors->has('raddress'))
 						<p class="help-block">
@@ -226,8 +229,8 @@
 					@endif
 				</div>
 			    <div class="form-group{{ $errors->has('address') ? ' has-error' : '' }}">
-					<label style="display:block">郵寄地址</label>
-					<input id="address" type="text" class="form-control" name="address" value="{{ isset($user) && array_key_exists('homePostalAddress', $user) ? $user['homePostalAddress'] : '' }}">
+					<label>郵寄地址</label>
+					<input id="address" type="text" class="form-control" name="address" value="{{ array_key_exists('homePostalAddress', $user) ? $user['homePostalAddress'] : '' }}">
 					@if ($errors->has('address'))
 						<p class="help-block">
 							<strong>{{ $errors->first('address') }}</strong>
@@ -236,7 +239,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('www') ? ' has-error' : '' }}">
 					<label>個人首頁</label>
-					<input id="www" type="text" class="form-control" name="www" value="{{ isset($user) && array_key_exists('wWWHomePage', $user) ? $user['wWWHomePage'] : '' }}">
+					<input id="www" type="text" class="form-control" name="www" value="{{ array_key_exists('wWWHomePage', $user) ? $user['wWWHomePage'] : '' }}">
 					@if ($errors->has('www'))
 						<p class="help-block">
 							<strong>{{ $errors->first('www') }}</strong>
@@ -244,42 +247,41 @@
 					@endif
 				</div>
 			    <div class="form-group">
-					<button type="submit" class="btn btn-success">{{ isset($user) ? '變更' : '新增' }}</button>
+					<button type="submit" class="btn btn-success">變更</button>
 				</div>
 			</form>
 			<script type="text/javascript">
-				function refresh_roles() {
-					axios.get('/school/roles/{{ $dc }}/' + $('#ou').val())
+				function refresh_orgs() {
+					axios.get('/bureau/orgs/' + $('#area').val())
     					.then(response => {
-    						$('#role').find('option').remove();
+    						$('#o').find('option').remove();
         					response.data.forEach(
-        						function add_option(role) { $('#role').append('<option value="' + role.cn + '">' + role.description + '</option>'); }
+        						function add_option(org) { $('#o').append('<option value="' + org.o + '">' + org.description + '</option>'); }
         					);
+		  					refresh_classes();
     					})
 						.catch(function (error) {
 							console.log(error);
   						});
       			};
       			
-      			function add_character() {
-					$('#ncharacter').before('<input type="text" class="form-control" style="width:50%;display:inline" name="character[]" placeholder="請用中文描述，例如：巡迴教師、均一平台管理員...，無則省略。" required>');
+				function refresh_classes() {
+					axios.get('/bureau/classes/' + $('#o').val())
+    					.then(response => {
+    						$('#tclass').find('option').remove();
+        					response.data.forEach(
+        						function add_option(tclass) { $('#tclass').append('<option value="' + tclass.ou + '">' + tclass.description + '</option>'); }
+        					);
+    					})
+						.catch(function (error) {
+							console.log(error);
+  						});
+  					$('#ou option:first').attr('selected', true);
+      			};
+      			
+        		function add_character() {
+					$('#ncharacter').before('<input type="text" class="form-control" style="width:50%;display:inline" name="character[]" placeholder="請用中文描述，例如：特殊生、清寒學生...，無則省略。" required>');
 					$('#ncharacter').before('<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>');
-				};
-
-      			function add_tclass() {
-      				my_item = '<div></div>';
-      				my_item += '<select class="form-control" style="width:25%;display:inline" name="tclass[]">';
-					@foreach ($classes as $ou => $desc)
-				    my_item += '<option value="{{ $ou }}">{{ $desc }}</option>';
-				    @endforeach
-					my_item += '</select>';
-      				my_item += '<select class="form-control" style="width:25%;display:inline" name="subj[]">';
-					@foreach ($subjects as $id => $name)
-				    my_item += '<option value="{{ $id }}">{{ $name }}</option>';
-				    @endforeach
-					my_item += '</select>';
-					my_item += '<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().prev().remove();$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>';
-					$('#nclass').before(my_item);
 				};
 
       			function add_mail() {
@@ -307,6 +309,7 @@
 					$('#nhtel').before('<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>');
 				};
 			</script>
+		</div>
 		</div>
 	</div>
 	</div>
