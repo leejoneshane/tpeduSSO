@@ -7,7 +7,7 @@
 <icon>ldap-uniquegroup.png</icon>
 <invalid>0</invalid>
 <rdn>cn</rdn>
-<regexp>^cn=.*,ou=groups,dc=tp,dc=edu,dc=tw</regexp>
+<regexp>^cn=.*,ou=group,dc=tp,dc=edu,dc=tw</regexp>
 <title>群組：動態</title>
 <visible>1</visible>
 
