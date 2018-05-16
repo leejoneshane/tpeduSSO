@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use DB;
-use Auth;
 use App\Providers\LdapServiceProvider;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -13,14 +12,13 @@ class profileController extends Controller
 {
     public function logout(Request $request)
     {
-/*    	$accessToken = $request->user()->token();
+    	$accessToken = $request->user()->token();
     	DB::table('oauth_refresh_tokens')
             ->where('access_token_id', $accessToken->id)
             ->update([
                 'revoked' => true
             ]);
-        $accessToken->revoke();*/
-        Auth::logout();
+        $accessToken->revoke();
         
         return response()->json(null, 204);
     }
