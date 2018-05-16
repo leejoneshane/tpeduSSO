@@ -8,4 +8,4 @@ changetype: add
 objectClass: olcOverlayConfig
 objectClass: olcDynamicList
 olcOverlay: {1}dynlist
-olcDlAttrSet: groupOfURLs memberURL member
+olcDlAttrSet: groupOfURLs memberURL
