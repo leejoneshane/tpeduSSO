@@ -773,15 +773,15 @@ class LdapServiceProvider extends ServiceProvider
 
     public function getGroups()
     {
-        $filter = Config::get('ldap.groupattr')."=*";
-        $resource = @ldap_search(self::$ldapConnectId, Config::get('ldap.groupdn'), $filter, [ "cn", "memberURL" ]);
+        $filter = "objectClass=groupOfURLs";
+        $resource = @ldap_search(self::$ldapConnectId, Config::get('ldap.groupdn'), $filter);
         if ($resource) {
-        	$info = @ldap_get_entries(self::$ldapConnectId, $result);
+        	$info = @ldap_get_entries(self::$ldapConnectId, $resource);
         	$groups = array();
         	foreach ($info as $each) {
 		    	$group = new \stdClass();
-	    		$group->cn = $info['cn'];
-	    		$group->url = $info['memberURL'];
+	    		$group->cn = $info['cn'][0];
+	    		$group->url = $info['memberurl'][0];
 	    		$groups[] = $group;
         	}
         	return $groups;
