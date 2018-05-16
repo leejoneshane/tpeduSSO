@@ -1,11 +1,11 @@
 dn: cn=module{0},cn=config
 changetype: modify
 add: olcmoduleload
-olcmoduleload: dynlist.la
+olcmoduleload: dynlist
 
 dn: olcOverlay=dynlist,olcDatabase={1}{{ LDAP_BACKEND }},cn=config
 changetype: add
 objectClass: olcOverlayConfig
 objectClass: olcDynamicList
-olcOverlay: {1}dynlist
+olcOverlay: dynlist
 olcDlAttrSet: groupOfURLs memberURL
