@@ -29,7 +29,7 @@
 			    	<option value="{{ $sch->o }}"{{ $dc == $sch->o ? ' selected' : '' }}>{{ $sch->description }}</option>
 			    @endforeach
 			</select>
-			<select id="field" name="field" class="form-control" style="width: auto" onchange="if ($(this).val().substr(0,3) == 'ou=') location='{{ url()->current() }}?field=' + $(this).val();">
+			<select id="field" name="field" class="form-control" style="width: auto" onchange="if ($(this).val().substr(0,3) == 'ou=') location='{{ url()->current() }}?area=' + $area + '&dc=' + $dc + '&field=' + $(this).val();">
 			    <option value="uuid" {{ $my_field == 'uuid' ? 'selected' : '' }}>使用者唯一編號</option>
 			    <option value="idno" {{ $my_field == 'idno' ? 'selected' : '' }}>身分證字號</option>
 			    <option value="name" {{ $my_field == 'name' ? 'selected' : '' }}>姓名</option>
@@ -42,7 +42,7 @@
 			</select>
         	<input type="text" class="form-control" style="width:auto" id="keywords" name="keywords" placeholder="搜尋..." value="{{ old('keywords') }}">
             <span class="input-group-btn" style="width: auto">
-            	<button class="btn btn-default" type="button" onclick="location='{{ url()->current() }}?field=' + $('#field').val() + '&keywords=' + $('#keywords').val();">
+            	<button class="btn btn-default" type="button" onclick="location='{{ url()->current() }}?area=' + $area + '&dc=' + $dc + '&field=' + $('#field').val() + '&keywords=' + $('#keywords').val();">
             		<i class="fa fa-search"></i>
             	</button>
         	</span>
