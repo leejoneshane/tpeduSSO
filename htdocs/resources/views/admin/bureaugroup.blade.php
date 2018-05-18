@@ -44,6 +44,9 @@
 							<span>{{ $group->url }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
+							<button type="button" class="btn btn-success"
+							 	onclick="$('#form').attr('action','{{ route('bureau.showMember', [ 'cn' => $group->cn ]) }}');
+										 $('#form').submit();">檢視成員</button>
 							<button type="button" class="btn btn-primary"
 							 	onclick="$('#form').attr('action','{{ route('bureau.updateGroup', [ 'cn' => $group->cn ]) }}');
 										 $('#form').submit();">重新命名</button>

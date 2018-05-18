@@ -778,10 +778,10 @@ class LdapServiceProvider extends ServiceProvider
         if ($resource) {
         	$info = @ldap_get_entries(self::$ldapConnectId, $resource);
         	$groups = array();
-        	foreach ($info as $each) {
+        	for ($i=0;$i<$info['count'];$i++) {
 		    	$group = new \stdClass();
-	    		$group->cn = $info['cn'][0];
-	    		$group->url = $info['memberurl'][0];
+	    		$group->cn = $info[$i]['cn'][0];
+	    		$group->url = $info[$i]['memberurl'][0];
 	    		$groups[] = $group;
         	}
         	return $groups;
@@ -803,12 +803,13 @@ class LdapServiceProvider extends ServiceProvider
 	    	$value = @ldap_get_values(self::$ldapConnectId, $entry, $field);
 	    	if ($value) {
 				if ($value['count'] == 1) {
-		    		$member[] = $value[$field][0];
+		    		$member[] = $value[0];
 				} else {
 		    		unset($value['count']);
 		    		$member = $value;
 				}
 	    	}
+			$member['attribute'] = $field;
 			return $member;
 		}
 		return false;

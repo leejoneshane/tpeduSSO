@@ -58,6 +58,7 @@ Route::group(['prefix' => 'bureau', 'middleware' => 'auth.admin'], function () {
 	Route::post('group', 'BureauController@createBureauGroup')->name('bureau.createGroup');
 	Route::post('group/{cn}/update', 'BureauController@updateBureauGroup')->name('bureau.updateGroup');
 	Route::post('group/{cn}/remove', 'BureauController@removeBureauGroup')->name('bureau.removeGroup');
+	Route::post('group/{cn}/member', 'BureauController@memberBureauGroup')->name('bureau.bureauMemberForm');
 	Route::get('people', 'BureauController@bureauPeopleSearchForm')->name('bureau.people');
 	Route::get('people/{uuid}/update', 'BureauController@bureauPeopleEditForm')->name('bureau.updatePeople');
 	Route::post('teacher/{uuid}/update', 'BureauController@updateBureauTeacher')->name('bureau.updateTeacher');

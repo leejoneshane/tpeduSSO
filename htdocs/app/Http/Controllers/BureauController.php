@@ -900,6 +900,14 @@ class BureauController extends Controller
 		return view('admin.bureaugroup', [ 'model' => $model, 'fields' => $fields, 'groups' => $data ]);
     }
 
+    public function bureauMemberForm(Request $request, $cn)
+    {
+		$openldap = new LdapServiceProvider();
+		$data = $openldap->getMembers($cn);
+		if (!$data) $data = [];
+		return view('admin.bureaugroup', [ 'group' => $cn, 'members' => $data ]);
+    }
+
     public function createBureauGroup(Request $request)
     {
 		$validatedData = $request->validate([
@@ -915,7 +923,7 @@ class BureauController extends Controller
 		} else {
 			return redirect()->back()->with("error", "過濾條件填寫不完整！");
 		}
-		$info['dn'] = 'cn='.$info['cn'].Config::get('ldap.groupdn');
+		$info['dn'] = 'cn='.$info['cn'].','.Config::get('ldap.groupdn');
 		$openldap = new LdapServiceProvider();
 		$result = $openldap->createEntry($info);
 		if ($result) {
