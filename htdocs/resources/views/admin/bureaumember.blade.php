@@ -1,7 +1,7 @@
 @extends('layouts.superboard')
 
 @section('page_heading')
-{{ $cn }}群組成員一覽表
+{{ $group }}群組成員一覽表
 @endsection
 
 @section('section')
@@ -20,7 +20,7 @@
 	<div class="col-sm-6">
 		<div class="panel panel-default">	  
 		<div class="panel-heading">
-			<h4>{{ $cn }}群組成員一覽表</h4>
+			<h4>{{ $group }}群組成員一覽表</h4>
 		</div>
 		<div class="panel-body">
 			<table class="table table-hover">
@@ -30,7 +30,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{% unset($members['attribute']); %}
+					<?php unset($members['attribute']); ?>
 					@foreach ($members as $member)
 					<tr>
 						<td style="vertical-align: inherit;">

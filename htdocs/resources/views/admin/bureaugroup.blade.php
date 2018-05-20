@@ -17,7 +17,7 @@
 		{{ session('success') }}
 	    </div>
 	@endif
-	<div class="col-sm-6">
+	<div class="col-sm-8">
 		<div class="panel panel-default">	  
 		<div class="panel-heading">
 			<h4>動態群組一覽表</h4>
@@ -34,22 +34,20 @@
 				<tbody>
 					@foreach ($groups as $group)
 					<tr>
-						<form role="form" method="POST" action="{{ route('bureau.updateGroup', [ 'cn' => $group->cn ]) }}">
+						<form role="form" id="form" method="POST" action="{{ route('bureau.updateGroup', [ 'cn' => $group->cn ]) }}">
 		    			@csrf
 						<td style="vertical-align: inherit;">
-							<span>{{ $group->cn }}</span>
 							<input id="cn" type="text" class="form-control" name="cn" value="{{ $group->cn ? $group->cn : old('cn') }}">
 						</td>
 						<td style="vertical-align: inherit;">
 							<span>{{ $group->url }}</span>
 						</td>
-						<td style="vertical-align: inherit;">
+						<td style="vertical-align: inherit;width: 200px">
 							<button type="button" class="btn btn-success"
-							 	onclick="$('#form').attr('action','{{ route('bureau.showMember', [ 'cn' => $group->cn ]) }}');
-										 $('#form').submit();">檢視成員</button>
+							 	onclick="$('#deleteform').attr('action','{{ route('bureau.showMember', [ 'cn' => $group->cn ]) }}');
+										 $('#deleteform').submit();">成員</button>
 							<button type="button" class="btn btn-primary"
-							 	onclick="$('#form').attr('action','{{ route('bureau.updateGroup', [ 'cn' => $group->cn ]) }}');
-										 $('#form').submit();">重新命名</button>
+							 	onclick="$('#form').submit();">改名</button>
 							<button type="button" class="btn btn-danger"
 							 	onclick="$('#deleteform').attr('action','{{ route('bureau.removeGroup', [ 'cn' => $group->cn ]) }}');
 										 $('#deleteform').submit();">刪除</button>
@@ -67,7 +65,7 @@
     @csrf
     </form>
     
-	<div class="col-sm-6">
+	<div class="col-sm-4">
 		<div class="panel panel-default">
 		<div class="panel-heading">
 			<h4>新增動態群組</h4>

@@ -905,7 +905,7 @@ class BureauController extends Controller
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getMembers($cn);
 		if (!$data) $data = [];
-		return view('admin.bureaugroup', [ 'group' => $cn, 'members' => $data ]);
+		return view('admin.bureaumember', [ 'group' => $cn, 'members' => $data ]);
     }
 
     public function createBureauGroup(Request $request)

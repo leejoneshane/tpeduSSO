@@ -773,6 +773,7 @@ class LdapServiceProvider extends ServiceProvider
 
     public function getGroups()
     {
+		self::administrator();
         $filter = "objectClass=groupOfURLs";
         $resource = @ldap_search(self::$ldapConnectId, Config::get('ldap.groupdn'), $filter);
         if ($resource) {
@@ -792,13 +793,11 @@ class LdapServiceProvider extends ServiceProvider
     public function getMembers($identifier)
     {
 		self::administrator();
-		$filter = Config::get('ldap.groupattr')."=".$identifier;
-		$resource = ldap_search(self::$ldapConnectId, Config::get('ldap.groupdn'), $filter);
-		if ($resource) {
-			$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+		$entry = self::getGroupEntry($identifier);
+		if ($entry) {
 	    	$data = @ldap_get_values(self::$ldapConnectId, $entry, "memberURL");
-	    	preg_match("/^ldap:///".Config::get('ldap.userdn')."\?(\w+)\?sub\?\(.*\)$/", $data['memberURL'][0], $matchs);
-	    	$field = $matchs[0];
+	    	preg_match("/^ldap:\/\/\/".Config::get('ldap.userdn')."\?(\w+)\?sub\?\(.*\)$/", $data[0], $matchs);
+	    	$field = $matchs[1];
 			$member = array();
 	    	$value = @ldap_get_values(self::$ldapConnectId, $entry, $field);
 	    	if ($value) {
