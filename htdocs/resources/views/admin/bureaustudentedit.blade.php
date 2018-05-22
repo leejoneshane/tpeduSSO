@@ -23,7 +23,7 @@
 			<h4>編輯學生資訊</h4>
 		</div>
 		<div class="panel-body">
-			<form role="form" method="POST" action="{{ route('school.updateStudent', [ 'uuid' => $user['entryUUID'] ]) }}">
+			<form role="form" method="POST" action="{{ route('bureau.updateStudent', [ 'uuid' => $user['entryUUID'] ]) }}">
 		    	@csrf
 				<input type="hidden" name="uuid" value="{{ $user['entryUUID'] }}">
 			    <div class="form-group{{ $errors->has('idno') ? ' has-error' : '' }}">
