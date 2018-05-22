@@ -439,16 +439,18 @@ class LdapServiceProvider extends ServiceProvider
 		$sch_dn = "$sch_rdn,$base_dn";
 		$ou_dn = "ou=$ou,$sch_dn";
 		$filter = "objectClass=organizationalRole";
-		$resource = ldap_search(self::$ldapConnectId, $ou_dn, $filter, ["cn", "description"]);
-		$entry = ldap_first_entry(self::$ldapConnectId, $resource);
-		if ($entry) {
-			do {
-		    	$role = new \stdClass();
-		    	$info = self::getRoleData($entry);
-	    		$role->cn = $info['cn'];
-	    		$role->description = $info['description'];
-	    		$roles[] = $role;
-			} while ($entry=ldap_next_entry(self::$ldapConnectId, $entry));
+		$resource = @ldap_search(self::$ldapConnectId, $ou_dn, $filter, ["cn", "description"]);
+		if ($resource) {
+			$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+			if ($entry) {
+				do {
+		    		$role = new \stdClass();
+		    		$info = self::getRoleData($entry);
+		    		$role->cn = $info['cn'];
+		    		$role->description = $info['description'];
+	    			$roles[] = $role;
+				} while ($entry=ldap_next_entry(self::$ldapConnectId, $entry));
+			}
 		}
 		return $roles;
     }

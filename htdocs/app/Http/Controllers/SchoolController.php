@@ -1279,12 +1279,13 @@ class SchoolController extends Controller
 		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getOus($dc, '行政部門');
-		if ($my_ou == 'null') $my_ou = $data[0]->ou;
+		if (empty($my_ou) && is_array($data)) $my_ou = $data[0]->ou;
 		$ous = array();
 		foreach ($data as $ou) {
 			if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
 		}
-		$roles = $openldap->getRoles($dc, $my_ou);
+		$roles = array();
+		if (!empty($my_ou)) $roles = $openldap->getRoles($dc, $my_ou);
 		return view('admin.schoolrole', [ 'my_ou' => $my_ou, 'ous' => $ous, 'roles' => $roles ]);
     }
 
@@ -1390,8 +1391,8 @@ class SchoolController extends Controller
 			if ($grade == $my_grade) $classes[] = $class;
 		}		
 		$ous = $openldap->getOus($dc, '行政部門');
-		if (empty($my_ou)) $my_ou = $ous[0]->ou;
-		$teachers = array();		
+		if (empty($my_ou) && is_array($ous)) $my_ou = $ous[0]->ou;
+		$teachers = array();
 		$data = $openldap->findUsers("(&(o=$dc)(ou=$my_ou))", ["cn","displayName","o","ou","title"]);
 		for ($i=0;$i<$data['count'];$i++) {
 			$teacher = new \stdClass;
