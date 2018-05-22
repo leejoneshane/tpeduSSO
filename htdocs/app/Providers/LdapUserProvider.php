@@ -49,22 +49,30 @@ class LdapUserProvider extends EloquentUserProvider
 	        	$user->name = $data['displayName'];
 				$user->uuid = $data['entryUUID'];
 	        	if (isset($data['mail'])) {
-		    		$user->email = $data['mail'];
+	    	    	if (is_array($data['mail'])) {
+		        		$user->email = $data['mail'][0];
+		        	} else {
+		    			$user->email = $data['mail'];
+		    		}
 				} else {
-		    		$user->email = null;
+			    	$user->email = null;
 				}
 	        	if (isset($data['mobile'])) {
-		    		$user->mobile = $data['mobile'];
+	    	    	if (is_array($data['mobile'])) {
+			    		$user->mobile = $data['mobile'][0];
+		        	} else {
+		    			$user->mobile = $data['mobile'];
+		    		}
 				} else {
-		    		$user->mobile = null;
+			    	$user->mobile = null;
 				}
-				if (isset($credentials['password'])) {
-	    	    	$user->password = \Hash::make($credentials['password']);
-	        	} else {
-	    	    	$user->password = \Hash::make(substr($id,-6));
-	        	}
-	        	$user->save();
-	    	}
+			}
+			if (isset($credentials['password'])) {
+	    		$user->password = \Hash::make($credentials['password']);
+	        } else {
+	    		$user->password = \Hash::make(substr($id,-6));
+	        }
+	        $user->save();
 	    	return $user;
 		}
     }

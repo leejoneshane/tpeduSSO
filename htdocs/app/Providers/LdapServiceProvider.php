@@ -611,10 +611,20 @@ class LdapServiceProvider extends ServiceProvider
 		$userinfo['email_login'] = false;
 		$userinfo['mobile_login'] = false;
 		if (isset($userinfo['uid']) && is_array($userinfo['uid'])) {
-	    	if (isset($userinfo['mail']) && in_array($userinfo['mail'], $userinfo['uid'])) 
-				$userinfo['email_login'] = true;
-	    	if (isset($userinfo['mobile']) && in_array($userinfo['mobile'], $userinfo['uid']))
-				$userinfo['mobile_login'] = true;
+	    	if (isset($userinfo['mail'])) {
+	    		if (is_array($userinfo['mail'])) {
+	    			if (in_array($userinfo['mail'][0], $userinfo['uid'])) $userinfo['email_login'] = true;
+	    		} else {
+	    			if (in_array($userinfo['mail'], $userinfo['uid'])) $userinfo['email_login'] = true;
+	    		}
+	    	}
+	    	if (isset($userinfo['mobile'])) {
+	    		if (is_array($userinfo['mobile'])) {
+	    			if (in_array($userinfo['mobile'][0], $userinfo['uid'])) $userinfo['mobile_login'] = true;
+	    		} else {
+	    			if (in_array($userinfo['mobile'], $userinfo['uid'])) $userinfo['mobile_login'] = true;
+	    		}
+	    	}
 		}
 
 		if (isset($userinfo['o'])) {

@@ -46,10 +46,20 @@ class User extends Authenticatable
 		$data = $openldap->getUserData($entry);
 		if (array_key_exists('entryUUID', $data))
 		    $this->attributes['uuid'] = $data['entryUUID'];
-		if (array_key_exists('mail', $data))
-		    $this->attributes['email'] = $data['mail'];
-		if (array_key_exists('mobile', $data))
-		    $this->attributes['mobile'] = $data['mobile'];
+		if (array_key_exists('mail', $data)) {
+	    	if (is_array($data['mail'])) {
+				$this->attributes['email'] = $data['mail'][0];
+		    } else {
+		    	$this->attributes['email'] = $data['mail'];
+		    }
+		}
+		if (array_key_exists('mobile', $data)) {
+	    	if (is_array($data['mobile'])) {
+				$this->attributes['mobile'] = $data['mobile'][0];
+		    } else {
+		    	$this->attributes['mobile'] = $data['mobile'];
+		    }
+		}
 		if (array_key_exists('displayName', $data))
 		    $this->attributes['name'] = $data['displayName'];
 		if (array_key_exists('birthDate', $data))
@@ -59,9 +69,9 @@ class User extends Authenticatable
 		$data['is_schoolAdmin'] = false;
 		if (isset($admins['tpAdministrator'])) {
 		    if (is_array($admins['tpAdministrator'])) {
-			foreach ($admins['tpAdministrator'] as $admin) {
-			    if ($this->attributes['idno'] == $admin) $data['is_schoolAdmin'] = true;
-			}
+				foreach ($admins['tpAdministrator'] as $admin) {
+			    	if ($this->attributes['idno'] == $admin) $data['is_schoolAdmin'] = true;
+				}
 		    } else {
 				if ($this->attributes['idno'] == $admins['tpAdministrator']) $data['is_schoolAdmin'] = true;
 		    }
