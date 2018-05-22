@@ -24,12 +24,12 @@
 			    	<option value="{{ $st }}"{{ $area == $st ? ' selected' : '' }}>{{ $st }}</option>
 			    @endforeach
 			</select>
-			<select id="dc" name="dc" class="form-control" style="width: auto" onchange="location='{{ url()->current() }}?area=' + $area + '&dc=' + $dc;">
+			<select id="dc" name="dc" class="form-control" style="width: auto" onchange="location='{{ url()->current() }}?area=' + $('#area').val() + '&dc=' + $(this).val();">
 				@foreach ($schools as $sch)
 			    	<option value="{{ $sch->o }}"{{ $dc == $sch->o ? ' selected' : '' }}>{{ $sch->description }}</option>
 			    @endforeach
 			</select>
-			<select id="field" name="field" class="form-control" style="width: auto" onchange="if ($(this).val().substr(0,3) == 'ou=') location='{{ url()->current() }}?area=' + $area + '&dc=' + $dc + '&field=' + $(this).val();">
+			<select id="field" name="field" class="form-control" style="width: auto" onchange="if ($(this).val().substr(0,3) == 'ou=') location='{{ url()->current() }}?area=' + $('#area').val() + '&dc=' + $('#dc').val() + '&field=' + $(this).val();">
 			    <option value="uuid" {{ $my_field == 'uuid' ? 'selected' : '' }}>使用者唯一編號</option>
 			    <option value="idno" {{ $my_field == 'idno' ? 'selected' : '' }}>身分證字號</option>
 			    <option value="name" {{ $my_field == 'name' ? 'selected' : '' }}>姓名</option>
@@ -42,7 +42,7 @@
 			</select>
         	<input type="text" class="form-control" style="width:auto" id="keywords" name="keywords" placeholder="搜尋..." value="{{ old('keywords') }}">
             <span class="input-group-btn" style="width: auto">
-            	<button class="btn btn-default" type="button" onclick="location='{{ url()->current() }}?area=' + $area + '&dc=' + $dc + '&field=' + $('#field').val() + '&keywords=' + $('#keywords').val();">
+            	<button class="btn btn-default" type="button" onclick="location='{{ url()->current() }}?area=' + $('#area').val() + '&dc=' + $('#dc').val() + '&field=' + $('#field').val() + '&keywords=' + $('#keywords').val();">
             		<i class="fa fa-search"></i>
             	</button>
         	</span>

@@ -1082,7 +1082,7 @@ class BureauController extends Controller
 		$info['street'] = [];
 		if (!empty($request->get('street'))) $info['street'] = $request->get('street');
 		$info['postOfficeBox'] = [];
-		if (!empty($request->get('postOfficeBox'))) $inbfo['postOfficeBox'] = $request->get('postOfficeBox');
+		if (!empty($request->get('postOfficeBox'))) $info['postOfficeBox'] = $request->get('postOfficeBox');
 		$info['wWWHomePage'] = [];
         if (!empty($request->get('wWWHomePage'))) $info['wWWHomePage'] = $request->get('wWWHomePage');
 		$info['tpUniformNumbers'] = $request->get('tpUniformNumbers');
