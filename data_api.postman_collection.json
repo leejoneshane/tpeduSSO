@@ -1,0 +1,1626 @@
+{
+	"info": {
+		"_postman_id": "58725606-3e83-4e73-88f9-1445a9462828",
+		"name": "ldap.tp.edu.tw",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "專案授權",
+			"description": null,
+			"item": [
+				{
+					"name": "專案驗證",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"grant_type\": \"client_credentials\",\n\"client_id\": 3,\n\"client_secret\": \"your_secret\",\n\"scope\": \"school\"\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/oauth/token",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得學校列表",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得學校資料",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school/meps",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school",
+								"meps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得學校科目列表",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school/meps/subject",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school",
+								"meps",
+								"subject"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得學校科目資料",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school/meps/subject/sub01",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school",
+								"meps",
+								"subject",
+								"sub01"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得學校處室列表",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school/meps/ou",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school",
+								"meps",
+								"ou"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得學校處室資料",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school/meps/ou/dept02",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school",
+								"meps",
+								"ou",
+								"dept02"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得學校處室職稱列表",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school/meps/ou/dept02/role",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school",
+								"meps",
+								"ou",
+								"dept02",
+								"role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得學校處室職稱資料",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school/meps/ou/dept02/role/roleC17",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school",
+								"meps",
+								"ou",
+								"dept02",
+								"role",
+								"roleC17"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得學校班級列表",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school/meps/class",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school",
+								"meps",
+								"class"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得學校班級資料",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school/meps/class/101",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school",
+								"meps",
+								"class",
+								"101"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得學校班級任教教師",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school/meps/class/101/teachers",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school",
+								"meps",
+								"class",
+								"101",
+								"teachers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得學校班級學生列表",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school/meps/class/101/students",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school",
+								"meps",
+								"class",
+								"101",
+								"students"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "代理授權",
+			"description": null,
+			"item": [
+				{
+					"name": "取得個人金鑰列表",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/oauth/personal-access-tokens",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"oauth",
+								"personal-access-tokens"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得所有授權範圍",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/oauth/scopes",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"oauth",
+								"scopes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得專案列表",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/oauth/clients",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"oauth",
+								"clients"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "第一方授權",
+			"description": null,
+			"item": [
+				{
+					"name": "使用者登入驗證",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"grant_type\": \"password\",\n\"client_id\": 2,\n\"client_secret\": \"your_secret\",\n\"username\": \"user\",\n\"password\": \"password\",\n\"scope\": \"*\"\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/oauth/token",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得登入者的電子郵件",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/email",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得登入者的姓名與電子郵件",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/me",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得登入者一般資訊",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/user",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得登入者身分證字號",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/idno",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"idno"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得登入者身份識別資訊",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/profile",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "登出使用者",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/logout",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "變更登入者資訊",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"new_mail\",\n  \"mobile\": \"new_tel\",\n  \"email_login\": \"false\",\n  \"mobile_login\": \"false\"\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/user",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "變更登入者帳號密碼",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"password\": \"new_password\"\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/account",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "變更學校資料",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"area\": \"\",\n  \"fullname\": \"\",\n  \"fax\": \"\",\n  \"tel\": \"\",\n  \"postal\": \"\",\n  \"address\": \"\",\n  \"office_box\": \"\",\n  \"web_url\": \"\",\n  \"ipv4\": \"\",\n  \"ipv6\": \"\",\n  \"admins\": [ \"idno_of_admin\" ]\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school/meps",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school",
+								"meps"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "第三方個資授權（使用者介入）",
+			"description": null,
+			"item": [
+				{
+					"name": "導向到登入頁面",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/oauth/authorize?client_id=3&redirect_uri=your_api_client_url&response_type=code&scope=user",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"oauth",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "3"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "your_api_client_url"
+								},
+								{
+									"key": "response_type",
+									"value": "code"
+								},
+								{
+									"key": "scope",
+									"value": "user"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "驗證碼交換金鑰",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"grant_type\": \"authorization_code\",\n  \"client_id\": 3,\n  \"client_secret\": \"your_secret\",\n  \"redirect_uri\": \"your_api_client_url\",\n  \"code\": \"your_authorize_code_retrive_from_oauth\"\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/oauth/token",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "更新金鑰",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"grant_type\": \"refresh_token\",\n  \"refresh_token\": \"your_refresh_token_retrive_from_oauth\",\n  \"client_id\": 3,\n  \"client_secret\": \"your_secret\",\n  \"scope\": \"user\"\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/oauth/token",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得登入者一般資訊",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/user",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得登入者的電子郵件",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/email",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得登入者的姓名與電子郵件",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/me",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得登入者身分證字號",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/idno",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"idno"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得登入者身份識別資訊",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/profile",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "登出使用者",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/logout",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "變更登入者資訊",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"new_mail\",\n  \"mobile\": \"new_tel\",\n  \"email_login\": \"false\",\n  \"mobile_login\": \"false\"\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/user",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "變更登入者帳號密碼",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"password\": \"new_password\"\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/account",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "變更學校資料",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"area\": \"\",\n  \"fullname\": \"\",\n  \"fax\": \"\",\n  \"tel\": \"\",\n  \"postal\": \"\",\n  \"address\": \"\",\n  \"office_box\": \"\",\n  \"web_url\": \"\",\n  \"ipv4\": \"\",\n  \"ipv6\": \"\",\n  \"admins\": [ \"idno_of_admin\" ]\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school/meps",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school",
+								"meps"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
