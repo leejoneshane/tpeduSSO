@@ -270,9 +270,14 @@ class LdapServiceProvider extends ServiceProvider
 		$sch_rdn = Config::get('ldap.schattr')."=".$dc;
 		$sch_dn = "$sch_rdn,$base_dn";
 		$resource = ldap_search(self::$ldapConnectId, $sch_dn, "objectClass=tpeduSchool", array("description"));
-		$entry = ldap_first_entry(self::$ldapConnectId, $resource);
-		$value = @ldap_get_values(self::$ldapConnectId, $entry, "description");
-		return $value[0];
+		if ($resource) {
+			$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+			if ($entry) {
+				$value = @ldap_get_values(self::$ldapConnectId, $entry, "description");
+				if (!empty($valus[0])) return $value[0];
+			}
+		}
+		return '';
     }
     
     public function getOus($dc, $category = '')
@@ -348,9 +353,14 @@ class LdapServiceProvider extends ServiceProvider
 		$sch_dn = Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
 		$filter = "ou=$ou";
 		$resource = ldap_search(self::$ldapConnectId, $sch_dn, $filter, array("description"));
-		$entry = ldap_first_entry(self::$ldapConnectId, $resource);
-		$value = @ldap_get_values(self::$ldapConnectId, $entry, "description");
-		return $value[0];
+		if ($resource) {
+			$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+			if ($entry) {
+				$value = @ldap_get_values(self::$ldapConnectId, $entry, "description");
+				if (!empty($valus[0])) return $value[0];
+			}
+		}
+		return '';
     }
     
     public function getSubjects($dc)
@@ -425,9 +435,14 @@ class LdapServiceProvider extends ServiceProvider
 		$sch_dn = Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
 		$filter = "tpSubject=$subj";
 		$resource = ldap_search(self::$ldapConnectId, $sch_dn, $filter, array("description"));
-		$entry = ldap_first_entry(self::$ldapConnectId, $resource);
-		$value = @ldap_get_values(self::$ldapConnectId, $entry, "description");
-		return $value[0];
+		if ($resource) {
+			$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+			if ($entry) {
+				$value = @ldap_get_values(self::$ldapConnectId, $entry, "description");
+				if (!empty($valus[0])) return $value[0];
+			}
+		}
+		return '';
     }
     
     public function getRoles($dc, $ou)
@@ -506,9 +521,14 @@ class LdapServiceProvider extends ServiceProvider
 		$ou_dn = "ou=$ou,".Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
 		$filter = "cn=$role";
 		$resource = ldap_search(self::$ldapConnectId, $ou_dn, $filter, array("description"));
-		$entry = ldap_first_entry(self::$ldapConnectId, $resource);
-		$value = @ldap_get_values(self::$ldapConnectId, $entry, "description");
-		return $value[0];
+		if ($resource) {
+			$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+			if ($entry) {
+				$value = @ldap_get_values(self::$ldapConnectId, $entry, "description");
+				if (!empty($valus[0])) return $value[0];
+			}
+		}
+		return '';
     }
     
     public function findUsers($filter, $attr = null)

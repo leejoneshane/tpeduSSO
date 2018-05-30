@@ -378,9 +378,9 @@ class SchoolController extends Controller
 		$info['displayName'] = $info['sn'].$info['givenName'];
 		$info['gender'] = $request->get('gender');
 		$info['birthDate'] = $request->get('birth');
-		if (!is_null($request->get('raddress'))) $info['registeredAddress'] = $request->get('raddress');
-		if (!is_null($request->get('address'))) $info['homePostalAddress'] = $request->get('address');
-		if (!is_null($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
+		if (!empty($request->get('raddress'))) $info['registeredAddress'] = $request->get('raddress');
+		if (!empty($request->get('address'))) $info['homePostalAddress'] = $request->get('address');
+		if (!empty($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
 		if (!is_null($request->get('character'))) {
 			$data = array();
 			if (is_array($request->get('character'))) {
@@ -469,15 +469,15 @@ class SchoolController extends Controller
 		$info['displayName'] = $info['sn'].$info['givenName'];
 		$info['gender'] = (int) $request->get('gender');
 		$info['birthDate'] = str_replace('-', '', $request->get('birth')).'000000Z';
-		if (is_null($request->get('raddress'))) 
+		if (empty($request->get('raddress'))) 
 			$info['registeredAddress'] = [];
 		else
 			$info['registeredAddress'] = $request->get('raddress');
-		if (is_null($request->get('address')))
+		if (empty($request->get('address')))
 			$info['homePostalAddress'] = [];
 		else
 			$info['homePostalAddress'] = $request->get('address');
-		if (is_null($request->get('www')))
+		if (empty($request->get('www')))
 			$info['wWWHomePage'] = [];
 		else
 			$info['wWWHomePage'] = $request->get('www');
@@ -574,15 +574,17 @@ class SchoolController extends Controller
 		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getOus($dc, '行政部門');
-		$my_ou = $data[0]->ou;
+		$ous = array();
+		if (is_array($data)) {
+			$my_ou = $data[0]->ou;
+			foreach ($data as $ou) {
+				if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
+			}
+		}
 		$my_field = $request->get('field', "ou=$my_ou");
 		$keywords = $request->get('keywords');
 		$request->session()->put('field', $my_field);
 		$request->session()->put('keywords', $keywords);
-		$ous = array();
-		foreach ($data as $ou) {
-			if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
-		}
 		if (substr($my_field,0,3) == 'ou=') {
 			$my_ou = substr($my_field,3);
 			if ($my_ou == 'deleted')
@@ -984,9 +986,9 @@ class SchoolController extends Controller
 		$info['displayName'] = $info['sn'].$info['givenName'];
 		$info['gender'] = $request->get('gender');
 		$info['birthDate'] = $request->get('birth');
-		if (!is_null($request->get('raddress'))) $info['registeredAddress'] = $request->get('raddress');
-		if (!is_null($request->get('address'))) $info['homePostalAddress'] = $request->get('address');
-		if (!is_null($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
+		if (!empty($request->get('raddress'))) $info['registeredAddress'] = $request->get('raddress');
+		if (!empty($request->get('address'))) $info['homePostalAddress'] = $request->get('address');
+		if (!empty($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
 		if (!is_null($request->get('tclass'))) {
 			$classes = $request->get('tclass');
 			$subjects = $request->get('subj');
@@ -1083,15 +1085,15 @@ class SchoolController extends Controller
 		$info['displayName'] = $info['sn'].$info['givenName'];
 		$info['gender'] = (int) $request->get('gender');
 		$info['birthDate'] = str_replace('-', '', $request->get('birth')).'000000Z';
-		if (is_null($request->get('raddress')))
+		if (empty($request->get('raddress')))
 			$info['registeredAddress'] = [];
 		else
 			$info['registeredAddress'] = $request->get('raddress');
-		if (is_null($request->get('address')))
+		if (empty($request->get('address')))
 			$info['homePostalAddress'] = [];
 		else
 			$info['homePostalAddress'] = $request->get('address');
-		if (is_null($request->get('www')))
+		if (empty($request->get('www')))
 			$info['wWWHomePage'] = [];
 		else
 			$info['wWWHomePage'] = $request->get('www');

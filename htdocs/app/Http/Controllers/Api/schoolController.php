@@ -24,8 +24,10 @@ class schoolController extends Controller
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getOrgs();
 		$orgs = array();
-		foreach ($data as $org) {
-			if (empty($area) || $area == $org->st) $orgs[] = $org;
+		if (is_array($data)) {
+			foreach ($data as $org) {
+				if (empty($area) || isset($org->st) && $area == $org->st) $orgs[] = $org;
+			}
 		}
 		return json_encode($orgs, JSON_UNESCAPED_UNICODE);
     }

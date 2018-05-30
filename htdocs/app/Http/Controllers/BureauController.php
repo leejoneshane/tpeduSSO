@@ -6,6 +6,7 @@ use Config;
 use Validator;
 use Auth;
 use DB;
+use Log;
 use Illuminate\Http\Request;
 use App\Providers\LdapServiceProvider;
 use App\Rules\idno;
@@ -500,9 +501,9 @@ class BureauController extends Controller
 		$info['displayName'] = $info['sn'].$info['givenName'];
 		$info['gender'] = $request->get('gender');
 		$info['birthDate'] = $request->get('birth');
-		if (!is_null($request->get('raddress'))) $info['registeredAddress'] = $request->get('raddress');
-		if (!is_null($request->get('address'))) $info['homePostalAddress'] = $request->get('address');
-		if (!is_null($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
+		if (!empty($request->get('raddress'))) $info['registeredAddress'] = $request->get('raddress');
+		if (!empty($request->get('address'))) $info['homePostalAddress'] = $request->get('address');
+		if (!empty($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
 		if (!is_null($request->get('character'))) {
 			$data = array();
 			if (is_array($request->get('character'))) {
@@ -587,15 +588,15 @@ class BureauController extends Controller
 		$info['displayName'] = $info['sn'].$info['givenName'];
 		$info['gender'] = (int) $request->get('gender');
 		$info['birthDate'] = str_replace('-', '', $request->get('birth')).'000000Z';
-		if (is_null($request->get('raddress')))
+		if (empty($request->get('raddress')))
 			$info['registeredAddress'] = [];
 		else
 			$info['registeredAddress'] = $request->get('raddress');
-		if (is_null($request->get('address')))
+		if (empty($request->get('address')))
 			$info['homePostalAddress'] = [];
 		else
 			$info['homePostalAddress'] = $request->get('address');
-		if (is_null($request->get('www')))
+		if (empty($request->get('www')))
 			$info['wWWHomePage'] = [];
 		else
 			$info['wWWHomePage'] = $request->get('www');
@@ -684,6 +685,7 @@ class BureauController extends Controller
 					return redirect('bureau/people?area='.$request->get('area').'&dc='.$request->get('o').'&field='.$my_field.'&keywords='.$keywords)->with("error", "教師身分證字號變更失敗！".$openldap->error());
 				}
 			}
+			return redirect('bureau/people?area='.$request->get('area').'&dc='.$request->get('o').'&field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新教師基本資料！");
 		} else {
 			return redirect('bureau/people?area='.$request->get('area').'&dc='.$request->get('o').'&field='.$my_field.'&keywords='.$keywords)->with("error", "教師基本資料變更失敗！".$openldap->error());
 		}
@@ -699,6 +701,7 @@ class BureauController extends Controller
 			'gn' => 'required|string',
 			'stdno' => 'required|string',
 			'seat' => 'required|integer',
+			'gender' => 'required|integer',
 			'raddress' => 'nullable|string',
 			'address' => 'nullable|string',
 			'www' => 'nullable|url',
@@ -711,17 +714,17 @@ class BureauController extends Controller
 		$info['sn'] = $request->get('sn');
 		$info['givenName'] = $request->get('gn');
 		$info['displayName'] = $info['sn'].$info['givenName'];
-		$info['gender'] = (int) $request->get('gender');
+		$info['gender'] = $request->get('gender');
 		$info['birthDate'] = str_replace('-', '', $request->get('birth')).'000000Z';
-		if (is_null($request->get('raddress'))) 
+		if (empty($request->get('raddress'))) 
 			$info['registeredAddress'] = [];
 		else
 			$info['registeredAddress'] = $request->get('raddress');
-		if (is_null($request->get('address')))
+		if (empty($request->get('address')))
 			$info['homePostalAddress'] = [];
 		else
 			$info['homePostalAddress'] = $request->get('address');
-		if (is_null($request->get('www')))
+		if (empty($request->get('www')))
 			$info['wWWHomePage'] = [];
 		else
 			$info['wWWHomePage'] = $request->get('www');
@@ -809,7 +812,9 @@ class BureauController extends Controller
 					return redirect('bureau/people?area='.$request->get('area').'&dc='.$request->get('o').'&field='.$my_field.'&keywords='.$keywords)->with("error", "學生身分證字號變更失敗！".$openldap->error());
 				}
 			}
+			return redirect('bureau/people?area='.$request->get('area').'&dc='.$request->get('o').'&field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新學生基本資料！");
 		} else {
+			Log:: error(print_r($info, true));
 			return redirect('bureau/people?area='.$request->get('area').'&dc='.$request->get('o').'&field='.$my_field.'&keywords='.$keywords)->with("error", "學生基本資料變更失敗！".$openldap->error());
 		}
 	}
