@@ -6,7 +6,6 @@ use Config;
 use Validator;
 use Auth;
 use DB;
-use Log;
 use Illuminate\Http\Request;
 use App\Providers\LdapServiceProvider;
 use App\Rules\idno;
@@ -814,7 +813,6 @@ class BureauController extends Controller
 			}
 			return redirect('bureau/people?area='.$request->get('area').'&dc='.$request->get('o').'&field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新學生基本資料！");
 		} else {
-			Log:: error(print_r($info, true));
 			return redirect('bureau/people?area='.$request->get('area').'&dc='.$request->get('o').'&field='.$my_field.'&keywords='.$keywords)->with("error", "學生基本資料變更失敗！".$openldap->error());
 		}
 	}
