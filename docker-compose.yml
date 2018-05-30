@@ -34,6 +34,7 @@ services:
     volumes:
       - ./htdocs:/var/www/localhost/htdocs
     environment:
+      APP_DEBUG: 'true'
       DOMAIN: ldap.tp.edu.tw
       MAIL: your@gmail.com
       CACHE_DRIVER: redis
