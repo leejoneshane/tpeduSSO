@@ -183,6 +183,7 @@ class SchoolController extends Controller
 					$messages[] = "第 $i 筆記錄，".$person->name."出生日期格式或內容不正確，跳過不處理！";
 		    		continue;
 				}
+				$idno = strtoupper($person->id);
 				$user_dn = Config::get('ldap.userattr')."=".$person->id.",".Config::get('ldap.userdn');
 				$entry = array();
 				$entry["objectClass"] = array("tpeduPerson","inetUser");
@@ -362,13 +363,14 @@ class SchoolController extends Controller
 			'address' => 'nullable|string',
 			'www' => 'nullable|url',
 		]);
+		$idno = strtoupper($request->get('idno'));
 		$info = array();
 		$info['objectClass'] = array('tpeduPerson', 'inetUser');
 		$info['o'] = $dc;
 		$info['employeeType'] = '學生';
 		$info['inetUserStatus'] = 'active';
 		$info['info'] = json_encode(array("sid" => $sid, "role" => "學生"), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
-		$info['cn'] = $request->get('idno');
+		$info['cn'] = $idno;
 		$info['dn'] = Config::get('ldap.userattr').'='.$info['cn'].','.Config::get('ldap.userdn');
 		$info['employeeNumber'] = $request->get('stdno');
 		$info['tpClass'] = $request->get('tclass');
@@ -381,7 +383,7 @@ class SchoolController extends Controller
 		if (!empty($request->get('raddress'))) $info['registeredAddress'] = $request->get('raddress');
 		if (!empty($request->get('address'))) $info['homePostalAddress'] = $request->get('address');
 		if (!empty($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
-		if (!is_null($request->get('character'))) {
+		if (isset($request->get('character'))) {
 			$data = array();
 			if (is_array($request->get('character'))) {
 	    		$data = $request->get('character');
@@ -390,7 +392,7 @@ class SchoolController extends Controller
 			}
 			$info['tpCharacter'] = $data;
 		}
-		if (!is_null($request->get('mail'))) {
+		if (isset($request->get('mail'))) {
 			$data = array();
 			if (is_array($request->get('mail'))) {
 	    		$data = $request->get('mail');
@@ -399,7 +401,7 @@ class SchoolController extends Controller
 			}
 			$info['mail'] = $data;
 		}
-		if (!is_null($request->get('mobile'))) {
+		if (isset($request->get('mobile'))) {
 			$data = array();
 			if (is_array($request->get('mobile'))) {
 	    		$data = $request->get('mobile');
@@ -408,7 +410,7 @@ class SchoolController extends Controller
 			}
 			$info['mobile'] = $data;
 		}
-		if (!is_null($request->get('fax'))) {
+		if (isset($request->get('fax'))) {
 			$data = array();
 			if (is_array($request->get('fax'))) {
 	    		$data = $request->get('fax');
@@ -417,7 +419,7 @@ class SchoolController extends Controller
 			}
 			$info['facsimileTelephoneNumber'] = $data;
 		}
-		if (!is_null($request->get('otel'))) {
+		if (isset($request->get('otel'))) {
 			$data = array();
 			if (is_array($request->get('otel'))) {
 	    		$data = $request->get('otel');
@@ -426,7 +428,7 @@ class SchoolController extends Controller
 			}
 			$info['telephoneNumber'] = $data;
 		}
-		if (!is_null($request->get('htel'))) {
+		if (isset($request->get('htel'))) {
 			$data = array();
 			if (is_array($request->get('htel'))) {
 	    		$data = $request->get('htel');
@@ -460,6 +462,7 @@ class SchoolController extends Controller
 			'address' => 'nullable|string',
 			'www' => 'nullable|url',
 		]);
+		$idno = strtoupper($request->get('idno'));
 		$info = array();
 		$info['employeeNumber'] = $request->get('stdno');
 		$info['tpClass'] = $request->get('tclass');
@@ -536,7 +539,7 @@ class SchoolController extends Controller
 			}
 			$info['telephoneNumber'] = $data;
 		}
-		if (!is_null($request->get('htel'))) {
+		if (is_null($request->get('htel'))) {
 			$info['homePhone'] = [];
 		} else {
 			$data = array();
@@ -552,20 +555,21 @@ class SchoolController extends Controller
 		$original = $openldap->getUserData($entry, 'cn');
 		$result = $openldap->updateData($entry, $info);
 		if ($result) {
-			if ($original['cn'] != $request->get('idno')) {
-				$result = $openldap->renameUser($original['cn'], $request->get('idno'));
+			if ($original['cn'] != $idno)) {
+				$result = $openldap->renameUser($original['cn'], $idno);
 				if ($result) {
 					$user = $model->newQuery()
 	        		->where('idno', $original['cn'])
 	        		->first();
-	        		$user->delete();				
-					return redirect('school/teacher?field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新學生基本資料！");
+	        		$user->delete();
+					return redirect('school/student?field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新學生基本資料！");
 				} else {
-					return redirect('school/teacher?field='.$my_field.'&keywords='.$keywords)->with("error", "學生身分證字號變更失敗！".$openldap->error());
+					return redirect('school/student?field='.$my_field.'&keywords='.$keywords)->with("error", "學生身分證字號變更失敗！".$openldap->error());
 				}
 			}
+			return redirect('school/student?field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新學生基本資料！");
 		} else {
-			return redirect('school/teacher?field='.$my_field.'&keywords='.$keywords)->with("error", "學生基本資料變更失敗！".$openldap->error());
+			return redirect('school/student?field='.$my_field.'&keywords='.$keywords)->with("error", "學生基本資料變更失敗！".$openldap->error());
 		}
 	}
 	
@@ -575,7 +579,7 @@ class SchoolController extends Controller
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getOus($dc, '行政部門');
 		$ous = array();
-		if (is_array($data)) {
+		if ($data) {
 			$my_ou = $data[0]->ou;
 			foreach ($data as $ou) {
 				if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
@@ -1000,7 +1004,7 @@ class SchoolController extends Controller
 			}
 			$info['tpTeachClass'] = $assign;
 		}
-		if (!is_null($request->get('character'))) {
+		if (isset($request->get('character'))) {
 			$data = array();
 			if (is_array($request->get('character'))) {
 	    		$data = $request->get('character');
@@ -1009,7 +1013,7 @@ class SchoolController extends Controller
 			}
 			$info['tpCharacter'] = $data;
 		}
-		if (!is_null($request->get('mail'))) {
+		if (isset($request->get('mail'))) {
 			$data = array();
 			if (is_array($request->get('mail'))) {
 	    		$data = $request->get('mail');
@@ -1018,7 +1022,7 @@ class SchoolController extends Controller
 			}
 			$info['mail'] = $data;
 		}
-		if (!is_null($request->get('mobile'))) {
+		if (isset($request->get('mobile'))) {
 			$data = array();
 			if (is_array($request->get('mobile'))) {
 	    		$data = $request->get('mobile');
@@ -1027,7 +1031,7 @@ class SchoolController extends Controller
 			}
 			$info['mobile'] = $data;
 		}
-		if (!is_null($request->get('fax'))) {
+		if (isset($request->get('fax'))) {
 			$data = array();
 			if (is_array($request->get('fax'))) {
 	    		$data = $request->get('fax');
@@ -1036,7 +1040,7 @@ class SchoolController extends Controller
 			}
 			$info['facsimileTelephoneNumber'] = $data;
 		}
-		if (!is_null($request->get('otel'))) {
+		if (isset($request->get('otel'))) {
 			$data = array();
 			if (is_array($request->get('otel'))) {
 	    		$data = $request->get('otel');
@@ -1045,7 +1049,7 @@ class SchoolController extends Controller
 			}
 			$info['telephoneNumber'] = $data;
 		}
-		if (!is_null($request->get('htel'))) {
+		if (isset($request->get('htel'))) {
 			$data = array();
 			if (is_array($request->get('htel'))) {
 	    		$data = $request->get('htel');

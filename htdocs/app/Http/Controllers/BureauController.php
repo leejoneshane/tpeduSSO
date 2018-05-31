@@ -35,6 +35,7 @@ class BureauController extends Controller
     
     public function bureauPeopleSearchForm(Request $request)
     {
+		$my_field = $request->get('field');
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
@@ -46,9 +47,8 @@ class BureauController extends Controller
 		if ($dc) {
 			$data = $openldap->getOus($dc);
 			if ($data) $my_ou = $data[0]->ou;
+			if (empty($my_field) && $my_ou) $my_field = "ou=$my_ou";
 		}
-		$my_field = $request->get('field');
-		if (empty($my_field) && $dc) $my_field = "ou=$my_ou";
 		$keywords = $request->get('keywords');
 		$request->session()->put('area', $area);
 		$request->session()->put('dc', $dc);
