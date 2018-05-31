@@ -43,11 +43,12 @@ class BureauController extends Controller
 		$openldap = new LdapServiceProvider();
 		$schools = $openldap->getOrgs($filter);
 		$dc = $request->get('dc');
+		$my_ou = '';
 		if (empty($dc) && $schools) $dc = $schools[0]->o;
 		if ($dc) {
 			$data = $openldap->getOus($dc);
-			if ($data) $my_ou = $data[0]->ou;
-			if (empty($my_field) && $my_ou) $my_field = "ou=$my_ou";
+			if (!empty($data)) $my_ou = $data[0]->ou;
+			if (empty($my_field) && !empty($my_ou)) $my_field = "ou=$my_ou";
 		}
 		$keywords = $request->get('keywords');
 		$request->session()->put('area', $area);
@@ -113,16 +114,18 @@ class BureauController extends Controller
 		}
 		$data = $openldap->getOus($dc, '教學班級');
 		$classes = array();
-		foreach ($data as $class) {
-			if (!array_key_exists($class->ou, $classes)) $classes[$class->ou] = $class->description;
-		}
+		if ($data)
+			foreach ($data as $class) {
+				if (!array_key_exists($class->ou, $classes)) $classes[$class->ou] = $class->description;
+			}
 		$data = $openldap->getOus($dc, '行政部門');
 		$my_ou = '';
 		$ous = array();
-		foreach ($data as $ou) {
-			if (empty($my_ou)) $my_ou = $ou->ou;
-			if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
-		}
+		if ($data)
+			foreach ($data as $ou) {
+				if (empty($my_ou)) $my_ou = $ou->ou;
+				if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
+			}
 		
     	if (!is_null($uuid)) {//edit
     		$entry = $openldap->getUserEntry($uuid);
