@@ -42,14 +42,9 @@
 						</td>
 						<td>
 							<select class="form-control" name="domain">
-								<option value="語文"{{ $subj->domain == '語文' ? ' selected' : '' }}>語文</option>
-								<option value="數學"{{ $subj->domain == '數學' ? ' selected' : '' }}>數學</option>
-								<option value="社會"{{ $subj->domain == '社會' ? ' selected' : '' }}>社會</option>
-								<option value="自然科學"{{ $subj->domain == '自然科學' ? ' selected' : '' }}>自然科學</option>
-								<option value="藝術"{{ $subj->domain == '藝術' ? ' selected' : '' }}>藝術</option>
-								<option value="綜合活動"{{ $subj->domain == '綜合活動' ? ' selected' : '' }}>綜合活動</option>
-								<option value="科技"{{ $subj->domain == '科技' ? ' selected' : '' }}>科技</option>
-								<option value="健康與體育"{{ $subj->domain == '健康與體育' ? ' selected' : '' }}>健康與體育</option>
+							@foreach ($domains as $domain)
+			    				<option value="{{ $domain }}"{{ $subj->domain == $domain ? ' selected' : '' }}>{{ $domain }}</option>
+							@endforeach
 							</select>
 						</td>
 						<td>
@@ -91,23 +86,13 @@
 						</p>
 					@endif
 				</div>
-			    <div class="form-group{{ $errors->has('new-dom') ? ' has-error' : '' }}">
+			    <div class="form-group">
 					<label>教學領域</label>
 					<select class="form-control" name="new-dom">
-						<option value="語文">語文</option>
-						<option value="數學">數學</option>
-						<option value="社會">社會</option>
-						<option value="自然科學">自然科學</option>
-						<option value="藝術">藝術</option>
-						<option value="綜合活動">綜合活動</option>
-						<option value="科技">科技</option>
-						<option value="健康與體育">健康與體育</option>
+					@foreach ($domains as $domain)
+			    		<option value="{{ $domain }}">{{ $domain }}</option>
+					@endforeach
 					</select>
-					@if ($errors->has('new-dom'))
-						<p class="help-block">
-							<strong>{{ $errors->first('new-dom') }}</strong>
-						</p>
-					@endif
 				</div>
 			    <div class="form-group{{ $errors->has('new-desc') ? ' has-error' : '' }}">
 					<label>科目名稱</label>

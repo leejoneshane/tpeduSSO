@@ -1282,16 +1282,18 @@ class SchoolController extends Controller
 	
     public function schoolRoleForm(Request $request, $my_ou)
     {
+		$ous = array();
+		$roles = array();
 		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getOus($dc, '行政部門');
-		if (empty($my_ou) && is_array($data)) $my_ou = $data[0]->ou;
-		$ous = array();
-		foreach ($data as $ou) {
-			if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
+		if ($data) {
+			if (empty($my_ou)) $my_ou = $data[0]->ou;
+			foreach ($data as $ou) {
+				if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
+			}
+			if ($my_ou) $roles = $openldap->getRoles($dc, $my_ou);
 		}
-		$roles = array();
-		if (!empty($my_ou)) $roles = $openldap->getRoles($dc, $my_ou);
 		return view('admin.schoolrole', [ 'my_ou' => $my_ou, 'ous' => $ous, 'roles' => $roles ]);
     }
 
@@ -1541,10 +1543,11 @@ class SchoolController extends Controller
 	
     public function schoolSubjectForm(Request $request)
     {
+		$domains = [ '語文', '數學', '社會', '自然科學', '藝術', '綜合活動', '科技', '健康與體育' ];
 		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getSubjects($dc);
-		return view('admin.schoolsubject', [ 'subjs' => $data ]);
+		return view('admin.schoolsubject', [ 'domains' => $domains, 'subjs' => $data ]);
     }
 
     public function createSchoolSubject(Request $request)

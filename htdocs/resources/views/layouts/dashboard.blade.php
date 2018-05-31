@@ -18,7 +18,7 @@
                             <a href="{{ route('school.role', [ 'ou' => 'null' ]) }}"><i class="fa fa-suitcase fa-fw"></i> 職稱管理</a>
                         </li>
                         <li {{ (Request::is('school/subject') ? 'class="active"' : '') }}>
-                            <a href="{{ route('school.subject', [ 'subject' => 'null' ]) }}"><i class="fa fa-flask fa-fw"></i> 教學科目管理</a>
+                            <a href="{{ route('school.subject') }}"><i class="fa fa-flask fa-fw"></i> 教學科目管理</a>
                         </li>
                         <li {{ (Request::is('school/class') ? 'class="active"' : '') }}>
                             <a href="#"><i class="fa fa-graduation-cap fa-fw"></i> 班級管理<span class="fa arrow"></span></a>
