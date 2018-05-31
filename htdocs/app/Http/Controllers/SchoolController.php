@@ -383,7 +383,7 @@ class SchoolController extends Controller
 		if (!empty($request->get('raddress'))) $info['registeredAddress'] = $request->get('raddress');
 		if (!empty($request->get('address'))) $info['homePostalAddress'] = $request->get('address');
 		if (!empty($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
-		if (isset($request->get('character'))) {
+		if (!is_null($request->get('character'))) {
 			$data = array();
 			if (is_array($request->get('character'))) {
 	    		$data = $request->get('character');
@@ -392,7 +392,7 @@ class SchoolController extends Controller
 			}
 			$info['tpCharacter'] = $data;
 		}
-		if (isset($request->get('mail'))) {
+		if (!is_null($request->get('mail'))) {
 			$data = array();
 			if (is_array($request->get('mail'))) {
 	    		$data = $request->get('mail');
@@ -401,7 +401,7 @@ class SchoolController extends Controller
 			}
 			$info['mail'] = $data;
 		}
-		if (isset($request->get('mobile'))) {
+		if (!is_null($request->get('mobile'))) {
 			$data = array();
 			if (is_array($request->get('mobile'))) {
 	    		$data = $request->get('mobile');
@@ -410,7 +410,7 @@ class SchoolController extends Controller
 			}
 			$info['mobile'] = $data;
 		}
-		if (isset($request->get('fax'))) {
+		if (!is_null($request->get('fax'))) {
 			$data = array();
 			if (is_array($request->get('fax'))) {
 	    		$data = $request->get('fax');
@@ -419,7 +419,7 @@ class SchoolController extends Controller
 			}
 			$info['facsimileTelephoneNumber'] = $data;
 		}
-		if (isset($request->get('otel'))) {
+		if (!is_null($request->get('otel'))) {
 			$data = array();
 			if (is_array($request->get('otel'))) {
 	    		$data = $request->get('otel');
@@ -428,7 +428,7 @@ class SchoolController extends Controller
 			}
 			$info['telephoneNumber'] = $data;
 		}
-		if (isset($request->get('htel'))) {
+		if (!is_null($request->get('htel'))) {
 			$data = array();
 			if (is_array($request->get('htel'))) {
 	    		$data = $request->get('htel');
@@ -1004,7 +1004,7 @@ class SchoolController extends Controller
 			}
 			$info['tpTeachClass'] = $assign;
 		}
-		if (isset($request->get('character'))) {
+		if (!is_null($request->get('character'))) {
 			$data = array();
 			if (is_array($request->get('character'))) {
 	    		$data = $request->get('character');
@@ -1013,7 +1013,7 @@ class SchoolController extends Controller
 			}
 			$info['tpCharacter'] = $data;
 		}
-		if (isset($request->get('mail'))) {
+		if (!is_null($request->get('mail'))) {
 			$data = array();
 			if (is_array($request->get('mail'))) {
 	    		$data = $request->get('mail');
@@ -1022,7 +1022,7 @@ class SchoolController extends Controller
 			}
 			$info['mail'] = $data;
 		}
-		if (isset($request->get('mobile'))) {
+		if (!is_null($request->get('mobile'))) {
 			$data = array();
 			if (is_array($request->get('mobile'))) {
 	    		$data = $request->get('mobile');
@@ -1031,7 +1031,7 @@ class SchoolController extends Controller
 			}
 			$info['mobile'] = $data;
 		}
-		if (isset($request->get('fax'))) {
+		if (!is_null($request->get('fax'))) {
 			$data = array();
 			if (is_array($request->get('fax'))) {
 	    		$data = $request->get('fax');
@@ -1040,7 +1040,7 @@ class SchoolController extends Controller
 			}
 			$info['facsimileTelephoneNumber'] = $data;
 		}
-		if (isset($request->get('otel'))) {
+		if (!is_null($request->get('otel'))) {
 			$data = array();
 			if (is_array($request->get('otel'))) {
 	    		$data = $request->get('otel');
@@ -1049,7 +1049,7 @@ class SchoolController extends Controller
 			}
 			$info['telephoneNumber'] = $data;
 		}
-		if (isset($request->get('htel'))) {
+		if (!is_null($request->get('htel'))) {
 			$data = array();
 			if (is_array($request->get('htel'))) {
 	    		$data = $request->get('htel');

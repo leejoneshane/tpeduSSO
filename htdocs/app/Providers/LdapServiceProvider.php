@@ -522,7 +522,7 @@ class LdapServiceProvider extends ServiceProvider
 		$filter = "cn=$role";
 		$resource = @ldap_search(self::$ldapConnectId, $ou_dn, $filter, array("description"));
 		if ($resource) {
-			$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+			$entry = @ldap_first_entry(self::$ldapConnectId, $resource);
 			if ($entry) {
 				$value = @ldap_get_values(self::$ldapConnectId, $entry, "description");
 				if ($value) return $value[0];
