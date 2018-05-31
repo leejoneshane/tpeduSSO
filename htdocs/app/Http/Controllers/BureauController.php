@@ -503,7 +503,7 @@ class BureauController extends Controller
 		if (!empty($request->get('raddress'))) $info['registeredAddress'] = $request->get('raddress');
 		if (!empty($request->get('address'))) $info['homePostalAddress'] = $request->get('address');
 		if (!empty($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
-		if (!is_null($request->get('character'))) {
+		if (isset($request->get('character'))) {
 			$data = array();
 			if (is_array($request->get('character'))) {
 	    		$data = $request->get('character');
@@ -512,7 +512,7 @@ class BureauController extends Controller
 			}
 			$info['tpCharacter'] = $data;
 		}
-		if (!is_null($request->get('mail'))) {
+		if (isset($request->get('mail'))) {
 			$data = array();
 			if (is_array($request->get('mail'))) {
 	    		$data = $request->get('mail');
@@ -521,7 +521,7 @@ class BureauController extends Controller
 			}
 			$info['mail'] = $data;
 		}
-		if (!is_null($request->get('mobile'))) {
+		if (isset($request->get('mobile'))) {
 			$data = array();
 			if (is_array($request->get('mobile'))) {
 	    		$data = $request->get('mobile');
@@ -530,7 +530,7 @@ class BureauController extends Controller
 			}
 			$info['mobile'] = $data;
 		}
-		if (!is_null($request->get('fax'))) {
+		if (isset($request->get('fax'))) {
 			$data = array();
 			if (is_array($request->get('fax'))) {
 	    		$data = $request->get('fax');
@@ -539,7 +539,7 @@ class BureauController extends Controller
 			}
 			$info['facsimileTelephoneNumber'] = $data;
 		}
-		if (!is_null($request->get('otel'))) {
+		if (isset($request->get('otel'))) {
 			$data = array();
 			if (is_array($request->get('otel'))) {
 	    		$data = $request->get('otel');
@@ -548,7 +548,7 @@ class BureauController extends Controller
 			}
 			$info['telephoneNumber'] = $data;
 		}
-		if (!is_null($request->get('htel'))) {
+		if (isset($request->get('htel'))) {
 			$data = array();
 			if (is_array($request->get('htel'))) {
 	    		$data = $request->get('htel');
@@ -782,7 +782,7 @@ class BureauController extends Controller
 			}
 			$info['telephoneNumber'] = $data;
 		}
-		if (!is_null($request->get('htel'))) {
+		if (is_null($request->get('htel'))) {
 			$info['homePhone'] = [];
 		} else {
 			$data = array();
