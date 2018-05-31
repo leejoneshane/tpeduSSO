@@ -177,18 +177,6 @@ class LdapServiceProvider extends ServiceProvider
 		}
     }
 
-    public function getAccountEntry($identifier)
-    {
-		self::administrator();
-		$base_dn = Config::get('ldap.authdn');
-		$auth_rdn = Config::get('ldap.authattr')."=".$identifier;
-		$resource = @ldap_search(self::$ldapConnectId, $base_dn, $auth_rdn);
-		if ($resource) {
-			return @ldap_first_entry(self::$ldapConnectId, $resource);
-		}
-		return false;
-    }
-    
     public function getOrgs($filter = '')
     {
 		$schools = array();
@@ -280,6 +268,23 @@ class LdapServiceProvider extends ServiceProvider
 		return '';
     }
     
+    public function renameOrg($old_dc, $new_dc)
+    {
+		self::administrator();
+		$dn = Config::get('ldap.schattr')."=".$old_dc.",".Config::get('ldap.rdn');
+		$rdn = Config::get('ldap.schattr')."=".$new_dc;
+		$result = @ldap_rename(self::$ldapConnectId, $dn, $rdn, null, true);
+		if ($result) {
+			$users = $openldap->findUsers("o=$old_dc");
+			if ($users) {
+				foreach ($users as $user) {
+					$openldap->UpdateData($user, [ 'o' => $new_dc ]);
+				}
+			}
+		}
+		return $result;
+    }
+
     public function getOus($dc, $category = '')
     {
 		$ous = array();
@@ -669,24 +674,13 @@ class LdapServiceProvider extends ServiceProvider
 		self::administrator();
 		$dn = Config::get('ldap.userattr')."=".$old_idno.",".Config::get('ldap.userdn');
 		$rdn = Config::get('ldap.userattr')."=".$new_idno;
-		$result = @ldap_rename(self::$ldapConnectId, $dn, $rdn, null, true);
-		return $result;
-    }
-
-    public function renameOrg($old_dc, $new_dc)
-    {
-		self::administrator();
-		$dn = Config::get('ldap.schattr')."=".$old_dc.",".Config::get('ldap.rdn');
-		$rdn = Config::get('ldap.schattr')."=".$new_dc;
-		$result = @ldap_rename(self::$ldapConnectId, $dn, $rdn, null, true);
-		if ($result) {
-			$users = $openldap->findUsers("o=$old_dc");
-			if ($users) {
-				foreach ($users as $user) {
-					$openldap->UpdateData($user, [ 'o' => $new_dc ]);
-				}
-			}
+		$entry = self::getUserEntry($old_idno);
+		$accounts = @ldap_get_values(self::$ldapConnectId, $entry, "uid");
+		for($i=0;$i<$accounts['count'];$i++) {
+			$account_entry = self::getAccountEntry($accounts[$i]);
+			self::updateData($account_entry, array( "cn" => $new_idno ));
 		}
+		$result = @ldap_rename(self::$ldapConnectId, $dn, $rdn, null, true);
 		return $result;
     }
 
@@ -728,6 +722,18 @@ class LdapServiceProvider extends ServiceProvider
 		return $value;
     }
 
+    public function getAccountEntry($identifier)
+    {
+		self::administrator();
+		$base_dn = Config::get('ldap.authdn');
+		$auth_rdn = Config::get('ldap.authattr')."=".$identifier;
+		$resource = @ldap_search(self::$ldapConnectId, $base_dn, $auth_rdn);
+		if ($resource) {
+			return @ldap_first_entry(self::$ldapConnectId, $resource);
+		}
+		return false;
+    }
+    
     public function updateAccount($entry, $old_account, $new_account, $idno, $memo)
     {
 		self::administrator();
@@ -768,9 +774,11 @@ class LdapServiceProvider extends ServiceProvider
 	    	if ($accounts[$i] == $old_account) $accounts[$i] = $new_account;
 		}
 		unset($accounts['count']);
-		@ldap_rename(self::$ldapConnectId, $dn, $rdn, null, true);
 		self::updateData($entry, array( "uid" => $accounts));
-    }
+
+		$result = @ldap_rename(self::$ldapConnectId, $dn, $rdn, null, true);
+ 		return $result;
+   }
 
     public function deleteAccount($entry, $account)
     {
