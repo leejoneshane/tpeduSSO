@@ -555,7 +555,7 @@ class SchoolController extends Controller
 		$original = $openldap->getUserData($entry, 'cn');
 		$result = $openldap->updateData($entry, $info);
 		if ($result) {
-			if ($original['cn'] != $idno)) {
+			if ($original['cn'] != $idno) {
 				$result = $openldap->renameUser($original['cn'], $idno);
 				if ($result) {
 					$user = $model->newQuery()
