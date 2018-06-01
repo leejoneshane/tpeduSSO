@@ -188,7 +188,7 @@ class SchoolController extends Controller
 				$entry = array();
 				$entry["objectClass"] = array("tpeduPerson","inetUser");
  				$entry["inetUserStatus"] = "active";
-   				$entry["cn"] = $person->id;
+   				$entry["cn"] = strtoupper($person->id);
     			$entry["sn"] = $person->sn;
     			$entry["givenName"] = $person->gn;
     			$entry["displayName"] = $person->name;
@@ -558,6 +558,7 @@ class SchoolController extends Controller
 			if ($original['cn'] != $idno) {
 				$result = $openldap->renameUser($original['cn'], $idno);
 				if ($result) {
+	        		$model = new \App\User();
 					$user = $model->newQuery()
 	        		->where('idno', $original['cn'])
 	        		->first();
@@ -739,7 +740,7 @@ class SchoolController extends Controller
 				$entry = array();
 				$entry["objectClass"] = array("tpeduPerson","inetUser");
  				$entry["inetUserStatus"] = "active";
-   				$entry["cn"] = $person->id;
+   				$entry["cn"] = strtoupper($person->id);
     			$entry["sn"] = $person->sn;
     			$entry["givenName"] = $person->gn;
     			$entry["displayName"] = $person->name;
@@ -975,13 +976,14 @@ class SchoolController extends Controller
 			'address' => 'nullable|string',
 			'www' => 'nullable|url',
 		]);
+		$idno = strtoupper($request->get('idno'));
 		$info = array();
 		$info['objectClass'] = array('tpeduPerson', 'inetUser');
 		$info['o'] = $dc;
 		$info['employeeType'] = '教師';
 		$info['inetUserStatus'] = 'active';
 		$info['info'] = json_encode(array("sid" => $sid, "role" => "教師"), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
-		$info['cn'] = $request->get('idno');
+		$info['cn'] = $idno;
 		$info['dn'] = Config::get('ldap.userattr').'='.$info['cn'].','.Config::get('ldap.userdn');
 		$info['ou'] = $request->get('ou');
 		$info['title'] = $request->get('role');
@@ -1081,6 +1083,7 @@ class SchoolController extends Controller
 			'address' => 'nullable|string',
 			'www' => 'nullable|url',
 		]);
+		$idno = strtoupper($request->get('idno'));
 		$info = array();
 		$info['ou'] = $request->get('ou');
 		$info['title'] = $request->get('role');
@@ -1185,10 +1188,11 @@ class SchoolController extends Controller
 		$original = $openldap->getUserData($entry, 'cn');
 		$result = $openldap->updateData($entry, $info);
 		if ($result) {
-			if ($original['cn'] != $request->get('idno')) {
-				$result = $openldap->renameUser($original['cn'], $request->get('idno'));
+			if ($original['cn'] != $idno) {
+				$result = $openldap->renameUser($original['cn'], $idno);
 				if ($result) {
-					$user = $model->newQuery()
+	        		$model = new \App\User();
+	        		$user = $model->newQuery()
 	        		->where('idno', $original['cn'])
 	        		->first();
 	        		$user->delete();

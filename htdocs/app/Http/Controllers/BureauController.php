@@ -296,7 +296,7 @@ class BureauController extends Controller
 				$entry = array();
 				$entry["objectClass"] = array("tpeduPerson","inetUser");
  				$entry["inetUserStatus"] = "active";
-   				$entry["cn"] = $person->id;
+   				$entry["cn"] = strtoupper($person->id);
     			$entry["sn"] = $person->sn;
     			$entry["givenName"] = $person->gn;
     			$entry["displayName"] = $person->name;
@@ -473,6 +473,7 @@ class BureauController extends Controller
 			'address' => 'nullable|string',
 			'www' => 'nullable|url',
 		]);
+		$idno = strtoupper($request->get('idno'));
 		$info = array();
 		$info['objectClass'] = array('tpeduPerson', 'inetUser');
 		$info['o'] = $request->get('o');
@@ -496,7 +497,7 @@ class BureauController extends Controller
 		$sid = $sid['tpUniformNumbers'];
 		$info['info'] = json_encode(array("sid" => $sid, "role" => $request->get('type')), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 		$info['inetUserStatus'] = 'active';
-		$info['cn'] = $request->get('idno');
+		$info['cn'] = $idno;
 		$info['dn'] = Config::get('ldap.userattr').'='.$info['cn'].','.Config::get('ldap.userdn');
 		$info['sn'] = $request->get('sn');
 		$info['givenName'] = $request->get('gn');
@@ -581,6 +582,7 @@ class BureauController extends Controller
 			'address' => 'nullable|string',
 			'www' => 'nullable|url',
 		]);
+		$idno = strtoupper($request->get('idno'));
 		$info = array();
 		$info['o'] = $request->get('o');
 		$info['ou'] = $request->get('ou');
@@ -674,9 +676,10 @@ class BureauController extends Controller
 		$original = $openldap->getUserData($entry, 'cn');
 		$result = $openldap->updateData($entry, $info);
 		if ($result) {
-			if ($original['cn'] != $request->get('idno')) {
-				$result = $openldap->renameUser($original['cn'], $request->get('idno'));
+			if ($original['cn'] != $idno) {
+				$result = $openldap->renameUser($original['cn'], $idno);
 				if ($result) {
+	        		$model = new \App\User();
 					$user = $model->newQuery()
 	        		->where('idno', $original['cn'])
 	        		->first();
@@ -708,6 +711,7 @@ class BureauController extends Controller
 			'address' => 'nullable|string',
 			'www' => 'nullable|url',
 		]);
+		$idno = strtoupper($request->get('idno'));
 		$info = array();
 		$info['o'] = $request->get('o');
 		$info['employeeNumber'] = $request->get('stdno');
@@ -802,9 +806,10 @@ class BureauController extends Controller
 		$original = $openldap->getUserData($entry, 'cn');
 		$result = $openldap->updateData($entry, $info);
 		if ($result) {
-			if ($original['cn'] != $request->get('idno')) {
-				$result = $openldap->renameUser($original['cn'], $request->get('idno'));
+			if ($original['cn'] != $idno) {
+				$result = $openldap->renameUser($original['cn'], $idno);
 				if ($result) {
+	        		$model = new \App\User();
 					$user = $model->newQuery()
 	        		->where('idno', $original['cn'])
 	        		->first();
