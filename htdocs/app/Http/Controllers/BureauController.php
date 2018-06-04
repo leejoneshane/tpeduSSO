@@ -683,7 +683,7 @@ class BureauController extends Controller
 					$user = $model->newQuery()
 	        		->where('idno', $original['cn'])
 	        		->first();
-	        		$user->delete();
+	        		if ($user) $user->delete();
 					if ($request->user()->idno == $original['cn']) Auth::logout();
 					return redirect('bureau/people?area='.$request->get('area').'&dc='.$request->get('o').'&field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新教師基本資料！");
 				} else {
@@ -813,7 +813,7 @@ class BureauController extends Controller
 					$user = $model->newQuery()
 	        		->where('idno', $original['cn'])
 	        		->first();
-	        		$user->delete();				
+	        		if ($user) $user->delete();				
 					return redirect('bureau/people?area='.$request->get('area').'&dc='.$request->get('o').'&field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新學生基本資料！");
 				} else {
 					return redirect('bureau/people?area='.$request->get('area').'&dc='.$request->get('o').'&field='.$my_field.'&keywords='.$keywords)->with("error", "學生身分證字號變更失敗！".$openldap->error());
