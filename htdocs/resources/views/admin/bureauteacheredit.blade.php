@@ -67,6 +67,14 @@
 					</select>
 				</div>
 			    <div class="form-group">
+					<label>身份別</label>
+					<select id="type" class="form-control" name="type" onchange="switchtype()">
+					@foreach ($types as $type)
+			    		<option value="{{ $type }}">{{ $type }}</option>
+			    	@endforeach
+					</select>
+				</div>
+			    <div class="form-group">
 					<label>隸屬單位</label>
 					<select id="ou" class="form-control" name="ou" onchange="refresh_roles()">
 					@foreach ($ous as $ou => $desc)

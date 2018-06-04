@@ -593,19 +593,19 @@ class SchoolController extends Controller
 		if (substr($my_field,0,3) == 'ou=') {
 			$my_ou = substr($my_field,3);
 			if ($my_ou == 'deleted')
-				$filter = "(&(o=$dc)(inetUserStatus=deleted)(employeeType=教師))";
+				$filter = "(&(o=$dc)(inetUserStatus=deleted)(!(employeeType=學生))";
 			else
-				$filter = "(&(o=$dc)(ou=$my_ou)(employeeType=教師)(!(inetUserStatus=deleted)))";
+				$filter = "(&(o=$dc)(ou=$my_ou)(!(employeeType=學生))(!(inetUserStatus=deleted)))";
 		} elseif ($my_field == 'uuid' && !empty($keywords)) {
-			$filter = "(&(o=$dc)(employeeType=教師)(entryUUID=*".$keywords."*))";
+			$filter = "(&(o=$dc)(!(employeeType=學生))(entryUUID=*".$keywords."*))";
 		} elseif ($my_field == 'idno' && !empty($keywords)) {
-			$filter = "(&(o=$dc)(employeeType=教師)(cn=*".$keywords."*))";
+			$filter = "(&(o=$dc)(!(employeeType=學生))(cn=*".$keywords."*))";
 		} elseif ($my_field == 'name' && !empty($keywords)) {
-			$filter = "(&(o=$dc)(employeeType=教師)(displayName=*".$keywords."*))";
+			$filter = "(&(o=$dc)(!(employeeType=學生))(displayName=*".$keywords."*))";
 		} elseif ($my_field == 'mail' && !empty($keywords)) {
-			$filter = "(&(o=$dc)(employeeType=教師)(mail=*".$keywords."*))";
+			$filter = "(&(o=$dc)(!(employeeType=學生))(mail=*".$keywords."*))";
 		} elseif ($my_field == 'mobile' && !empty($keywords)) {
-			$filter = "(&(o=$dc)(employeeType=教師)(mobile=*".$keywords."*))";
+			$filter = "(&(o=$dc)(!(employeeType=學生))(mobile=*".$keywords."*))";
 		}
 		$teachers = array();
 		if (!empty($filter))
@@ -901,6 +901,7 @@ class SchoolController extends Controller
 	
     public function schoolTeacherEditForm(Request $request, $uuid = null)
     {
+		$types = [ '教師', '校長', '職工' ];
 		$dc = $request->user()->ldap['o'];
 		$my_field = $request->session()->get('field');
 		$keywords = $request->session()->get('keywords');
@@ -949,14 +950,14 @@ class SchoolController extends Controller
 			foreach ($data as $role) {
 				if (!array_key_exists($role->cn, $roles)) $roles[$role->cn] = $role->description;
 			}
-			return view('admin.schoolteacheredit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'dc' => $dc, 'subjects' => $subjects, 'classes' => $classes, 'ous' => $ous, 'roles' => $roles, 'assign' => $assign, 'user' => $user ]);
+			return view('admin.schoolteacheredit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'dc' => $dc, 'types' => $types, 'subjects' => $subjects, 'classes' => $classes, 'ous' => $ous, 'roles' => $roles, 'assign' => $assign, 'user' => $user ]);
 		} else { //add
     		$data = $openldap->getRoles($dc, $my_ou);
 			$roles = array();
 			foreach ($data as $role) {
 				if (!array_key_exists($role->cn, $roles)) $roles[$role->cn] = $role->description;
 			}
-			return view('admin.schoolteacheredit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'dc' => $dc, 'subjects' => $subjects, 'classes' => $classes, 'ous' => $ous, 'roles' => $roles ]);
+			return view('admin.schoolteacheredit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'dc' => $dc, 'types' => $types, 'subjects' => $subjects, 'classes' => $classes, 'ous' => $ous, 'roles' => $roles ]);
 		}
 	}
 	
@@ -980,9 +981,9 @@ class SchoolController extends Controller
 		$info = array();
 		$info['objectClass'] = array('tpeduPerson', 'inetUser');
 		$info['o'] = $dc;
-		$info['employeeType'] = '教師';
+		$info['employeeType'] = $request->get('type');
 		$info['inetUserStatus'] = 'active';
-		$info['info'] = json_encode(array("sid" => $sid, "role" => "教師"), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
+		$info['info'] = json_encode(array("sid" => $sid, "role" => $info['employeeType']), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 		$info['cn'] = $idno;
 		$info['dn'] = Config::get('ldap.userattr').'='.$info['cn'].','.Config::get('ldap.userdn');
 		$info['ou'] = $request->get('ou');
@@ -1085,6 +1086,7 @@ class SchoolController extends Controller
 		]);
 		$idno = strtoupper($request->get('idno'));
 		$info = array();
+		$info['employeeType'] = $request->get('type');
 		$info['ou'] = $request->get('ou');
 		$info['title'] = $request->get('role');
 		$info['sn'] = $request->get('sn');

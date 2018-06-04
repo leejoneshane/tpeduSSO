@@ -584,6 +584,7 @@ class BureauController extends Controller
 		]);
 		$idno = strtoupper($request->get('idno'));
 		$info = array();
+		$info['employeeType'] = $request->get('type');
 		$info['o'] = $request->get('o');
 		$info['ou'] = $request->get('ou');
 		$info['title'] = $request->get('role');
