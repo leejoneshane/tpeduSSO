@@ -586,7 +586,8 @@ class SchoolController extends Controller
 				if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
 			}
 		}
-		$my_field = $request->get('field', "ou=$my_ou");
+		$my_field = $request->get('field');
+		if (empty($my_field) && isset($my_ou)) $my_field = "ou=$my_ou";
 		$keywords = $request->get('keywords');
 		$request->session()->put('field', $my_field);
 		$request->session()->put('keywords', $keywords);
@@ -1405,7 +1406,7 @@ class SchoolController extends Controller
 			if ($grade == $my_grade) $classes[] = $class;
 		}		
 		$ous = $openldap->getOus($dc, '行政部門');
-		if (empty($my_ou) && is_array($ous)) $my_ou = $ous[0]->ou;
+		if (empty($my_ou) && !empty($ous)) $my_ou = $ous[0]->ou;
 		$teachers = array();
 		$data = $openldap->findUsers("(&(o=$dc)(ou=$my_ou))", ["cn","displayName","o","ou","title"]);
 		for ($i=0;$i<$data['count'];$i++) {

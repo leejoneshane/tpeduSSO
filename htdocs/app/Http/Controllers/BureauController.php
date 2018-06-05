@@ -882,10 +882,10 @@ class BureauController extends Controller
 			$info = array();
 			$info['userPassword'] = $openldap->make_ssha_password(substr($idno,-6));
 		
-			if (array_key_exists('cn', $data)) {
+			if (array_key_exists('uid', $data) && !empty($data['uid'])) {
 				if (is_array($data['uid'])) {
-					foreach ($account as $data['uid']) {
-						$account_entry = $openldap->getAccountEntry($account);
+					foreach ($acc as $data['uid']) {
+						$account_entry = $openldap->getAccountEntry($acc);
 						$openldap->updateData($account_entry, $info);
 					}
 				} else {
@@ -893,6 +893,7 @@ class BureauController extends Controller
 					$openldap->updateData($account_entry, $info);
 				}
 			}
+			
 			$result = $openldap->updateData($entry, $info);
 			if ($result) {
 				return redirect()->back()->with("success", "已經將人員密碼重設為身分證字號後六碼！");
