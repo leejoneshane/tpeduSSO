@@ -611,7 +611,7 @@ class SchoolController extends Controller
 		$teachers = array();
 		if (!empty($filter))
 			$teachers = $openldap->findUsers($filter, ["cn","displayName","o","ou","title","entryUUID","inetUserStatus"]);
-		if (array_key_exists('count', $teachers))
+		if ($teachers)
 		    for ($i=0;$i<$teachers['count'];$i++) {
 			    $dc = $teachers[$i]['o'][0];
 			    $teachers[$i]['school']['count'] = 1;
