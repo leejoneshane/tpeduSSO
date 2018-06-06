@@ -77,7 +77,7 @@
             		<label for="mobile" class="col-md-4 col-form-label text-md-right">手機號碼</label>
 
             		<div class="col-md-6">
-            		    <input id="mobile" type="text" class="form-control{{ $errors->has('mobile') ? ' is-invalid' : '' }}" name="mobile" value="{{ isset($user->ldap['mobile']) ? $user->ldap['mobile'] : '' }}" required autofocus>
+            		    <input id="mobile" type="text" class="form-control{{ $errors->has('mobile') ? ' is-invalid' : '' }}" name="mobile" value="{{ isset($user->ldap['mobile']) ? $user->ldap['mobile'] : '' }}">
             		    
             		    @if ($errors->has('mobile'))
             			<span class="invalid-feedback">
