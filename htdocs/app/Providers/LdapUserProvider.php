@@ -48,7 +48,9 @@ class LdapUserProvider extends EloquentUserProvider
 	        	$user->idno = $id;
 	        	$user->name = $data['displayName'];
 				$user->uuid = $data['entryUUID'];
-	        	if (isset($data['mail'])) {
+				if (isset($credentials['email'])) {
+					$user->email = $credentials['email'];
+	        	} elseif (isset($data['mail'])) {
 	    	    	if (is_array($data['mail'])) {
 		        		$user->email = $data['mail'][0];
 		        	} else {

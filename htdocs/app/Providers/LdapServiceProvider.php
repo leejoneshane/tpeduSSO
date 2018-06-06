@@ -108,7 +108,7 @@ class LdapServiceProvider extends ServiceProvider
     public function checkEmail($email)
     {
         if (empty($email)) return false;
-        $filter = "mail=".$email;
+        $filter = "mail=".$email."*";
 		self::administrator();
 		$resource = @ldap_search(self::$ldapConnectId, Config::get('ldap.userdn'), $filter, array("cn"));
 		if ($resource) {

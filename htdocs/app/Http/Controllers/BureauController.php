@@ -884,8 +884,8 @@ class BureauController extends Controller
 		
 			if (array_key_exists('uid', $data) && !empty($data['uid'])) {
 				if (is_array($data['uid'])) {
-					foreach ($acc as $data['uid']) {
-						$account_entry = $openldap->getAccountEntry($acc);
+					foreach ($data['uid'] as $account) {
+						$account_entry = $openldap->getAccountEntry($account);
 						$openldap->updateData($account_entry, $info);
 					}
 				} else {

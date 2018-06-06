@@ -1513,7 +1513,7 @@ class SchoolController extends Controller
 		$openldap = new LdapServiceProvider();
 		$users = $openldap->findUsers("(&(o=$dc)(tpClass=$class))", "cn");
 		for ($i=0;$i < $users['count'];$i++) {
-	    	$idno = $students[$i]['cn'][0];
+	    	$idno = $users[$i]['cn'][0];
 	    	$user_entry = $openldap->getUserEntry($idno);
 	    	$openldap->updateData($user_entry, ['tpClassTitle' => $info['description'] ]);
 		}
