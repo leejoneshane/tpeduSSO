@@ -34,7 +34,7 @@
 			<label>學校類別</label>
 			<select id="businessCategory" class="form-control" name="businessCategory">
 			@foreach ($category as $type)
-			    <option value="{{ $type }}"{{ $data['businessCategory'] == $type ? ' selected' : '' }}>{{ $type }}</option>
+			    <option value="{{ $type }}"{{ array_key_exists('businessCategory', $data) && $data['businessCategory'] == $type ? ' selected' : '' }}>{{ $type }}</option>
 			@endforeach
 			</select>
 		    </div>
@@ -42,7 +42,7 @@
 			<label>行政區</label>
 			<select id="st" class="form-control" name="st">
 			@foreach ($areas as $area)
-			    <option value="{{ $area }}"{{ $data['st'] == $area ? ' selected' : '' }}>{{ $area }}</option>
+			    <option value="{{ $area }}"{{ array_key_exists('st', $data) && $data['st'] == $area ? ' selected' : '' }}>{{ $area }}</option>
 			@endforeach
 			</select>
 		    </div>
