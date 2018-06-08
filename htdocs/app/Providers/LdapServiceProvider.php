@@ -300,7 +300,8 @@ class LdapServiceProvider extends ServiceProvider
 	    		$ou = new \stdClass();
 	    		$info = self::getOuData($entry);
 	    		if (!empty($category) && $info['businessCategory'] != $category) continue;
-	    		$ou->ou = $info['ou'];
+				$ou->ou = $info['ou'];
+				if ($info['businessCategory'] == '教學班級') $ou->grade = substr($info['ou'], 0, 1);
 	    		$ou->description = $info['description'];
 	    		$ous[] = $ou;
 			} while ($entry=ldap_next_entry(self::$ldapConnectId, $entry));

@@ -268,7 +268,7 @@ class BureauController extends Controller
 						$messages[] = "第 $i 筆記錄，".$person->name."無座號，跳過不處理！";
 		    			continue;
 					}
-				} else {
+/*				} else {
 					if (!isset($person->ou) || empty($person->ou)) {
 						$messages[] = "第 $i 筆記錄，".$person->name."無隸屬單位，跳過不處理！";
 			    		continue;
@@ -276,7 +276,7 @@ class BureauController extends Controller
 					if (!isset($person->title) || empty($person->title)) {
 						$messages[] = "第 $i 筆記錄，".$person->name."無主要職稱，跳過不處理！";
 			    		continue;
-					}
+					}*/
 				}
 				$validator = Validator::make(
     				[ 'gender' => $person->gender ], [ 'gender' => 'required|digits:1' ]

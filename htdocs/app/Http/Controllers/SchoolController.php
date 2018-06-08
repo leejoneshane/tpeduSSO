@@ -1378,12 +1378,45 @@ class SchoolController extends Controller
 		$my_grade = $request->get('grade', 1);
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getOus($dc, '教學班級');
-		$grades = array();
-		$classes = array();
-		foreach ($data as $class) {
-			$grade = substr($class->ou, 0, 1);
-			if (!in_array($grade, $grades)) $grades[] = $grade;
-			if ($grade == $my_grade) $classes[] = $class;
+		if (empty($data)) {
+			$users = $openldap->findUsers("&(o=$dc)(employeeType=學生)");
+			$grades = array();
+			$classes = array();
+			$all_classes = array();
+			for ($i=0;$i < $users['count'];$i++) {
+				$idno = $users[$i]['cn'][0];
+				$cid = $users[$i]['tpClass'][0];
+				if (!empty($cid)) {
+					$class = new \stdClass();
+					$class->ou = $cid;
+					$class->grade = substr($cid, 0, 1);
+					$class->description = substr($cid,0,1).'年'.intval(substr($cid,-2)).'班';
+					if ($cid && !in_array($cid, $all_classes)) {
+						$all_classes[] = $class;
+						if (!in_array($class->grade, $grades)) $grades[] = $class->grade;
+						if ($class->grade == $my_grade) $classes[] = $class;
+					}
+				}
+			}
+			foreach($all_classes as $class) {
+				$class_entry = $openldap->getOuEntry($dc, $class->ou);
+				if (!$class_entry) {
+					$info = array();
+					$info["objectClass"] = "organizationalUnit";
+					$info["ou"] = $class->ou;
+					$info["businessCategory"] = '教學班級';
+					$info["description"] = $class->description;
+					$info["dn"] = "ou=$class->ou,".Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
+					$openldap->createEntry($info);
+				}
+			}
+		} else {
+			$grades = array();
+			$classes = array();
+			foreach ($data as $class) {
+				if (!in_array($class->grade, $grades)) $grades[] = $class->grade;
+				if ($class->grade == $my_grade) $classes[] = $class;
+			}
 		}
 		return view('admin.schoolclass', [ 'my_grade' => $my_grade, 'grades' => $grades, 'classes' => $classes ]);
     }
