@@ -35,16 +35,16 @@
                     </div>
             	    <div class="row">
             		<div class="col-md-4 text-md-right">性別</div>
-            		@if ($user->ldap['gender'] == 0)
+            		@if (array_key_exists('gender', $user->ldap) && $user->ldap['gender'] == 0)
             		<div class="col-md-6">未填寫</div>
             		@endif
-            		@if ($user->ldap['gender'] == 1)
+            		@if (array_key_exists('gender', $user->ldap) && $user->ldap['gender'] == 1)
             		<div class="col-md-6">男</div>
             		@endif
-            		@if ($user->ldap['gender'] == 2)
+            		@if (array_key_exists('gender', $user->ldap) && $user->ldap['gender'] == 2)
             		<div class="col-md-6">女</div>
             		@endif
-            		@if ($user->ldap['gender'] == 9)
+            		@if (array_key_exists('gender', $user->ldap) && $user->ldap['gender'] == 9)
             		<div class="col-md-6">其它</div>
             		@endif
                     </div>

@@ -479,8 +479,8 @@ class BureauController extends Controller
 		$info['o'] = $request->get('o');
 		if ($request->get('type') != '學生') {
 			$info['employeeType'] = $request->get('type');
-			$info['ou'] = $request->get('ou');
-			$info['title'] = $request->get('role');
+			if ($request->has('ou')) $info['ou'] = $request->get('ou');
+			if ($request->has('title')) $info['title'] = $request->get('role');
 		} else {
 			$validatedData = $request->validate([
 				'stdno' => 'required|string',
@@ -504,10 +504,10 @@ class BureauController extends Controller
 		$info['displayName'] = $info['sn'].$info['givenName'];
 		$info['gender'] = $request->get('gender');
 		$info['birthDate'] = $request->get('birth');
-		if (!empty($request->get('raddress'))) $info['registeredAddress'] = $request->get('raddress');
-		if (!empty($request->get('address'))) $info['homePostalAddress'] = $request->get('address');
-		if (!empty($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
-		if (!is_null($request->get('character'))) {
+		if ($request->has('raddress')) $info['registeredAddress'] = $request->get('raddress');
+		if ($request->has('address')) $info['homePostalAddress'] = $request->get('address');
+		if ($request->has('www')) $info['wWWHomePage'] = $request->get('www');
+		if ($request->has('character')) {
 			$data = array();
 			if (is_array($request->get('character'))) {
 	    		$data = $request->get('character');
@@ -516,7 +516,7 @@ class BureauController extends Controller
 			}
 			$info['tpCharacter'] = $data;
 		}
-		if (!is_null($request->get('mail'))) {
+		if ($request->has('mail')) {
 			$data = array();
 			if (is_array($request->get('mail'))) {
 	    		$data = $request->get('mail');
@@ -525,7 +525,7 @@ class BureauController extends Controller
 			}
 			$info['mail'] = $data;
 		}
-		if (!is_null($request->get('mobile'))) {
+		if ($request->has('mobile')) {
 			$data = array();
 			if (is_array($request->get('mobile'))) {
 	    		$data = $request->get('mobile');
@@ -534,7 +534,7 @@ class BureauController extends Controller
 			}
 			$info['mobile'] = $data;
 		}
-		if (!is_null($request->get('fax'))) {
+		if ($request->has('fax')) {
 			$data = array();
 			if (is_array($request->get('fax'))) {
 	    		$data = $request->get('fax');
@@ -543,7 +543,7 @@ class BureauController extends Controller
 			}
 			$info['facsimileTelephoneNumber'] = $data;
 		}
-		if (!is_null($request->get('otel'))) {
+		if ($request->has('otel')) {
 			$data = array();
 			if (is_array($request->get('otel'))) {
 	    		$data = $request->get('otel');
@@ -552,7 +552,7 @@ class BureauController extends Controller
 			}
 			$info['telephoneNumber'] = $data;
 		}
-		if (!is_null($request->get('htel'))) {
+		if ($request->has('htel')) {
 			$data = array();
 			if (is_array($request->get('htel'))) {
 	    		$data = $request->get('htel');
