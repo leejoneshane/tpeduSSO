@@ -6,6 +6,20 @@ services:
     hostname: ldap
     restart: always
     
+  radius:
+    image: leejoneshane/tpedusso:freeradius
+    container_name: radius
+    environment:
+      LDAP_HOST: ldap://openldap
+      LDAP_ROOTDN: cn=readonly,dc=tp,dc=edu,dc=tw
+      LDAP_ROOTPWD: test
+      LDAP_BASEDN: ou=people,dc=tp,dc=edu,dc=tw
+    restart: always
+    ports:
+      - "1812:1812/udp"
+    links:
+      - openldap:openldap
+    
   ldapadmin:
     image: leejoneshane/tpedusso:phpldapadmin
     container_name: ldapadmin

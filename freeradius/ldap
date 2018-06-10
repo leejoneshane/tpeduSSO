@@ -1,11 +1,9 @@
 ldap { 
     server = $ENV{LDAP_HOST}
-    port = 389
     identity = $ENV{LDAP_ROOTDN}
     password = $ENV{LDAP_ROOTPWD}
     basedn = $ENV{LDAP_BASEDN}
     access_attribute = cn
     filter = "(uid=%{%{Stripped-User-Name}:-%{User-Name}})"
     positive_access = yes
-    start_tls = no
 }

@@ -1,66 +1,98 @@
-listen {
-    type = auth
-    ipaddr = *
-    port = 0
-
-    limit {
-        max_connections = 16
-        lifetime = 0
-        idle_timeout = 30
+server default {
+    listen {
+        type = auth
+        ipaddr = *
+        port = 1812
+        limit {
+            max_connections = 16
+            lifetime = 0
+            idle_timeout = 30
+        }
     }
-}
 
-listen {
-    ipaddr = *
-    port = 0
-    type = acct
-
-    limit {
+    listen {
+        type = acct
+        ipaddr = *
+        port = 1813
     }
-}
 
-listen {
-    type = auth
-    ipv6addr = :: any.  ::1 == localhost
-    port = 0
-
-    limit {
-        max_connections = 16
-        lifetime = 0
-        idle_timeout = 30
+    listen {
+        type = auth
+        ipv6addr = ::
+        port = 1812
+        limit {
+            max_connections = 16
+            lifetime = 0
+            idle_timeout = 30
+        }
     }
-}
 
-listen {
-    ipv6addr = ::
-    port = 0
-    type = acct
-
-    limit {
+    listen {
+        type = acct
+        ipv6addr = ::
+        port = 1813
     }
-}
 
-authorize {
-    preprocess
-    chap
-    mschap
-    suffix
-    eap
-    ldap
-}
-
-authenticate {
-    Auth-Type PAP {
+    authorize {
+        filter_username
+        preprocess
+        chap
+        mschap
+        digest
+        suffix
+        ldap
+        expiration
+        logintime
         pap
     }
-    Auth-Type CHAP {
-        chap
+
+    authenticate {
+        Auth-Type PAP {
+            pap
+        }
+        Auth-Type CHAP {
+            chap
+        }
+        Auth-Type MS-CHAP {
+            mschap
+        }
+        Auth-Type LDAP {
+            ldap
+        }
+        digest
     }
-    Auth-Type MS-CHAP {
-        mschap
+
+    preacct {
+        preprocess
+        acct_unique
+        suffix
     }
-    Auth-Type LDAP {
-        ldap
+
+    accounting {
+        detail
+        unix
+        exec
+        attr_filter.accounting_response
     }
-    eap
+
+    session {
+    }
+
+    post-auth {
+        update {
+            &reply: += &session-state:
+        }
+        exec
+        remove_reply_message_if_eap
+        Post-Auth-Type REJECT {
+            attr_filter.access_reject
+            remove_reply_message_if_eap
+        }
+    }
+
+    pre-proxy {
+    }
+
+    post-proxy {
+    }
 }
