@@ -1269,7 +1269,7 @@ class SchoolController extends Controller
 		
 			if (array_key_exists('cn', $data)) {
 				if (is_array($data['uid'])) {
-					foreach ($account as $data['uid']) {
+					foreach ($data['uid'] as $account) {
 						$account_entry = $openldap->getAccountEntry($account);
 						$openldap->updateData($account_entry, $info);
 					}
