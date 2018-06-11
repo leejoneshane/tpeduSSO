@@ -41,6 +41,11 @@ server default {
         digest
         suffix
         ldap
+        if (notfound) {
+            update control {
+                Proxy-To-Realm := 'tpeduaaa'
+            }
+        }
         expiration
         logintime
         pap
