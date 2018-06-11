@@ -2,7 +2,7 @@ __臺北市教育人員無線認證服務__，為臺北市政府教育局所發�
 
 這個資料夾內的資料是用來建置一台 freeradius server 的 Docker 映像檔，伺服器設定成透過 openldap 伺服器驗證使用者是否為教育人員，如果找不到該帳號，則會將封包轉送到臺北市教育網路中心的 __臺灣學術網路無線漫遊伺服器__ 上進行漫遊，詳情可查閱 [default](https://github.com/leejoneshane/tpeduSSO/tree/master/freeradius/default) 文件。
 
-上述設定可以透過 docker 環境變數調整，以適應各縣市的需求，請參考下方關於執行環境的說明。
+上述設定可以透過 docker 環境變數調整，以適應各縣市的需求，請參考下方關於執行環境的說明。另外還需要修改 [clients.conf](https://github.com/leejoneshane/tpeduSSO/tree/master/freeradius/clients.conf) 文件，請設定貴縣市的 IP 範圍，以便讓下屬單位送來的認證請求封包能被伺服器接受和處理。
 
 ## 啟動容器
 ```
@@ -24,9 +24,9 @@ radtest meps123456789 test localhost 1812 testing123
 * __LDAP_ROOTDN: cn=admin,dc=tp,dc=edu,dc=tw__ 不可省略，openldap 伺服器管理員的 DN。
 * __LDAP_ROOTPWD: test__ 不可省略，openldap 伺服器的管理員網路連線密碼。
 * __LDAP_BASEDN: ou=account,dc=tp,dc=edu,dc=tw__ 不可省略，為後端 openldap 伺服器用來儲存帳號資訊的子目錄。
-* __SECRET: tpeduaaa__ 不可省略，為本伺服器的預設連線密碼。
+* __SECRET: tpedusso__ 不可省略，為本伺服器的預設連線密碼。
 * __PROXY_TO_HOST: 163.21.249.130__ 不可省略，為各縣市無線漫遊伺服器之IP。
-* __PROXY_SECRET: 587__ 不可省略，為各縣市無線漫遊伺服器之連線密碼。
+* __PROXY_SECRET: tpeduaaa__ 不可省略，為各縣市無線漫遊伺服器之連線密碼。
 
 ## 建置映像檔
 
