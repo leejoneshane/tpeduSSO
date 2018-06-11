@@ -14,6 +14,7 @@ RUN apk add --no-cache bash freeradius freeradius-ldap freeradius-radclient \
 ADD default /etc/raddb/sites-enabled/default
 ADD inner-tunnel /etc/raddb/sites-enabled/inner-tunnel
 ADD clients.conf /etc/raddb/clients.conf
+ADD proxy.conf /etc/raddb/proxy.conf
 ADD ldap /etc/raddb/mods-enabled/ldap
 
 VOLUME ["/etc/raddb/"]
