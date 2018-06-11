@@ -14,6 +14,9 @@ services:
       LDAP_ROOTDN: cn=admin,dc=tp,dc=edu,dc=tw
       LDAP_ROOTPWD: test
       LDAP_BASEDN: ou=account,dc=tp,dc=edu,dc=tw
+      SECRET: tpeduaaa
+      PROXY_TO_HOST: 163.21.249.130
+      PROXY_SECRET: tpeduaaa
     restart: always
     ports:
       - "1812:1812/udp"
