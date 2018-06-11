@@ -11,9 +11,9 @@ services:
     container_name: radius
     environment:
       LDAP_HOST: ldap://openldap
-      LDAP_ROOTDN: cn=readonly,dc=tp,dc=edu,dc=tw
+      LDAP_ROOTDN: cn=admin,dc=tp,dc=edu,dc=tw
       LDAP_ROOTPWD: test
-      LDAP_BASEDN: ou=people,dc=tp,dc=edu,dc=tw
+      LDAP_BASEDN: ou=account,dc=tp,dc=edu,dc=tw
     restart: always
     ports:
       - "1812:1812/udp"
