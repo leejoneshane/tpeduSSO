@@ -1,4 +1,4 @@
-__臺北市教育人員目錄服務__，為臺北市政府教育局所發展教育人員單一簽入的 openldap 伺服器，由臺北市老師自主研發，若您為臺北市教師且對程式開發感興趣，請與我聯繫！
+__臺北市教育人員目錄服務__，為臺北市政府教育局所發展教育人員單一身份驗證的 openldap 伺服器，由臺北市老師自主研發，若您為臺北市教師且對程式開發感興趣，請與我聯繫！
 
 這個資料夾內的資料是用來建置一台 openldap server 的 Docker 映像檔，基礎映像檔為 [osixia/openldap](https://github.com/osixia/docker-openldap)，
 相關技術文件資料請前往該專案的 Github 頁面查閱。
@@ -8,7 +8,7 @@ __臺北市教育人員目錄服務__，為臺北市政府教育局所發展教�
 
 ## 啟動容器
 ```
-docker run -p 389:389 -p 636:636 -d leejoneshane/openldap
+docker run -p 389:389 -p 636:636 -d leejoneshane/tpedusso:openldap
 ```
 
 您可以使用底下指令測試伺服器是否正常運行，如果您看到伺服器回應 ldif 文件，即代表伺服器正在運行中。
