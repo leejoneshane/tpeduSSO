@@ -73,12 +73,10 @@
 <attribute id="employeeType">
 	<display>身分別</display>
 	<type>select</type>
-	<value id="行政人員">行政人員</value>
-	<value id="專任教師">專任教師</value>
-	<value id="巡迴教師">巡迴教師</value>
-	<value id="職員工友">職員工友</value>
-	<value id="社團教師">社團教師</value>
-	<value id="其他">其他</value>
+	<value id="校長">校長</value>
+	<value id="教師">教師</value>
+	<value id="職工">職工</value>
+	<value id="主官管">主官管</value>
 	<order>9</order>
 	<page>1</page>
 </attribute>
