@@ -84,7 +84,7 @@
 	<display>所屬處室或領域</display>
 	<type>select</type>
 	<hint>請先參考左側樹狀結構，查看處室或領域的ou名稱。</hint>
-	<value><![CDATA[=php.PickList(/;(&(objectClass=ou));ou;%description%)]]></value>
+	<value><![CDATA[=php.PickList(/;(&(objectClass=organizationalUnit));ou;%description%)]]></value>
 	<order>10</order>
 	<page>1</page>
 </attribute>
