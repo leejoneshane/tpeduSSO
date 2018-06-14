@@ -14,6 +14,8 @@ olcdbindex: displayName eq
 olcdbindex: mail eq,sub
 olcdbindex: mobile eq
 olcdbindex: memberOf eq
+olcdbindex: postalAddress eq,sub
+olcdbindex: telephoneNumber eq
 olcdbindex: entryCSN eq
 olcdbindex: entryUUID eq
 olcdbindex: objectClass eq
