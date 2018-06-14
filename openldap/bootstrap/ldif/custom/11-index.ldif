@@ -19,4 +19,4 @@ olcdbindex: entryUUID eq
 olcdbindex: objectClass eq
 -
 replace: olcDbMaxSize
-olcDbMaxSize: 2147483648
+olcDbMaxSize: 3221225472
