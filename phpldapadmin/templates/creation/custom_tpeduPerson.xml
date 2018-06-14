@@ -91,7 +91,7 @@
 <attribute id="title">
 	<type>select</type>
 	<display>職稱</display>
-	<value><![CDATA[=php.PickList(/;(&(o=%o%)(ou=%ou%)(objectClass=organizationalRole));ou;%description%)]]></value>
+	<value><![CDATA[=php.PickList(/;(&(o=%o%)(ou=%ou%)(objectClass=organizationalRole));cn;%description%)]]></value>
 	<order>11</order>
 	<page>1</page>
 </attribute>
