@@ -211,11 +211,7 @@ class BureauController extends Controller
 	
     public function importBureauPeople(Request $request)
     {
-		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
-		$entry = $openldap->getOrgEntry($dc);
-		$sid = $openldap->getOrgData($entry, 'tpUniformNumbers');
-		$sid = $sid['tpUniformNumbers'];
     	$messages[0] = 'heading';
     	if ($request->hasFile('json')) {
 	    	$path = $request->file('json')->path();
@@ -292,6 +288,10 @@ class BureauController extends Controller
 					$messages[] = "第 $i 筆記錄，".$person->name."出生日期格式或內容不正確，跳過不處理！";
 		    		continue;
 				}
+				$dc = $person->o;
+				$entry = $openldap->getOrgEntry($dc);
+				$sid = $openldap->getOrgData($entry, 'tpUniformNumbers');
+				$sid = $sid['tpUniformNumbers'];
 				$user_dn = Config::get('ldap.userattr')."=".$person->id.",".Config::get('ldap.userdn');
 				$entry = array();
 				$entry["objectClass"] = array("tpeduPerson","inetUser");
@@ -302,7 +302,7 @@ class BureauController extends Controller
     			$entry["displayName"] = $person->name;
     			$entry["gender"] = $person->gender;
 				$entry["birthDate"] = $person->birthdate."000000Z";
-    			$entry["o"] = $person->o;
+    			$entry["o"] = $dc;
     			$entry["employeeType"] = $person->type;
 				$entry['info'] = json_encode(array("sid" => $sid, "role" => $person->type), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 				if ($person->type == '學生') {
@@ -330,10 +330,15 @@ class BureauController extends Controller
    				$account["objectClass"] = "radiusObjectProfile";
 			    $account["cn"] = $person->id;
 			    $account["description"] = '管理員匯入';
-				if (isset($person->account) && !empty($person->account))
+				if (isset($person->account) && !empty($person->account)) {
 					$account["uid"] = $person->account;
-				else
-					$account["uid"] = $dc.substr($person->id, -9);
+				} else {
+					if ($person->type == '學生') {
+						$account["uid"] = $dc.$person->stdno;
+					} else {
+						$account["uid"] = $dc.substr($person->id, -9);
+					}    			
+				}
     			$entry["uid"] = $account["uid"];
 				if (isset($person->password) && !empty($person->password))
 					$password = $openldap->make_ssha_password($person->password);
