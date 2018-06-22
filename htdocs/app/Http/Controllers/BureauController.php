@@ -591,8 +591,16 @@ class BureauController extends Controller
 		$info = array();
 		$info['employeeType'] = $request->get('type');
 		$info['o'] = $request->get('o');
-		$info['ou'] = $request->get('ou');
-		$info['title'] = $request->get('role');
+		if ($request->has('ou')) {
+			$info['ou'] = $request->get('ou');
+		} else {
+			$info['ou'] = [];
+		}
+		if ($request->has('role')) {
+			$info['title'] = $request->get('role');
+		} else {
+			$info['title'] = [];
+		}
 		$info['sn'] = $request->get('sn');
 		$info['givenName'] = $request->get('gn');
 		$info['displayName'] = $info['sn'].$info['givenName'];
