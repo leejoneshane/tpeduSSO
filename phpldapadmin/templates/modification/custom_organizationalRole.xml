@@ -7,7 +7,7 @@
 <icon>ldap-ou.png</icon>
 <invalid>0</invalid>
 <rdn>cn</rdn>
-<regexp>^cn=.*,dc=.*,dc=tp,dc=edu,dc=tw</regexp>
+<regexp>^cn=.*,ou=.*,dc=.*,dc=tp,dc=edu,dc=tw</regexp>
 <title>學校職務</title>
 <visible>1</visible>
 

@@ -82,16 +82,12 @@
 </attribute>
 <attribute id="ou">
 	<display>所屬處室或領域</display>
-	<type>select</type>
 	<hint>請先參考左側樹狀結構，查看處室或領域的ou名稱。</hint>
-	<value><![CDATA[=php.PickList(/;(&(o=%o%)(objectClass=organizationalUnit));ou;%description%)]]></value>
 	<order>10</order>
 	<page>1</page>
 </attribute>
 <attribute id="title">
-	<type>select</type>
 	<display>職稱</display>
-	<value><![CDATA[=php.PickList(/;(&(o=%o%)(ou=%ou%)(objectClass=organizationalRole));cn;%description%)]]></value>
 	<order>11</order>
 	<page>1</page>
 </attribute>
