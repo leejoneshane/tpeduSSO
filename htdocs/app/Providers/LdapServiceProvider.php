@@ -689,6 +689,7 @@ class LdapServiceProvider extends ServiceProvider
     {
 		$dn = @ldap_get_dn(self::$ldapConnectId, $entry);
 		$value = @ldap_mod_add(self::$ldapConnectId, $dn, $fields);
+		if (!$value) Log::error("Data can't add into openldap:\n".print_r($fields, true)."\n");
 		return $value;
     }
 
@@ -696,6 +697,7 @@ class LdapServiceProvider extends ServiceProvider
     {
 		$dn = @ldap_get_dn(self::$ldapConnectId, $entry);
 		$value = @ldap_mod_replace(self::$ldapConnectId, $dn, $fields);
+		if (!$value) Log::error("Data can't update to openldap:\n".print_r($fields, true)."\n");
 		return $value;
     }
 
@@ -703,10 +705,11 @@ class LdapServiceProvider extends ServiceProvider
     {
 		$dn = @ldap_get_dn(self::$ldapConnectId, $entry);
 		$value = @ldap_mod_del(self::$ldapConnectId, $dn, $fields);
+		if (!$value) Log::error("Data can't remove from openldap:\n".print_r($fields, true)."\n");
 		return $value;
     }
 
-    public function createEntry($info)
+    public function createEntry(array $info)
     {
 		self::administrator();
 		$dn = $info['dn'];
