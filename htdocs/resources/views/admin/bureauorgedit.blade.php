@@ -61,7 +61,7 @@
 		    </div>
 		    <div class="form-group{{ $errors->has('fax') ? ' has-error' : '' }}">
 			<label>傳真號碼</label>
-			<input id="fax" type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" name="fax" value="{{ isset($data) && array_key_exists('facsimileTelephoneNumber', $data) ? $data['facsimileTelephoneNumber'] : old('fax') }}" placeholder="格式如右：(02)23456789">
+			<input id="fax" type="text" pattern="\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" name="fax" value="{{ isset($data) && array_key_exists('facsimileTelephoneNumber', $data) ? $data['facsimileTelephoneNumber'] : old('fax') }}" placeholder="格式如右：(02)23456789">
 			@if ($errors->has('fax'))
 				<p class="help-block">
 					<strong>{{ $errors->first('fax') }}</strong>
@@ -70,7 +70,7 @@
 		    </div>
 		    <div class="form-group{{ $errors->has('telephoneNumber') ? ' has-error' : '' }}">
 			<label>電話代表號</label>
-			<input id="telephoneNumber" type="text" pattern="^\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" name="telephoneNumber" value="{{ isset($data) && array_key_exists('telephoneNumber', $data) ? $data['telephoneNumber'] : old('telephoneNumber') }}" placeholder="格式如右：(02)23456789">
+			<input id="telephoneNumber" type="text" pattern="\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" name="telephoneNumber" value="{{ isset($data) && array_key_exists('telephoneNumber', $data) ? $data['telephoneNumber'] : old('telephoneNumber') }}" placeholder="格式如右：(02)23456789">
 			@if ($errors->has('telephoneNumber'))
 				<p class="help-block">
 					<strong>{{ $errors->first('telephoneNumber') }}</strong>
