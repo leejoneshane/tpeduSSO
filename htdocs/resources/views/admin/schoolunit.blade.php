@@ -45,7 +45,7 @@
 						<td>
 							<button type="submit" class="btn btn-primary">修改</button>
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#remove-form').attr('action','{{ route('school.removeUnit', [ 'dc' => $dc, ou' => $ou->ou ]) }}');
+							 	onclick="$('#remove-form').attr('action','{{ route('school.removeUnit', [ 'dc' => $dc, 'ou' => $ou->ou ]) }}');
 										 $('#remove-form').submit();">刪除</button>
 						</td>
 						</form>

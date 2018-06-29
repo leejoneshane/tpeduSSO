@@ -81,7 +81,7 @@ class SchoolController extends Controller
 				}
 			}
 		}
-		return view('admin.schoolstudent', [ 'my_field' => $my_field, 'keywords' => $keywords, 'classes' => $ous, 'students' => $students ]);
+		return view('admin.schoolstudent', [ 'dc' => $dc, 'my_field' => $my_field, 'keywords' => $keywords, 'classes' => $ous, 'students' => $students ]);
     }
 
     public function schoolStudentJSONForm(Request $request, $dc)
@@ -341,9 +341,9 @@ class SchoolController extends Controller
     	if (!is_null($uuid)) {//edit
     		$entry = $openldap->getUserEntry($uuid);
     		$user = $openldap->getUserData($entry);
-			return view('admin.schoolstudentedit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'ous' => $ous, 'user' => $user ]);
+			return view('admin.schoolstudentedit', [ 'dc' => $dc, 'my_field' => $my_field, 'keywords' => $keywords, 'ous' => $ous, 'user' => $user ]);
 		} else { //add
-			return view('admin.schoolstudentedit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'ous' => $ous ]);
+			return view('admin.schoolstudentedit', [ 'dc' => $dc, 'my_field' => $my_field, 'keywords' => $keywords, 'ous' => $ous ]);
 		}
 	}
 	
@@ -441,9 +441,9 @@ class SchoolController extends Controller
 				
 		$result = $openldap->createEntry($info);
 		if ($result) {
-			return redirect('school/teacher?field='.$my_field)->with("success", "已經為您建立學生資料！");
+			return redirect('school/'.$dc.'/student?field='.$my_field)->with("success", "已經為您建立學生資料！");
 		} else {
-			return redirect('school/teacher?field='.$my_field)->with("error", "學生新增失敗！".$openldap->error());
+			return redirect('school/'.$dc.'/student?field='.$my_field)->with("error", "學生新增失敗！".$openldap->error());
 		}
 	}
 	
@@ -563,14 +563,14 @@ class SchoolController extends Controller
 	        		->where('idno', $original['cn'])
 	        		->first();
 	        		if ($user) $user->delete();
-					return redirect('school/student?field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新學生基本資料！");
+					return redirect('school/'.$dc.'/student?field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新學生基本資料！");
 				} else {
-					return redirect('school/student?field='.$my_field.'&keywords='.$keywords)->with("error", "學生身分證字號變更失敗！".$openldap->error());
+					return redirect('school/'.$dc.'/student?field='.$my_field.'&keywords='.$keywords)->with("error", "學生身分證字號變更失敗！".$openldap->error());
 				}
 			}
-			return redirect('school/student?field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新學生基本資料！");
+			return redirect('school/'.$dc.'/student?field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新學生基本資料！");
 		} else {
-			return redirect('school/student?field='.$my_field.'&keywords='.$keywords)->with("error", "學生基本資料變更失敗！".$openldap->error());
+			return redirect('school/'.$dc.'/student?field='.$my_field.'&keywords='.$keywords)->with("error", "學生基本資料變更失敗！".$openldap->error());
 		}
 	}
 	
@@ -646,7 +646,7 @@ class SchoolController extends Controller
 			    }
 			}
 		}
-		return view('admin.schoolteacher', [ 'my_field' => $my_field, 'keywords' => $keywords, 'ous' => $ous, 'teachers' => $teachers ]);
+		return view('admin.schoolteacher', [ 'dc' => $dc, 'my_field' => $my_field, 'keywords' => $keywords, 'ous' => $ous, 'teachers' => $teachers ]);
     }
 
     public function schoolTeacherJSONForm(Request $request, $dc)
@@ -1062,9 +1062,9 @@ class SchoolController extends Controller
 
 		$result = $openldap->createEntry($info);
 		if ($result) {
-			return redirect('school/teacher?field='.$my_field)->with("success", "已經為您建立教師資料！");
+			return redirect('school/'.$dc.'/teacher?field='.$my_field)->with("success", "已經為您建立教師資料！");
 		} else {
-			return redirect('school/teacher?field='.$my_field)->with("error", "教師新增失敗！".$openldap->error());
+			return redirect('school/'.$dc.'/teacher?field='.$my_field)->with("error", "教師新增失敗！".$openldap->error());
 		}
 	}
 	
@@ -1196,14 +1196,14 @@ class SchoolController extends Controller
 	        		->first();
 	        		if ($user) $user->delete();
 					if ($request->user()->idno == $original['cn']) Auth::logout();
-					return redirect('school/teacher?field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新教師基本資料！");
+					return redirect('school/'.$dc.'/teacher?field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新教師基本資料！");
 				} else {
-					return redirect('school/teacher?field='.$my_field.'&keywords='.$keywords)->with("error", "教師身分證字號變更失敗！".$openldap->error());
+					return redirect('school/'.$dc.'/teacher?field='.$my_field.'&keywords='.$keywords)->with("error", "教師身分證字號變更失敗！".$openldap->error());
 				}
 			}
-			return redirect('school/teacher?field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新教師基本資料！");
+			return redirect('school/'.$dc.'/teacher?field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新教師基本資料！");
 		} else {
-			return redirect('school/teacher?field='.$my_field.'&keywords='.$keywords)->with("error", "教師基本資料變更失敗！".$openldap->error());
+			return redirect('school/'.$dc.'/teacher?field='.$my_field.'&keywords='.$keywords)->with("error", "教師基本資料變更失敗！".$openldap->error());
 		}
 	}
 	
@@ -1296,7 +1296,7 @@ class SchoolController extends Controller
 			}
 			if ($my_ou) $roles = $openldap->getRoles($dc, $my_ou);
 		}
-		return view('admin.schoolrole', [ 'my_ou' => $my_ou, 'ous' => $ous, 'roles' => $roles ]);
+		return view('admin.schoolrole', [ 'dc' => $dc, 'my_ou' => $my_ou, 'ous' => $ous, 'roles' => $roles ]);
     }
 
     public function createSchoolRole(Request $request, $dc, $ou)
@@ -1409,7 +1409,7 @@ class SchoolController extends Controller
 				if ($class->grade == $my_grade) $classes[] = $class;
 			}
 		}
-		return view('admin.schoolclass', [ 'my_grade' => $my_grade, 'grades' => $grades, 'classes' => $classes ]);
+		return view('admin.schoolclass', [ 'dc' => $dc, 'my_grade' => $my_grade, 'grades' => $grades, 'classes' => $classes ]);
     }
 
     public function schoolClassAssignForm(Request $request, $dc)
@@ -1489,14 +1489,14 @@ class SchoolController extends Controller
 			}
 		}
 		if (count($errors) > 0) {
-			return redirect()->back()->with('grade', $request->get('grade'))->with('ou', $request->get('ou'))->with("error", $errors);
+			return redirect()->back()->with('dc', $dc)->with('grade', $request->get('grade'))->with('ou', $request->get('ou'))->with("error", $errors);
 		} else {
 			if ($act == 'add') {
-				return redirect()->back()->with('grade', $request->get('grade'))->with('ou', $request->get('ou'))->with("success", "已經為您新增配課資訊！");
+				return redirect()->back()->with('dc', $dc)->with('grade', $request->get('grade'))->with('ou', $request->get('ou'))->with("success", "已經為您新增配課資訊！");
 			} elseif ($act == 'rep') {
-				return redirect()->back()->with('grade', $request->get('grade'))->with('ou', $request->get('ou'))->with("success", "已經為您修改配課資訊！");
+				return redirect()->back()->with('dc', $dc)->with('grade', $request->get('grade'))->with('ou', $request->get('ou'))->with("success", "已經為您修改配課資訊！");
 			} elseif ($act == 'del') {
-				return redirect()->back()->with('grade', $request->get('grade'))->with('ou', $request->get('ou'))->with("success", "已經為您移除配課資訊！");
+				return redirect()->back()->with('dc', $dc)->with('grade', $request->get('grade'))->with('ou', $request->get('ou'))->with("success", "已經為您移除配課資訊！");
 			}
 		}
 	}
@@ -1572,7 +1572,7 @@ class SchoolController extends Controller
 		$domains = [ '語文', '數學', '社會', '自然科學', '藝術', '綜合活動', '科技', '健康與體育' ];
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getSubjects($dc);
-		return view('admin.schoolsubject', [ 'domains' => $domains, 'subjs' => $data ]);
+		return view('admin.schoolsubject', [ 'dc' => $dc, 'domains' => $domains, 'subjs' => $data ]);
     }
 
     public function createSchoolSubject(Request $request, $dc)
@@ -1635,7 +1635,7 @@ class SchoolController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getOus($dc, '行政部門');
-		return view('admin.schoolunit', [ 'ous' => $data ]);
+		return view('admin.schoolunit', [ 'dc' => $dc, 'ous' => $data ]);
     }
 
     public function createSchoolUnit(Request $request, $dc)
@@ -1715,7 +1715,7 @@ class SchoolController extends Controller
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getOrgEntry($dc);
 		$data = $openldap->getOrgData($entry);
-		return view('admin.schoolprofile', [ 'data' => $data, 'areas' => $areas, 'category' => $category ]);
+		return view('admin.schoolprofile', [ 'dc' => $dc, 'data' => $data, 'areas' => $areas, 'category' => $category ]);
     }
 
     public function updateSchoolProfile(Request $request, $dc)

@@ -23,7 +23,7 @@
 			<h4>{{ isset($user) ? '編輯' : '新增' }}學生資訊</h4>
 		</div>
 		<div class="panel-body">
-			<form role="form" method="POST" action="{{ isset($user) ? route('school.updateStudent', [ 'dc' => $dc, 'uuid' => $user['entryUUID'] ]) : route('school.createStudent') }}">
+			<form role="form" method="POST" action="{{ isset($user) ? route('school.updateStudent', [ 'dc' => $dc, 'uuid' => $user['entryUUID'] ]) : route('school.createStudent', [ 'dc' => $dc ]) }}">
 		    	@csrf
 		    	@if (isset($user))
 				<input type="hidden" name="uuid" value="{{ $user['entryUUID'] }}">

@@ -53,7 +53,7 @@
 						<td>
 							<button type="submit" class="btn btn-primary">修改</button>
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#remove-form').attr('action','{{ route('school.removeSubject', [ 'dc' => $dc, subject' => $subj->subject ]) }}');
+							 	onclick="$('#remove-form').attr('action','{{ route('school.removeSubject', [ 'dc' => $dc, 'subject' => $subj->subject ]) }}');
 										 $('#remove-form').submit();">刪除</button>
 						</td>
 						</form>

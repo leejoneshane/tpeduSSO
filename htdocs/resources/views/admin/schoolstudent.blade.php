@@ -83,7 +83,7 @@
 						</td>
 						<td style="vertical-align: inherit;">
 							<button type="button" class="btn btn-primary"
-							 	onclick="$('#form').attr('action','{{ route('school.updateStudent', [ 'dc' => $dc, uuid' => $students[$i]['entryuuid'][0] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('school.updateStudent', [ 'dc' => $dc, 'uuid' => $students[$i]['entryuuid'][0] ]) }}');
 										 $('#form').attr('method', 'GET');
 										 $('#form').submit();">編輯</button>
 							@if ($students[$i]['inetuserstatus'][0] != '已刪除')
