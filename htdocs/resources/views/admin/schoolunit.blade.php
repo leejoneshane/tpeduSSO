@@ -34,7 +34,7 @@
 				<tbody>
 					@foreach ($ous as $ou)
 					<tr>
-						<form role="form" method="POST" action="{{ route('school.updateUnit', [ 'ou' => $ou->ou ]) }}">
+						<form role="form" method="POST" action="{{ route('school.updateUnit', [ 'dc' => $dc, 'ou' => $ou->ou ]) }}">
 		    			@csrf
 						<td>
 							<input id="ou" type="text" class="form-control" name="ou" value="{{ $ou->ou ? $ou->ou : old('ou') }}">
@@ -45,7 +45,7 @@
 						<td>
 							<button type="submit" class="btn btn-primary">修改</button>
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#remove-form').attr('action','{{ route('school.removeUnit', [ 'ou' => $ou->ou ]) }}');
+							 	onclick="$('#remove-form').attr('action','{{ route('school.removeUnit', [ 'dc' => $dc, ou' => $ou->ou ]) }}');
 										 $('#remove-form').submit();">刪除</button>
 						</td>
 						</form>
@@ -67,7 +67,7 @@
 			<h4>新增行政部門</h4>
 		</div>
 		<div class="panel-body">
-			<form role="form" method="POST" action="{{ route('school.createUnit') }}">
+			<form role="form" method="POST" action="{{ route('school.createUnit', [ 'dc' => $dc ]) }}">
 		    	@csrf
 			    <div class="form-group{{ $errors->has('new-ou') ? ' has-error' : '' }}">
 					<label>處室代號</label>

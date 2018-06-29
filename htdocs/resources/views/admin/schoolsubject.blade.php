@@ -35,7 +35,7 @@
 				<tbody>
 					@foreach ($subjs as $subj)
 					<tr>
-						<form role="form" method="POST" action="{{ route('school.updateSubject', [ 'subject' => $subj->subject ]) }}">
+						<form role="form" method="POST" action="{{ route('school.updateSubject', [ 'dc' => $dc, 'subject' => $subj->subject ]) }}">
 		    			@csrf
 						<td style="vertical-align: inherit;">
 							<label>{{ $subj->subject }}</label>
@@ -53,7 +53,7 @@
 						<td>
 							<button type="submit" class="btn btn-primary">修改</button>
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#remove-form').attr('action','{{ route('school.removeSubject', [ 'subject' => $subj->subject ]) }}');
+							 	onclick="$('#remove-form').attr('action','{{ route('school.removeSubject', [ 'dc' => $dc, subject' => $subj->subject ]) }}');
 										 $('#remove-form').submit();">刪除</button>
 						</td>
 						</form>
@@ -75,7 +75,7 @@
 			<h4>新增科目</h4>
 		</div>
 		<div class="panel-body">
-			<form role="form" method="POST" action="{{ route('school.createSubject') }}">
+			<form role="form" method="POST" action="{{ route('school.createSubject', [ 'dc' => $dc ]) }}">
 		    	@csrf
 			    <div class="form-group{{ $errors->has('new-subj') ? ' has-error' : '' }}">
 					<label>科目代號</label>

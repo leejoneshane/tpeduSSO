@@ -19,7 +19,7 @@
 			{{ session('success') }}
 		    </div>
 		@endif
-		<form role="form" method="POST" action="{{ route('school.profile') }}">
+		<form role="form" method="POST" action="{{ route('school.profile', [ 'dc' => $dc ]) }}">
 		    {{ csrf_field() }}
 		    <div class="form-group{{ $errors->has('description') ? ' has-error' : '' }}">
 			<label>學校全銜</label>

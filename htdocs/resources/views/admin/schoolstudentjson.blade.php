@@ -123,7 +123,7 @@
 			<h4>匯入 JSON</h4>
 		</div>
 		<div class="panel-body">
-			<form role="form" method="POST" action="{{ route('school.jsonStudent') }}" enctype="multipart/form-data">
+			<form role="form" method="POST" action="{{ route('school.jsonStudent', [ 'dc' => $dc ]) }}" enctype="multipart/form-data">
 		    	@csrf
 			    <div class="form-group{{ $errors->has('json') ? ' has-error' : '' }}">
 					<input id="json" type="file" class="form-control" name="json" required>

@@ -23,7 +23,7 @@
 			<h4>
 				<select id="ou" name="ou" onchange="location=$(this).val();">
 				@foreach ($ous as $ou => $desc)
-			    	<option value="{{ route('school.role', [ 'ou' => $ou ]) }}" {{ $my_ou == $ou ? 'selected' : '' }}>{{ $desc }}</option>
+			    	<option value="{{ route('school.role', [ 'dc' => $dc, 'ou' => $ou ]) }}" {{ $my_ou == $ou ? 'selected' : '' }}>{{ $desc }}</option>
 			    @endforeach
 				</select>
 				職務一覽表
@@ -41,7 +41,7 @@
 				<tbody>
 					@foreach ($roles as $role)
 					<tr>
-						<form role="form" method="POST" action="{{ route('school.updateRole', [ 'ou' => $my_ou, 'role' => $role->cn ]) }}">
+						<form role="form" method="POST" action="{{ route('school.updateRole', [ 'dc' => $dc, 'ou' => $my_ou, 'role' => $role->cn ]) }}">
 		    			@csrf
 						<td>
 							<input id="role" type="text" class="form-control" name="role" value="{{ $role->cn ? $role->cn : old('role') }}">
@@ -52,7 +52,7 @@
 						<td>
 							<button type="submit" class="btn btn-primary">修改</button>
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#remove-form').attr('action','{{ route('school.removeRole', [ 'ou' => $my_ou, 'role' => $role->cn ]) }}');
+							 	onclick="$('#remove-form').attr('action','{{ route('school.removeRole', [ 'dc' => $dc, ou' => $my_ou, 'role' => $role->cn ]) }}');
 										 $('#remove-form').submit();">刪除</button>
 						</td>
 						</form>
@@ -74,7 +74,7 @@
 			<h4>新增職務</h4>
 		</div>
 		<div class="panel-body">
-			<form role="form" method="POST" action="{{ route('school.createRole', [ 'ou' => $my_ou ]) }}">
+			<form role="form" method="POST" action="{{ route('school.createRole', [ 'dc' => $dc, 'ou' => $my_ou ]) }}">
 		    	@csrf
 			    <div class="form-group{{ $errors->has('new-role') ? ' has-error' : '' }}">
 					<label>職務代號</label>

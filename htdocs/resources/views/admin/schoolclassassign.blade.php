@@ -19,7 +19,7 @@
 		{{ session('success') }}
 	    </div>
 	@endif
-	<form id="form" action="" method="POST" action="{{ route('school.assignClass') }}">
+	<form id="form" action="" method="POST" action="{{ route('school.assignClass', [ 'dc' => $dc ]) }}">
     @csrf
     <input type="hidden" name="grade" value="{{ $my_grade }}">
     <input type="hidden" name="ou" value="{{ $my_ou }}">
@@ -114,7 +114,7 @@
 	</form>
 	<script type="text/javascript">
 		function refresh_classes() {
-			axios.get('/school/classes/{{ $dc }}/' + $('#grade').val())
+			axios.get('/school/{{ $dc }}/classes/' + $('#grade').val())
     			.then(response => {
     				$('#classes').find('label').remove();
    					response.data.forEach(
@@ -128,7 +128,7 @@
   				});
       	}
 		function refresh_teachers() {
-			axios.get('/school/teachers/{{ $dc }}/' + $('#ou').val())
+			axios.get('/school/{{ $dc }}/teachers/' + $('#ou').val())
     			.then(response => {
     				$('#teachers').find('tr').remove();
     				i=0;

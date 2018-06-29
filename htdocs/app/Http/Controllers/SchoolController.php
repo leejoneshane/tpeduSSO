@@ -27,14 +27,13 @@ class SchoolController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($dc)
     {
-        return view('school');
+        return view('school', [ 'dc' => $dc ]);
     }
     
-    public function schoolStudentSearchForm(Request $request)
+    public function schoolStudentSearchForm(Request $request, $dc)
     {
-		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getOus($dc, '教學班級');
 		$my_ou = $data[0]->ou;
@@ -85,9 +84,8 @@ class SchoolController extends Controller
 		return view('admin.schoolstudent', [ 'my_field' => $my_field, 'keywords' => $keywords, 'classes' => $ous, 'students' => $students ]);
     }
 
-    public function schoolStudentJSONForm(Request $request)
+    public function schoolStudentJSONForm(Request $request, $dc)
 	{
-		$dc = $request->user()->ldap['o'];
 		$user = new \stdClass;
 		$user->id = 'B123456789';
 		$user->account = 'myaccount';
@@ -121,9 +119,8 @@ class SchoolController extends Controller
 		return view('admin.schoolstudentjson', [ 'dc' => $dc, 'sample1' => $user, 'sample2' => $user2 ]);
 	}
 
-    public function importSchoolStudent(Request $request)
+    public function importSchoolStudent(Request $request, $dc)
 	{
-		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getOrgEntry($dc);
 		$sid = $openldap->getOrgData($entry, 'tpUniformNumbers');
@@ -329,9 +326,8 @@ class SchoolController extends Controller
     	}
 	}
 	
-    public function schoolStudentEditForm(Request $request, $uuid = null)
+    public function schoolStudentEditForm(Request $request, $dc, $uuid = null)
 	{
-		$dc = $request->user()->ldap['o'];
 		$my_field = $request->session()->get('field');
 		$keywords = $request->session()->get('keywords');
 		$openldap = new LdapServiceProvider();
@@ -351,9 +347,8 @@ class SchoolController extends Controller
 		}
 	}
 	
-    public function createSchoolStudent(Request $request)
+    public function createSchoolStudent(Request $request, $dc)
 	{
-		$dc = $request->user()->ldap['o'];
 		$my_field = 'ou='.$request->get('tclass');
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getOrgEntry($dc);
@@ -452,9 +447,8 @@ class SchoolController extends Controller
 		}
 	}
 	
-    public function updateSchoolStudent(Request $request, $uuid)
+    public function updateSchoolStudent(Request $request, $dc, $uuid)
 	{
-		$dc = $request->user()->ldap['o'];
 		$my_field = $request->session()->get('field');
 		$keywords = $request->session()->get('keywords');
 		$openldap = new LdapServiceProvider();
@@ -580,9 +574,8 @@ class SchoolController extends Controller
 		}
 	}
 	
-    public function schoolTeacherSearchForm(Request $request)
+    public function schoolTeacherSearchForm(Request $request, $dc)
     {
-		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getOus($dc, '行政部門');
 		$ous = array();
@@ -656,9 +649,8 @@ class SchoolController extends Controller
 		return view('admin.schoolteacher', [ 'my_field' => $my_field, 'keywords' => $keywords, 'ous' => $ous, 'teachers' => $teachers ]);
     }
 
-    public function schoolTeacherJSONForm(Request $request)
+    public function schoolTeacherJSONForm(Request $request, $dc)
     {
-		$dc = $request->user()->ldap['o'];
 		$user = new \stdClass;
 		$user->id = 'A123456789';
 		$user->account = 'myaccount';
@@ -689,9 +681,8 @@ class SchoolController extends Controller
 		return view('admin.schoolteacherjson', [ 'dc' => $dc, 'sample1' => $user, 'sample2' => $user2 ]);
 	}
 	
-    public function importSchoolTeacher(Request $request)
+    public function importSchoolTeacher(Request $request, $dc)
     {
-		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getOrgEntry($dc);
 		$sid = $openldap->getOrgData($entry, 'tpUniformNumbers');
@@ -908,10 +899,9 @@ class SchoolController extends Controller
     	}
 	}
 	
-    public function schoolTeacherEditForm(Request $request, $uuid = null)
+    public function schoolTeacherEditForm(Request $request, $dc, $uuid = null)
     {
 		$types = [ '教師', '校長', '職工' ];
-		$dc = $request->user()->ldap['o'];
 		$my_field = $request->session()->get('field');
 		$keywords = $request->session()->get('keywords');
 		$openldap = new LdapServiceProvider();
@@ -970,9 +960,8 @@ class SchoolController extends Controller
 		}
 	}
 	
-    public function createSchoolTeacher(Request $request)
+    public function createSchoolTeacher(Request $request, $dc)
     {
-		$dc = $request->user()->ldap['o'];
 		$my_field = 'ou='.$request->get('ou');
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getOrgEntry($dc);
@@ -1079,9 +1068,8 @@ class SchoolController extends Controller
 		}
 	}
 	
-    public function updateSchoolTeacher(Request $request, $uuid)
+    public function updateSchoolTeacher(Request $request, $dc, $uuid)
     {
-		$dc = $request->user()->ldap['o'];
 		$my_field = $request->session()->get('field');
 		$keywords = $request->session()->get('keywords');
 		$openldap = new LdapServiceProvider();
@@ -1219,7 +1207,7 @@ class SchoolController extends Controller
 		}
 	}
 	
-    public function toggleSchoolTeacher(Request $request, $uuid)
+    public function toggle(Request $request, $uuid)
     {
 		$info = array();
 		$openldap = new LdapServiceProvider();
@@ -1237,7 +1225,7 @@ class SchoolController extends Controller
 		}
 	}
 	
-    public function removeSchoolTeacher(Request $request, $uuid)
+    public function remove(Request $request, $uuid)
     {
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getUserEntry($uuid);
@@ -1251,7 +1239,7 @@ class SchoolController extends Controller
 		}
 	}
 	
-    public function undoSchoolTeacher(Request $request, $uuid)
+    public function undo(Request $request, $uuid)
     {
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getUserEntry($uuid);
@@ -1295,11 +1283,10 @@ class SchoolController extends Controller
 		}
 	}
 	
-    public function schoolRoleForm(Request $request, $my_ou)
+    public function schoolRoleForm(Request $request, $dc, $my_ou)
     {
 		$ous = array();
 		$roles = array();
-		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getOus($dc, '行政部門');
 		if ($data) {
@@ -1312,9 +1299,8 @@ class SchoolController extends Controller
 		return view('admin.schoolrole', [ 'my_ou' => $my_ou, 'ous' => $ous, 'roles' => $roles ]);
     }
 
-    public function createSchoolRole(Request $request, $ou)
+    public function createSchoolRole(Request $request, $dc, $ou)
     {
-		$dc = $request->user()->ldap['o'];
 		$validatedData = $request->validate([
 			'new-role' => 'required|string',
 			'new-desc' => 'required|string',
@@ -1334,9 +1320,8 @@ class SchoolController extends Controller
 		}
     }
 
-    public function updateSchoolRole(Request $request, $ou, $role)
+    public function updateSchoolRole(Request $request, $dc, $ou, $role)
     {
-		$dc = $request->user()->ldap['o'];
 		$validatedData = $request->validate([
 			'role' => 'required|string',
 			'description' => 'required|string',
@@ -1363,9 +1348,8 @@ class SchoolController extends Controller
 		}
     }
 
-    public function removeSchoolRole(Request $request, $ou, $role)
+    public function removeSchoolRole(Request $request, $dc, $ou, $role)
     {
-		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
 		$users = $openldap->findUsers("(&(o=$dc)(ou=$ou)(title=$role))", "cn");
 		if ($users && $users['count']>0) {
@@ -1380,9 +1364,8 @@ class SchoolController extends Controller
 		}
     }
 
-    public function schoolClassForm(Request $request)
+    public function schoolClassForm(Request $request, $dc)
     {
-		$dc = $request->user()->ldap['o'];
 		$my_grade = $request->get('grade', 1);
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getOus($dc, '教學班級');
@@ -1429,9 +1412,8 @@ class SchoolController extends Controller
 		return view('admin.schoolclass', [ 'my_grade' => $my_grade, 'grades' => $grades, 'classes' => $classes ]);
     }
 
-    public function schoolClassAssignForm(Request $request)
+    public function schoolClassAssignForm(Request $request, $dc)
     {
-		$dc = $request->user()->ldap['o'];
 		$my_grade = $request->get('grade', 1);
 		$my_ou = $request->get('ou', '');
 		if ($request->session()->has('grade')) $my_grade = $request->session()->get('grade');
@@ -1460,9 +1442,8 @@ class SchoolController extends Controller
 		return view('admin.schoolclassassign', [ 'dc' => $dc, 'my_grade' => $my_grade, 'subjects' => $subjects, 'grades' => $grades, 'classes' => $classes, 'my_ou' => $my_ou, 'ous' => $ous, 'teachers' => $teachers ]);
     }
 
-	public function assignSchoolClass(Request $request)
+	public function assignSchoolClass(Request $request, $dc)
 	{
-		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
 		$subjects = array();
 		if (is_array($request->get('subjects'))) {
@@ -1520,9 +1501,8 @@ class SchoolController extends Controller
 		}
 	}
 
-    public function createSchoolClass(Request $request)
+    public function createSchoolClass(Request $request, $dc)
     {
-		$dc = $request->user()->ldap['o'];
 		$validatedData = $request->validate([
 			'new-ou' => 'required|digits:3',
 			'new-desc' => 'required|string',
@@ -1542,9 +1522,8 @@ class SchoolController extends Controller
 		}
 	}
 	
-    public function updateSchoolClass(Request $request, $class)
+    public function updateSchoolClass(Request $request, $dc, $class)
     {
-		$dc = $request->user()->ldap['o'];
 		$validatedData = $request->validate([
 			'description' => 'required|string',
 		]);
@@ -1567,9 +1546,8 @@ class SchoolController extends Controller
 		}
 	}
 	
-    public function removeSchoolClass(Request $request, $class)
+    public function removeSchoolClass(Request $request, $dc, $class)
     {
-		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
 		$users = $openldap->findUsers("(&(o=$dc)(|(tpClass=$class)(tpTeachClass=$class)))", "cn");
 		if ($users && $users['count']>0) {
@@ -1589,18 +1567,16 @@ class SchoolController extends Controller
 		}
 	}
 	
-    public function schoolSubjectForm(Request $request)
+    public function schoolSubjectForm(Request $request, $dc)
     {
 		$domains = [ '語文', '數學', '社會', '自然科學', '藝術', '綜合活動', '科技', '健康與體育' ];
-		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getSubjects($dc);
 		return view('admin.schoolsubject', [ 'domains' => $domains, 'subjs' => $data ]);
     }
 
-    public function createSchoolSubject(Request $request)
+    public function createSchoolSubject(Request $request, $dc)
     {
-		$dc = $request->user()->ldap['o'];
 		$validatedData = $request->validate([
 			'new-subj' => 'required|string',
 			'new-desc' => 'required|string',
@@ -1620,9 +1596,8 @@ class SchoolController extends Controller
 		}
     }
 
-    public function updateSchoolSubject(Request $request, $subj)
+    public function updateSchoolSubject(Request $request, $dc, $subj)
     {
-		$dc = $request->user()->ldap['o'];
 		$validatedData = $request->validate([
 			'description' => 'required|string',
 		]);
@@ -1640,9 +1615,8 @@ class SchoolController extends Controller
 		}
     }
 
-    public function removeSchoolSubject(Request $request, $subj)
+    public function removeSchoolSubject(Request $request, $dc, $subj)
     {
-		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
 		$users = $openldap->findUsers("(&(o=$dc)(tpTeachClass=*$subj))", "cn");
 		if ($users && $users['count']>0) {
@@ -1657,17 +1631,15 @@ class SchoolController extends Controller
 		}
     }
 
-    public function schoolUnitForm(Request $request)
+    public function schoolUnitForm(Request $request, $dc)
     {
-		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getOus($dc, '行政部門');
 		return view('admin.schoolunit', [ 'ous' => $data ]);
     }
 
-    public function createSchoolUnit(Request $request)
+    public function createSchoolUnit(Request $request, $dc)
     {
-		$dc = $request->user()->ldap['o'];
 		$validatedData = $request->validate([
 			'new-ou' => 'required|string',
 			'new-desc' => 'required|string',
@@ -1687,9 +1659,8 @@ class SchoolController extends Controller
 		}
     }
 
-    public function updateSchoolUnit(Request $request, $ou)
+    public function updateSchoolUnit(Request $request, $dc, $ou)
     {
-		$dc = $request->user()->ldap['o'];
 		$validatedData = $request->validate([
 			'ou' => 'required|string',
 			'description' => 'required|string',
@@ -1716,9 +1687,8 @@ class SchoolController extends Controller
 		}
     }
 
-    public function removeSchoolUnit(Request $request, $ou)
+    public function removeSchoolUnit(Request $request, $dc, $ou)
     {
-		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
 		$users = $openldap->findUsers("(&(o=$dc)(ou=$ou))", "cn");
 		if ($users && $users['count']>0) {
@@ -1738,20 +1708,18 @@ class SchoolController extends Controller
 		}
     }
 
-    public function schoolProfileForm(Request $request)
+    public function schoolProfileForm(Request $request, $dc)
     {
 		$category = [ '幼兒園', '國民小學', '國民中學', '高中', '高職', '大專院校', '特殊教育', '主管機關' ];
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
-		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getOrgEntry($dc);
 		$data = $openldap->getOrgData($entry);
 		return view('admin.schoolprofile', [ 'data' => $data, 'areas' => $areas, 'category' => $category ]);
     }
 
-    public function updateSchoolProfile(Request $request)
+    public function updateSchoolProfile(Request $request, $dc)
     {
-		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
 		$validatedData = $request->validate([
 			'description' => 'required|string',
@@ -1794,9 +1762,8 @@ class SchoolController extends Controller
 		}
     }
 
-    public function schoolAdminForm(Request $request)
+    public function schoolAdminForm(Request $request, $dc)
     {
-		$dc = $request->user()->ldap['o'];
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getOrgEntry($dc);
 		$data = $openldap->getOrgData($entry, "tpAdministrator");

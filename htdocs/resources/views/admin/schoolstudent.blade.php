@@ -83,26 +83,26 @@
 						</td>
 						<td style="vertical-align: inherit;">
 							<button type="button" class="btn btn-primary"
-							 	onclick="$('#form').attr('action','{{ route('school.updateStudent', [ 'uuid' => $students[$i]['entryuuid'][0] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('school.updateStudent', [ 'dc' => $dc, uuid' => $students[$i]['entryuuid'][0] ]) }}');
 										 $('#form').attr('method', 'GET');
 										 $('#form').submit();">編輯</button>
 							@if ($students[$i]['inetuserstatus'][0] != '已刪除')
 							<button type="button" class="btn btn-warning"
-							 	onclick="$('#form').attr('action','{{ route('school.toggleStudent', [ 'uuid' => $students[$i]['entryuuid'][0] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('school.toggle', [ 'uuid' => $students[$i]['entryuuid'][0] ]) }}');
 										 $('#form').attr('method', 'POST');
 										 $('#form').submit();">{{ $students[$i]['inetuserstatus'][0] == '啟用' ? '停用' : '啟用' }}</button>
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#form').attr('action','{{ route('school.removeStudent', [ 'uuid' => $students[$i]['entryuuid'][0] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('school.remove', [ 'uuid' => $students[$i]['entryuuid'][0] ]) }}');
 										 $('#form').attr('method', 'POST');
 										 $('#form').submit();">刪除</button>
 							@else
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#form').attr('action','{{ route('school.undoStudent', [ 'uuid' => $students[$i]['entryuuid'][0] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('school.undo', [ 'uuid' => $students[$i]['entryuuid'][0] ]) }}');
 										 $('#form').attr('method', 'POST');
 										 $('#form').submit();">救回</button>
 							@endif
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#form').attr('action','{{ route('school.resetpassStudent', [ 'uuid' => $students[$i]['entryuuid'][0] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('school.resetpass', [ 'uuid' => $students[$i]['entryuuid'][0] ]) }}');
 										 $('#form').attr('method', 'POST');
 										 $('#form').submit();">回復密碼</button>
 						</td>

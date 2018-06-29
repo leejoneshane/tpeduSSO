@@ -6,28 +6,28 @@
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
                         <li {{ (Request::is('school/admin') ? 'class="active"' : '') }}>
-                            <a href="{{ route('school.admin') }}"><i class="fa fa-user-md fa-fw"></i> 設定管理員</a>
+                            <a href="{{ route('school.admin', [ 'dc' => $dc ]) }}"><i class="fa fa-user-md fa-fw"></i> 設定管理員</a>
                         </li>
                         <li {{ (Request::is('school/profile') ? 'class="active"' : '') }}>
-                            <a href="{{ route('school.profile') }}"><i class="fa fa-list-alt fa-fw"></i> 學校基本資料</a>
+                            <a href="{{ route('school.profile', [ 'dc' => $dc ]) }}"><i class="fa fa-list-alt fa-fw"></i> 學校基本資料</a>
                         </li>
                         <li {{ (Request::is('school/unit') ? 'class="active"' : '') }}>
-                            <a href="{{ route('school.unit') }}"><i class="fa fa-sitemap fa-fw"></i> 行政部門管理</a>
+                            <a href="{{ route('school.unit', [ 'dc' => $dc ]) }}"><i class="fa fa-sitemap fa-fw"></i> 行政部門管理</a>
                         </li>
                         <li {{ (Request::is('school/role') ? 'class="active"' : '') }}>
-                            <a href="{{ route('school.role', [ 'ou' => 'null' ]) }}"><i class="fa fa-suitcase fa-fw"></i> 職稱管理</a>
+                            <a href="{{ route('school.role', [ 'dc' => $dc, 'ou' => 'null' ]) }}"><i class="fa fa-suitcase fa-fw"></i> 職稱管理</a>
                         </li>
                         <li {{ (Request::is('school/subject') ? 'class="active"' : '') }}>
-                            <a href="{{ route('school.subject') }}"><i class="fa fa-flask fa-fw"></i> 教學科目管理</a>
+                            <a href="{{ route('school.subject', [ 'dc' => $dc ]) }}"><i class="fa fa-flask fa-fw"></i> 教學科目管理</a>
                         </li>
                         <li {{ (Request::is('school/class') ? 'class="active"' : '') }}>
                             <a href="#"><i class="fa fa-graduation-cap fa-fw"></i> 班級管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li {{ (Request::is('school/class') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.class') }}">變更班級名稱</a>
+                                    <a href="{{ route('school.class', [ 'dc' => $dc ]) }}">變更班級名稱</a>
                                 </li>
                                 <li {{ (Request::is('school/class/assign') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.assignClass') }}">管理班級配課</a>
+                                    <a href="{{ route('school.assignClass', [ 'dc' => $dc ]) }}">管理班級配課</a>
                                 </li>
                             </ul>
                         </li>
@@ -35,13 +35,13 @@
                             <a href="#"><i class="fa fa-female fa-fw"></i> 教師管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li {{ (Request::is('school/teacher') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.teacher') }}">瀏覽及搜尋</a>
+                                    <a href="{{ route('school.teacher', [ 'dc' => $dc ]) }}">瀏覽及搜尋</a>
                                 </li>
                                 <li {{ (Request::is('school/teacher/new') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.createTeacher') }}">新增教師</a>
+                                    <a href="{{ route('school.createTeacher', [ 'dc' => $dc ]) }}">新增教師</a>
                                 </li>
                                 <li {{ (Request::is('school/teacher/json') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.jsonTeacher') }}">匯入JSON</a>
+                                    <a href="{{ route('school.jsonTeacher', [ 'dc' => $dc ]) }}">匯入JSON</a>
                                 </li>
                             </ul>
                         </li>
@@ -49,13 +49,13 @@
                             <a href="#"><i class="fa fa-child fa-fw"></i> 學生管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li {{ (Request::is('school/student') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.student') }}">瀏覽及搜尋</a>
+                                    <a href="{{ route('school.student', [ 'dc' => $dc ]) }}">瀏覽及搜尋</a>
                                 </li>
                                 <li {{ (Request::is('school/student/new') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.createStudent') }}">新增學生</a>
+                                    <a href="{{ route('school.createStudent', [ 'dc' => $dc ]) }}">新增學生</a>
                                 </li>
                                 <li {{ (Request::is('school/student/json') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.jsonStudent') }}">匯入JSON</a>
+                                    <a href="{{ route('school.jsonStudent', [ 'dc' => $dc ]) }}">匯入JSON</a>
                                 </li>
                             </ul>
                         </li>
