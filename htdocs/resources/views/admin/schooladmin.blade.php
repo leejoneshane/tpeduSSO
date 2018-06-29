@@ -25,7 +25,7 @@
 			<select class="form-control" id="delete-admin" name="delete-admin">
 			    <option value=""></option>
 			@foreach ($admins as $admin)
-			    <option value="{{ $admin }}">{{ $admin }}</option>
+			    <option value="{{ $admin->idno }}">{{ $admin->name }}</option>
 			@endforeach
 			</select>
 			@if ($errors->has('delete-admin'))
