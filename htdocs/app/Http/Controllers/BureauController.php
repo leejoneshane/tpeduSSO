@@ -591,12 +591,12 @@ class BureauController extends Controller
 		$info = array();
 		$info['employeeType'] = $request->get('type');
 		$info['o'] = $request->get('o');
-		if ($request->has('ou')) {
+		if (!empty($request->get('ou'))) {
 			$info['ou'] = $request->get('ou');
 		} else {
 			$info['ou'] = [];
 		}
-		if ($request->has('role')) {
+		if (!empty($request->get('role'))) {
 			$info['title'] = $request->get('role');
 		} else {
 			$info['title'] = [];
@@ -605,20 +605,24 @@ class BureauController extends Controller
 		$info['givenName'] = $request->get('gn');
 		$info['displayName'] = $info['sn'].$info['givenName'];
 		$info['gender'] = (int) $request->get('gender');
-		if (!empty($request->get('birth')))
+		if (!empty($request->get('birth'))) {
 			$info['birthDate'] = str_replace('-', '', $request->get('birth')).'000000Z';
-		if (!empty($request->get('raddress')))
+		}
+		if (!empty($request->get('raddress'))) {
 			$info['registeredAddress'] = $request->get('raddress');
-		else
+		} else {
 			$info['registeredAddress'] = [];
-		if (!empty($request->get('address')))
+		}
+		if (!empty($request->get('address'))) {
 			$info['homePostalAddress'] = $request->get('address');
-		else
+		} else {
 			$info['homePostalAddress'] = [];
-		if (!empty($request->get('www')))
+		}
+		if (!empty($request->get('www'))) {
 			$info['wWWHomePage'] = $request->get('www');
-		else
+		} else {
 			$info['wWWHomePage'] = [];
+		}
 		if (is_null($request->get('character'))) {
 			$info['tpCharacter'] = [];
 		} else {

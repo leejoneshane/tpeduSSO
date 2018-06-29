@@ -48,10 +48,11 @@ class SchoolController extends Controller
 		}
 		if (substr($my_field,0,3) == 'ou=') {
 			$my_ou = substr($my_field,3);
-			if ($my_ou == 'deleted')
+			if ($my_ou == 'deleted') {
 				$filter = "(&(o=$dc)(inetUserStatus=deleted)(employeeType=學生))";
-			else
+			} else {
 				$filter = "(&(o=$dc)(tpClass=$my_ou)(employeeType=學生)(!(inetUserStatus=deleted)))";
+			}
 		} elseif ($my_field == 'uuid' && !empty($keywords)) {
 			$filter = "(&(o=$dc)(employeeType=學生)(entryUUID=*".$keywords."*))";
 		} elseif ($my_field == 'idno' && !empty($keywords)) {
@@ -63,17 +64,22 @@ class SchoolController extends Controller
 		} elseif ($my_field == 'mobile' && !empty($keywords)) {
 			$filter = "(&(o=$dc)(employeeType=學生)(mobile=*".$keywords."*))";
 		}
-		$students = $openldap->findUsers($filter, ["cn","displayName","tpClass","tpSeat","entryUUID","inetUserStatus"]);
-		for ($i=0;$i<$students['count'];$i++) {
-			if (!array_key_exists('inetuserstatus', $students[$i]) || $students[$i]['inetuserstatus']['count'] == 0) {
-				$students[$i]['inetuserstatus']['count'] = 1;
-				$students[$i]['inetuserstatus'][0] = '啟用';
-			} elseif (strtolower($students[$i]['inetuserstatus'][0]) == 'active') {
-				$students[$i]['inetuserstatus'][0] = '啟用';
-			} elseif (strtolower($students[$i]['inetuserstatus'][0]) == 'inactive') {
-				$students[$i]['inetuserstatus'][0] = '停用';
-			} elseif (strtolower($students[$i]['inetuserstatus'][0]) == 'deleted') {
-				$students[$i]['inetuserstatus'][0] = '已刪除';
+		$students = array();
+		if (!empty($filter)) {
+			$students = $openldap->findUsers($filter, ["cn","displayName","tpClass","tpSeat","entryUUID","inetUserStatus"]);
+		}
+		if ($students) {
+			for ($i=0;$i<$students['count'];$i++) {
+				if (!array_key_exists('inetuserstatus', $students[$i]) || $students[$i]['inetuserstatus']['count'] == 0) {
+					$students[$i]['inetuserstatus']['count'] = 1;
+					$students[$i]['inetuserstatus'][0] = '啟用';
+				} elseif (strtolower($students[$i]['inetuserstatus'][0]) == 'active') {
+					$students[$i]['inetuserstatus'][0] = '啟用';
+				} elseif (strtolower($students[$i]['inetuserstatus'][0]) == 'inactive') {
+					$students[$i]['inetuserstatus'][0] = '停用';
+				} elseif (strtolower($students[$i]['inetuserstatus'][0]) == 'deleted') {
+					$students[$i]['inetuserstatus'][0] = '已刪除';
+				}
 			}
 		}
 		return view('admin.schoolstudent', [ 'my_field' => $my_field, 'keywords' => $keywords, 'classes' => $ous, 'students' => $students ]);
@@ -609,9 +615,10 @@ class SchoolController extends Controller
 			$filter = "(&(o=$dc)(!(employeeType=學生))(mobile=*".$keywords."*))";
 		}
 		$teachers = array();
-		if (!empty($filter))
+		if (!empty($filter)) {
 			$teachers = $openldap->findUsers($filter, ["cn","displayName","o","ou","title","entryUUID","inetUserStatus"]);
-		if ($teachers)
+		}
+		if ($teachers) {
 		    for ($i=0;$i<$teachers['count'];$i++) {
 			    $dc = $teachers[$i]['o'][0];
 			    $teachers[$i]['school']['count'] = 1;
@@ -644,7 +651,8 @@ class SchoolController extends Controller
 			    } elseif (strtolower($teachers[$i]['inetuserstatus'][0]) == 'deleted') {
 				    $teachers[$i]['inetuserstatus'][0] = '已刪除';
 			    }
-		    }
+			}
+		}
 		return view('admin.schoolteacher', [ 'my_field' => $my_field, 'keywords' => $keywords, 'ous' => $ous, 'teachers' => $teachers ]);
     }
 
@@ -1267,7 +1275,7 @@ class SchoolController extends Controller
 			$info = array();
 			$info['userPassword'] = $openldap->make_ssha_password(substr($idno,-6));
 		
-			if (array_key_exists('cn', $data)) {
+			if (array_key_exists('uid', $data)) {
 				if (is_array($data['uid'])) {
 					foreach ($data['uid'] as $account) {
 						$account_entry = $openldap->getAccountEntry($account);

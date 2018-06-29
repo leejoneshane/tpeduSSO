@@ -85,10 +85,14 @@ class User extends Authenticatable
 		$entry = $openldap->getUserEntry($this->attributes['idno']);
 		$data = $openldap->getUserData($entry, 'uid');
 		$accounts = '';
-		if (is_array($data['uid'])) {
-		    $accounts = implode('、', $data['uid']);
+		if (array_key_exists('uid', $data)) {
+			if (is_array($data['uid'])) {
+		    	$accounts = implode('、', $data['uid']);
+			} else {
+		    	$accounts = $data['uid'];
+			}
 		} else {
-		    $accounts = $data['uid'];
+			$accounts = '尚未設定帳號，請使用 cn='.$this->attributes['idno'].' 登入設定！';
 		}
 		$this->notify(new ResetPasswordNotification($token, $accounts));
     }
