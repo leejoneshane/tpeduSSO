@@ -45,7 +45,9 @@
                         <li><a class="dropdown-item" href="{{ route('bureau') }}"><i class="fa fa-eye fa-fw"></i>局端管理</a></li>
                         @endif
                         @if (Auth::user()->ldap['is_schoolAdmin'])
-                        <li><a class="dropdown-item" href="{{ route('school') }}"><i class="fa fa-university fa-fw"></i>學校管理</a></li>
+                        @foreach (Auth::user()->ldap['is_schoolAdmin'] as $o)
+                        <li><a class="dropdown-item" href="{{ route('school', [ 'dc' => $o ]) }}"><i class="fa fa-university fa-fw"></i>{{ $o }}學校管理</a></li>
+                        @endforeach
                         @endif
                         <li><a href="{{ route('oauth') }}"><i class="fa fa-key fa-fw"></i>金鑰管理</a></li>
                         <li><a href="{{ route('profile') }}"><i class="fa fa-edit fa-fw"></i>修改個資</a></li>

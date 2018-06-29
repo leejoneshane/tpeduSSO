@@ -44,8 +44,9 @@ class User extends Authenticatable
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getUserEntry($this->attributes['idno']);
 		$data = $openldap->getUserData($entry);
-		if (array_key_exists('entryUUID', $data))
-		    $this->attributes['uuid'] = $data['entryUUID'];
+		if (array_key_exists('entryUUID', $data)) {
+			$this->attributes['uuid'] = $data['entryUUID'];
+		}
 		if (array_key_exists('mail', $data)) {
 	    	if (is_array($data['mail'])) {
 				$this->attributes['email'] = $data['mail'][0];
@@ -60,21 +61,41 @@ class User extends Authenticatable
 		    	$this->attributes['mobile'] = $data['mobile'];
 		    }
 		}
-		if (array_key_exists('displayName', $data))
+		if (array_key_exists('displayName', $data)) {
 		    $this->attributes['name'] = $data['displayName'];
-		if (array_key_exists('birthDate', $data))
+		}
+		if (array_key_exists('birthDate', $data)) {
 		    $data['birthDate'] = substr($data['birthDate'],0,8);
-		$sch_entry = $openldap->getOrgEntry($data['o']);
-		$admins = $openldap->getOrgData($sch_entry, "tpAdministrator");
+		}
 		$data['is_schoolAdmin'] = false;
-		if (isset($admins['tpAdministrator'])) {
-		    if (is_array($admins['tpAdministrator'])) {
-				foreach ($admins['tpAdministrator'] as $admin) {
-			    	if ($this->attributes['idno'] == $admin) $data['is_schoolAdmin'] = true;
+		if (array_key_exists('o', $data)) {
+			if (is_array($data['o'])) {
+				foreach ($data['o'] as $o) {
+					$sch_entry = $openldap->getOrgEntry($o);
+					$admins = $openldap->getOrgData($sch_entry, "tpAdministrator");
+					if (isset($admins['tpAdministrator'])) {
+						if (is_array($admins['tpAdministrator'])) {
+							foreach ($admins['tpAdministrator'] as $admin) {
+								if ($this->attributes['idno'] == $admin) $data['is_schoolAdmin'][] = $o;
+							}
+						} else {
+							if ($this->attributes['idno'] == $admins['tpAdministrator']) $data['is_schoolAdmin'][] = $o;
+						}
+					}
 				}
-		    } else {
-				if ($this->attributes['idno'] == $admins['tpAdministrator']) $data['is_schoolAdmin'] = true;
-		    }
+			} else {
+				$sch_entry = $openldap->getOrgEntry($data['o']);
+				$admins = $openldap->getOrgData($sch_entry, "tpAdministrator");
+				if (isset($admins['tpAdministrator'])) {
+					if (is_array($admins['tpAdministrator'])) {
+						foreach ($admins['tpAdministrator'] as $admin) {
+							if ($this->attributes['idno'] == $admin) $data['is_schoolAdmin'][] = $data['o'];
+						}
+					} else {
+						if ($this->attributes['idno'] == $admins['tpAdministrator']) $data['is_schoolAdmin'][] = $data['o'];
+					}
+				}
+			}
 		}
 		return $data;
     }

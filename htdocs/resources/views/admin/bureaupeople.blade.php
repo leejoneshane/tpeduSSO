@@ -40,7 +40,7 @@
 			    @endforeach
 			    <option value="ou=deleted" {{ $my_field == 'ou=deleted' ? 'selected' : '' }}>已刪除</option>
 			</select>
-        	<input type="text" class="form-control" style="width:auto" id="keywords" name="keywords" placeholder="可使用通配字元 *" value="{{ old('keywords') }}">
+        	<input type="text" class="form-control" style="width:auto" id="keywords" name="keywords" value="{{ old('keywords') }}">
             <span class="input-group-btn" style="width: auto">
             	<button class="btn btn-default" type="button" onclick="location='{{ url()->current() }}?area=' + $('#area').val() + '&dc=' + $('#dc').val() + '&field=' + $('#field').val() + '&keywords=' + $('#keywords').val();">
             		<i class="fa fa-search"></i>

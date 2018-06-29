@@ -1847,8 +1847,12 @@ class SchoolController extends Controller
 	    	$entry = $openldap->getUserEntry($request->get('new-admin'));
 		    if ($entry) {
 				$data = $openldap->getUserData($entry, "o");
-				if (isset($data['o']) && $data['o'] != $dc) {
-		    		return redirect()->back()->with("error","該使用者並不隸屬於貴校，無法設定為學校管理員！");
+				if (array_key_exists('o', $data)) {
+					if (is_array($data['o']) && !in_array($dc, $data['o'])) {
+						return redirect()->back()->with("error","該使用者並不隸屬於貴校，無法設定為學校管理員！");
+					} elseif ($data['o'] != $dc) {
+		    			return redirect()->back()->with("error","該使用者並不隸屬於貴校，無法設定為學校管理員！");
+					}
 				}
 		    } else {
 				return redirect()->back()->with("error","您輸入的身分證字號，不存在於系統！");
