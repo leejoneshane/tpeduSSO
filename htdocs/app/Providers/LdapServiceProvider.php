@@ -656,18 +656,44 @@ class LdapServiceProvider extends ServiceProvider
 		}
 
 		if (isset($userinfo['o'])) {
-	    	$dc = $userinfo['o'];
-	    	$userinfo['school'] = $this->getOrgTitle($dc);
-	    	if (isset($userinfo['ou'])) {
-				$ou = $userinfo['ou'];
-				$userinfo['department'] = $this->getOuTitle($dc, $ou);
-				if (isset($userinfo['title'])) {
-		    		$role = $userinfo['title'];
-		    		$userinfo['titleName'] = $this->getRoleTitle($dc, $ou, $role);
+			$orgs = $userinfo['o'];
+			if (is_array($orgs)) {
+				$dc = $orgs;
+			} else {
+				$dc[] = $orgs;
+			}
+			$i = 0;
+			foreach ($dc as $o) {
+				$userinfo['school'][$i] = $this->getOrgTitle($o);
+				if (isset($userinfo['ou'])) {
+					$units = $userinfo['ou'];
+					if (is_array($units)) {
+						$ou = $units[$i];
+					} else {
+						$ou = $units;
+					}
+					$userinfo['department'][$i] = $this->getOuTitle($o, $ou);
+					if (isset($userinfo['title'])) {
+						$roles = $userinfo['title'];
+						if (is_array($roles)) {
+							$role = $roles[$i];
+						} else {
+							$role = $roles;
+						}
+						$userinfo['titleName'][$i] = $this->getRoleTitle($dc, $ou, $role);
+					}
 				}
-	    	}
+				$i++;
+			}
 		}
 		return $userinfo;
+    }
+
+	public function getUserName($identifier)
+    {
+		$entry = self::getUserEntry($identifier);
+		$name = self::getUserData($entry, 'displayName');
+		return $name['displayName'];
     }
 
     public function renameUser($old_idno, $new_idno)
