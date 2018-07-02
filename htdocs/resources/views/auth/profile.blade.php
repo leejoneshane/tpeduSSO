@@ -31,7 +31,9 @@
                     </div>
             	    <div class="row">
             		<div class="col-md-4 text-md-right">學校</div>
-            		<div class="col-md-6">{{ $user->ldap['school'] }}</div>
+					@foreach ($user->ldap['school'] as $sch)
+            		<div class="col-md-6">{{ $sch }}</div>
+					@endforeach
                     </div>
             	    <div class="row">
             		<div class="col-md-4 text-md-right">性別</div>
