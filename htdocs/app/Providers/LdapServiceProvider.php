@@ -680,7 +680,7 @@ class LdapServiceProvider extends ServiceProvider
 						} else {
 							$role = $roles;
 						}
-						$userinfo['titleName'][$i] = $this->getRoleTitle($dc, $ou, $role);
+						$userinfo['titleName'][$i] = $this->getRoleTitle($o, $ou, $role);
 					}
 				}
 				$i++;
