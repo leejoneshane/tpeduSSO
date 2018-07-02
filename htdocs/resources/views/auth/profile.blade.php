@@ -101,13 +101,17 @@
                 	@if (array_key_exists('department', $user->ldap))
             		<div class="row">
             		    <div class="col-md-4 text-md-right">單位</div>
-            		    <div class="col-md-6">{{ $user->ldap['department'] }}</div>
+						@foreach ($user->ldap['department'] as $dep)
+            		    <div class="col-md-6">{{ $dep }}</div>
+						@endforeach
                 	</div>
                 	@endif
                 	@if (array_key_exists('titleName', $user->ldap))
             		<div class="row">
             		    <div class="col-md-4 text-md-right">職稱</div>
-            		    <div class="col-md-6">{{ $user->ldap['titleName'] }}</div>
+						@foreach ($user->ldap['titleName'] as $title)
+            		    <div class="col-md-6">{{ $title }}</div>
+						@endforeach
                 	</div>
                 	@endif
                 	@if (array_key_exists('tpTeachClass',$user->ldap))
