@@ -907,6 +907,7 @@ gender: 1
 birthDate: 19631218000000Z
 mail: admin@admin.com
 mobile: 0911000001
+tpAdminSchools: meps
 
 dn: cn=B123456789,ou=people,{{ LDAP_BASE_DN }}
 objectClass: tpeduPerson
