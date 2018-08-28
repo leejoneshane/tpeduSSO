@@ -64,20 +64,13 @@
 					</select>
 				</div>
 			    <div class="form-group">
-					<label>隸屬單位</label>
-					<select id="ou" class="form-control" name="ou" onchange="refresh_roles()">
-					@foreach ($ous as $ou => $desc)
-			    		<option value="{{ $ou }}"{{ isset($user) && array_key_exists('ou', $user) && $ou == $user['ou'] ? ' selected' : '' }}>{{ $desc }}</option>
-			    	@endforeach
-					</select>
-				</div>
-			    <div class="form-group">
-					<label>主要職稱</label>
-					<select id="role" class="form-control" name="role">
+					<label>單位職稱</label>
+					<select id="role" class="form-control" name="roles[]">
 					@foreach ($roles as $role => $desc)
-			    		<option value="{{ $role }}"{{ isset($user) && array_key_exists('title', $user) && $role == $user['title'] ? ' selected' : '' }}>{{ $desc }}</option>
+			    		<option value="{{ $role }}"{{ isset($user) && array_key_exists('title', $user) &&  $user['title'] == $dc.','.$role ? ' selected' : '' }}>{{ $desc }}</option>
 			    	@endforeach
 					</select>
+					<button id="nrole" type="button" class="btn btn-primary btn-circle" onclick="add_role()"><i class="fa fa-plus"></i></button>
 				</div>
 			    <div class="form-group{{ $errors->has('tclass') ? ' has-error' : '' }}">
 					<label style="display:block">配課資訊</label>
@@ -256,19 +249,17 @@
 				</div>
 			</form>
 			<script type="text/javascript">
-				function refresh_roles() {
-					axios.get('/school/{{ $dc }}/roles/' + $('#ou').val())
-    					.then(response => {
-    						$('#role').find('option').remove();
-        					response.data.forEach(
-        						function add_option(role) { $('#role').append('<option value="' + role.cn + '">' + role.description + '</option>'); }
-        					);
-    					})
-						.catch(function (error) {
-							console.log(error);
-  						});
-      			};
-      			
+      			function add_role() {
+      				my_item = '<div></div>';
+      				my_item += '<select class="form-control" style="width:25%;display:inline" name="roles[]">';
+					@foreach ($roles as $role => $desc)
+				    my_item += '<option value="{{ $role }}">{{ $desc }}</option>';
+				    @endforeach
+					my_item += '</select>';
+					my_item += '<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>';
+					$('#nrole').before(my_item);
+				};
+
       			function add_character() {
 					$('#ncharacter').before('<input type="text" class="form-control" style="width:50%;display:inline" name="character[]" placeholder="請用中文描述，例如：巡迴教師、均一平台管理員...，無則省略。" required>');
 					$('#ncharacter').before('<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>');

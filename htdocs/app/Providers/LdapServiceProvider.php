@@ -253,6 +253,7 @@ class LdapServiceProvider extends ServiceProvider
     
     public function getOrgTitle($dc)
     {
+		if (empty($dc)) return '';
 		$this->administrator();
 		$base_dn = Config::get('ldap.rdn');
 		$sch_rdn = Config::get('ldap.schattr')."=".$dc;
@@ -278,7 +279,7 @@ class LdapServiceProvider extends ServiceProvider
 			$users = $openldap->findUsers("o=$old_dc");
 			if ($users) {
 				foreach ($users as $user) {
-					$openldap->UpdateData($user, [ 'o' => $new_dc ]);
+					$openldap->UpdateData($user, [ 'o' => $new_dc ]); 
 				}
 			}
 		}
@@ -313,9 +314,7 @@ class LdapServiceProvider extends ServiceProvider
     public function getOuEntry($dc, $ou)
     {
 		$this->administrator();
-		$base_dn = Config::get('ldap.rdn');
-		$sch_rdn = Config::get('ldap.schattr')."=".$dc;
-		$sch_dn = "$sch_rdn,$base_dn";
+		$sch_dn = Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
 		$filter = "ou=$ou";
 		$resource = @ldap_search(self::$ldapConnectId, $sch_dn, $filter);
 		if ($resource) {
@@ -355,6 +354,7 @@ class LdapServiceProvider extends ServiceProvider
     
     public function getOuTitle($dc, $ou)
     {
+		if (empty($dc)) return '';
 		$this->administrator();
 		$sch_dn = Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
 		$filter = "ou=$ou";
@@ -369,6 +369,55 @@ class LdapServiceProvider extends ServiceProvider
 		return '';
     }
     
+    public function updateOus($dc, array $ous)
+    {
+		if (empty($dc) || empty($ous)) return false;
+		$this->administrator();
+		foreach ($ous as $ou) {
+			if (!isset($ou->id) || !isset($ou->name) || !isset($ou->roles)) return false;
+			$entry = $this->getOuEntry($dc, $ou->id);
+			if ($entry) {
+				$this->updateData($entry, array( "description" => $ou->name));
+				foreach ($ou->roles as $role => $desc) {
+					if (empty($role) || empty($desc)) return false;
+					$role_entry = $this->getRoleEntry($dc, $ou->id, $role);
+					if ($role_entry) {
+						$this->updateData($role_entry, array( "description" => $desc));
+					} else {
+						$dn = "cn=$role,ou=$ou->id,".Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
+						$this->createEntry(array( "dn" => $dn, "ou" => $ou->id, "cn" => $role, "description" => $desc));
+					}
+				}
+			} else {
+				$dn = "ou=$ou->id,".Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
+				$this->createEntry(array( "dn" => $dn, "ou" => $ou->id, "businessCategory" => "行政部門", "description" => $ou->name));
+				foreach ($ou->roles as $role => $desc) {
+					if (empty($role) || empty($desc)) return false;
+					$dn = "cn=$role,ou=$ou->id,".Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
+					$this->createEntry(array( "dn" => $dn, "ou" => $ou->id, "cn" => $role, "description" => $desc));
+				}
+			}
+		}
+		return true;
+    }
+
+	public function updateClasses($dc, array $classes)
+    {
+		if (empty($dc) || empty($classes)) return false;
+		$this->administrator();
+		foreach ($classes as $class => $title) {
+			if (empty($class) || empty($title)) return false;
+			$entry = $this->getOuEntry($dc, $class);
+			if ($entry) {
+				$this->updateData($entry, array( "description" => $title));
+			} else {
+				$dn = "ou=$class,".Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
+				$this->createEntry(array( "dn" => $dn, "ou" => $class, "businessCategory" => "教學班級", "description" => $title));
+			}
+		}
+		return true;
+    }
+
     public function getSubjects($dc)
     {
 		$subjs = array();
@@ -435,8 +484,9 @@ class LdapServiceProvider extends ServiceProvider
 		return $info;
     }
     
-    public function getSubjectTitle($dc, $subj)
+	public function getSubjectTitle($dc, $subj)
     {
+		if (empty($dc) || empty($subj)) return '';
 		$this->administrator();
 		$sch_dn = Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
 		$filter = "tpSubject=$subj";
@@ -449,6 +499,52 @@ class LdapServiceProvider extends ServiceProvider
 			}
 		}
 		return '';
+    }
+    
+    public function updateSubjects($dc, array $subjects)
+    {
+		if (empty($dc) || empty($subjects)) return false;
+		$this->administrator();
+		foreach ($subjects as $subj) {
+			if (!isset($subj->id) || !isset($subj->domain) || !isset($subj->title)) return false;
+			$entry = $this->getSubjectEntry($dc, $subj->id);
+			if ($entry) {
+				$this->updateData($entry, array( "tpSubjectDomain" => $subj->domain, "description" => $subj->title));
+			} else {
+				$dn = "tpSubject=$subj->id,".Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
+				$this->createEntry(array( "dn" => $dn, "tpSubject" => $subj->id, "tpSubjectDomain" => $subj->domain, "description" => $subj->title));
+			}
+		}
+		return true;
+    }
+
+    public function allRoles($dc)
+    {
+		$roles = array();
+		$this->administrator();
+		$base_dn = Config::get('ldap.rdn');
+		$sch_rdn = Config::get('ldap.schattr')."=".$dc;
+		$sch_dn = "$sch_rdn,$base_dn";
+		$filter = "businessCategory=行政部門";
+		$resource = @ldap_search(self::$ldapConnectId, $sch_dn, $filter, ["ou", "description"]);
+		if ($resource) {
+			$entry = @ldap_first_entry(self::$ldapConnectId, $resource);
+			if ($entry) {
+				do {
+					$unit = $this->getOuData($entry);
+					$ou = $unit['ou'];
+					$uname = $unit['description'];
+					$info = $this->getRoles($dc, $ou);
+					foreach ($info as $role_obj) {
+						$role = new \stdClass();
+						$role->cn = "$ou,".$role_obj->cn;
+						$role->description = "$uname".$role_obj->description;
+						$roles[] = $role;
+					}
+				} while ($entry=ldap_next_entry(self::$ldapConnectId, $entry));
+			}
+		}
+		return $roles;
     }
     
     public function getRoles($dc, $ou)
@@ -479,11 +575,7 @@ class LdapServiceProvider extends ServiceProvider
     public function getRoleEntry($dc, $ou, $role_id)
     {
 		$this->administrator();
-		$base_dn = Config::get('ldap.rdn');
-		$sch_rdn = Config::get('ldap.schattr')."=".$dc;
-		$sch_dn = "$sch_rdn,$base_dn";
-		$ou_rdn = "ou=$ou";
-		$ou_dn = "$ou_rdn,$sch_dn";
+		$ou_dn = "ou=$ou,".Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
 		$filter = "cn=$role_id";
 		$resource = @ldap_search(self::$ldapConnectId, $ou_dn, $filter);
 		if ($resource) {
@@ -523,6 +615,7 @@ class LdapServiceProvider extends ServiceProvider
     
     public function getRoleTitle($dc, $ou, $role)
     {
+		if (empty($dc)) return '';
 		$this->administrator();
 		$ou_dn = "ou=$ou,".Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
 		$filter = "cn=$role";
@@ -608,18 +701,12 @@ class LdapServiceProvider extends ServiceProvider
 	    	$fields[] = 'tpSeat';
 	    	$fields[] = 'tpTeachClass';
 	    	$fields[] = 'tpCharacter';
+	    	$fields[] = 'tpAdminSchools';
 	    	$fields[] = 'inetUserStatus';
 		} elseif ($attr == 'uid')  {
 	    	$fields[] = 'uid';
 	    	$fields[] = 'mail';
 	    	$fields[] = 'mobile';
-		} elseif ($attr == 'title')  {
-	    	$fields[] = 'o';
-	    	$fields[] = 'ou';
-	    	$fields[] = 'title';
-		} elseif ($attr == 'ou')  {
-	    	$fields[] = 'o';
-	    	$fields[] = 'ou';
 		} else {
 	    	$fields[] = $attr;
 		}
@@ -654,36 +741,96 @@ class LdapServiceProvider extends ServiceProvider
 	    		}
 	    	}
 		}
-
-		if (isset($userinfo['o'])) {
-			$orgs = $userinfo['o'];
-			if (is_array($orgs)) {
-				$dc = $orgs;
-			} else {
-				$dc[] = $orgs;
-			}
-			$i = 0;
-			foreach ($dc as $o) {
-				$userinfo['school'][$i] = $this->getOrgTitle($o);
-				if (isset($userinfo['ou'])) {
-					$units = $userinfo['ou'];
-					if (is_array($units)) {
-						$ou = $units[$i];
+		$userinfo['adminSchools'] = false;
+		if (isset($userinfo['tpAdminSchools'])) {
+			$orgs = $userinfo['tpAdminSchools'];
+			if (!is_array($orgs)) $orgs[] = $orgs;
+			foreach ($orgs as $o) {
+				$sch_entry = $this->getOrgEntry($o);
+				$admins = $this->getOrgData($sch_entry, "tpAdministrator");
+				if (isset($admins['tpAdministrator'])) {
+					if (is_array($admins['tpAdministrator'])) {
+						if (in_array($userinfo['cn'], $admins['tpAdministrator'])) $userinfo['adminSchools'][] = $o;
 					} else {
-						$ou = $units;
-					}
-					$userinfo['department'][$i] = $this->getOuTitle($o, $ou);
-					if (isset($userinfo['title'])) {
-						$roles = $userinfo['title'];
-						if (is_array($roles)) {
-							$role = $roles[$i];
-						} else {
-							$role = $roles;
-						}
-						$userinfo['titleName'][$i] = $this->getRoleTitle($o, $ou, $role);
+						if ($userinfo['cn'] == $admins['tpAdministrator']) $userinfo['adminSchools'][] = $o;
 					}
 				}
-				$i++;
+			}
+		}
+		if (isset($userinfo['o'])) {
+			if (is_array($userinfo['o'])) {
+				$orgs = $userinfo['o'];
+			} else {
+				$orgs[] = $userinfo['o'];
+			}
+			foreach ($orgs as $o) {
+				$userinfo['school'][$o] = $this->getOrgTitle($o);
+			}
+		}
+		if (isset($userinfo['ou'])) {
+			if (is_array($userinfo['ou'])) {
+				$units = $userinfo['ou'];
+			} else {
+				$units[] = $userinfo['ou'];
+			}
+			foreach ($units as $ou_pair) {
+				$a = explode(',' , $ou_pair);
+				if (count($a) == 2) {
+					$o = $a[0];
+					$ou = $a[1];
+				} else {
+					$o = $orgs[0];
+					$ou = $a[0];
+				}
+				$ous[] = $ou;
+				$userinfo['department'][$o][] = $this->getOuTitle($o, $ou);
+			}
+		}
+		if (isset($userinfo['title'])) {
+			if (is_array($userinfo['title'])) {
+				$roles = $userinfo['title'];
+			} else {
+				$roles[] = $userinfo['title'];
+			}
+			foreach ($roles as $role_pair) {
+				$a = explode(',' , $role_pair);
+				if (count($a) == 3 ) {
+					$o = $a[0];
+					$ou = $a[1];
+					$role = $a[2];
+				} else {
+					$o = $orgs[0];
+					$ou = $ous[0];
+					$role = $a[0];
+				}
+				$userinfo['titleName'][$o][] = $this->getRoleTitle($o, $ou, $role);
+			}
+		}
+		if (isset($userinfo['tpTeachClass'])) {
+			if (is_array($userinfo['tpTeachClass'])) {
+				$classes = $userinfo['tpTeachClass'];
+			} else {
+				$classes[] = $userinfo['tpTeachClass'];
+			}
+			foreach ($classes as $class_pair) {
+				$a = explode(',' , $class_pair);
+				if (count($a) == 3) {
+					$o = $a[0];
+					$class = $a[1];
+					$subject = $a[2];
+				} else {
+					$o = $orgs[0];
+					$class = $a[0];
+					$subject = '';
+					if (isset($a[1])) $subject = $a[1];
+				}
+				$userinfo['teachClass'][$o][] = $this->getOuTitle($o, $class).$this->getSubjectTitle($o, $subject);
+			}
+		}
+		if (isset($userinfo['tpClass'])) {
+			$classname = $this->getOuTitle($userinfo['o'], $userinfo['tpClass']);
+			if (!isset($userinfo['tpClassTitle']) || $userinfo['tpClassTitle'] == $classname) {
+				@$this->updateData($entry, array( "tpClassTitle" => $classname ));
 			}
 		}
 		return $userinfo;

@@ -120,7 +120,9 @@ class schoolController extends Controller
 			$teacher = new \stdClass;
 			$teacher->idno = $data[$i]['cn'][0];
 			$teacher->name = $data[$i]['displayname'][0];
-			$teacher->title = $openldap->getRoleTitle($dc, $data[$i]['ou'][0], $data[$i]['title'][0]);
+			if (isset($data[$i]['ou'][0]) && isset($data[$i]['title'][0])) {
+				$teacher->title = $openldap->getRoleTitle($dc, $data[$i]['ou'][0], $data[$i]['title'][0]);
+			}
 			$json[] = $teacher;
 		}
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
@@ -174,10 +176,10 @@ class schoolController extends Controller
 		$schoolinfo['tpUniformNumbers'] = $request->get('uno');
 		$schoolinfo['tpIpv4'] = $request->get('ipv4');
 		$schoolinfo['tpIpv6'] = $request->get('ipv6');
-		$schoolinfo['subjects'] = $request->get('subjects');
-		$schoolinfo['ous'] = $request->get('ous');
-		$schoolinfo['roles'] = $request->get('roles');
 		$schoolinfo['tpAdministrator'] = $request->get('admins');
+		$openldap->updateOus($request->get('ous'));
+		$openldap->updateClasses($request->get('classes'));
+		$openldap->updateSubjects($request->get('subjects'));
 		$openldap->updateData($entry, $schoolinfo);
 		$entry = $openldap->getOrgEntry($dc);
 		$json = $openldap->getOrgData($entry);
@@ -200,8 +202,8 @@ class schoolController extends Controller
 		$info['dn'] = "cn=".$request->get('idno').",".Config::get('ldap.userdn');
 		$info["objectClass"] = array("tpeduPerson","inetUser");
  		$info["inetUserStatus"] = "Active";
-    	$info["cn"] = $request->get('idno');
-	    $info["userPassword"] = $openldap->make_ssha_password($request->get('password'));
+    $info["cn"] = $request->get('idno');
+	  $info["userPassword"] = $openldap->make_ssha_password($request->get('password'));
 		$info['o'] = $request->get('school');
 		$info['ou'] = $request->get('unit');
 		$info['title'] = $request->get('role');

@@ -310,8 +310,8 @@ class BureauController extends Controller
     				$entry["tpClass"] = $person->class;
 	    			$entry["tpSeat"] = $person->seat;
 	    		} else {
-	    			$entry["ou"] = $person->ou;
-    				$entry["title"] = $person->role;
+	    			if (isset($person->ou)) $entry["ou"] = $person->ou;
+    				if (isset($person->title)) $entry["title"] = $person->role;
 			    	if (isset($person->tclass)) {
 		    			$data = array();
 		    			$classes = array();

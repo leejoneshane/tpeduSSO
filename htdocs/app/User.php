@@ -67,36 +67,6 @@ class User extends Authenticatable
 		if (array_key_exists('birthDate', $data)) {
 		    $data['birthDate'] = substr($data['birthDate'],0,8);
 		}
-		$data['is_schoolAdmin'] = false;
-		if (array_key_exists('o', $data)) {
-			if (is_array($data['o'])) {
-				foreach ($data['o'] as $o) {
-					$sch_entry = $openldap->getOrgEntry($o);
-					$admins = $openldap->getOrgData($sch_entry, "tpAdministrator");
-					if (isset($admins['tpAdministrator'])) {
-						if (is_array($admins['tpAdministrator'])) {
-							foreach ($admins['tpAdministrator'] as $admin) {
-								if ($this->attributes['idno'] == $admin) $data['is_schoolAdmin'][] = $o;
-							}
-						} else {
-							if ($this->attributes['idno'] == $admins['tpAdministrator']) $data['is_schoolAdmin'][] = $o;
-						}
-					}
-				}
-			} else {
-				$sch_entry = $openldap->getOrgEntry($data['o']);
-				$admins = $openldap->getOrgData($sch_entry, "tpAdministrator");
-				if (isset($admins['tpAdministrator'])) {
-					if (is_array($admins['tpAdministrator'])) {
-						foreach ($admins['tpAdministrator'] as $admin) {
-							if ($this->attributes['idno'] == $admin) $data['is_schoolAdmin'][] = $data['o'];
-						}
-					} else {
-						if ($this->attributes['idno'] == $admins['tpAdministrator']) $data['is_schoolAdmin'][] = $data['o'];
-					}
-				}
-			}
-		}
 		return $data;
     }
     
