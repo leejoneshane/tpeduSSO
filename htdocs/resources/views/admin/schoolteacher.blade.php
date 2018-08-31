@@ -59,56 +59,64 @@
 					</tr>
 				</thead>
 				<tbody>
-					@if (!empty($teachers))
-					@for ($i=0;$i<$teachers['count'];$i++)
+					@if ($teachers)
+					@foreach ($teachers as $teacher)
 					<tr>
 						<td style="vertical-align: inherit;">
-							<span>{{ $teachers[$i]['inetuserstatus'][0] }}</span>
+							<span>{{ $teacher['inetUserStatus'] == 'active' ? '啟用' : '' }}{{ $teacher['inetUserStatus'] == 'inactive' ? '停用' : '' }}{{ $teacher['inetUserStatus'] == 'deleted' ? '已刪除' : '' }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<span>{{ $teachers[$i]['entryuuid'][0] }}</span>
+							<span>{{ $teacher['entryUUID'] }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<span>{{ $teachers[$i]['cn'][0] }}</span>
+							<span>{{ $teacher['cn'] }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
 							<span>
-							<span>{{ $teachers[$i]['displayname'][0] }}</span>
+							<span>{{ $teacher['displayName'] }}</span>
 							</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<span>{{ $teachers[$i]['department'][0] }}</span>
+							@if (isset($teacher['department'][$dc]))
+							@foreach ($teacher['department'][$dc] as $ou)
+							<span>{{ $ou }}</span>
+							@endforeach
+							@endif
 						</td>
 						<td style="vertical-align: inherit;">
-							<span>{{ $teachers[$i]['titlename'][0] }}</span>
+						@if (isset($teacher['titleName'][$dc]))
+							@foreach ($teacher['titleName'][$dc] as $title)
+							<span>{{ $title }}</span>
+							@endforeach
+							@endif
 						</td>
 						<td style="vertical-align: inherit;">
 							<button type="button" class="btn btn-primary"
-							 	onclick="$('#form').attr('action','{{ route('school.updateTeacher', [ 'dc' => $dc, 'uuid' => $teachers[$i]['entryuuid'][0] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('school.updateTeacher', [ 'dc' => $dc, 'uuid' => $teacher['entryUUID'] ]) }}');
 										 $('#form').attr('method', 'GET');
 										 $('#form').submit();">編輯</button>
-							@if ($teachers[$i]['inetuserstatus'][0] != '已刪除')
+							@if ($teacher['inetUserStatus'] != 'deleted')
 							<button type="button" class="btn btn-warning"
-							 	onclick="$('#form').attr('action','{{ route('school.toggle', [ 'uuid' => $teachers[$i]['entryuuid'][0] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('school.toggle', [ 'uuid' => $teacher['entryUUID'] ]) }}');
 										 $('#form').attr('method', 'POST');
-										 $('#form').submit();">{{ $teachers[$i]['inetuserstatus'][0] == '啟用' ? '停用' : '啟用' }}</button>
+										 $('#form').submit();">{{ $teacher['inetUserStatus'] == 'active' ? '停用' : '啟用' }}</button>
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#form').attr('action','{{ route('school.remove', [ 'uuid' => $teachers[$i]['entryuuid'][0] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('school.remove', [ 'uuid' => $teacher['entryUUID'] ]) }}');
 										 $('#form').attr('method', 'POST');
 										 $('#form').submit();">刪除</button>
 							@else
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#form').attr('action','{{ route('school.undo', [ 'uuid' => $teachers[$i]['entryuuid'][0] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('school.undo', [ 'uuid' => $teacher['entryUUID'] ]) }}');
 										 $('#form').attr('method', 'POST');
 										 $('#form').submit();">救回</button>
 							@endif
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#form').attr('action','{{ route('school.resetpass', [ 'uuid' => $teachers[$i]['entryuuid'][0] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('school.resetpass', [ 'uuid' => $teacher['entryUUID'] ]) }}');
 										 $('#form').attr('method', 'POST');
 										 $('#form').submit();">回復密碼</button>
 						</td>
 					</tr>
-					@endfor
+					@endforeach
 					<form id="form" action="" method="" style="display: none;">
 					@csrf
     				</form>

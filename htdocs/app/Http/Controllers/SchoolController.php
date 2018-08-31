@@ -36,15 +36,18 @@ class SchoolController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getOus($dc, '教學班級');
-		$my_ou = $data[0]->ou;
-		$my_field = $request->get('field', "ou=$my_ou");
+		$ous = array();
+		if ($data) {
+			$my_ou = $data[0]->ou;
+			foreach ($data as $ou) {
+				if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
+			}
+		}
+		$my_field = $request->get('field');
+		if (empty($my_field) && isset($my_ou)) $my_field = "ou=$my_ou";
 		$keywords = $request->get('keywords');
 		$request->session()->put('field', $my_field);
 		$request->session()->put('keywords', $keywords);
-		$ous = array();
-		foreach ($data as $ou) {
-			if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
-		}
 		if (substr($my_field,0,3) == 'ou=') {
 			$my_ou = substr($my_field,3);
 			if ($my_ou == 'deleted') {
@@ -65,21 +68,7 @@ class SchoolController extends Controller
 		}
 		$students = array();
 		if (!empty($filter)) {
-			$students = $openldap->findUsers($filter, ["cn","displayName","tpClass","tpSeat","entryUUID","inetUserStatus"]);
-		}
-		if ($students) {
-			for ($i=0;$i<$students['count'];$i++) {
-				if (!array_key_exists('inetuserstatus', $students[$i]) || $students[$i]['inetuserstatus']['count'] == 0) {
-					$students[$i]['inetuserstatus']['count'] = 1;
-					$students[$i]['inetuserstatus'][0] = '啟用';
-				} elseif (strtolower($students[$i]['inetuserstatus'][0]) == 'active') {
-					$students[$i]['inetuserstatus'][0] = '啟用';
-				} elseif (strtolower($students[$i]['inetuserstatus'][0]) == 'inactive') {
-					$students[$i]['inetuserstatus'][0] = '停用';
-				} elseif (strtolower($students[$i]['inetuserstatus'][0]) == 'deleted') {
-					$students[$i]['inetuserstatus'][0] = '已刪除';
-				}
-			}
+			$students = $openldap->findUsers($filter, ["cn", "displayName", "o", "tpClass", "tpSeat", "entryUUID", "inetUserStatus"]);
 		}
 		return view('admin.schoolstudent', [ 'dc' => $dc, 'my_field' => $my_field, 'keywords' => $keywords, 'classes' => $ous, 'students' => $students ]);
     }
@@ -122,9 +111,6 @@ class SchoolController extends Controller
     public function importSchoolStudent(Request $request, $dc)
 	{
 		$openldap = new LdapServiceProvider();
-		$entry = $openldap->getOrgEntry($dc);
-		$sid = $openldap->getOrgData($entry, 'tpUniformNumbers');
-		$sid = $sid['tpUniformNumbers'];
     	$messages[0] = "heading";
     	if ($request->hasFile('json')) {
 	    	$path = $request->file('json')->path();
@@ -149,12 +135,13 @@ class SchoolController extends Controller
 					}
 					$person->name = $person->sn.$person->gn;
 				}
-				if (!isset($person->id) || empty($person->id)) {
+				$idno = strtoupper($person->id);
+				if (!isset($idno) || empty($idno)) {
 					$messages[] = "第 $i 筆記錄，無身分證字號，跳過不處理！";
 		    		continue;
 				}
 				$validator = Validator::make(
-    				[ 'idno' => $person->id ], [ 'idno' => new idno ]
+    				[ 'idno' => $idno ], [ 'idno' => new idno ]
     			);
 				if ($validator->fails()) {
 					$messages[] = "第 $i 筆記錄，".$person->name."身分證字號格式或內容不正確，跳過不處理！";
@@ -186,8 +173,31 @@ class SchoolController extends Controller
 					$messages[] = "第 $i 筆記錄，".$person->name."出生日期格式或內容不正確，跳過不處理！";
 		    		continue;
 				}
-				$idno = strtoupper($person->id);
-				$user_dn = Config::get('ldap.userattr')."=".$person->id.",".Config::get('ldap.userdn');
+				$user_dn = Config::get('ldap.userattr')."=".$idno.",".Config::get('ldap.userdn');
+				$user_entry = $openldap->getUserEntry($idno);
+				$original = $openldap->getUserData($user_entry);
+				$orgs = array();
+				if ($user_entry) {
+					$os = array();
+					if (isset($original['o'])) {
+						if (is_array($original['o'])) {
+							$os = $original['o'];
+						} else {
+							$os[] = $original['o'];
+						}
+						foreach ($os as $o) {
+							if ($o != $dc) $orgs[] = $o;
+						}
+					}
+				}
+				$orgs[] = $dc;
+				$educloud = array();
+				foreach ($orgs as $o) {
+					$entry = $openldap->getOrgEntry($o);
+					$data = $openldap->getOrgData($entry, 'tpUniformNumbers');
+					$sid = $data['tpUniformNumbers'];
+					$educloud[] = json_encode(array("sid" => $sid, "role" => "學生"), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
+				}
 				$entry = array();
 				$entry["objectClass"] = array("tpeduPerson","inetUser");
  				$entry["inetUserStatus"] = "active";
@@ -197,9 +207,9 @@ class SchoolController extends Controller
     			$entry["displayName"] = $person->name;
     			$entry["gender"] = $person->gender;
 				$entry["birthDate"] = $person->birthdate."000000Z";
-    			$entry["o"] = $dc;
+    			$entry["o"] = $orgs;
+				$entry['info'] = $educloud;
     			$entry["employeeType"] = "學生";
-				$entry['info'] = json_encode(array("sid" => $sid, "role" => "學生"), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
     			$entry["employeeNumber"] = $person->stdno;
     			$entry["tpClass"] = $person->class;
     			$entry["tpSeat"] = $person->seat;
@@ -332,11 +342,12 @@ class SchoolController extends Controller
 		$keywords = $request->session()->get('keywords');
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getOus($dc, '教學班級');
-		$my_ou = '';
 		$ous = array();
-		foreach ($data as $ou) {
-			if (empty($my_ou)) $my_ou = $ou->ou;
-			if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
+		if ($data) {
+			$my_ou = $data[0]->ou;
+			foreach ($data as $ou) {
+				if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
+			}
 		}
     	if (!is_null($uuid)) {//edit
     		$entry = $openldap->getUserEntry($uuid);
@@ -595,7 +606,7 @@ class SchoolController extends Controller
 			if ($my_ou == 'deleted')
 				$filter = "(&(o=$dc)(inetUserStatus=deleted)(!(employeeType=學生))";
 			else
-				$filter = "(&(o=$dc)(ou=$my_ou)(!(employeeType=學生))(!(inetUserStatus=deleted)))";
+				$filter = "(&(o=$dc)(ou=*$my_ou)(!(employeeType=學生))(!(inetUserStatus=deleted)))";
 		} elseif ($my_field == 'uuid' && !empty($keywords)) {
 			$filter = "(&(o=$dc)(!(employeeType=學生))(entryUUID=*".$keywords."*))";
 		} elseif ($my_field == 'idno' && !empty($keywords)) {
@@ -611,41 +622,6 @@ class SchoolController extends Controller
 		if (!empty($filter)) {
 			$teachers = $openldap->findUsers($filter, ["cn","displayName","o","ou","title","entryUUID","inetUserStatus"]);
 		}
-		if ($teachers) {
-		    for ($i=0;$i<$teachers['count'];$i++) {
-			    $dc = $teachers[$i]['o'][0];
-			    $teachers[$i]['school']['count'] = 1;
-			    $teachers[$i]['school'][0] = $openldap->getOrgTitle($dc);
-			    if (array_key_exists('ou', $teachers[$i]) && $teachers[$i]['ou']['count']>0)  {
-				    $ou = $teachers[$i]['ou'][0];
-				    $teachers[$i]['department']['count'] = 1;
-				    $teachers[$i]['department'][0] = $openldap->getOuTitle($dc, $ou);
-				    if (array_key_exists('title', $teachers[$i]) && $teachers[$i]['title']['count']>0)  {
-					    $role = $teachers[$i]['title'][0];
-					    $teachers[$i]['titlename']['count'] = 1;
-					    $teachers[$i]['titlename'][0] = $openldap->getRoleTitle($dc, $ou, $role);
-				    } else {
-					    $teachers[$i]['titlename']['count'] = 1;
-					    $teachers[$i]['titlename'][0] = '無';
-				    }
-			    } else {
-				    $teachers[$i]['department']['count'] = 1;
-				    $teachers[$i]['department'][0] = '無';
-				    $teachers[$i]['titlename']['count'] = 1;
-				    $teachers[$i]['titlename'][0] = '無';
-			    }
-			    if (!array_key_exists('inetuserstatus', $teachers[$i]) || $teachers[$i]['inetuserstatus']['count'] == 0) {
-				    $teachers[$i]['inetuserstatus']['count'] = 1;
-				    $teachers[$i]['inetuserstatus'][0] = '啟用';
-			    } elseif (strtolower($teachers[$i]['inetuserstatus'][0]) == 'active') {
-				    $teachers[$i]['inetuserstatus'][0] = '啟用';
-			    } elseif (strtolower($teachers[$i]['inetuserstatus'][0]) == 'inactive') {
-				    $teachers[$i]['inetuserstatus'][0] = '停用';
-			    } elseif (strtolower($teachers[$i]['inetuserstatus'][0]) == 'deleted') {
-				    $teachers[$i]['inetuserstatus'][0] = '已刪除';
-			    }
-			}
-		}
 		return view('admin.schoolteacher', [ 'dc' => $dc, 'my_field' => $my_field, 'keywords' => $keywords, 'ous' => $ous, 'teachers' => $teachers ]);
     }
 
@@ -655,8 +631,8 @@ class SchoolController extends Controller
 		$user->id = 'A123456789';
 		$user->account = 'myaccount';
 		$user->password = 'My_p@ssw0rD';
-		$user->ou = 'dept02';
-		$user->role = 'role014';
+		$user->ou = array('dept02', 'dept07');
+		$user->role = 'dept02,role014';
 		$user->tclass = array('606,sub01', '607,sub01', '608,sub01', '609,sub01', '610,sub01');
 		$user->character = '巡迴教師 均一平台管理員';
 		$user->sn = '李';
@@ -684,9 +660,6 @@ class SchoolController extends Controller
     public function importSchoolTeacher(Request $request, $dc)
     {
 		$openldap = new LdapServiceProvider();
-		$entry = $openldap->getOrgEntry($dc);
-		$sid = $openldap->getOrgData($entry, 'tpUniformNumbers');
-		$sid = $sid['tpUniformNumbers'];
     	$messages[0] = 'heading';
     	if ($request->hasFile('json')) {
 	    	$path = $request->file('json')->path();
@@ -711,12 +684,13 @@ class SchoolController extends Controller
 					}
 					$person->name = $person->sn.$person->gn;
 				}
-				if (!isset($person->id) || empty($person->id)) {
+				$idno = strtoupper($person->id);
+				if (!isset($idno) || empty($idno)) {
 					$messages[] = "第 $i 筆記錄，無身分證字號，跳過不處理！";
 		    		continue;
 				}
 				$validator = Validator::make(
-    				[ 'idno' => $person->id ], [ 'idno' => new idno ]
+    				[ 'idno' => $idno ], [ 'idno' => new idno ]
     			);
 				if ($validator->fails()) {
 					$messages[] = "第 $i 筆記錄，".$person->name."身分證字號格式或內容不正確，跳過不處理！";
@@ -736,21 +710,119 @@ class SchoolController extends Controller
 					$messages[] = "第 $i 筆記錄，".$person->name."出生日期格式或內容不正確，跳過不處理！";
 		    		continue;
 				}
-				$user_dn = Config::get('ldap.userattr')."=".$person->id.",".Config::get('ldap.userdn');
-				$entry = array();
-				$entry["objectClass"] = array("tpeduPerson","inetUser");
- 				$entry["inetUserStatus"] = "active";
-   				$entry["cn"] = strtoupper($person->id);
-    			$entry["sn"] = $person->sn;
-    			$entry["givenName"] = $person->gn;
-    			$entry["displayName"] = $person->name;
-    			$entry["gender"] = $person->gender;
-				$entry["birthDate"] = $person->birthdate."000000Z";
-    			$entry["o"] = $dc;
-    			$entry["employeeType"] = "教師";
-				$entry['info'] = json_encode(array("sid" => $sid, "role" => "教師"), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
-    			if (isset($person->ou) && !empty($person->ou)) $entry["ou"] = $person->ou;
-    			if (isset($person->role) && !empty($person->role)) $entry["title"] = $person->role;
+				$user_dn = Config::get('ldap.userattr')."=".$idno.",".Config::get('ldap.userdn');
+				$user_entry = $openldap->getUserEntry($idno);
+				$original = $openldap->getUserData($user_entry);
+				$orgs = array();
+				$units = array();
+				$roles = array();
+				$assign = array();
+				if ($user_entry) {
+					$os = array();
+					if (isset($original['o'])) {
+						if (is_array($original['o'])) {
+							$os = $original['o'];
+						} else {
+							$os[] = $original['o'];
+						}
+						foreach ($os as $o) {
+							if ($o != $dc) $orgs[] = $o;
+						}
+					}
+					$ous = array();
+					if (isset($original['ou'])) {
+						if (is_array($original['ou'])) {
+							$ous = $original['ou'];
+						} else {
+							$ous[] = $original['ou'];
+						}
+						foreach ($ous as $ou_pair) {
+							$a = explode(',', $ou_pair);
+							if (count($a) == 2 && $a[0] != $dc) $units[] = $ou_pair;
+						}
+					}
+					$titles = array();
+					if (isset($original['title'])) {
+						if (is_array($original['title'])) {
+							$titles = $original['title'];
+						} else {
+							$titles[] = $original['title'];
+						}
+						foreach ($titles as $title_pair) {
+							$a = explode(',', $title_pair);
+							if (count($a) == 3 && $a[0] != $dc) $roles[] = $title_pair;
+						}
+					}
+					$tclass = array();
+					if (isset($original['tpTeachClass'])) {
+						if (is_array($original['tpTeachClass'])) {
+							$tclass = $original['tpTeachClass'];
+						} else {
+							$tclass[] = $original['tpTeachClass'];
+						}
+						foreach ($tclass as $pair) {
+							$a = explode(',', $pair);
+							if (count($a) == 3 && $a[0] != $dc) $assign[] = $pair;
+						}
+					}
+				}
+				$orgs[] = $dc;
+				$educloud = array();
+				foreach ($orgs as $o) {
+					$entry = $openldap->getOrgEntry($o);
+					$data = $openldap->getOrgData($entry, 'tpUniformNumbers');
+					$sid = $data['tpUniformNumbers'];
+					$educloud[] = json_encode(array("sid" => $sid, "role" => "教師"), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
+				}
+				$ous = array();
+				if (isset($person->ou)) {
+					if (is_array($person->ou)) {
+						$ous = $person->ou;
+					} else {
+						$ous[] = $person->ou;
+					}
+					foreach ($ous as $ou) {
+						if (!in_array("$dc,$ou", $units)) $units[] = "$dc,$ou";
+					}
+				}
+				$titles = array();
+				if (isset($person->role)) {
+					if (is_array($person->role)) {
+						$titles = $person->role;
+					} else {
+						$titles[] = $person->role;
+					}
+					foreach ($titles as $title_pair) {
+						if (!in_array("$dc,$title_pair", $roles)) $roles[] = "$dc,$title_pair";
+					}
+				}			
+				$classes = array();
+				if (isset($person->tclass)) {
+					if (is_array($person->tclass)) {
+						$classes = $person->tclass;
+					} else {
+						$classes[] = $person->tclass;
+					}
+		    		foreach ($classes as $class_pair) {
+						$a = explode(',', $class_pair);
+						if ($openldap->getOuEntry($dc, $a[0])) $assign[] = "$dc,$class_pair";
+	    			}
+				}
+				$info = array();
+				$info["objectClass"] = array("tpeduPerson","inetUser");
+ 				$info["inetUserStatus"] = "active";
+   				$info["cn"] = strtoupper($person->id);
+    			$info["sn"] = $person->sn;
+    			$info["givenName"] = $person->gn;
+    			$info["displayName"] = $person->name;
+    			$info["gender"] = $person->gender;
+				$info["birthDate"] = $person->birthdate."000000Z";
+    			$info["o"] = $orgs;
+    			$info["ou"] = $units;
+    			$info["title"] = $roles;
+    			$info["employeeType"] = "教師";
+				$info['info'] = $educloud;
+    			$info['tpTeachClass'] = $assign;
 				$account = array();
    				$account["objectClass"] = "radiusObjectProfile";
 			    $account["cn"] = $person->id;
@@ -759,32 +831,19 @@ class SchoolController extends Controller
 					$account["uid"] = $person->account;
 				else
 					$account["uid"] = $dc.substr($person->id, -9);
-    			$entry["uid"] = $account["uid"];
+    			$info["uid"] = $account["uid"];
 				if (isset($person->password) && !empty($person->password))
 					$password = $openldap->make_ssha_password($person->password);
 				else
 					$password = $openldap->make_ssha_password(substr($person->id, -6));
 	   			$account["userPassword"] = $password;
 	   			$account_dn = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
-	   			$entry["userPassword"] = $password;
-		    	if (isset($person->tclass)) {
-		    		$data = array();
-		    		$classes = array();
-		    		if (is_array($person->tclass)) {
-		    			$data = $person->tclass;
-		    		} else {
-		    			$data[] = $person->tclass;
-		    		}
-		    		foreach ($data as $class) {
-	    				if ($openldap->getOuEntry($dc, $class)) $classes[] = $class;
-	    			}
-	    			$entry['tpTeachClass'] = $classes;
-    			}
+	   			$info["userPassword"] = $password;
 		    	if (isset($person->character)) {
 		    	    if (empty($person->character))
-	    			    $entry['tpCharacter'] = [];
+	    			    $info['tpCharacter'] = [];
 		    	    else
-	    			    $entry['tpCharacter'] = explode(' ', $person->character);
+	    			    $info['tpCharacter'] = explode(' ', $person->character);
 	    		}
 		    	if (isset($person->mail)) {
 		    		$data = array();
@@ -800,7 +859,7 @@ class SchoolController extends Controller
     					);
 	    				if ($validator->passes()) $mails[] = $mail;
 	    			}
-	    			$entry['mail'] = $mails;
+	    			$info['mail'] = $mails;
     			}
 			    if (isset($person->mobile)) {
 		    		$data = array();
@@ -816,7 +875,7 @@ class SchoolController extends Controller
     					);
 		    			if ($validator->passes()) $mobiles[] = $mobile;
 					}
-	   				$entry['mobile'] = $mobiles;
+	   				$info['mobile'] = $mobiles;
     			}
 			    if (isset($person->fax)) {
 			    	$data = array();
@@ -829,7 +888,7 @@ class SchoolController extends Controller
 				    foreach ($data as $tel) {
 				    	$fax[] = self::convert_tel($tel);
   					}
-		    		$entry['facsimileTelephoneNumber'] = $fax;
+		    		$info['facsimileTelephoneNumber'] = $fax;
     			}
 			    if (isset($person->otel)) {
 			    	$data = array();
@@ -842,7 +901,7 @@ class SchoolController extends Controller
 				    foreach ($data as $tel) {
 				    	$otel[] = self::convert_tel($tel);
   					}
-		    		$entry['telephoneNumber'] = $otel;
+		    		$info['telephoneNumber'] = $otel;
     			}
 			    if (isset($person->htel)) {
 			    	$data = array();
@@ -855,22 +914,22 @@ class SchoolController extends Controller
 				    foreach ($data as $tel) {
 				    	$htel[] = self::convert_tel($tel);
   					}
-		    		$entry['homePhone'] = $htel;
+		    		$info['homePhone'] = $htel;
     			}
-			    if (isset($person->register) && !empty($person->register)) $entry["registeredAddress"]=self::chomp_address($person->register);
-	    		if (isset($person->address) && !empty($person->address)) $entry["homePostalAddress"]=self::chomp_address($person->address);
-	    		if (isset($person->www) && !empty($person->www)) $entry["wWWHomePage"]=$person->www;
+			    if (isset($person->register) && !empty($person->register)) $info["registeredAddress"]=self::chomp_address($person->register);
+	    		if (isset($person->address) && !empty($person->address)) $info["homePostalAddress"]=self::chomp_address($person->address);
+	    		if (isset($person->www) && !empty($person->www)) $info["wWWHomePage"]=$person->www;
 			
-				$user_entry = $openldap->getUserEntry($entry['cn']);
+				$user_entry = $openldap->getUserEntry($info['cn']);
 				if ($user_entry) {
-					$result = $openldap->updateData($user_entry, $entry);
+					$result = $openldap->updateData($user_entry, $info);
 					if ($result)
 						$messages[] = "第 $i 筆記錄，".$person->name."教師資訊已經更新！";
 					else
 						$messages[] = "第 $i 筆記錄，".$person->name."教師資訊無法更新！".$openldap->error();
 				} else {
-					$entry['dn'] = $user_dn;
-					$result = $openldap->createEntry($entry);
+					$info['dn'] = $user_dn;
+					$result = $openldap->createEntry($info);
 					if ($result)
 						$messages[] = "第 $i 筆記錄，".$person->name."教師資訊已經建立！";
 					else
@@ -925,8 +984,11 @@ class SchoolController extends Controller
     		$user = $openldap->getUserData($entry);
     		$assign = array();
     		if (array_key_exists('tpTeachClass', $user)) {
-				$info = $user['tpTeachClass'];
-				if (!is_array($info)) $info[] = $info;
+				if (is_array($user['tpTeachClass'])) {
+					$info = $user['tpTeachClass'];
+				} else {
+					$info[] = $user['tpTeachClass'];
+				}
     			$i = 0;
     			foreach ($info as $pair) {
 					$a = explode(',', $pair);
@@ -936,11 +998,12 @@ class SchoolController extends Controller
 						$i++;
 					} else {
 						$assign[$i]['class'] = $a[0];
-						$assign[$i]['subject'] = $a[1];
+						$assign[$i]['subject'] = '';
+						if (isset($a[1])) $assign[$i]['subject'] = $a[1];
 						$i++;
 					}
     			}
-    		}
+			}
 			return view('admin.schoolteacheredit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'dc' => $dc, 'types' => $types, 'subjects' => $subjects, 'classes' => $classes, 'roles' => $roles, 'assign' => $assign, 'user' => $user ]);
 		} else { //add
 			return view('admin.schoolteacheredit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'dc' => $dc, 'types' => $types, 'subjects' => $subjects, 'classes' => $classes, 'roles' => $roles ]);
@@ -1067,11 +1130,11 @@ class SchoolController extends Controller
 	
     public function updateSchoolTeacher(Request $request, $dc, $uuid)
     {
+		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getUserEntry($uuid);
-		$original = $openldap->getUserData($entry, [ 'cn', 'ou', 'title', 'tpTeachClass', 'info' ]);
+		$original = $openldap->getUserData($entry, [ 'cn', 'o', 'ou', 'title', 'tpTeachClass', 'info' ]);
 		$my_field = $request->session()->get('field');
 		$keywords = $request->session()->get('keywords');
-		$openldap = new LdapServiceProvider();
 		$validatedData = $request->validate([
 			'idno' => new idno,
 			'sn' => 'required|string',
@@ -1088,21 +1151,29 @@ class SchoolController extends Controller
 		$info['displayName'] = $info['sn'].$info['givenName'];
 		$info['gender'] = (int) $request->get('gender');
 		$info['birthDate'] = str_replace('-', '', $request->get('birth')).'000000Z';
+		$ous = array();
 		$units = array();
-		if (array_key_exists('ou', $original)) {
-			$ous = $original['ou'];
-			if (!is_array($ous)) $ous[] = $ous;
+		if (isset($original['ou'])) {
+			if (is_array($original['ou'])) {
+				$ous = $original['ou'];
+			} else {
+				$ous[] = $original['ou'];
+			}
 			foreach ($ous as $ou_pair) {
-				$a = split(',', $ou_pair);
+				$a = explode(',', $ou_pair);
 				if (count($a) == 2 && $a[0] != $dc) $units[] = $ou_pair;
 			}
 		}
+		$titles = array();
 		$roles = array();
-		if (array_key_exists('title', $original)) {
-			$titles = $original['title'];
-			if (!is_array($titles)) $titles[] = $titles;
+		if (isset($original['title'])) {
+			if (is_array($original['title'])) {
+				$titles = $original['title'];
+			} else {
+				$titles[] = $original['title'];
+			}
 			foreach ($titles as $title_pair) {
-				$a = split(',', $title_pair);
+				$a = explode(',', $title_pair);
 				if (count($a) == 3 && $a[0] != $dc) $roles[] = $title_pair;
 			}
 		}
@@ -1130,9 +1201,12 @@ class SchoolController extends Controller
 			$info['wWWHomePage'] = $request->get('www');
 		
 		$assign = array();
-		if (array_key_exists('tpTeachClass', $original)) {
-			$tclass = $original['tpTeachClass'];
-			if (!is_array($tclass)) $tclass[] = $tclass;
+		if (isset($original['tpTeachClass'])) {
+			if (is_array($original['tpTeachClass'])) {
+				$tclass = $original['tpTeachClass'];
+			} else {
+				$tclass[] = $original['tpTeachClass'];
+			}
 			foreach ($tclass as $pair) {
 				$a = explode(',', $pair);
 				if (count($a) == 3 && $a[0] != $dc) $assign[] = $pair;
@@ -1808,13 +1882,19 @@ class SchoolController extends Controller
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getOrgEntry($dc);
 		$data = $openldap->getOrgData($entry, "tpAdministrator");
+		$admins = array();
 		if (array_key_exists('tpAdministrator', $data)) {
-		    if (is_array($data['tpAdministrator'])) 
-				$admins = $data['tpAdministrator'];
-		    else 
-				$admins[] = $data['tpAdministrator'];
-		} else {
-		    $admins = array();
+		    if (is_array($data['tpAdministrator'])) {
+				$ids = $data['tpAdministrator'];
+			} else {
+				$ids[] = $data['tpAdministrator'];
+			}
+			foreach ($ids as $idno) {
+				$admin = new \stdClass;
+				$admin->idno = $idno;
+				$admin->name = $openldap->getUserName($idno);
+				$admins[] = $admin;
+			}
 		}
 		return view('admin.schooladminwithsidebar', [ 'admins' => $admins, 'dc' => $dc ]);
     }
@@ -1832,16 +1912,14 @@ class SchoolController extends Controller
 		$admins = array();
 		if (array_key_exists('tpAdministrator', $data)) {
 		    if (is_array($data['tpAdministrator'])) {
-				foreach ($data['tpAdministrator'] as $idno) {
-					$admin = new \stdClass;
-					$admin->idno = $idno;
-					$admin->name = $openldap->getUserName($idno);
-					$admins[] = $admin;
-				}
+				$ids = $data['tpAdministrator'];
 			} else {
+				$ids[] = $data['tpAdministrator'];
+			}
+			foreach ($ids as $idno) {
 				$admin = new \stdClass;
-				$admin->idno = $data['tpAdministrator'];
-				$admin->name = $openldap->getUserName($admin->idno);
+				$admin->idno = $idno;
+				$admin->name = $openldap->getUserName($idno);
 				$admins[] = $admin;
 			}
 		}

@@ -79,18 +79,9 @@ class BureauController extends Controller
 		} elseif ($my_field == 'mobile' && !empty($keywords)) {
 			$filter = "(&(o=$dc)(mobile=*".$keywords."*))";
 		}
-		$people = $openldap->findUsers($filter, [ "cn", "displayName", "employeeType", "entryUUID", "inetUserStatus" ]);
-		for ($i=0;$i<$people['count'];$i++) {
-			if (!array_key_exists('inetuserstatus', $people[$i]) || $people[$i]['inetuserstatus']['count'] == 0) {
-				$people[$i]['inetuserstatus']['count'] = 1;
-				$people[$i]['inetuserstatus'][0] = '啟用';
-			} elseif (strtolower($people[$i]['inetuserstatus'][0]) == 'active') {
-				$people[$i]['inetuserstatus'][0] = '啟用';
-			} elseif (strtolower($people[$i]['inetuserstatus'][0]) == 'inactive') {
-				$people[$i]['inetuserstatus'][0] = '停用';
-			} elseif (strtolower($people[$i]['inetuserstatus'][0]) == 'deleted') {
-				$people[$i]['inetuserstatus'][0] = '已刪除';
-			}
+		$people = array();
+		if (!empty($filter)) {
+			$people = $openldap->findUsers($filter, [ "cn", "displayName", "employeeType", "entryUUID", "inetUserStatus" ]);
 		}
 		return view('admin.bureaupeople', [ 'area' => $area, 'areas' => $areas, 'dc' => $dc, 'schools' => $schools, 'ous' => $ous, 'my_field' => $my_field, 'keywords' => $keywords, 'people' => $people ]);
     }

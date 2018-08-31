@@ -64,12 +64,17 @@
 					</select>
 				</div>
 			    <div class="form-group">
-					<label>單位職稱</label>
-					<select id="role" class="form-control" name="roles[]">
-					@foreach ($roles as $role => $desc)
-			    		<option value="{{ $role }}"{{ isset($user) && array_key_exists('title', $user) &&  $user['title'] == $dc.','.$role ? ' selected' : '' }}>{{ $desc }}</option>
-			    	@endforeach
-					</select>
+					<label style="display:block">單位職稱</label>
+					@if (isset($user['title']))
+						@foreach ($user['title'] as $title)
+						<div></div>
+						<select id="role" class="form-control" style="width:50%;display:inline" name="roles[]">
+							@foreach ($roles as $role => $desc)
+			    			<option value="{{ $role }}"{{ $title == $dc.','.$role  ? ' selected' : '' }}>{{ $desc }}</option>
+			    			@endforeach
+						</select><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
+						@endforeach
+					@endif
 					<button id="nrole" type="button" class="btn btn-primary btn-circle" onclick="add_role()"><i class="fa fa-plus"></i></button>
 				</div>
 			    <div class="form-group{{ $errors->has('tclass') ? ' has-error' : '' }}">
@@ -251,7 +256,7 @@
 			<script type="text/javascript">
       			function add_role() {
       				my_item = '<div></div>';
-      				my_item += '<select class="form-control" style="width:25%;display:inline" name="roles[]">';
+      				my_item += '<select class="form-control" style="width:50%;display:inline" name="roles[]">';
 					@foreach ($roles as $role => $desc)
 				    my_item += '<option value="{{ $role }}">{{ $desc }}</option>';
 				    @endforeach

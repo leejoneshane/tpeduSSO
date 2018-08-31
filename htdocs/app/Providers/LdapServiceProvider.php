@@ -630,23 +630,20 @@ class LdapServiceProvider extends ServiceProvider
 		return '';
     }
     
-    public function findUsers($filter, $attr = null)
+    public function findUsers($filter, $attr = '')
     {
-		$fields = array();
-		if (is_null($attr))
-			$fields[] = 'entryUUID';
-		else
-			if (is_array($attr))
-				$fields = $attr;
-			else
-				$fields[] = $attr;
-		
+		$userinfo = array();
 		$this->administrator();
 		$base_dn = Config::get('ldap.userdn');
-		$resource = @ldap_search(self::$ldapConnectId, $base_dn, $filter, $fields);
+		$resource = @ldap_search(self::$ldapConnectId, $base_dn, $filter, array("*","entryUUID"));
 		if ($resource) {
-			$entries = ldap_get_entries(self::$ldapConnectId, $resource);
-			return $entries;
+			$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+			if ($entry) {
+				do {
+	    			$userinfo[] = $this->getUserData($entry, $attr);
+				} while ($entry=ldap_next_entry(self::$ldapConnectId, $entry));
+			}
+			return $userinfo;
 		}
 		return false;
     }
@@ -743,8 +740,15 @@ class LdapServiceProvider extends ServiceProvider
 		}
 		$userinfo['adminSchools'] = false;
 		if (isset($userinfo['tpAdminSchools'])) {
-			$orgs = $userinfo['tpAdminSchools'];
-			if (!is_array($orgs)) $orgs[] = $orgs;
+			$orgs = array();
+			if (is_array($userinfo['tpAdminSchools'])) {
+				$orgs = $userinfo['tpAdminSchools'];
+			} else {
+				$orgs[] = $userinfo['tpAdminSchools'];
+			}
+			if (!is_array($userinfo['o']) && !in_array($userinfo['o'], $orgs)) {
+				$orgs[] = $userinfo['o'];
+			}
 			foreach ($orgs as $o) {
 				$sch_entry = $this->getOrgEntry($o);
 				$admins = $this->getOrgData($sch_entry, "tpAdministrator");
@@ -785,6 +789,7 @@ class LdapServiceProvider extends ServiceProvider
 				$ous[] = $ou;
 				$userinfo['department'][$o][] = $this->getOuTitle($o, $ou);
 			}
+			if (!is_array($userinfo['ou'])) $userinfo['ou'] = $orgs[0].",".$userinfo['ou'];
 		}
 		if (isset($userinfo['title'])) {
 			if (is_array($userinfo['title'])) {
@@ -803,8 +808,10 @@ class LdapServiceProvider extends ServiceProvider
 					$ou = $ous[0];
 					$role = $a[0];
 				}
+				$titles[] = "$o,$ou,$role";
 				$userinfo['titleName'][$o][] = $this->getRoleTitle($o, $ou, $role);
 			}
+			$userinfo['title'] = $titles;
 		}
 		if (isset($userinfo['tpTeachClass'])) {
 			if (is_array($userinfo['tpTeachClass'])) {
@@ -817,21 +824,28 @@ class LdapServiceProvider extends ServiceProvider
 				if (count($a) == 3) {
 					$o = $a[0];
 					$class = $a[1];
-					$subject = $a[2];
+					$subject = '';
+					if (isset($a[2])) $subject = $a[2];
 				} else {
 					$o = $orgs[0];
 					$class = $a[0];
 					$subject = '';
 					if (isset($a[1])) $subject = $a[1];
 				}
+				$tclass[] = "$o,$class,$subject";
 				$userinfo['teachClass'][$o][] = $this->getOuTitle($o, $class).$this->getSubjectTitle($o, $subject);
 			}
+			$userinfo['tpTeachClass'] = $tclass;
 		}
 		if (isset($userinfo['tpClass'])) {
 			$classname = $this->getOuTitle($userinfo['o'], $userinfo['tpClass']);
 			if (!isset($userinfo['tpClassTitle']) || $userinfo['tpClassTitle'] == $classname) {
-				@$this->updateData($entry, array( "tpClassTitle" => $classname ));
+				@$this->updateData($entry, [ "tpClassTitle" => $classname ]);
 			}
+		}
+		if (!isset($userinfo['inetUserStatus'])) {
+			$userinfo['inetUserStatus'] = 'active';
+			@$this->updateData($entry, [ "inetUserStatus" => "active" ]);
 		}
 		return $userinfo;
     }

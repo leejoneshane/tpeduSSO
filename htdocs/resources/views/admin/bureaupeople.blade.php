@@ -68,53 +68,53 @@
 					</tr>
 				</thead>
 				<tbody>
-					@if (!empty($people))
-					@for ($i=0;$i<$people['count'];$i++)
+					@if ($people)
+					@foreach ($people as $user)
 					<tr>
 						<td style="vertical-align: inherit;">
-							<span>{{ $people[$i]['inetuserstatus'][0] }}</span>
+							<span>{{ $people['inetUserStatus'] == 'active' ? '啟用' : '' }}{{ $people['inetUserStatus'] == 'inactive' ? '停用' : '' }}{{ $people['inetUserStatus'] == 'deleted' ? '已刪除' : '' }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<span>{{ $people[$i]['entryuuid'][0] }}</span>
+							<span>{{ $people['entryUUID'] }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<span>{{ $people[$i]['cn'][0] }}</span>
+							<span>{{ $people['cn'] }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
 							<span>
-							<span>{{ $people[$i]['displayname'][0] }}</span>
+							<span>{{ $people['displayName'] }}</span>
 							</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<span>{{ $people[$i]['employeetype'][0] }}</span>
+							<span>{{ $people['employeeType'] }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
 							<button type="button" class="btn btn-primary"
-							 	onclick="$('#form').attr('action','{{ route('bureau.updatePeople', [ 'uuid' => $people[$i]['entryuuid'][0] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('bureau.updatePeople', [ 'uuid' => $people['entryUUID'] ]) }}');
 										 $('#form').attr('method', 'GET');
 										 $('#form').submit();">編輯</button>
-							@if ($people[$i]['inetuserstatus'][0] != '已刪除')
+							@if ($people['inetuserstatus'] != '已刪除')
 							<button type="button" class="btn btn-warning"
-							 	onclick="$('#form').attr('action','{{ route('bureau.togglePeople', [ 'uuid' => $people[$i]['entryuuid'][0] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('bureau.togglePeople', [ 'uuid' => $people['entryUUID'] ]) }}');
 										 $('#form').attr('method', 'POST');
-										 $('#form').submit();">{{ $people[$i]['inetuserstatus'][0] == '啟用' ? '停用' : '啟用' }}</button>
+										 $('#form').submit();">{{ $people['inetUserStatus'] == 'active' ? '停用' : '啟用' }}</button>
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#form').attr('action','{{ route('bureau.removePeople', [ 'uuid' => $people[$i]['entryuuid'][0] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('bureau.removePeople', [ 'uuid' => $people['entryUUID'] ]) }}');
 										 $('#form').attr('method', 'POST');
 										 $('#form').submit();">刪除</button>
 							@else
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#form').attr('action','{{ route('bureau.undoPeople', [ 'uuid' => $people[$i]['entryuuid'][0] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('bureau.undoPeople', [ 'uuid' => $people['entryUUID'] ]) }}');
 										 $('#form').attr('method', 'POST');
 										 $('#form').submit();">救回</button>
 							@endif
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#form').attr('action','{{ route('bureau.resetpassPeople', [ 'uuid' => $people[$i]['entryuuid'][0] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('bureau.resetpassPeople', [ 'uuid' => $people['entryUUID'] ]) }}');
 										 $('#form').attr('method', 'POST');
 										 $('#form').submit();">回復密碼</button>
 						</td>
 					</tr>
-					@endfor
+					@endforeach
 					<form id="form" action="" method="" style="display: none;">
 					@csrf
     				</form>
