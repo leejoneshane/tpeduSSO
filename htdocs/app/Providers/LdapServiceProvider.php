@@ -739,28 +739,29 @@ class LdapServiceProvider extends ServiceProvider
 	    	}
 		}
 		$userinfo['adminSchools'] = false;
+		$orgs = array();
 		if (isset($userinfo['tpAdminSchools'])) {
-			$orgs = array();
 			if (is_array($userinfo['tpAdminSchools'])) {
 				$orgs = $userinfo['tpAdminSchools'];
 			} else {
 				$orgs[] = $userinfo['tpAdminSchools'];
 			}
-			if (!is_array($userinfo['o']) && !in_array($userinfo['o'], $orgs)) {
-				$orgs[] = $userinfo['o'];
-			}
-			foreach ($orgs as $o) {
-				$sch_entry = $this->getOrgEntry($o);
-				$admins = $this->getOrgData($sch_entry, "tpAdministrator");
-				if (isset($admins['tpAdministrator'])) {
-					if (is_array($admins['tpAdministrator'])) {
-						if (in_array($userinfo['cn'], $admins['tpAdministrator'])) $userinfo['adminSchools'][] = $o;
-					} else {
-						if ($userinfo['cn'] == $admins['tpAdministrator']) $userinfo['adminSchools'][] = $o;
-					}
+		}
+		if (!is_array($userinfo['o']) && !in_array($userinfo['o'], $orgs)) {
+			$orgs[] = $userinfo['o'];
+		}
+		foreach ($orgs as $o) {
+			$sch_entry = $this->getOrgEntry($o);
+			$admins = $this->getOrgData($sch_entry, "tpAdministrator");
+			if (isset($admins['tpAdministrator'])) {
+				if (is_array($admins['tpAdministrator'])) {
+					if (in_array($userinfo['cn'], $admins['tpAdministrator'])) $userinfo['adminSchools'][] = $o;
+				} else {
+					if ($userinfo['cn'] == $admins['tpAdministrator']) $userinfo['adminSchools'][] = $o;
 				}
 			}
 		}
+		$orgs = array();
 		if (isset($userinfo['o'])) {
 			if (is_array($userinfo['o'])) {
 				$orgs = $userinfo['o'];
