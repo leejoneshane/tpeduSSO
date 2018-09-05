@@ -62,12 +62,15 @@ class BureauController extends Controller
 			}
 		if (substr($my_field,0,3) == 'ou=') {
 			$my_ou = substr($my_field,3);
-			if ($my_ou == 'deleted')
+			if ($my_ou == 'empty') {
+				$filter = "(&(o=$dc)(|(!(ou=*))(!(tpClass=*))))";
+			} elseif ($my_ou == 'deleted') {
 				$filter = "(&(o=$dc)(inetUserStatus=deleted))";
-			elseif (is_numeric($my_ou))
+			} elseif (is_numeric($my_ou)) {
 				$filter = "(&(o=$dc)(tpClass=$my_ou)(!(inetUserStatus=deleted)))";
-			else
+			} else {
 				$filter = "(&(o=$dc)(ou=$my_ou)(!(inetUserStatus=deleted)))";
+			}
 		} elseif ($my_field == 'uuid' && !empty($keywords)) {
 			$filter = "(&(o=$dc)(entryUUID=*".$keywords."*))";
 		} elseif ($my_field == 'idno' && !empty($keywords)) {
@@ -109,14 +112,6 @@ class BureauController extends Controller
 			foreach ($data as $class) {
 				if (!array_key_exists($class->ou, $classes)) $classes[$class->ou] = $class->description;
 			}
-		$data = $openldap->getOus($dc, '行政部門');
-		$my_ou = '';
-		$ous = array();
-		if ($data)
-			foreach ($data as $ou) {
-				if (empty($my_ou)) $my_ou = $ou->ou;
-				if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
-			}
 		
     	if (!is_null($uuid)) {//edit
     		$entry = $openldap->getUserEntry($uuid);
@@ -129,42 +124,23 @@ class BureauController extends Controller
     				$data = $openldap->getRoles($dc, $user['ou']);
     			else
     				$data = $openldap->getRoles($dc, $my_ou);
-				$roles = array();
-				foreach ($data as $role) {
-					if (!array_key_exists($role->cn, $roles)) $roles[$role->cn] = $role->description;
-				}
-				return view('admin.bureauteacheredit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'area' => $area, 'dc' => $dc, 'areas' => $areas, 'schools' => $schools, 'types' => $types, 'ous' => $ous, 'roles' => $roles, 'user' => $user ]);
+				return view('admin.bureauteacheredit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'area' => $area, 'dc' => $dc, 'areas' => $areas, 'schools' => $schools, 'types' => $types, 'user' => $user ]);
 			} else {
 				return view('admin.bureaustudentedit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'area' => $area, 'dc' => $dc, 'areas' => $areas, 'schools' => $schools, 'classes' => $classes, 'user' => $user ]);
 			}
 		} else { //add
-	    	$data = $openldap->getRoles($dc, $my_ou);
-			$roles = array();
-			foreach ($data as $role) {
-				if (!array_key_exists($role->cn, $roles)) $roles[$role->cn] = $role->description;
-			}
-			return view('admin.bureaupeopleedit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'area' => $area, 'dc' => $dc, 'areas' => $areas, 'schools' => $schools, 'types' => $types, 'classes' => $classes, 'ous' => $ous, 'roles' => $roles ]);
+			return view('admin.bureaupeopleedit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'area' => $area, 'dc' => $dc, 'areas' => $areas, 'schools' => $schools, 'types' => $types, 'classes' => $classes ]);
 		}
 	}
 	
     public function bureauPeopleJSONForm(Request $request)
 	{
 		$user = new \stdClass;
-		$user->id = 'B123456789';
-		$user->account = 'myaccount';
-		$user->password = 'My_p@ssw0rD';
-		$user->o = 'meps';
+		$user->id = 'A123456789';
+		$user->o = ['meps', 'bureau'];
 		$user->type = '教師';
-		$user->ou = 'dept02';
-		$user->role = 'role014';
-		$user->tclass = array('606,sub01', '607,sub01', '608,sub01', '609,sub01', '610,sub01');
-		$user->stdno = '102247';
-		$user->class = '601';
-		$user->seat = '7';
-		$user->character = '雙胞胎 外籍配偶子女';
 		$user->sn = '蘇';
 		$user->gn = '小小';
-		$user->name = '蘇小小';
 		$user->gender = 2;
 		$user->birthdate = '20101105';
 		$user->mail = 'johnny@tp.edu.tw';
@@ -176,28 +152,24 @@ class BureauController extends Controller
 		$user->address = "新北市板橋區中山路1段196號";
 		$user->www = 'http://johnny.dev.io';
 		$user2 = new \stdClass;
-		$user2->id = 'A123456789';
+		$user2->id = 'B123456789';
 		$user2->o = 'meps';
-		$user2->type = '教師';
-		$user2->ou = 'dept02';
-		$user2->role = 'role014';
-		$user2->tclass = array('606,sub01', '607,sub01', '608,sub01', '609,sub01', '610,sub01');
+		$user2->type = '學生';
+		$user2->stdno = '102247';
+		$user2->class = '601';
+		$user2->seat = '7';
 		$user2->sn = '蘇';
 		$user2->gn = '小小';
 		$user2->gender = 2;
 		$user2->birthdate = '20101105';
-		$user3 = new \stdClass;
-		$user3->id = 'B123456789';
-		$user3->o = 'meps';
-		$user3->type = '學生';
-		$user3->stdno = '102247';
-		$user3->class = '601';
-		$user3->seat = '7';
-		$user3->sn = '蘇';
-		$user3->gn = '小小';
-		$user3->gender = 2;
-		$user3->birthdate = '20101105';
-		return view('admin.bureaupeoplejson', [ 'sample1' => $user, 'sample2' => $user2, 'sample3' => $user3 ]);
+		$user2->mail = 'johnny@tp.edu.tw';
+		$user2->mobile = '0900100200';
+		$user2->fax = '(02)23093736';
+		$user2->otel = '(02)23033555';
+		$user2->htel = '(03)3127221';
+		$user2->register = "臺北市中正區龍興里9鄰三元街17巷22號5樓";
+		$user2->address = "新北市板橋區中山路1段196號";
+		$user->www = 'http://johnny.dev.io';		return view('admin.bureaupeoplejson', [ 'sample1' => $user, 'sample2' => $user2 ]);
 	}
 	
     public function importBureauPeople(Request $request)
@@ -255,15 +227,6 @@ class BureauController extends Controller
 						$messages[] = "第 $i 筆記錄，".$person->name."無座號，跳過不處理！";
 		    			continue;
 					}
-/*				} else {
-					if (!isset($person->ou) || empty($person->ou)) {
-						$messages[] = "第 $i 筆記錄，".$person->name."無隸屬單位，跳過不處理！";
-			    		continue;
-					}
-					if (!isset($person->title) || empty($person->title)) {
-						$messages[] = "第 $i 筆記錄，".$person->name."無主要職稱，跳過不處理！";
-			    		continue;
-					}*/
 				}
 				$validator = Validator::make(
     				[ 'gender' => $person->gender ], [ 'gender' => 'required|digits:1' ]
@@ -279,10 +242,14 @@ class BureauController extends Controller
 					$messages[] = "第 $i 筆記錄，".$person->name."出生日期格式或內容不正確，跳過不處理！";
 		    		continue;
 				}
-				$dc = $person->o;
-				$entry = $openldap->getOrgEntry($dc);
-				$sid = $openldap->getOrgData($entry, 'tpUniformNumbers');
-				$sid = $sid['tpUniformNumbers'];
+				$orgs = $person->o;
+				$educloud = array();
+				foreach ($orgs as $o) {
+					$entry = $openldap->getOrgEntry($o);
+					$data = $openldap->getOrgData($entry, 'tpUniformNumbers');
+					$sid = $data['tpUniformNumbers'];
+					$educloud[] = json_encode(array("sid" => $sid, "role" => $request->get('type')), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
+				}
 				$user_dn = Config::get('ldap.userattr')."=".$person->id.",".Config::get('ldap.userdn');
 				$entry = array();
 				$entry["objectClass"] = array("tpeduPerson","inetUser");
@@ -293,29 +260,13 @@ class BureauController extends Controller
     			$entry["displayName"] = $person->name;
     			$entry["gender"] = $person->gender;
 				$entry["birthDate"] = $person->birthdate."000000Z";
-    			$entry["o"] = $dc;
+    			$entry["o"] = $orgs;
+				$entry['info'] = $educloud;
     			$entry["employeeType"] = $person->type;
-				$entry['info'] = json_encode(array("sid" => $sid, "role" => $person->type), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 				if ($person->type == '學生') {
     				$entry["employeeNumber"] = $person->stdno;
     				$entry["tpClass"] = $person->class;
 	    			$entry["tpSeat"] = $person->seat;
-	    		} else {
-	    			if (isset($person->ou)) $entry["ou"] = $person->ou;
-    				if (isset($person->title)) $entry["title"] = $person->role;
-			    	if (isset($person->tclass)) {
-		    			$data = array();
-		    			$classes = array();
-		    			if (is_array($person->tclass)) {
-			    			$data = $person->tclass;
-			    		} else {
-			    			$data[] = $person->tclass;
-		    			}
-		    			foreach ($data as $class) {
-	    					if ($openldap->getOuEntry($dc, $class)) $classes[] = $class;
-	    				}
-		    			$entry['tpTeachClass'] = $classes;
-	    			}
     			}
 				$account = array();
    				$account["objectClass"] = "radiusObjectProfile";
@@ -459,6 +410,7 @@ class BureauController extends Controller
 	
     public function createBureauPeople(Request $request)
     {
+		$openldap = new LdapServiceProvider();
 		$my_field = $request->session()->get('field');
 		$keywords = $request->session()->get('keywords');
 		$validatedData = $request->validate([
@@ -470,13 +422,20 @@ class BureauController extends Controller
 			'www' => 'nullable|url',
 		]);
 		$idno = strtoupper($request->get('idno'));
+		$orgs = $request->get('o');
+		$educloud = array();
+		foreach ($orgs as $o) {
+			$entry = $openldap->getOrgEntry($o);
+			$data = $openldap->getOrgData($entry, 'tpUniformNumbers');
+			$sid = $data['tpUniformNumbers'];
+			$educloud[] = json_encode(array("sid" => $sid, "role" => $request->get('type')), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
+		}
 		$info = array();
 		$info['objectClass'] = array('tpeduPerson', 'inetUser');
-		$info['o'] = $request->get('o');
+		$info['o'] = $orgs;
+		$info['info'] = $educloud;
 		if ($request->get('type') != '學生') {
 			$info['employeeType'] = $request->get('type');
-			if ($request->has('ou')) $info['ou'] = $request->get('ou');
-			if ($request->has('title')) $info['title'] = $request->get('role');
 		} else {
 			$validatedData = $request->validate([
 				'stdno' => 'required|string',
@@ -487,11 +446,6 @@ class BureauController extends Controller
 			$info['tpClass'] = $request->get('tclass');
 			$info['tpSeat'] = $request->get('seat');
 		}
-		$openldap = new LdapServiceProvider();
-		$entry = $openldap->getOrgEntry($info['o']);
-		$sid = $openldap->getOrgData($entry, 'tpUniformNumbers');
-		$sid = $sid['tpUniformNumbers'];
-		$info['info'] = json_encode(array("sid" => $sid, "role" => $request->get('type')), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 		$info['inetUserStatus'] = 'active';
 		$info['cn'] = $idno;
 		$info['dn'] = Config::get('ldap.userattr').'='.$info['cn'].','.Config::get('ldap.userdn');
@@ -568,8 +522,10 @@ class BureauController extends Controller
 	
     public function updateBureauTeacher(Request $request, $uuid)
     {
+		$openldap = new LdapServiceProvider();
 		$my_field = $request->session()->get('field');
 		$keywords = $request->session()->get('keywords');
+		$area = $request->get('area')[0];
 		$validatedData = $request->validate([
 			'idno' => new idno,
 			'sn' => 'required|string',
@@ -579,19 +535,18 @@ class BureauController extends Controller
 			'www' => 'nullable|url',
 		]);
 		$idno = strtoupper($request->get('idno'));
+		$orgs = $request->get('o');
+		$educloud = array();
+		foreach ($orgs as $o) {
+			$entry = $openldap->getOrgEntry($o);
+			$data = $openldap->getOrgData($entry, 'tpUniformNumbers');
+			$sid = $data['tpUniformNumbers'];
+			$educloud[] = json_encode(array("sid" => $sid, "role" => $request->get('type')), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
+		}
 		$info = array();
 		$info['employeeType'] = $request->get('type');
-		$info['o'] = $request->get('o');
-		if (!empty($request->get('ou'))) {
-			$info['ou'] = $request->get('ou');
-		} else {
-			$info['ou'] = [];
-		}
-		if (!empty($request->get('role'))) {
-			$info['title'] = $request->get('role');
-		} else {
-			$info['title'] = [];
-		}
+		$info['o'] = $orgs;
+		$info['info'] = $educloud;
 		$info['sn'] = $request->get('sn');
 		$info['givenName'] = $request->get('gn');
 		$info['displayName'] = $info['sn'].$info['givenName'];
@@ -681,7 +636,6 @@ class BureauController extends Controller
 			$info['homePhone'] = $data;
 		}
 		
-		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getUserEntry($uuid);
 		$original = $openldap->getUserData($entry, 'cn');
 		$result = $openldap->updateData($entry, $info);
@@ -695,14 +649,14 @@ class BureauController extends Controller
 	        		->first();
 	        		if ($user) $user->delete();
 					if ($request->user()->idno == $original['cn']) Auth::logout();
-					return redirect('bureau/people?area='.$request->get('area').'&dc='.$request->get('o').'&field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新教師基本資料！");
+					return redirect('bureau/people?area='.$area.'&dc='.$orgs[0].'&field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新教師基本資料！");
 				} else {
-					return redirect('bureau/people?area='.$request->get('area').'&dc='.$request->get('o').'&field='.$my_field.'&keywords='.$keywords)->with("error", "教師身分證字號變更失敗！".$openldap->error());
+					return redirect('bureau/people?area='.$area.'&dc='.$orgs[0].'&field='.$my_field.'&keywords='.$keywords)->with("error", "教師身分證字號變更失敗！".$openldap->error());
 				}
 			}
-			return redirect('bureau/people?area='.$request->get('area').'&dc='.$request->get('o').'&field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新教師基本資料！");
+			return redirect('bureau/people?area='.$area.'&dc='.$orgs[0].'&field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新教師基本資料！");
 		} else {
-			return redirect('bureau/people?area='.$request->get('area').'&dc='.$request->get('o').'&field='.$my_field.'&keywords='.$keywords)->with("error", "教師基本資料變更失敗！".$openldap->error());
+			return redirect('bureau/people?area='.$area.'&dc='.$orgs[0].'&field='.$my_field.'&keywords='.$keywords)->with("error", "教師基本資料變更失敗！".$openldap->error());
 		}
 	}
 	

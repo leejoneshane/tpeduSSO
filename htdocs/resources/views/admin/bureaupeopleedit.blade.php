@@ -27,7 +27,7 @@
 		    	@csrf
 			    <div class="form-group{{ $errors->has('idno') ? ' has-error' : '' }}">
 					<label>身分證字號</label>
-					<input id="idno" type="text" class="form-control" name="idno" value="{{ isset($user) ? $user['cn'] : '' }}" required>
+					<input id="idno" type="text" class="form-control" name="idno" value="" required>
 					@if ($errors->has('idno'))
 						<p class="help-block">
 							<strong>{{ $errors->first('idno') }}</strong>
@@ -36,7 +36,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('sn') ? ' has-error' : '' }}">
 					<label>姓氏</label>
-					<input id="sn" type="text" class="form-control" name="sn" value="{{ isset($user) ? $user['sn'] : '' }}" required>
+					<input id="sn" type="text" class="form-control" name="sn" value="" required>
 					@if ($errors->has('sn'))
 						<p class="help-block">
 							<strong>{{ $errors->first('sn') }}</strong>
@@ -45,7 +45,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('gn') ? ' has-error' : '' }}">
 					<label>名字</label>
-					<input id="gn" type="text" class="form-control" name="gn" value="{{ isset($user) ? $user['givenName'] : '' }}" required>
+					<input id="gn" type="text" class="form-control" name="gn" value="" required>
 					@if ($errors->has('gn'))
 						<p class="help-block">
 							<strong>{{ $errors->first('gn') }}</strong>
@@ -53,17 +53,36 @@
 					@endif
 				</div>
 			    <div class="form-group">
-					<label>隸屬機構</label>
-					<select id="area" class="form-control" name="area" onchange="refresh_orgs()">
-					@foreach ($areas as $st)
-			    		<option value="{{ $st }}"{{ $st == $area ? ' selected' : '' }}>{{ $st }}</option>
-			    	@endforeach
-					</select>
-					<select id="o" class="form-control" name="o" onchange="refresh_units(); refresh_classes()">
-					@foreach ($schools as $dc => $desc)
-			    		<option value="{{ $dc }}">{{ $desc }}</option>
-			    	@endforeach
-					</select>
+				<label style="display:block">隸屬機構</label>
+					@if (isset($user) && is_array($user['o']))
+						@foreach ($user['o'] as $o)
+							<select class="form-control" style="width:25%;display:inline" name="area[]" onchange="refresh_orgs(this)">
+							@foreach ($areas as $st)
+				    		<option value="{{ $st }}"{{ $st == $area ? ' selected' : '' }}>{{ $st }}</option>
+					    	@endforeach
+							</select>
+							<select class="form-control" style="width:35%;display:inline" name="o[]">
+							@foreach ($schools as $o => $desc)
+			    			<option value="{{ $o }}"{{ $dc == $o ? ' selected' : '' }}>{{ $desc }}</option>
+			    			@endforeach
+							</select>
+							@if (!$loop->first)
+							<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().prev().remove();$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
+							@endif
+						@endforeach
+					@else
+						<select class="form-control" style="width:25%;display:inline" name="area[]" onchange="refresh_orgs(this)">
+							@foreach ($areas as $st)
+				    		<option value="{{ $st }}"{{ $st == $area ? ' selected' : '' }}>{{ $st }}</option>
+					    	@endforeach
+						</select>
+						<select class="form-control" style="width:35%;display:inline" name="o[]">
+							@foreach ($schools as $o => $desc)
+			    			<option value="{{ $o }}"{{ $dc == $o ? ' selected' : '' }}>{{ $desc }}</option>
+			    			@endforeach
+						</select>
+					@endif
+					<button id="no" type="button" class="btn btn-primary btn-circle" onclick="add_org()"><i class="fa fa-plus"></i></button>
 				</div>
 			    <div class="form-group">
 					<label>身份別</label>
@@ -72,24 +91,6 @@
 			    		<option value="{{ $type }}">{{ $type }}</option>
 			    	@endforeach
 					</select>
-				</div>
-				<div id="teacher">
-				    <div class="form-group">
-						<label>隸屬單位</label>
-						<select id="ou" class="form-control" name="ou" onchange="refresh_roles()">
-						@foreach ($ous as $ou => $desc)
-			    			<option value="{{ $ou }}">{{ $desc }}</option>
-			    		@endforeach
-						</select>
-					</div>
-				    <div class="form-group">
-						<label>主要職稱</label>
-						<select id="role" class="form-control" name="role">
-						@foreach ($roles as $role => $desc)
-			    			<option value="{{ $role }}">{{ $desc }}</option>
-			    		@endforeach
-						</select>
-					</div>
 				</div>
 				<div id="student" style="display: none;">
 			    	<div class="form-group{{ $errors->has('stdno') ? ' has-error' : '' }}">
@@ -223,25 +224,26 @@
 				</div>
 			</form>
 			<script type="text/javascript">
-				function refresh_orgs() {
-					axios.get('/bureau/orgs/' + $('#area').val())
+				function refresh_orgs(obj) {
+					st = $(obj).val();
+					axios.get('/bureau/orgs/' + st)
     					.then(response => {
-    						$('#o').find('option').remove();
+    						$(obj).next().find('option').remove();
         					response.data.forEach(
-        						function add_option(org) { $('#o').append('<option value="' + org.o + '">' + org.description + '</option>'); }
+        						function add_option(org) { $(obj).next().append('<option value="' + org.o + '">' + org.description + '</option>'); }
         					);
-		  					refresh_classes();
-		  					refresh_units();
+							o = $(obj).next().find('option:first').val();
+		  					refresh_classes(o);
     					})
 						.catch(function (error) {
 							console.log(error);
   						});
       			};
       			
-				function refresh_classes() {
-					axios.get('/bureau/classes/' + $('#o').val())
+				function refresh_classes(o) {
+					$('#tclass').find('option').remove();
+					axios.get('/bureau/classes/' + o)
     					.then(response => {
-    						$('#tclass').find('option').remove();
         					response.data.forEach(
         						function add_option(tclass) { $('#tclass').append('<option value="' + tclass.ou + '">' + tclass.description + '</option>'); }
         					);
@@ -252,41 +254,25 @@
   					$('#ou option:first').attr('selected', true);
       			};
       			
-				function refresh_units() {
-					axios.get('/bureau/units/' + $('#o').val())
-    					.then(response => {
-    						$('#ou').find('option').remove();
-        					response.data.forEach(
-        						function add_option(unit) { $('#ou').append('<option value="' + unit.ou + '">' + unit.description + '</option>'); }
-        					);
-		  					refresh_roles();
-    					})
-						.catch(function (error) {
-							console.log(error);
-  						});
-  					$('#ou option:first').attr('selected', true);
-      			};
-      			
-				function refresh_roles() {
-					axios.get('/bureau/roles/' + $('#o').val() + '/' + $('#ou').val())
-    					.then(response => {
-    						$('#role').find('option').remove();
-        					response.data.forEach(
-        						function add_option(role) { $('#role').append('<option value="' + role.cn + '">' + role.description + '</option>'); }
-        					);
-    					})
-						.catch(function (error) {
-							console.log(error);
-  						});
-      			};
-      			
+				function add_org() {
+					my_item = '<div></div>';
+      				my_item += '<select class="form-control" style="width:25%;display:inline" name="area[]" onchange="refresh_orgs(this)">';
+					my_item += '<option value="">請選擇</option>';
+					@foreach ($areas as $st)
+				    my_item += '<option value="{{ $st }}">{{ $st }}</option>';
+				    @endforeach
+					my_item += '</select>';
+      				my_item += '<select class="form-control" style="width:35%;display:inline" name="o[]">';
+					my_item += '</select>';
+					my_item += '<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().prev().remove();$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>';
+					$('#no').before(my_item);
+				};
+
       			function switchtype() {
       				if ($('#type').val() == '學生') {
       					$('#student').show();
-      					$('#teacher').hide();
       				} else {
       					$('#student').hide();
-      					$('#teacher').show();
       				}	
 				}
 				

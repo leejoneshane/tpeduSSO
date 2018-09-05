@@ -54,40 +54,45 @@
 					@endif
 				</div>
 			    <div class="form-group">
-					<label>隸屬機構</label>
-					<select id="area" class="form-control" name="area" onchange="refresh_orgs()">
-					@foreach ($areas as $st)
-			    		<option value="{{ $st }}"{{ $st == $area ? ' selected' : '' }}>{{ $st }}</option>
-			    	@endforeach
-					</select>
-					<select id="o" class="form-control" name="o" onchange="refresh_units()">
-					@foreach ($schools as $dc => $desc)
-			    		<option value="{{ $dc }}"{{ array_key_exists('o', $user) && $dc == $user['o'] ? ' selected' : '' }}>{{ $desc }}</option>
-			    	@endforeach
-					</select>
+					<label style="display:block">隸屬機構</label>
+					@if (is_array($user['o']))
+						@foreach ($user['o'] as $o)
+							<select class="form-control" style="width:25%;display:inline" name="area[]" onchange="refresh_orgs(this)">
+							@foreach ($areas as $st)
+				    		<option value="{{ $st }}"{{ $st == $area ? ' selected' : '' }}>{{ $st }}</option>
+					    	@endforeach
+							</select>
+							<select class="form-control" style="width:35%;display:inline" name="o[]">
+							@foreach ($schools as $dc => $desc)
+			    			<option value="{{ $dc }}"{{ $dc == $user['o'] ? ' selected' : '' }}>{{ $desc }}</option>
+			    			@endforeach
+							</select>
+							@if (!$loop->first)
+							<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().prev().remove();$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
+							@endif
+						@endforeach
+					@else
+						<select class="form-control" style="width:25%;display:inline" name="area[]" onchange="refresh_orgs(this)">
+							@foreach ($areas as $st)
+				    		<option value="{{ $st }}"{{ $st == $area ? ' selected' : '' }}>{{ $st }}</option>
+					    	@endforeach
+						</select>
+						<select class="form-control" style="width:35%;display:inline" name="o[]">
+							@foreach ($schools as $dc => $desc)
+			    			<option value="{{ $dc }}"{{ $dc == $user['o'] ? ' selected' : '' }}>{{ $desc }}</option>
+			    			@endforeach
+						</select>
+					@endif
+					<button id="no" type="button" class="btn btn-primary btn-circle" onclick="add_org()"><i class="fa fa-plus"></i></button>
 				</div>
 			    <div class="form-group">
 					<label>身份別</label>
 					<select id="type" class="form-control" name="type" onchange="switchtype()">
 					@foreach ($types as $type)
+						@if ($type != '學生')
 			    		<option value="{{ $type }}"{{ array_key_exists('employeeType', $user) && $type == $user['employeeType'] ? ' selected' : '' }}>{{ $type }}</option>
-			    	@endforeach
-					</select>
-				</div>
-			    <div class="form-group">
-					<label>隸屬單位</label>
-					<select id="ou" class="form-control" name="ou" onchange="refresh_roles()">
-					@foreach ($ous as $ou => $desc)
-			    		<option value="{{ $ou }}"{{ array_key_exists('ou', $user) && $ou == $user['ou'] ? ' selected' : '' }}>{{ $desc }}</option>
-			    	@endforeach
-					</select>
-				</div>
-			    <div class="form-group">
-					<label>主要職稱</label>
-					<select id="role" class="form-control" name="role">
-					@foreach ($roles as $role => $desc)
-			    		<option value="{{ $role }}"{{ array_key_exists('title', $user) && $role == $user['title'] ? ' selected' : '' }}>{{ $desc }}</option>
-			    	@endforeach
+			    		@endif
+					@endforeach
 					</select>
 				</div>
 			    <div class="form-group{{ $errors->has('character') ? ' has-error' : '' }}">
@@ -249,41 +254,13 @@
 				</div>
 			</form>
 			<script type="text/javascript">
-				function refresh_orgs() {
-					axios.get('/bureau/orgs/' + $('#area').val())
+				function refresh_orgs(obj) {
+					st = $(obj).val();
+					axios.get('/bureau/orgs/' + st)
     					.then(response => {
-    						$('#o').find('option').remove();
+    						$(obj).next().find('option').remove();
         					response.data.forEach(
-        						function add_option(org) { $('#o').append('<option value="' + org.o + '">' + org.description + '</option>'); }
-        					);
-		  					refresh_units();
-    					})
-						.catch(function (error) {
-							console.log(error);
-  						});
-      			};
-      			
-				function refresh_units() {
-					axios.get('/bureau/units/' + $('#o').val())
-    					.then(response => {
-    						$('#ou').find('option').remove();
-        					response.data.forEach(
-        						function add_option(unit) { $('#ou').append('<option value="' + unit.ou + '">' + unit.description + '</option>'); }
-        					);
-		  					refresh_roles();
-    					})
-						.catch(function (error) {
-							console.log(error);
-  						});
-  					$('#ou option:first').attr('selected', true);
-      			};
-      			
-				function refresh_roles() {
-					axios.get('/bureau/roles/' + $('#o').val() + '/' + $('#ou').val())
-    					.then(response => {
-    						$('#role').find('option').remove();
-        					response.data.forEach(
-        						function add_option(role) { $('#role').append('<option value="' + role.cn + '">' + role.description + '</option>'); }
+        						function add_option(org) { $(obj).next().append('<option value="' + org.o + '">' + org.description + '</option>'); }
         					);
     					})
 						.catch(function (error) {
@@ -291,6 +268,20 @@
   						});
       			};
       			
+				  function add_org() {
+					my_item = '<div></div>';
+      				my_item += '<select class="form-control" style="width:25%;display:inline" name="area[]" onchange="refresh_orgs(this)">';
+					my_item += '<option value="">請選擇</option>';
+					@foreach ($areas as $st)
+				    my_item += '<option value="{{ $st }}">{{ $st }}</option>';
+				    @endforeach
+					my_item += '</select>';
+      				my_item += '<select class="form-control" style="width:35%;display:inline" name="o[]">';
+					my_item += '</select>';
+					my_item += '<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().prev().remove();$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>';
+					$('#no').before(my_item);
+				};
+
      			function add_character() {
 					$('#ncharacter').before('<input type="text" class="form-control" style="width:50%;display:inline" name="character[]" placeholder="請用中文描述，例如：巡迴教師、均一平台管理員...，無則省略。" required>');
 					$('#ncharacter').before('<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>');

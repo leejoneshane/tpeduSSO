@@ -28,6 +28,7 @@
 				@foreach ($ous as $ou => $desc)
 			    	<option value="ou={{ $ou }}" {{ $my_field == 'ou='.$ou ? 'selected' : '' }}>{{ $desc }}</option>
 			    @endforeach
+			    <option value="ou=empty" {{ $my_field == 'ou=empty' ? 'selected' : '' }}>無單位</option>
 			    <option value="ou=deleted" {{ $my_field == 'ou=deleted' ? 'selected' : '' }}>已刪除</option>
 			</select>
         	<input type="text" class="form-control" style="width:auto" id="keywords" name="keywords" value="{{ old('keywords') }}">

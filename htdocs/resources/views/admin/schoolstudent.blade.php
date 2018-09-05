@@ -28,6 +28,7 @@
 				@foreach ($classes as $ou => $desc)
 			    	<option value="ou={{ $ou }}" {{ $my_field == 'ou='.$ou ? 'selected' : '' }}>{{ $desc }}</option>
 			    @endforeach
+			    <option value="ou=empty" {{ $my_field == 'ou=empty' ? 'selected' : '' }}>無班級</option>
 			    <option value="ou=deleted" {{ $my_field == 'ou=deleted' ? 'selected' : '' }}>已刪除</option>
 			</select>
         	<input type="text" class="form-control" style="width:auto" id="keywords" name="keywords" value="{{ old('keywords') }}">
@@ -87,7 +88,7 @@
 							 	onclick="$('#form').attr('action','{{ route('school.updateStudent', [ 'dc' => $dc, 'uuid' => $student['entryUUID'] ]) }}');
 										 $('#form').attr('method', 'GET');
 										 $('#form').submit();">編輯</button>
-							@if ($student['inetUserStatus'] != '已刪除')
+							@if ($student['inetUserStatus'] != 'deleted')
 							<button type="button" class="btn btn-warning"
 							 	onclick="$('#form').attr('action','{{ route('school.toggle', [ 'uuid' => $student['entryUUID'] ]) }}');
 										 $('#form').attr('method', 'POST');

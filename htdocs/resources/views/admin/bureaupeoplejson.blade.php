@@ -34,7 +34,7 @@
 		</div>
 		<div class="panel panel-default">	  
 		<div class="panel-heading">
-			<h4>人員資訊 JSON 格式範例</h4>
+			<h4>教師 JSON 格式範例</h4>
 		</div>
 		<div class="panel-body">
 			<div class="form-group">
@@ -44,15 +44,21 @@
 		</div>
 		<div class="panel panel-default">	  
 		<div class="panel-heading">
-			<h4>移除可省略欄位後之精簡範例</h4>
+			<h4>學生 JSON 格式範例</h4>
 		</div>
 		<div class="panel-body">
 			<div class="form-group">
 			{{ json_encode($sample2, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) }}
 			</div>
-			或
+		</div>
+		</div>
+		<div class="panel panel-default">	  
+		<div class="panel-heading">
+			<h4>可省略欄位</h4>
+		</div>
+		<div class="panel-body">
 			<div class="form-group">
-			{{ json_encode($sample3, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) }}
+			上述兩種 JSON 格式中，非必要欄位包含：email、mobile、fax、otel、htel、register、address、www。其餘欄位為必填欄位不可省略。
 			</div>
 		</div>
 		</div>
@@ -72,19 +78,10 @@
 					<dt>password</dt>
 					<dd>密碼，是單一資料。最少 6 個字元。可省略。省略時以身分證字號後六碼為預設密碼。</dd>
 					<dt>o</dt>
-					<dd>學校代號，是單一資料。預設為各級學校網域名稱。教育局使用 bureau。</dd>
+					<dd>學校代號，若身份為學生，是單一資料；若身份為教師，則允許多筆資料，請使用陣列表示法（詳見通則）。預設為各級學校網域名稱。教育局使用 bureau。</dd>
 					<dt>type</dt>
 					<dd>身份別，是單一資料。右列擇一：教師、學生、校長、職工、主官管。</dd>
 					<hr>
-					<dt>若身份非學生，須包含：</dt>
-					<dd>
-						<dt>ou</dt>
-						<dd>組織單位代號，是單一資料。由各校自訂，只允許英文字母加數字。可省略。</dd>
-						<dt>role</dt>
-						<dd>職稱代號，是單一資料。由各校自訂，只允許英文字母加數字。可省略。</dd>
-						<dt>tclass</dt>
-						<dd>任教班級及科目，允許多筆資料。班級代號與科目代號之間，使用 , 間隔，並用 " " 括起來，例如："601,SUB02"。未安排課務時可省略。</dd>
-					</dd>
 					<dt>若身份是學生，須包含：</dt>
 					<dd>
 						<dt>stdno</dt>
@@ -133,9 +130,9 @@
 		</div>
 		<div class="panel-body">
 			<div class="form-group">
-			想要一次匯入多位老師嗎？一位老師的資料是一個物件，老師之間使用 , 間隔，表徵成陣列。例如：
+			想要一次匯入多位人員嗎？一位人員的資料是一個物件，人員之間使用 , 間隔，表徵成陣列。例如：
 			<p>
-			[第一位老師的JSON字串,第二位老師的JSON字串,......省略.....,最後一位老師的JSON字串]
+			[A老師的JSON字串,B學生的JSON字串,......省略.....,最後一位人員的JSON字串]
 			</p>
 			</div>
 		</div>
