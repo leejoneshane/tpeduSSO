@@ -242,7 +242,11 @@ class BureauController extends Controller
 					$messages[] = "第 $i 筆記錄，".$person->name."出生日期格式或內容不正確，跳過不處理！";
 		    		continue;
 				}
-				$orgs = $person->o;
+				if (is_array($person->o)) {
+					$orgs = $person->o;
+				} else {
+					$orgs[] = $person->o;
+				}
 				$educloud = array();
 				foreach ($orgs as $o) {
 					$entry = $openldap->getOrgEntry($o);
@@ -413,6 +417,7 @@ class BureauController extends Controller
 		$openldap = new LdapServiceProvider();
 		$my_field = $request->session()->get('field');
 		$keywords = $request->session()->get('keywords');
+		$area = $request->get('area')[0];
 		$validatedData = $request->validate([
 			'idno' => new idno,
 			'sn' => 'required|string',
@@ -514,9 +519,9 @@ class BureauController extends Controller
 
 		$result = $openldap->createEntry($info);
 		if ($result) {
-			return redirect('bureau/people?area='.$request->get('area').'&dc='.$request->get('o').'&field='.$my_field.'&keywords='.$keywords)->with("error", "已經為您建立新人員！".$openldap->error());
+			return redirect('bureau/people?area='.$area.'&dc='.$orgs[0].'&field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您建立新人員！".$openldap->error());
 		} else {
-			return redirect('bureau/people?area='.$request->get('area').'&dc='.$request->get('o').'&field='.$my_field.'&keywords='.$keywords)->with("error", "人員新增失敗！".$openldap->error());
+			return redirect('bureau/people?area='.$area.'&dc='.$orgs[0].'&field='.$my_field.'&keywords='.$keywords)->with("error", "人員新增失敗！".$openldap->error());
 		}
 	}
 	
@@ -664,6 +669,8 @@ class BureauController extends Controller
 	{
 		$my_field = $request->session()->get('field');
 		$keywords = $request->session()->get('keywords');
+		$area = $request->get('area');
+		$dc = $request->get('o');
 		$validatedData = $request->validate([
 			'idno' => new idno,
 			'sn' => 'required|string',
@@ -778,14 +785,14 @@ class BureauController extends Controller
 	        		->where('idno', $original['cn'])
 	        		->first();
 	        		if ($user) $user->delete();				
-					return redirect('bureau/people?area='.$request->get('area').'&dc='.$request->get('o').'&field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新學生基本資料！");
+					return redirect('bureau/people?area='.$area.'&dc='.$dc.'&field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新學生基本資料！");
 				} else {
-					return redirect('bureau/people?area='.$request->get('area').'&dc='.$request->get('o').'&field='.$my_field.'&keywords='.$keywords)->with("error", "學生身分證字號變更失敗！".$openldap->error());
+					return redirect('bureau/people?area='.$area.'&dc='.$dc.'&field='.$my_field.'&keywords='.$keywords)->with("error", "學生身分證字號變更失敗！".$openldap->error());
 				}
 			}
-			return redirect('bureau/people?area='.$request->get('area').'&dc='.$request->get('o').'&field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新學生基本資料！");
+			return redirect('bureau/people?area='.$area.'&dc='.$dc.'&field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新學生基本資料！");
 		} else {
-			return redirect('bureau/people?area='.$request->get('area').'&dc='.$request->get('o').'&field='.$my_field.'&keywords='.$keywords)->with("error", "學生基本資料變更失敗！".$openldap->error());
+			return redirect('bureau/people?area='.$area.'&dc='.$dc.'&field='.$my_field.'&keywords='.$keywords)->with("error", "學生基本資料變更失敗！".$openldap->error());
 		}
 	}
 	

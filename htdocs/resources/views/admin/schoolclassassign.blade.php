@@ -81,13 +81,11 @@
 			</div>
 			<div id="teachers" class="form-group">
 				<table><tbody><tr>
-				<?php $i = 0; ?>
 				@foreach ($teachers as $teacher)
-				    <?php $i++; ?>
 					<td> <!--label class="checkbox-inline"-->
-						<input type="checkbox" name="teachers[]" value="{{ $teacher->idno }}">{{ $teacher->name }}（{{ $teacher->title }}）
+						<input type="checkbox" name="teachers[]" value="{{ $teacher['cn'] }}">{{ $teacher['displayName'] }}（{{ $teacher['titleName'][$dc] }}）
 					</td>
-					@if ($i % 6 == 0)
+					@if ($loop->index % 6 == 0)
 					</tr><tr>
 					@endif
 				@endforeach

@@ -1447,11 +1447,26 @@ class SchoolController extends Controller
 		
 		$openldap = new LdapServiceProvider();
 		if ($role != $info['cn']) {
-			$users = $openldap->findUsers("(&(o=$dc)(ou=$ou)(title=$role))", "cn");
-			for ($i=0;$i < $users['count'];$i++) {
-	    		$idno = $users[$i]['cn'][0];
-	    		$user_entry = $openldap->getUserEntry($idno);
-	    		$openldap->updateData($user_entry, ['title' => $info['cn'] ]);
+			$users = $openldap->findUsers("(&(o=$dc)(ou=$dc,$ou)(title=$dc,$ou,$role))", [ "cn", "o", "ou", "title" ]);
+			foreach ($users as $user) {
+	    		$idno = $user['cn'];
+				$user_entry = $openldap->getUserEntry($idno);
+				$roles = array();
+				$titles = array();
+				if (isset($user['title'])) {
+					if (is_array($user['title'])) {
+						$titles = $user['title'];
+					} else {
+						$titles[] = $user['title'];
+					}
+				}
+				foreach ($titles as $title) {
+					$a = explode(',', $title);
+					if (count($a) == 3 && ($a[0] != $dc || $a[1] != $ou || $a[2] != $role)) $roles[] = $title; 
+					if (count($a) == 1 && $a[0] != $role) $roles[] = $dc.','.$ou.','.$title;
+				}
+				$roles = array_value(array_unique($roles + [ $dc.','.$ou.','.$info['cn'] ]));
+	    		$openldap->updateData($user_entry, [ 'title' => $roles ]);
 			}
 		}
 		$entry = $openldap->getRoleEntry($dc, $ou, $role);
@@ -1466,7 +1481,7 @@ class SchoolController extends Controller
     public function removeSchoolRole(Request $request, $dc, $ou, $role)
     {
 		$openldap = new LdapServiceProvider();
-		$users = $openldap->findUsers("(&(o=$dc)(ou=$ou)(title=$role))", "cn");
+		$users = $openldap->findUsers("(&(o=$dc)(ou=$dc,$ou)(title=$dc,$ou,$role))", "cn");
 		if ($users && $users['count']>0) {
 			return redirect()->back()->with("error", "尚有人員從事該職務，因此無法刪除！");
 		}
@@ -1546,14 +1561,7 @@ class SchoolController extends Controller
 		$ous = $openldap->getOus($dc, '行政部門');
 		if (empty($my_ou) && !empty($ous)) $my_ou = $ous[0]->ou;
 		$teachers = array();
-		$data = $openldap->findUsers("(&(o=$dc)(ou=$my_ou))", ["cn","displayName","o","ou","title"]);
-		for ($i=0;$i<$data['count'];$i++) {
-			$teacher = new \stdClass;
-			$teacher->idno = $data[$i]['cn'][0];
-			$teacher->name = $data[$i]['displayname'][0];
-			$teacher->title = $openldap->getRoleTitle($dc, $data[$i]['ou'][0], $data[$i]['title'][0]);
-			$teachers[] = $teacher;
-		}
+		$teachers = $openldap->findUsers("(&(o=$dc)(ou=$my_ou))");
 		return view('admin.schoolclassassign', [ 'dc' => $dc, 'my_grade' => $my_grade, 'subjects' => $subjects, 'grades' => $grades, 'classes' => $classes, 'my_ou' => $my_ou, 'ous' => $ous, 'teachers' => $teachers ]);
     }
 
@@ -1590,7 +1598,7 @@ class SchoolController extends Controller
 			}
 			$entry = $openldap->getUserEntry($teacher);
 			if (!$entry) continue;
-			$data = $openldap->getUserData($entry, [ "displayName", "tpTeachClass" ]);
+			$data = $openldap->getUserData($entry, [ "displayName", "o", "tpTeachClass" ]);
 			$tname = $data['displayName'];
 			$info['tpTeachClass'] = $assign;
 			if ($act == 'add') {
@@ -1794,14 +1802,31 @@ class SchoolController extends Controller
 		$info['description'] = $request->get('description');
 		
 		$openldap = new LdapServiceProvider();
-		if ($ou != $info['ou']) {
-			$users = $openldap->findUsers("(&(o=$dc)(ou=$ou))", "cn");
-			for ($i=0;$i < $users['count'];$i++) {
-	    		$idno = $users[$i]['cn'][0];
-	    		$user_entry = $openldap->getUserEntry($idno);
-	    		$openldap->updateData($user_entry, ['ou' => $info['ou'] ]);
+		$openldap = new LdapServiceProvider();
+		if ($role != $info['cn']) {
+			$users = $openldap->findUsers("(&(o=$dc)(ou=$dc,$ou))", [ "cn", "o", "ou" ]);
+			foreach ($users as $user) {
+	    		$idno = $user['cn'];
+				$user_entry = $openldap->getUserEntry($idno);
+				$units = array();
+				$ous = array();
+				if (isset($user['ou'])) {
+					if (is_array($user['ou'])) {
+						$ous = $user['ou'];
+					} else {
+						$ous[] = $user['ou'];
+					}
+				}
+				foreach ($ous as $ou_pair) {
+					$a = explode(',', $ou_pair);
+					if (count($a) == 2 && ($a[0] != $dc || $a[1] != $ou)) $units[] = $ou_pair; 
+					if (count($a) == 1 && $a[0] != $ou) $units[] = $dc.','.$ou_pair;
+				}
+				$units = array_value(array_unique($units + [ $dc.','.$info['cn'] ]));
+	    		$openldap->updateData($user_entry, [ 'ou' => $units ]);
 			}
 		}
+
 		$entry = $openldap->getOUEntry($dc, $ou);
 		$result = $openldap->updateData($entry, $info);
 		if ($result) {

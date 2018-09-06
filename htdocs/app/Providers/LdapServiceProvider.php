@@ -709,6 +709,9 @@ class LdapServiceProvider extends ServiceProvider
 		if (in_array('tpAdminSchools',$fields) || in_array('ou',$fields) || in_array('tpTeachClass',$fields)) {
 			$fields = array_values(array_unique($fields + ['o']));
 		}
+		if (in_array('tpAdminSchools',$fields)) {
+			$fields = array_values(array_unique($fields + ['cn']));
+		}
 		if (in_array('title',$fields)) {
 			$fields = array_values(array_unique($fields + ['o', 'ou']));
 		}
