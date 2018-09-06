@@ -102,15 +102,15 @@
 			    <div class="form-group">
 					<label>性別</label>
 					<select id="gender" class="form-control" name="gender">
-						<option value="0"{{ isset($user) && $user['gender'] == 0 ? ' selected' : '' }}>未知</option>
-						<option value="1"{{ isset($user) && $user['gender'] == 1 ? ' selected' : '' }}>男</option>
-						<option value="2"{{ isset($user) && $user['gender'] == 2 ? ' selected' : '' }}>女</option>
-						<option value="9"{{ isset($user) && $user['gender'] == 9 ? ' selected' : '' }}>其它</option>
+						<option value="0"{{ isset($user['gender']) && $user['gender'] == 0 ? ' selected' : '' }}>未知</option>
+						<option value="1"{{ isset($user['gender']) && $user['gender'] == 1 ? ' selected' : '' }}>男</option>
+						<option value="2"{{ isset($user['gender']) && $user['gender'] == 2 ? ' selected' : '' }}>女</option>
+						<option value="9"{{ isset($user['gender']) && $user['gender'] == 9 ? ' selected' : '' }}>其它</option>
 					</select>
 				</div>
 			    <div class="form-group{{ $errors->has('birth') ? ' has-error' : '' }}">
 					<label>出生日期</label>
-					<input id="birth" type="date" class="form-control" name="birth" value="{{ isset($user) && array_key_exists('birthDate', $user) ? substr($user['birthDate'],0,4).'-'.substr($user['birthDate'],4,2).'-'.substr($user['birthDate'],6,2) : '' }}">
+					<input id="birth" type="date" class="form-control" name="birth" value="{{ isset($user['birthDate']) ? substr($user['birthDate'],0,4).'-'.substr($user['birthDate'],4,2).'-'.substr($user['birthDate'],6,2) : '' }}">
 					@if ($errors->has('birth'))
 						<p class="help-block">
 							<strong>{{ $errors->first('birth') }}</strong>

@@ -668,9 +668,7 @@ class LdapServiceProvider extends ServiceProvider
     public function getUserData($entry, $attr = '')
     {
 		$fields = array();
-		if (is_array($attr)) {
-	    	$fields = $attr;
-		} elseif ($attr == '') {
+		if ($attr == '') {
 	    	$fields[] = 'entryUUID';
 	    	$fields[] = 'cn';
 	    	$fields[] = 'o';
@@ -700,12 +698,19 @@ class LdapServiceProvider extends ServiceProvider
 	    	$fields[] = 'tpCharacter';
 	    	$fields[] = 'tpAdminSchools';
 	    	$fields[] = 'inetUserStatus';
-		} elseif ($attr == 'uid')  {
-	    	$fields[] = 'uid';
-	    	$fields[] = 'mail';
-	    	$fields[] = 'mobile';
+		} elseif (is_array($attr)) {
+	    	$fields = $attr;
 		} else {
 	    	$fields[] = $attr;
+		}
+		if (in_array('uid',$fields)) {
+			$fields = array_values(array_unique($fields + ['mail', 'mobile']));
+		}
+		if (in_array('tpAdminSchools',$fields) || in_array('ou',$fields) || in_array('tpTeachClass',$fields)) {
+			$fields = array_values(array_unique($fields + ['o']));
+		}
+		if (in_array('title',$fields)) {
+			$fields = array_values(array_unique($fields + ['o', 'ou']));
 		}
 	
 		$userinfo = array();
@@ -747,7 +752,7 @@ class LdapServiceProvider extends ServiceProvider
 				$orgs[] = $userinfo['tpAdminSchools'];
 			}
 		}
-		if (!is_array($userinfo['o']) && !in_array($userinfo['o'], $orgs)) {
+		if (isset($userinfo['o']) && !is_array($userinfo['o']) && !in_array($userinfo['o'], $orgs)) {
 			$orgs[] = $userinfo['o'];
 		}
 		foreach ($orgs as $o) {
@@ -772,6 +777,8 @@ class LdapServiceProvider extends ServiceProvider
 				$userinfo['school'][$o] = $this->getOrgTitle($o);
 			}
 		}
+		$units = array();
+		$ous = array();
 		if (isset($userinfo['ou'])) {
 			if (is_array($userinfo['ou'])) {
 				$units = $userinfo['ou'];
@@ -791,28 +798,29 @@ class LdapServiceProvider extends ServiceProvider
 				$userinfo['department'][$o][] = $this->getOuTitle($o, $ou);
 			}
 			if (!is_array($userinfo['ou'])) $userinfo['ou'] = $orgs[0].",".$userinfo['ou'];
-		}
-		if (isset($userinfo['title'])) {
-			if (is_array($userinfo['title'])) {
-				$roles = $userinfo['title'];
-			} else {
-				$roles[] = $userinfo['title'];
-			}
-			foreach ($roles as $role_pair) {
-				$a = explode(',' , $role_pair);
-				if (count($a) == 3 ) {
-					$o = $a[0];
-					$ou = $a[1];
-					$role = $a[2];
+			$roles = array();
+			if (isset($userinfo['title'])) {
+				if (is_array($userinfo['title'])) {
+					$roles = $userinfo['title'];
 				} else {
-					$o = $orgs[0];
-					$ou = $ous[0];
-					$role = $a[0];
+					$roles[] = $userinfo['title'];
 				}
-				$titles[] = "$o,$ou,$role";
-				$userinfo['titleName'][$o][] = $this->getRoleTitle($o, $ou, $role);
+				foreach ($roles as $role_pair) {
+					$a = explode(',' , $role_pair);
+					if (count($a) == 3 ) {
+						$o = $a[0];
+						$ou = $a[1];
+						$role = $a[2];
+					} else {
+						$o = $orgs[0];
+						$ou = $ous[0];
+						$role = $a[0];
+					}
+					$titles[] = "$o,$ou,$role";
+					$userinfo['titleName'][$o][] = $this->getRoleTitle($o, $ou, $role);
+				}
+				$userinfo['title'] = $titles;
 			}
-			$userinfo['title'] = $titles;
 		}
 		if (isset($userinfo['tpTeachClass'])) {
 			if (is_array($userinfo['tpTeachClass'])) {

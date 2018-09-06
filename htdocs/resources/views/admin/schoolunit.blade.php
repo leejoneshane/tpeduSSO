@@ -71,7 +71,7 @@
 		    	@csrf
 			    <div class="form-group{{ $errors->has('new-ou') ? ' has-error' : '' }}">
 					<label>處室代號</label>
-					<input id="new-ou" type="text" class="form-control" name="new-ou" value="{{ $errors->has('new-ou') ? old('new-ou') : '' }}" required>
+					<input id="new-ou" type="text" class="form-control" name="new-ou" value="{{ $errors->has('new-ou') ? old('new-ou') : '' }}" placeholder="請使用英文字母＋數字，使用純數字該部門將被當成班級。" required>
 					@if ($errors->has('new-ou'))
 						<p class="help-block">
 							<strong>{{ $errors->first('new-ou') }}</strong>

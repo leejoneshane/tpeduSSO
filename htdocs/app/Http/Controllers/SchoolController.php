@@ -709,7 +709,7 @@ class SchoolController extends Controller
 	    			continue;
 				}
 				$validator = Validator::make(
-    				[ 'date' => $person->birthdate ], [ 'date' => 'required|date' ]
+    				[ 'birth' => $person->birthdate ], [ 'birth' => 'required|date' ]
 				);
 	    		if ($validator->fails()) {
 					$messages[] = "第 $i 筆記錄，".$person->name."出生日期格式或內容不正確，跳過不處理！";
@@ -820,8 +820,8 @@ class SchoolController extends Controller
     			$info["sn"] = $person->sn;
     			$info["givenName"] = $person->gn;
     			$info["displayName"] = $person->name;
-    			$info["gender"] = $person->gender;
-				$info["birthDate"] = $person->birthdate."000000Z";
+				if (!empty($person->gender)) $info['gender'] = (int) $person->gender;
+				if (!empty($person->birthdate)) $info['birthDate'] = str_replace('-', '', $person->birthdate).'000000Z';
     			$info["o"] = $orgs;
     			$info["ou"] = $units;
     			$info["title"] = $roles;
@@ -1026,6 +1026,8 @@ class SchoolController extends Controller
 			'idno' => new idno,
 			'sn' => 'required|string',
 			'gn' => 'required|string',
+			'gender' => 'required|digits:1',
+			'birth' => 'required|date',
 			'raddress' => 'nullable|string',
 			'address' => 'nullable|string',
 			'www' => 'nullable|url',
@@ -1054,8 +1056,8 @@ class SchoolController extends Controller
 		$info['sn'] = $request->get('sn');
 		$info['givenName'] = $request->get('gn');
 		$info['displayName'] = $info['sn'].$info['givenName'];
-		$info['gender'] = $request->get('gender');
-		$info['birthDate'] = $request->get('birth');
+		if (!empty($request->get('gender'))) $info['gender'] = (int) $request->get('gender');
+		if (!empty($request->get('birth'))) $info['birthDate'] = str_replace('-', '', $request->get('birth')).'000000Z';
 		if (!empty($request->get('raddress'))) $info['registeredAddress'] = $request->get('raddress');
 		if (!empty($request->get('address'))) $info['homePostalAddress'] = $request->get('address');
 		if (!empty($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
@@ -1144,6 +1146,8 @@ class SchoolController extends Controller
 			'idno' => new idno,
 			'sn' => 'required|string',
 			'gn' => 'required|string',
+			'gender' => 'required|digits:1',
+			'birth' => 'required|date',
 			'raddress' => 'nullable|string',
 			'address' => 'nullable|string',
 			'www' => 'nullable|url',
@@ -1154,8 +1158,8 @@ class SchoolController extends Controller
 		$info['sn'] = $request->get('sn');
 		$info['givenName'] = $request->get('gn');
 		$info['displayName'] = $info['sn'].$info['givenName'];
-		$info['gender'] = (int) $request->get('gender');
-		$info['birthDate'] = str_replace('-', '', $request->get('birth')).'000000Z';
+		if (!empty($request->get('gender'))) $info['gender'] = (int) $request->get('gender');
+		if (!empty($request->get('birth'))) $info['birthDate'] = str_replace('-', '', $request->get('birth')).'000000Z';
 		$ous = array();
 		$units = array();
 		if (isset($original['ou'])) {
@@ -1945,7 +1949,7 @@ class SchoolController extends Controller
 		    $idno = $request->get('new-admin');
 	    	$entry = $openldap->getUserEntry($idno);
 		    if ($entry) {
-				$orgs = $openldap->getUserData($entry, "tpAdminSchools");
+				$orgs = $openldap->getUserData($entry, ["o", "tpAdminSchools"]);
 				$orgs[] = $dc;
 				$orgs = array_values(array_unique($orgs));
 				$openldap->updateData($entry, [ 'tpAdminSchools' => $orgs ]);
@@ -1967,7 +1971,7 @@ class SchoolController extends Controller
 			]);
 		    $entry = $openldap->getOrgEntry($dc);
 		    $ssha = $openldap->make_ssha_password($request->get('new-password'));
-	    	$result2 = $openldap->updateData($entry, array('userPassword' => $ssha));
+	    	$result2 = $openldap->updateData($entry, [ 'userPassword' => $ssha ]);
 		    if ($result2) {
 				$messages .= "密碼已經變更完成！";
 	    	} else {
