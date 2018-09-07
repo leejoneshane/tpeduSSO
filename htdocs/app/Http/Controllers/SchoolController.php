@@ -1447,7 +1447,7 @@ class SchoolController extends Controller
 		
 		$openldap = new LdapServiceProvider();
 		if ($role != $info['cn']) {
-			$users = $openldap->findUsers("(&(o=$dc)(ou=$dc,$ou)(title=$dc,$ou,$role))", [ "cn", "o", "ou", "title" ]);
+			$users = $openldap->findUsers("(&(o=$dc)(ou=*$ou)(title=*$role))", [ "cn", "o", "ou", "title" ]);
 			foreach ($users as $user) {
 	    		$idno = $user['cn'];
 				$user_entry = $openldap->getUserEntry($idno);
@@ -1481,7 +1481,7 @@ class SchoolController extends Controller
     public function removeSchoolRole(Request $request, $dc, $ou, $role)
     {
 		$openldap = new LdapServiceProvider();
-		$users = $openldap->findUsers("(&(o=$dc)(ou=$dc,$ou)(title=$dc,$ou,$role))", "cn");
+		$users = $openldap->findUsers("(&(o=$dc)(ou=*$ou)(title=*$role))", "cn");
 		if ($users && $users['count']>0) {
 			return redirect()->back()->with("error", "尚有人員從事該職務，因此無法刪除！");
 		}
@@ -1560,8 +1560,7 @@ class SchoolController extends Controller
 		}		
 		$ous = $openldap->getOus($dc, '行政部門');
 		if (empty($my_ou) && !empty($ous)) $my_ou = $ous[0]->ou;
-		$teachers = array();
-		$teachers = $openldap->findUsers("(&(o=$dc)(ou=$my_ou))");
+		$teachers = $openldap->findUsers("(&(o=$dc)(ou=*$my_ou))");
 		return view('admin.schoolclassassign', [ 'dc' => $dc, 'my_grade' => $my_grade, 'subjects' => $subjects, 'grades' => $grades, 'classes' => $classes, 'my_ou' => $my_ou, 'ous' => $ous, 'teachers' => $teachers ]);
     }
 
@@ -1681,7 +1680,7 @@ class SchoolController extends Controller
     public function removeSchoolClass(Request $request, $dc, $class)
     {
 		$openldap = new LdapServiceProvider();
-		$users = $openldap->findUsers("(&(o=$dc)(|(tpClass=$class)(tpTeachClass=$class)))", "cn");
+		$users = $openldap->findUsers("(&(o=$dc)(|(tpClass=$class)(tpTeachClass=$class*)))", "cn");
 		if ($users && $users['count']>0) {
 			return redirect()->back()->with("error", "尚有人員隸屬於該行政部門，因此無法刪除！");
 		}
@@ -1804,7 +1803,7 @@ class SchoolController extends Controller
 		$openldap = new LdapServiceProvider();
 		$openldap = new LdapServiceProvider();
 		if ($role != $info['cn']) {
-			$users = $openldap->findUsers("(&(o=$dc)(ou=$dc,$ou))", [ "cn", "o", "ou" ]);
+			$users = $openldap->findUsers("(&(o=$dc)(ou=*$ou))", [ "cn", "o", "ou" ]);
 			foreach ($users as $user) {
 	    		$idno = $user['cn'];
 				$user_entry = $openldap->getUserEntry($idno);
@@ -1839,7 +1838,7 @@ class SchoolController extends Controller
     public function removeSchoolUnit(Request $request, $dc, $ou)
     {
 		$openldap = new LdapServiceProvider();
-		$users = $openldap->findUsers("(&(o=$dc)(ou=$ou))", "cn");
+		$users = $openldap->findUsers("(&(o=$dc)(ou=*$ou))", "cn");
 		if ($users && $users['count']>0) {
 			return redirect()->back()->with("error", "尚有人員隸屬於該行政部門，因此無法刪除！");
 		}

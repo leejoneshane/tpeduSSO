@@ -83,9 +83,9 @@
 				<table><tbody><tr>
 				@foreach ($teachers as $teacher)
 					<td> <!--label class="checkbox-inline"-->
-						<input type="checkbox" name="teachers[]" value="{{ $teacher['cn'] }}">{{ $teacher['displayName'] }}（{{ $teacher['titleName'][$dc] }}）
+						<input type="checkbox" name="teachers[]" value="{{ $teacher['cn'] }}">{{ $teacher['displayName'] }}（{{ $teacher['titleName'][$dc][0] }}）
 					</td>
-					@if ($loop->index % 6 == 0)
+					@if ($loop->iteration % 6 == 0)
 					</tr><tr>
 					@endif
 				@endforeach
