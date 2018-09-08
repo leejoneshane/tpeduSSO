@@ -30,7 +30,7 @@ return [
     
     // Allow debugging within SamlAuth trait to get SP data during SAML auth
     // request. The debug output is written to storage/logs/laravel.log.
-    'debug_saml_request' => false,
+    'debug_saml_request' => true,
 
     /*
     |--------------------------------------------------------------------------

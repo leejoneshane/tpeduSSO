@@ -67,24 +67,19 @@ class profileController extends Controller
 	$user = $request->user();
 	$json = new \stdClass();
 	$json->role = $user->ldap['employeeType'];
-	if (is_array($user->ldap['o'])) {
-		$o = $user->ldap['o'][0];
-	} else {
-		$o = $user->ldap['o'];
-	}
 	if (array_key_exists('gender', $user->ldap)) $json->gender = $user->ldap['gender'];
 	if (array_key_exists('birthDate', $user->ldap)) $json->birthDate = $user->ldap['birthDate'];
-	if (array_key_exists('o', $user->ldap)) $json->o = $o;
-	if (array_key_exists('school', $user->ldap)) $json->organization = $user->ldap['school'][$o];
+	if (array_key_exists('o', $user->ldap)) $json->o = $user->ldap['o'];;
+	if (array_key_exists('school', $user->ldap)) $json->organization = $user->ldap['school'];
 	if ($json->role == '學生') {
 	    if (array_key_exists('employeeNumber', $user->ldap)) $json->studentId = $user->ldap['employeeNumber'];
 	    if (array_key_exists('tpClass', $user->ldap)) $json->class = $user->ldap['tpClass'];
 	    if (array_key_exists('tpClassTitle', $user->ldap)) $json->className = $user->ldap['tpClassTitle'];
 	    if (array_key_exists('tpSeat', $user->ldap)) $json->seat = $user->ldap['tpSeat'];
 	} else {
-	    if (array_key_exists('department', $user->ldap)) $json->unit = array_values($user->ldap['department'][$o])[0];
-	    if (array_key_exists('titleName', $user->ldap)) $json->title = array_values($user->ldap['titleName'][$o])[0];
-	    if (array_key_exists('teachClass', $user->ldap)) $json->teachClass = array_values($user->ldap['teachClass'][$o]);
+	    if (array_key_exists('department', $user->ldap)) $json->unit = $user->ldap['department'];
+	    if (array_key_exists('titleName', $user->ldap)) $json->title = $user->ldap['titleName'];
+	    if (array_key_exists('teachClass', $user->ldap)) $json->teachClass = $user->ldap['teachClass'];
 	}
 	if (array_key_exists('tpCharacter', $user->ldap)) $json->character = $user->ldap['tpCharacter'];
     return json_encode($json, JSON_UNESCAPED_UNICODE);

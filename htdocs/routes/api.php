@@ -29,6 +29,22 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('school/{dc}/people/{uuid}', 'Api\schoolController@people')->middleware('scope:schoolAdmin');
 });
 
+Route::group(['prefix' => 'v2', 'middleware' => 'auth:api'], function () {
+    Route::get('logout', 'Api_V2\profileController@logout');
+    Route::get('me', 'Api_V2\profileController@me')->middleware('scope:me');
+    Route::get('email', 'Api_V2\profileController@email')->middleware('scope:email');
+    Route::get('user', 'Api_V2\profileController@user')->middleware('scope:user');
+    Route::patch('user', 'Api_V2\profileController@updateUser')->middleware('scope:user');
+    Route::get('idno', 'Api_V2\profileController@idno')->middleware('scope:idno');
+    Route::get('profile', 'Api_V2\profileController@profile')->middleware('scope:profile');
+    Route::patch('account', 'Api_V2\profileController@updateAccount')->middleware('scope:account');
+    Route::patch('school/{dc}', 'Api_V2\schoolController@updateSchool')->middleware('scope:schoolAdmin');
+    Route::post('school/{dc}/people', 'Api_V2\schoolController@peopleAdd')->middleware('scope:schoolAdmin');
+    Route::patch('school/{dc}/people/{uuid}', 'Api_V2\schoolController@peopleUpdate')->middleware('scope:schoolAdmin');
+    Route::delete('school/{dc}/people/{uuid}', 'Api_V2\schoolController@peopleRemove')->middleware('scope:schoolAdmin');
+    Route::get('school/{dc}/people/{uuid}', 'Api_V2\schoolController@people')->middleware('scope:schoolAdmin');
+});
+
 Route::group(['middleware' => 'clientid:school'], function () {
     Route::get('school', 'Api\schoolController@all');
     Route::get('school/{dc}', 'Api\schoolController@one');
