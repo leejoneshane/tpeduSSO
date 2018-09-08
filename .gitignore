@@ -10,5 +10,6 @@
 /htdocs/Homestead.yaml
 /htdocs/npm-debug.log
 /htdocs/yarn-error.log
+/htdocs/.rnd
 .DS_Store
-htdocs/.rnd
+Icon
