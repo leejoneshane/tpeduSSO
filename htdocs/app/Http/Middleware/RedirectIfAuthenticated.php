@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
-use KingStarter\LaravelSaml\Http\Traits\SamlAuth;
+use App\Http\Middleware\SamlAuth;
 
 class RedirectIfAuthenticated
 {

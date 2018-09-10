@@ -1,11 +1,11 @@
 <?php
 
-namespace Illuminate\Foundation\Auth;
+namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
-use KingStarter\LaravelSaml\Http\Traits\SamlAuth;
+use App\Http\Middleware\SamlAuth;
 
 trait AuthenticatesUsers
 {
