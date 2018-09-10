@@ -379,13 +379,14 @@ class SchoolController extends Controller
 		]);
 		$idno = strtoupper($request->get('idno'));
 		$info = array();
+		$info['dn'] = Config::get('ldap.userattr').'='.$idno.','.Config::get('ldap.userdn');
 		$info['objectClass'] = array('tpeduPerson', 'inetUser');
+		$info['cn'] = $idno;
+	    $info["userPassword"] = $openldap->make_ssha_password(substr($idno, -6));
 		$info['o'] = $dc;
 		$info['employeeType'] = '學生';
 		$info['inetUserStatus'] = 'active';
 		$info['info'] = json_encode(array("sid" => $sid, "role" => "學生"), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
-		$info['cn'] = $idno;
-		$info['dn'] = Config::get('ldap.userattr').'='.$info['cn'].','.Config::get('ldap.userdn');
 		$info['employeeNumber'] = $request->get('stdno');
 		$info['tpClass'] = $request->get('tclass');
 		$info['tpSeat'] = $request->get('seat');
@@ -1056,6 +1057,7 @@ class SchoolController extends Controller
 		$info['sn'] = $request->get('sn');
 		$info['givenName'] = $request->get('gn');
 		$info['displayName'] = $info['sn'].$info['givenName'];
+	    $info["userPassword"] = $openldap->make_ssha_password(substr($idno, -6));
 		if (!empty($request->get('gender'))) $info['gender'] = (int) $request->get('gender');
 		if (!empty($request->get('birth'))) $info['birthDate'] = str_replace('-', '', $request->get('birth')).'000000Z';
 		if (!empty($request->get('raddress'))) $info['registeredAddress'] = $request->get('raddress');

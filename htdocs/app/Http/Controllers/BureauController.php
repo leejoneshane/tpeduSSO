@@ -436,6 +436,7 @@ class BureauController extends Controller
 			$educloud[] = json_encode(array("sid" => $sid, "role" => $request->get('type')), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 		}
 		$info = array();
+		$info['dn'] = Config::get('ldap.userattr').'='.$dno.','.Config::get('ldap.userdn');
 		$info['objectClass'] = array('tpeduPerson', 'inetUser');
 		$info['o'] = $orgs;
 		$info['info'] = $educloud;
@@ -453,7 +454,7 @@ class BureauController extends Controller
 		}
 		$info['inetUserStatus'] = 'active';
 		$info['cn'] = $idno;
-		$info['dn'] = Config::get('ldap.userattr').'='.$info['cn'].','.Config::get('ldap.userdn');
+	    $info["userPassword"] = $openldap->make_ssha_password(substr($idno, -6));
 		$info['sn'] = $request->get('sn');
 		$info['givenName'] = $request->get('gn');
 		$info['displayName'] = $info['sn'].$info['givenName'];

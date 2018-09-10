@@ -426,14 +426,13 @@ class LdapServiceProvider extends ServiceProvider
 		$sch_rdn = Config::get('ldap.schattr')."=".$dc;
 		$sch_dn = "$sch_rdn,$base_dn";
 		$filter = "objectClass=tpeduSubject";
-		$resource = @ldap_search(self::$ldapConnectId, $sch_dn, $filter, ["tpSubject", "tpSubjectDomain", "description"]);
+		$resource = @ldap_search(self::$ldapConnectId, $sch_dn, $filter, ["tpSubject", "description"]);
 		$entry = @ldap_first_entry(self::$ldapConnectId, $resource);
 		if ($entry) {
 			do {
 	    		$subj = new \stdClass();
 	    		$info = $this->getSubjectData($entry);
 	    		$subj->subject = $info['tpSubject'];
-	    		$subj->domain = $info['tpSubjectDomain'];
 	    		$subj->description = $info['description'];
 	    		$subjs[] = $subj;
 			} while ($entry=ldap_next_entry(self::$ldapConnectId, $entry));
@@ -875,6 +874,8 @@ class LdapServiceProvider extends ServiceProvider
 		$dn = Config::get('ldap.userattr')."=".$old_idno.",".Config::get('ldap.userdn');
 		$rdn = Config::get('ldap.userattr')."=".$new_idno;
 		$entry = $this->getUserEntry($old_idno);
+		$new_pwd = $openldap->make_ssha_password(substr($new_idno, -6));
+		$this->updateData($entry, ["userPassword" => $new_pwd]);
 		$accounts = @ldap_get_values(self::$ldapConnectId, $entry, "uid");
 		for($i=0;$i<$accounts['count'];$i++) {
 			$account_entry = $this->getAccountEntry($accounts[$i]);
