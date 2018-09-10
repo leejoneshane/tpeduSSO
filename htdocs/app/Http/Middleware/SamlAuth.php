@@ -148,9 +148,9 @@ trait SamlAuth
             $user  = \Auth::user();
             if (isset($user->ldap['uid'])) {
                 if (is_array($user->ldap['uid'])) {
-                    $email = $user->ldap['uid'][0]."@ms.tp.edu.tw";
+                    $email = $user->ldap['uid'][0].'@'.config('saml.email_domain');
                 } else {
-                    $email = $user->ldap['uid']."@ms.tp.edu.tw";
+                    $email = $user->ldap['uid'].'@'.config('saml.email_domain');
                 }
             }
             $email = $request['email'];

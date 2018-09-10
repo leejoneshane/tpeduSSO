@@ -32,6 +32,7 @@ return [
     // request. The debug output is written to storage/logs/laravel.log.
     'debug_saml_request' => true,
 
+    'email_domain'	=> env('SAML_MAIL', 'ms.tp.edu.tw'),
     /*
     |--------------------------------------------------------------------------
     | IDP (identification provider) settings
