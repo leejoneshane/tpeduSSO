@@ -72,6 +72,7 @@ services:
       MAIL_USERNAME: your@gmail.com
       MAIL_PASSWORD: password
       MAIL_ENCRYPTION: tls
+      SAML_MAIL: ms.tp.edu.tw
     ports:
       - "80:80"
       - "443:443"
