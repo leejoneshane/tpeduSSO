@@ -120,10 +120,6 @@ class BureauController extends Controller
     		$data = $openldap->getOrgData($org_entry);
     		$area = $data['st'];
     		if ($user['employeeType'] != '學生') {
-	    		if (array_key_exists('ou', $user))
-    				$data = $openldap->getRoles($dc, $user['ou']);
-    			else
-    				$data = $openldap->getRoles($dc, $my_ou);
 				return view('admin.bureauteacheredit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'area' => $area, 'dc' => $dc, 'areas' => $areas, 'schools' => $schools, 'types' => $types, 'user' => $user ]);
 			} else {
 				return view('admin.bureaustudentedit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'area' => $area, 'dc' => $dc, 'areas' => $areas, 'schools' => $schools, 'classes' => $classes, 'user' => $user ]);
@@ -280,9 +276,9 @@ class BureauController extends Controller
 					$account["uid"] = $person->account;
 				} else {
 					if ($person->type == '學生') {
-						$account["uid"] = $dc.$person->stdno;
+						$account["uid"] = $orgs[0].$person->stdno;
 					} else {
-						$account["uid"] = $dc.substr($person->id, -9);
+						$account["uid"] = $orgs[0].substr($person->id, -9);
 					}    			
 				}
     			$entry["uid"] = $account["uid"];

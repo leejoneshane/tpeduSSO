@@ -57,8 +57,6 @@ class LdapUserProvider extends EloquentUserProvider
 		    	    	} else {
 		    				$user->email = $data['mail'];
 		    			}
-					} else {
-				    	$user->email = null;
 					}
 	        		if (isset($data['mobile'])) {
 	    	    		if (is_array($data['mobile'])) {
@@ -66,8 +64,6 @@ class LdapUserProvider extends EloquentUserProvider
 			        	} else {
 			    			$user->mobile = $data['mobile'];
 			    		}
-					} else {
-			    		$user->mobile = null;
 					}
 					if (isset($credentials['password'])) {
 	    				$user->password = \Hash::make($credentials['password']);
