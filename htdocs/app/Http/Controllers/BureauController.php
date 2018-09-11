@@ -257,7 +257,11 @@ class BureauController extends Controller
    				$entry["cn"] = strtoupper($person->id);
     			$entry["sn"] = $person->sn;
     			$entry["givenName"] = $person->gn;
-    			$entry["displayName"] = $person->name;
+    			if (isset($person->name)) {
+					$entry["displayName"] = $person->name;
+				} else {
+					$entry["displayName"] = $person->sn.$person->gn;
+				}
     			$entry["gender"] = $person->gender;
 				$entry["birthDate"] = $person->birthdate."000000Z";
     			$entry["o"] = $orgs;
