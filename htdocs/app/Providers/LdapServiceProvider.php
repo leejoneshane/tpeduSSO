@@ -705,11 +705,11 @@ class LdapServiceProvider extends ServiceProvider
 		if (in_array('uid',$fields)) {
 			$fields = array_values(array_unique($fields + ['mail', 'mobile']));
 		}
-		if (in_array('tpAdminSchools',$fields) || in_array('ou',$fields) || in_array('tpTeachClass',$fields)) {
+		if (in_array('ou',$fields) || in_array('tpTeachClass',$fields)) {
 			$fields = array_values(array_unique($fields + ['o']));
 		}
 		if (in_array('tpAdminSchools',$fields)) {
-			$fields = array_values(array_unique($fields + ['cn']));
+			$fields = array_values(array_unique($fields + ['o', 'cn']));
 		}
 		if (in_array('title',$fields)) {
 			$fields = array_values(array_unique($fields + ['o', 'ou']));
@@ -746,25 +746,27 @@ class LdapServiceProvider extends ServiceProvider
 	    	}
 		}
 		$userinfo['adminSchools'] = false;
-		$orgs = array();
+		$as = array();
 		if (isset($userinfo['tpAdminSchools'])) {
 			if (is_array($userinfo['tpAdminSchools'])) {
-				$orgs = $userinfo['tpAdminSchools'];
+				$as = $userinfo['tpAdminSchools'];
 			} else {
-				$orgs[] = $userinfo['tpAdminSchools'];
+				$as[] = $userinfo['tpAdminSchools'];
 			}
 		}
-		if (isset($userinfo['o']) && !is_array($userinfo['o']) && !in_array($userinfo['o'], $orgs)) {
-			$orgs[] = $userinfo['o'];
+		if (isset($userinfo['o']) && !is_array($userinfo['o']) && !in_array($userinfo['o'], $as)) {
+			$as[] = $userinfo['o'];
 		}
-		foreach ($orgs as $o) {
-			$sch_entry = $this->getOrgEntry($o);
-			$admins = $this->getOrgData($sch_entry, "tpAdministrator");
-			if (isset($admins['tpAdministrator'])) {
-				if (is_array($admins['tpAdministrator'])) {
-					if (in_array($userinfo['cn'], $admins['tpAdministrator'])) $userinfo['adminSchools'][] = $o;
-				} else {
-					if ($userinfo['cn'] == $admins['tpAdministrator']) $userinfo['adminSchools'][] = $o;
+		if (isset($userinfo['cn'])) {
+			foreach ($as as $o) {
+				$sch_entry = $this->getOrgEntry($o);
+				$admins = $this->getOrgData($sch_entry, "tpAdministrator");
+				if (isset($admins['tpAdministrator'])) {
+					if (is_array($admins['tpAdministrator'])) {
+						if (in_array($userinfo['cn'], $admins['tpAdministrator'])) $userinfo['adminSchools'][] = $o;
+					} else {
+						if ($userinfo['cn'] == $admins['tpAdministrator']) $userinfo['adminSchools'][] = $o;
+					}
 				}
 			}
 		}
@@ -854,7 +856,7 @@ class LdapServiceProvider extends ServiceProvider
 				@$this->updateData($entry, [ "tpClassTitle" => $classname ]);
 			}
 		}
-		if (!isset($userinfo['inetUserStatus'])) {
+		if (in_array('inetUserStatus', $fields) && !$userinfo['inetUserStatus']) {
 			$userinfo['inetUserStatus'] = 'active';
 			@$this->updateData($entry, [ "inetUserStatus" => "active" ]);
 		}

@@ -1975,7 +1975,7 @@ class SchoolController extends Controller
 		    $idno = $request->get('new-admin');
 	    	$entry = $openldap->getUserEntry($idno);
 		    if ($entry) {
-				$orgs = $openldap->getUserData($entry, ["o", "tpAdminSchools"]);
+				$orgs = $openldap->getUserData($entry, [ "o", "cn", "tpAdminSchools" ]);
 				$orgs[] = $dc;
 				$orgs = array_values(array_unique($orgs));
 				$openldap->updateData($entry, [ 'tpAdminSchools' => $orgs ]);
@@ -2019,7 +2019,7 @@ class SchoolController extends Controller
 		    $idno = $request->get('delete-admin');
 	    	$entry = $openldap->getUserEntry($idno);
 		    if ($entry) {
-				$orgs = $openldap->getUserData($entry, "tpAdminSchools");
+				$orgs = $openldap->getUserData($entry, [ "o", "cn", "tpAdminSchools" ]);
 				$orgs = array_values(array_diff($orgs, [ $dc ]));
 				$openldap->updateData($entry, [ 'tpAdminSchools' => $orgs ]);
 	    	}
