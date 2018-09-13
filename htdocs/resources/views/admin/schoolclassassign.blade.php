@@ -54,9 +54,7 @@
 		</div>
 		<div class="panel-body">
 			<div class="form-group">
-				<?php $i = 0; ?>
 				@foreach ($subjects as $subj)
-				    <?php $i++; ?>
 					<label class="checkbox-inline">
 						<input type="checkbox" name="subjects[]" value="{{ $subj->subject }}">{{ $subj->description }}
 					</label>
@@ -83,7 +81,7 @@
 				<table><tbody><tr>
 				@foreach ($teachers as $teacher)
 					<td> <!--label class="checkbox-inline"-->
-						<input type="checkbox" name="teachers[]" value="{{ $teacher['cn'] }}">{{ $teacher['displayName'] }}（{{ $teacher['titleName'][$dc][0] }}）
+						<input type="checkbox" name="teachers[]" value="{{ $teacher['cn'] }}">{{ $teacher['displayName'] }}（{{ is_array($teacher['titleName'][$dc]) ? $teacher['titleName'][$dc][0] : $teacher['titleName'][$dc] }}）
 					</td>
 					@if ($loop->iteration % 6 == 0)
 					</tr><tr>
