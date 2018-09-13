@@ -59,12 +59,14 @@
 						@foreach ($user['o'] as $o)
 							<select class="form-control" style="width:25%;display:inline" name="area[]" onchange="refresh_orgs(this)">
 							@foreach ($areas as $st)
-				    		<option value="{{ $st }}"{{ $st == $area ? ' selected' : '' }}>{{ $st }}</option>
+				    		<option value="{{ $st }}"{{ $st == $schools[$o]['st'] ? ' selected' : '' }}>{{ $st }}</option>
 					    	@endforeach
 							</select>
 							<select class="form-control" style="width:35%;display:inline" name="o[]">
-							@foreach ($schools as $dc => $desc)
-			    			<option value="{{ $dc }}"{{ $dc == $user['o'] ? ' selected' : '' }}>{{ $desc }}</option>
+							@foreach ($schools as $dc => $school)
+								@if ($school['st'] == $schools[$o]['st'])
+								<option value="{{ $dc }}"{{ $dc == $user['o'] ? ' selected' : '' }}>{{ $school['desc'] }}</option>
+								@endif
 			    			@endforeach
 							</select>
 							@if (!$loop->first)
@@ -74,12 +76,14 @@
 					@else
 						<select class="form-control" style="width:25%;display:inline" name="area[]" onchange="refresh_orgs(this)">
 							@foreach ($areas as $st)
-				    		<option value="{{ $st }}"{{ $st == $area ? ' selected' : '' }}>{{ $st }}</option>
+				    		<option value="{{ $st }}"{{ $st == $schools[$user['o']]['st'] ? ' selected' : '' }}>{{ $st }}</option>
 					    	@endforeach
 						</select>
 						<select class="form-control" style="width:35%;display:inline" name="o[]">
-							@foreach ($schools as $dc => $desc)
-			    			<option value="{{ $dc }}"{{ $dc == $user['o'] ? ' selected' : '' }}>{{ $desc }}</option>
+							@foreach ($schools as $dc => $school)
+								@if ($school['st'] == $schools[$user['o']]['st'])
+								<option value="{{ $dc }}"{{ $dc == $user['o'] ? ' selected' : '' }}>{{ $school['desc'] }}</option>
+								@endif
 			    			@endforeach
 						</select>
 					@endif

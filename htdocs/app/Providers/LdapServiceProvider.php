@@ -179,6 +179,7 @@ class LdapServiceProvider extends ServiceProvider
 
     public function getOrgs($filter = '')
     {
+		if ($filter == '') $filter = 'o=*';
 		$schools = array();
 		$this->administrator();
 		$base_dn = Config::get('ldap.rdn');

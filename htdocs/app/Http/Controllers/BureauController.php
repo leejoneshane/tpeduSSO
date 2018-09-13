@@ -98,21 +98,18 @@ class BureauController extends Controller
 		$types = [ '教師', '學生', '校長', '職工', '主官管' ];
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 		if (empty($area)) $area = $areas[0];
-		$filter = "st=$area";
 		$openldap = new LdapServiceProvider();
-		$data = $openldap->getOrgs($filter);
+		$data = $openldap->getOrgs();
 		$schools = array();
 		foreach ($data as $school) {
-			if (empty($dc)) $dc = $school->o;
-			if (!array_key_exists($school->o, $schools)) $schools[$school->o] = $school->description;
+			$schools[$school->o] = [ "st" => $school->st, "desc" => $school->description ];
 		}
 		$data = $openldap->getOus($dc, '教學班級');
 		$classes = array();
 		if ($data)
 			foreach ($data as $class) {
 				if (!array_key_exists($class->ou, $classes)) $classes[$class->ou] = $class->description;
-			}
-		
+			}		
     	if (!is_null($uuid)) {//edit
     		$entry = $openldap->getUserEntry($uuid);
 			$user = $openldap->getUserData($entry);
