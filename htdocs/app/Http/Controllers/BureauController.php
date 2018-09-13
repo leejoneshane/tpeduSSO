@@ -115,8 +115,8 @@ class BureauController extends Controller
 		
     	if (!is_null($uuid)) {//edit
     		$entry = $openldap->getUserEntry($uuid);
-    		$user = $openldap->getUserData($entry);
-    		$org_entry = $openldap->getOrgEntry($user['o']);
+			$user = $openldap->getUserData($entry);
+    		$org_entry = $openldap->getOrgEntry($dc);
     		$data = $openldap->getOrgData($org_entry);
     		$area = $data['st'];
     		if ($user['employeeType'] != '學生') {
