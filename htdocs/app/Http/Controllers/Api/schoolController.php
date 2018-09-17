@@ -468,8 +468,15 @@ class schoolController extends Controller
 		foreach ($teachers as $one) {
 			$teacher = new \stdClass;
 			$teacher->idno = $one['cn'];
-			$teacher->name = $one['displayName'];
-			$teacher->title = array_values($one['titleName'][$dc])[0];
+            $teacher->name = $one['displayName'];           
+            if (isset($one['titleName'][$dc])) {
+                foreach ($one['titleName'][$dc] as $role_pair => $title) {
+                    $a = explode(',', $role_pair);
+                    if (count($a) == 2 && $a[0] == $ou) $teacher->title = $title;
+                }
+                if (!isset($teacher->title)) $teacher->title = array_values($one['titleName'][$dc])[0];
+            }
+
 			$json[] = $teacher;
 		}
 		return json_encode($json, JSON_UNESCAPED_UNICODE);

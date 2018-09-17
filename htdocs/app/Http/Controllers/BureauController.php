@@ -102,7 +102,7 @@ class BureauController extends Controller
 		$data = $openldap->getOrgs();
 		$schools = array();
 		foreach ($data as $school) {
-			$schools[$school->o] = [ "st" => isset($school->st) ? $school->st : '', "desc" => $school->description ];
+			$schools[$school->o] = [ "st" => $school->st, "desc" => $school->description ];
 		}
 		$data = $openldap->getOus($dc, '教學班級');
 		$classes = array();

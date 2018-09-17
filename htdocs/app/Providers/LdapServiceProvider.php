@@ -179,7 +179,6 @@ class LdapServiceProvider extends ServiceProvider
 
     public function getOrgs($filter = '')
     {
-		if ($filter == '') $filter = 'o=*';
 		$schools = array();
 		$this->administrator();
 		$base_dn = Config::get('ldap.rdn');
@@ -856,7 +855,7 @@ class LdapServiceProvider extends ServiceProvider
 				@$this->updateData($entry, [ "tpClassTitle" => $classname ]);
 			}
 		}
-		if (in_array('inetUserStatus', $fields) && !isset($userinfo['inetUserStatus'])) {
+		if (in_array('inetUserStatus', $fields) && empty($userinfo['inetUserStatus'])) {
 			$userinfo['inetUserStatus'] = 'active';
 			@$this->updateData($entry, [ "inetUserStatus" => "active" ]);
 		}
