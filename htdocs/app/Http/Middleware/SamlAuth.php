@@ -146,7 +146,6 @@ trait SamlAuth
         $roles = array();
         if(\Auth::check()){
             $user  = \Auth::user();
-            Log::debug(var_dump($user->ldap['uid']));
             if (is_array($user->ldap['uid']))
                 $email = $user->ldap['uid'][0].'@'.config('saml.email_domain');
             else
@@ -155,7 +154,8 @@ trait SamlAuth
             if (config('saml.forward_roles'))
                 $roles = $user->roles->pluck('name')->all();
         }else {
-            return redirect()->back();
+            $email = $request['username'].'@'.config('saml.email_domain');
+            $name = 'Place Holder';
         }
         
         // Generate the SAML assertion for the response xml object

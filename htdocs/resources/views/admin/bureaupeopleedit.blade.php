@@ -60,9 +60,9 @@
 					   	@endforeach
 					</select>
 					<select class="form-control" style="width:35%;display:inline" name="o[]">
-					@foreach ($schools as $dc => $school)
+					@foreach ($schools as $o => $school)
 						@if ($school['st'] == $area)
-						<option value="{{ $dc }}">{{ $school['desc'] }}</option>
+						<option value="{{ $o }}">{{ $school['desc'] }}</option>
 						@endif
 			    	@endforeach
 					</select>
