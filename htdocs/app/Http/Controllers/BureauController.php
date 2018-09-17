@@ -436,7 +436,7 @@ class BureauController extends Controller
 			$educloud[] = json_encode(array("sid" => $sid, "role" => $request->get('type')), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 		}
 		$info = array();
-		$info['dn'] = Config::get('ldap.userattr').'='.$dno.','.Config::get('ldap.userdn');
+		$info['dn'] = Config::get('ldap.userattr').'='.$idno.','.Config::get('ldap.userdn');
 		$info['objectClass'] = array('tpeduPerson', 'inetUser');
 		$info['o'] = $orgs;
 		$info['info'] = $educloud;
