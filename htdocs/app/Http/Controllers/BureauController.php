@@ -248,7 +248,7 @@ class BureauController extends Controller
 					$entry = $openldap->getOrgEntry($o);
 					$data = $openldap->getOrgData($entry, 'tpUniformNumbers');
 					$sid = $data['tpUniformNumbers'];
-					$educloud[] = json_encode(array("sid" => $sid, "role" => $request->get('type')), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
+					$educloud[] = json_encode(array("sid" => $sid, "role" => $person->type)), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 				}
 				$user_dn = Config::get('ldap.userattr')."=".$person->id.",".Config::get('ldap.userdn');
 				$entry = array();
