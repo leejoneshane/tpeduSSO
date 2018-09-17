@@ -65,11 +65,13 @@
 							<select class="form-control" style="width:35%;display:inline" name="o[]">
 							@foreach ($schools as $dc => $school)
 								@if ($school['st'] == $schools[$o]['st'])
-								<option value="{{ $dc }}"{{ $dc == $user['o'] ? ' selected' : '' }}>{{ $school['desc'] }}</option>
+								<option value="{{ $dc }}"{{ $dc == $o ? ' selected' : '' }}>{{ $school['desc'] }}</option>
 								@endif
 			    			@endforeach
 							</select>
-							@if (!$loop->first)
+							@if ($loop->first)
+							<div></div>
+							@else
 							<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().prev().remove();$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
 							@endif
 						@endforeach
