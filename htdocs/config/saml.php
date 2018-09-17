@@ -71,7 +71,7 @@ return [
          */
         'aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS9hL21zLnRwLmVkdS50dy9hY3M=' => [        
             // The destination is the consuming SAML URL. This might be a SamlAuthController receiving the SAML response.  
-            'destination' => 'https://mail.google.com/a/ms.tp.edu.tw/acs',
+            'destination' => 'https://mail.google.com/mail/acs',
             // Issuer could be anything, mostly it makes sense to pass the metadata URL
             'issuer' => 'google.com/a/ms.tp.edu.tw',
             
