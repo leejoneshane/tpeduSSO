@@ -1683,7 +1683,7 @@ class SchoolController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$users = $openldap->findUsers("(&(o=$dc)(|(tpClass=$class)(tpTeachClass=$class*)))", "cn");
-		if ($users && $users['count']>0) {
+		if (count($users)>0) {
 			return redirect()->back()->with("error", "尚有人員隸屬於該行政部門，因此無法刪除！");
 		}
 		$entry = $openldap->getOUEntry($dc, $class);

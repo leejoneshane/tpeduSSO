@@ -238,7 +238,6 @@ class LdapServiceProvider extends ServiceProvider
 	
 		$info = array();
         foreach ($fields as $field) {
-    	    if ($field == 'ou') continue;
 	    	$value = @ldap_get_values(self::$ldapConnectId, $entry, $field);
 	    	if ($value) {
 				if ($value['count'] == 1) {
@@ -857,7 +856,7 @@ class LdapServiceProvider extends ServiceProvider
 				@$this->updateData($entry, [ "tpClassTitle" => $classname ]);
 			}
 		}
-		if (in_array('inetUserStatus', $fields) && !$userinfo['inetUserStatus']) {
+		if (in_array('inetUserStatus', $fields) && !isset($userinfo['inetUserStatus'])) {
 			$userinfo['inetUserStatus'] = 'active';
 			@$this->updateData($entry, [ "inetUserStatus" => "active" ]);
 		}

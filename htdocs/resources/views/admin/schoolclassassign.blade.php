@@ -79,14 +79,16 @@
 			</div>
 			<div id="teachers" class="form-group">
 				<table><tbody><tr>
+				@if ($teachers)
 				@foreach ($teachers as $teacher)
 					<td> <!--label class="checkbox-inline"-->
-						<input type="checkbox" name="teachers[]" value="{{ $teacher['cn'] }}">{{ $teacher['displayName'] }}（{{ is_array($teacher['titleName'][$dc]) ? $teacher['titleName'][$dc][0] : $teacher['titleName'][$dc] }}）
+						<input type="checkbox" name="teachers[]" value="{{ $teacher['cn'] }}">{{ $teacher['displayName'] }}（{{ is_array($teacher['titleName'][$dc]) ? array_values($teacher['titleName'][$dc])[0] : $teacher['titleName'][$dc] }}）
 					</td>
 					@if ($loop->iteration % 6 == 0)
 					</tr><tr>
 					@endif
 				@endforeach
+				@endif
 				</tr></tbody></table>
 			</div>
 		</div>
