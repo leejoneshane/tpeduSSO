@@ -48,7 +48,7 @@ class BureauController extends Controller
 		if ($dc) {
 			$data = $openldap->getOus($dc);
 			if (!empty($data)) $my_ou = $data[0]->ou;
-			if (empty($my_field) && !empty($my_ou)) $my_field = "ou=$my_ou";
+			if (empty($my_field) && !empty($my_ou)) $my_field = "ou=*$my_ou";
 		}
 		$keywords = $request->get('keywords');
 		$request->session()->put('area', $area);
@@ -102,7 +102,10 @@ class BureauController extends Controller
 		$data = $openldap->getOrgs();
 		$schools = array();
 		foreach ($data as $school) {
-			$schools[$school->o] = [ "st" => $school->st, "desc" => $school->description ];
+			if (isset($school->st) && isset($school->description)) {
+				$schools[$school->o]['st'] = $school->st;
+				$schools[$school->o]['desc'] = $school->description;
+			}
 		}
 		$data = $openldap->getOus($dc, '教學班級');
 		$classes = array();

@@ -472,7 +472,7 @@ class schoolController extends Controller
             if (isset($one['titleName'][$dc])) {
                 foreach ($one['titleName'][$dc] as $role_pair => $title) {
                     $a = explode(',', $role_pair);
-                    if (count($a) == 2 && $a[0] == $ou) $teacher->title = $title;
+                    if (count($a) == 3 && $a[0] == $dc && $a[1] == $ou) $teacher->title = $title;
                 }
                 if (!isset($teacher->title)) $teacher->title = array_values($one['titleName'][$dc])[0];
             }

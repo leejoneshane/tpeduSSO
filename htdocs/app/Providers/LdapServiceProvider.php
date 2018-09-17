@@ -726,6 +726,16 @@ class LdapServiceProvider extends ServiceProvider
 				}
 	    	}
 		}
+		if (!empty($userinfo['tpClass'])) {
+			$classname = $this->getOuTitle($userinfo['o'], $userinfo['tpClass']);
+			if (!isset($userinfo['tpClassTitle']) || $userinfo['tpClassTitle'] != $classname) {
+				$this->updateData($entry, [ "tpClassTitle" => $classname ]);
+			}
+		}
+		if (in_array('inetUserStatus', $fields) && empty($userinfo['inetUserStatus'])) {
+			$userinfo['inetUserStatus'] = 'active';
+			$this->updateData($entry, [ "inetUserStatus" => "active" ]);
+		}
 		$userinfo['email_login'] = false;
 		$userinfo['mobile_login'] = false;
 		if (isset($userinfo['uid']) && is_array($userinfo['uid'])) {
@@ -848,16 +858,6 @@ class LdapServiceProvider extends ServiceProvider
 				$userinfo['teachClass'][$o][$class_pair] = $this->getOuTitle($o, $class).$this->getSubjectTitle($o, $subject);
 			}
 			$userinfo['tpTeachClass'] = $tclass;
-		}
-		if (isset($userinfo['tpClass'])) {
-			$classname = $this->getOuTitle($userinfo['o'], $userinfo['tpClass']);
-			if (!isset($userinfo['tpClassTitle']) || $userinfo['tpClassTitle'] == $classname) {
-				@$this->updateData($entry, [ "tpClassTitle" => $classname ]);
-			}
-		}
-		if (in_array('inetUserStatus', $fields) && empty($userinfo['inetUserStatus'])) {
-			$userinfo['inetUserStatus'] = 'active';
-			@$this->updateData($entry, [ "inetUserStatus" => "active" ]);
 		}
 		return $userinfo;
     }
