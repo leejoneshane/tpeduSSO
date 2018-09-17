@@ -61,8 +61,10 @@
 			    	@endforeach
 					</select>
 					<select id="o" class="form-control" name="o" onchange="refresh_classes()">
-					@foreach ($schools as $dc => $desc)
-			    		<option value="{{ $dc }}"{{ array_key_exists('o', $user) && $dc == $user['o'] ? ' selected' : '' }}>{{ $desc }}</option>
+					@foreach ($schools as $dc => $school)
+						@if ($school['st'] == $area)
+			    		<option value="{{ $dc }}"{{ array_key_exists('o', $user) && $dc == $user['o'] ? ' selected' : '' }}>{{ $school['desc'] }}</option>
+						@endif
 			    	@endforeach
 					</select>
 				</div>

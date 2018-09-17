@@ -54,34 +54,18 @@
 				</div>
 			    <div class="form-group">
 				<label style="display:block">隸屬機構</label>
-					@if (isset($user) && is_array($user['o']))
-						@foreach ($user['o'] as $o)
-							<select class="form-control" style="width:25%;display:inline" name="area[]" onchange="refresh_orgs(this)">
-							@foreach ($areas as $st)
-				    		<option value="{{ $st }}"{{ $st == $area ? ' selected' : '' }}>{{ $st }}</option>
-					    	@endforeach
-							</select>
-							<select class="form-control" style="width:35%;display:inline" name="o[]">
-							@foreach ($schools as $o => $desc)
-			    			<option value="{{ $o }}"{{ $dc == $o ? ' selected' : '' }}>{{ $desc }}</option>
-			    			@endforeach
-							</select>
-							@if (!$loop->first)
-							<button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().prev().remove();$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
-							@endif
-						@endforeach
-					@else
-						<select class="form-control" style="width:25%;display:inline" name="area[]" onchange="refresh_orgs(this)">
-							@foreach ($areas as $st)
-				    		<option value="{{ $st }}"{{ $st == $area ? ' selected' : '' }}>{{ $st }}</option>
-					    	@endforeach
-						</select>
-						<select class="form-control" style="width:35%;display:inline" name="o[]">
-							@foreach ($schools as $o => $desc)
-			    			<option value="{{ $o }}"{{ $dc == $o ? ' selected' : '' }}>{{ $desc }}</option>
-			    			@endforeach
-						</select>
-					@endif
+					<select class="form-control" style="width:25%;display:inline" name="area[]" onchange="refresh_orgs(this)">
+						@foreach ($areas as $st)
+				    	<option value="{{ $st }}"{{ $st == $area ? ' selected' : '' }}>{{ $st }}</option>
+					   	@endforeach
+					</select>
+					<select class="form-control" style="width:35%;display:inline" name="o[]">
+					@foreach ($schools as $dc => $school)
+						@if ($school['st'] == $area)
+						<option value="{{ $dc }}">{{ $school['desc'] }}</option>
+						@endif
+			    	@endforeach
+					</select>
 					<button id="no" type="button" class="btn btn-primary btn-circle" onclick="add_org()"><i class="fa fa-plus"></i></button>
 				</div>
 			    <div class="form-group">
