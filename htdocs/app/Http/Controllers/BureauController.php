@@ -48,7 +48,7 @@ class BureauController extends Controller
 		if ($dc) {
 			$data = $openldap->getOus($dc);
 			if (!empty($data)) $my_ou = $data[0]->ou;
-			if (empty($my_field) && !empty($my_ou)) $my_field = "ou=*$my_ou";
+			if (empty($my_field) && !empty($my_ou)) $my_field = "ou=$my_ou";
 		}
 		$keywords = $request->get('keywords');
 		$request->session()->put('area', $area);
@@ -69,7 +69,7 @@ class BureauController extends Controller
 			} elseif (is_numeric($my_ou)) {
 				$filter = "(&(o=$dc)(tpClass=$my_ou)(!(inetUserStatus=deleted)))";
 			} else {
-				$filter = "(&(o=$dc)(ou=$my_ou)(!(inetUserStatus=deleted)))";
+				$filter = "(&(o=$dc)(ou=*$my_ou)(!(inetUserStatus=deleted)))";
 			}
 		} elseif ($my_field == 'uuid' && !empty($keywords)) {
 			$filter = "(&(o=$dc)(entryUUID=*".$keywords."*))";
