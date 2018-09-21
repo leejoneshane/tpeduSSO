@@ -32,14 +32,17 @@ Route::group(['middleware' => 'auth:api'], function () {
 Route::group(['middleware' => 'clientid:school'], function () {
     Route::get('school', 'Api\schoolController@all');
     Route::get('school/{dc}', 'Api\schoolController@one');
+    Route::get('school/{dc}/teachers', 'Api\schoolController@allTeachersByOrg');
     Route::get('school/{dc}/subject', 'Api\schoolController@allSubject');
     Route::get('school/{dc}/subject/{subj_id}', 'Api\schoolController@oneSubject');
     Route::get('school/{dc}/subject/{subj_id}/teachers', 'Api\schoolController@allTeachersBySubject');
     Route::get('school/{dc}/subject/{subj_id}/classes', 'Api\schoolController@allClassesBySubject');
     Route::get('school/{dc}/ou', 'Api\schoolController@allOu');
     Route::get('school/{dc}/ou/{ou_id}', 'Api\schoolController@oneOu');
+    Route::get('school/{dc}/ou/{ou_id}/teachers', 'Api\schoolController@allTeachersByUnit');
     Route::get('school/{dc}/ou/{ou_id}/role', 'Api\schoolController@allRole');
     Route::get('school/{dc}/ou/{ou_id}/role/{role_id}', 'Api\schoolController@oneRole');
+    Route::get('school/{dc}/ou/{ou_id}/role/{role_id}/teachers', 'Api\schoolController@allTeachersByRole');
     Route::get('school/{dc}/class', 'Api\schoolController@allClass');
     Route::get('school/{dc}/class/{class_id}', 'Api\schoolController@oneClass');
     Route::get('school/{dc}/class/{class_id}/teachers', 'Api\schoolController@allTeachersByClass');

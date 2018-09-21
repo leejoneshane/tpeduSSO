@@ -27,6 +27,17 @@ class schoolController extends Controller
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
+    public function allTeachersByOrg($dc)
+    {
+		$json = array();
+		$openldap = new LdapServiceProvider();
+		$teachers = $openldap->findUsers("o=$dc", "entryUUID");
+		foreach ($teachers as $teacher) {
+	    	$json[] = $teacher['entryUUID'];
+		}
+		return json_encode($json, JSON_UNESCAPED_UNICODE);
+    }
+
     public function allOu($dc)
     {
 		$openldap = new LdapServiceProvider();
@@ -39,6 +50,17 @@ class schoolController extends Controller
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getOuEntry($dc,$ou_id);
 		$json = $openldap->getOuData($entry);
+		return json_encode($json, JSON_UNESCAPED_UNICODE);
+    }
+
+    public function allTeachersByUnit($dc, $ou_id)
+    {
+		$json = array();
+		$openldap = new LdapServiceProvider();
+		$teachers = $openldap->findUsers("(&(o=$dc)(ou=*$ou_id))", "entryUUID");
+		foreach ($teachers as $teacher) {
+	    	$json[] = $teacher['entryUUID'];
+		}
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
@@ -101,6 +123,17 @@ class schoolController extends Controller
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getRoleEntry($dc,$ou_id,$role_id);
 		$json = $openldap->getRoleData($entry);
+		return json_encode($json, JSON_UNESCAPED_UNICODE);
+    }
+
+    public function allTeachersByRole($dc, $ou_id, $role_id)
+    {
+		$json = array();
+		$openldap = new LdapServiceProvider();
+		$teachers = $openldap->findUsers("(&(o=$dc)(ou=*$ou_id)(title=*$role_id)", "entryUUID");
+		foreach ($teachers as $teacher) {
+	    	$json[] = $teacher['entryUUID'];
+		}
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
