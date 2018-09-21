@@ -8,8 +8,6 @@ use Illuminate\Support\ServiceProvider;
 
 class LdapServiceProvider extends ServiceProvider
 {
-
-    private $groupList;
     private static $ldapConnectId = null;
 
     public function __construct()

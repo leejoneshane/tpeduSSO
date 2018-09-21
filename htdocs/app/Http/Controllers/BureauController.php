@@ -238,6 +238,7 @@ class BureauController extends Controller
 					$messages[] = "第 $i 筆記錄，".$person->name."出生日期格式或內容不正確，跳過不處理！";
 		    		continue;
 				}
+				$orgs = array();
 				if (is_array($person->o)) {
 					$orgs = $person->o;
 				} else {
