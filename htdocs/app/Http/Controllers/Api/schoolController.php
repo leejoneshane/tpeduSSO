@@ -31,7 +31,7 @@ class schoolController extends Controller
     {
 		$json = array();
 		$openldap = new LdapServiceProvider();
-		$teachers = $openldap->findUsers("o=$dc", "entryUUID");
+		$teachers = $openldap->findUsers("(&(o=$dc)(!(employeeType=學生)))", "entryUUID");
 		foreach ($teachers as $teacher) {
 	    	$json[] = $teacher['entryUUID'];
 		}

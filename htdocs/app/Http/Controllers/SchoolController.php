@@ -607,9 +607,9 @@ class SchoolController extends Controller
 		if (substr($my_field,0,3) == 'ou=') {
 			$my_ou = substr($my_field,3);
 			if ($my_ou == 'empty') {
-				$filter = "(&(o=$dc)(!(ou=*))(!(employeeType=學生))";
+				$filter = "(&(o=$dc)(!(ou=*))(!(employeeType=學生)))";
 			} elseif ($my_ou == 'deleted') {
-				$filter = "(&(o=$dc)(inetUserStatus=deleted)(!(employeeType=學生))";
+				$filter = "(&(o=$dc)(inetUserStatus=deleted)(!(employeeType=學生)))";
 			} else {
 				$filter = "(&(o=$dc)(ou=*$my_ou)(!(employeeType=學生))(!(inetUserStatus=deleted)))";
 			}
