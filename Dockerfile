@@ -86,13 +86,12 @@ RUN chmod 755 /usr/local/bin/*.sh \
            -e '/^CACHE_DRIVER=/d' \
            -e '/^SESSION_DRIVER=/d' \
            /var/www/localhost/htdocs/.env \
-    && cp -Rp /var/www/localhost/htdocs /root
-
+    && cp -Rp /var/www/localhost/htdocs /root \
+    
 COPY htdocs /var/www/localhost/htdocs
 RUN composer update \
     && php artisan storage:link \
     && php artisan passport:key \
-    && composer dumpautoload --classmap-authoritative \
     && chown -R apache:apache /var/www
 
 VOLUME ["/var/www/localhost/htdocs", "/var/www/localhost/htdocs/storage"]
