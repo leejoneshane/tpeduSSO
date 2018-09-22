@@ -9,12 +9,6 @@ else
   php artisan passport:install
 fi
 
-if [[ "${MAIL}" != "your@mail.addr" ]]; then
-    sed -ri -e "s/^(\s*ServerAdmin).*$/\1 ${MAIL}/g" /etc/apache2/httpd.conf
-#    echo -e "${MAIL}\n${WEB_PASSWORD}\n" | php artisan voyager:admin ${MAIL} --create
-  fi
-fi
-
 php artisan cache:clear
 php artisan config:cache
 php artisan route:cache
