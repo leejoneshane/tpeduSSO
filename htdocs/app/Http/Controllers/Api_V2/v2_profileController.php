@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class profileController extends Controller
+class v2_profileController extends Controller
 {
     public function logout(Request $request)
     {

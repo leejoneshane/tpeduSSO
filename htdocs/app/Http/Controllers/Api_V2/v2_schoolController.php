@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class schoolController extends Controller
+class v2_schoolController extends Controller
 {
     public function all()
     {
