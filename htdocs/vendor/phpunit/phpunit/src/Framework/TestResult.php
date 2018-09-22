@@ -7,7 +7,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace PHPUnit\Framework;
 
 use AssertionError;
@@ -183,7 +182,31 @@ class TestResult implements Countable
     /**
      * @var bool
      */
+    private $stopOnDefect = false;
+
+    /**
+     * @var bool
+     */
     private $registerMockObjectsFromTestArgumentsRecursively = false;
+
+    public static function isAnyCoverageRequired(TestCase $test)
+    {
+        $annotations = $test->getAnnotations();
+
+        // If any methods have covers, coverage must me generated
+        if (isset($annotations['method']['covers'])) {
+            return true;
+        }
+
+        // If there are no explicit covers, and the test class is
+        // marked as covers nothing, all coverage can be skipped
+        if (isset($annotations['class']['coversNothing'])) {
+            return false;
+        }
+
+        // Otherwise each test method can generate coverage
+        return true;
+    }
 
     /**
      * Registers a TestListener.
@@ -230,7 +253,7 @@ class TestResult implements Countable
                 $test->markAsRisky();
             }
 
-            if ($this->stopOnRisky) {
+            if ($this->stopOnRisky || $this->stopOnDefect) {
                 $this->stop();
             }
         } elseif ($t instanceof IncompleteTest) {
@@ -275,7 +298,7 @@ class TestResult implements Countable
      */
     public function addWarning(Test $test, Warning $e, float $time): void
     {
-        if ($this->stopOnWarning) {
+        if ($this->stopOnWarning || $this->stopOnDefect) {
             $this->stop();
         }
 
@@ -302,7 +325,7 @@ class TestResult implements Countable
                 $test->markAsRisky();
             }
 
-            if ($this->stopOnRisky) {
+            if ($this->stopOnRisky || $this->stopOnDefect) {
                 $this->stop();
             }
         } elseif ($e instanceof IncompleteTest) {
@@ -323,7 +346,7 @@ class TestResult implements Countable
             $this->failures[] = new TestFailure($test, $e);
             $notifyMethod     = 'addFailure';
 
-            if ($this->stopOnFailure) {
+            if ($this->stopOnFailure || $this->stopOnDefect) {
                 $this->stop();
             }
         }
@@ -567,11 +590,7 @@ class TestResult implements Countable
                 $this->registerMockObjectsFromTestArgumentsRecursively
             );
 
-            $annotations = $test->getAnnotations();
-
-            if (isset($annotations['class']['coversNothing']) || isset($annotations['method']['coversNothing'])) {
-                $coversNothing = true;
-            }
+            $isAnyCoverageRequired = self::isAnyCoverageRequired($test);
         }
 
         $error      = false;
@@ -588,7 +607,7 @@ class TestResult implements Countable
         if ($this->convertErrorsToExceptions) {
             $oldErrorHandler = \set_error_handler(
                 [ErrorHandler::class, 'handleError'],
-                E_ALL | E_STRICT
+                \E_ALL | \E_STRICT
             );
 
             if ($oldErrorHandler === null) {
@@ -600,7 +619,7 @@ class TestResult implements Countable
 
         $collectCodeCoverage = $this->codeCoverage !== null &&
                                !$test instanceof WarningTestCase &&
-                               !$coversNothing;
+                               $isAnyCoverageRequired;
 
         if ($collectCodeCoverage) {
             $this->codeCoverage->start($test);
@@ -612,6 +631,7 @@ class TestResult implements Countable
             \function_exists('xdebug_start_function_monitor');
 
         if ($monitorFunctions) {
+            /* @noinspection ForgottenDebugOutputInspection */
             \xdebug_start_function_monitor(ResourceOperations::getFunctions());
         }
 
@@ -698,7 +718,11 @@ class TestResult implements Countable
 
         if ($monitorFunctions) {
             $blacklist = new Blacklist;
+
+            /** @noinspection ForgottenDebugOutputInspection */
             $functions = \xdebug_get_monitored_functions();
+
+            /* @noinspection ForgottenDebugOutputInspection */
             \xdebug_stop_function_monitor();
 
             foreach ($functions as $function) {
@@ -762,7 +786,7 @@ class TestResult implements Countable
                     $test,
                     new UnintentionallyCoveredCodeError(
                         'This test executed code that is not listed as code to be covered or used:' .
-                        PHP_EOL . $cce->getMessage()
+                        \PHP_EOL . $cce->getMessage()
                     ),
                     $time
                 );
@@ -771,7 +795,7 @@ class TestResult implements Countable
                     $test,
                     new CoveredCodeNotExecutedException(
                         'This test did not execute all the code that is listed as code to be covered:' .
-                        PHP_EOL . $cce->getMessage()
+                        \PHP_EOL . $cce->getMessage()
                     ),
                     $time
                 );
@@ -788,9 +812,7 @@ class TestResult implements Countable
             } catch (OriginalCodeCoverageException $cce) {
                 $error = true;
 
-                if (!isset($e)) {
-                    $e = $cce;
-                }
+                $e = $e ?? $cce;
             }
         }
 
@@ -807,11 +829,30 @@ class TestResult implements Countable
         } elseif ($this->beStrictAboutTestsThatDoNotTestAnything &&
             !$test->doesNotPerformAssertions() &&
             $test->getNumAssertions() == 0) {
+            $reflected = new \ReflectionClass($test);
+            $name      = $test->getName(false);
+
+            if ($name && $reflected->hasMethod($name)) {
+                $reflected = $reflected->getMethod($name);
+            }
             $this->addFailure(
                 $test,
-                new RiskyTestError(
-                    'This test did not perform any assertions'
-                ),
+                new RiskyTestError(\sprintf(
+                    "This test did not perform any assertions\n\n%s:%d",
+                    $reflected->getFileName(),
+                    $reflected->getStartLine()
+                )),
+                $time
+            );
+        } elseif ($this->beStrictAboutTestsThatDoNotTestAnything &&
+            $test->doesNotPerformAssertions() &&
+            $test->getNumAssertions() > 0) {
+            $this->addFailure(
+                $test,
+                new RiskyTestError(\sprintf(
+                    'This test is annotated with "@doesNotPerformAssertions" but performed %d assertions',
+                    $test->getNumAssertions()
+                )),
                 $time
             );
         } elseif ($this->beStrictAboutOutputDuringTests && $test->hasOutput()) {
@@ -994,6 +1035,14 @@ class TestResult implements Countable
     public function stopOnSkipped(bool $flag): void
     {
         $this->stopOnSkipped = $flag;
+    }
+
+    /**
+     * Enables or disables the stopping for defects: error, failure, warning
+     */
+    public function stopOnDefect(bool $flag): void
+    {
+        $this->stopOnDefect = $flag;
     }
 
     /**

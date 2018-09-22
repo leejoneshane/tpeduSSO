@@ -13,6 +13,7 @@ use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Guards\TokenGuard;
 use League\OAuth2\Server\CryptKey;
 use League\OAuth2\Server\ResourceServer;
+use Illuminate\Config\Repository as Config;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Grant\AuthCodeGrant;
 use League\OAuth2\Server\Grant\ImplicitGrant;
@@ -82,6 +83,8 @@ class PassportServiceProvider extends ServiceProvider
         $this->registerResourceServer();
 
         $this->registerGuard();
+
+        $this->offerPublishing();
     }
 
     /**
@@ -200,7 +203,7 @@ class PassportServiceProvider extends ServiceProvider
             $this->app->make(Bridge\ClientRepository::class),
             $this->app->make(Bridge\AccessTokenRepository::class),
             $this->app->make(Bridge\ScopeRepository::class),
-            $this->makeCryptKey('oauth-private.key'),
+            $this->makeCryptKey('private'),
             app('encrypter')->getKey()
         );
     }
@@ -215,7 +218,7 @@ class PassportServiceProvider extends ServiceProvider
         $this->app->singleton(ResourceServer::class, function () {
             return new ResourceServer(
                 $this->app->make(Bridge\AccessTokenRepository::class),
-                $this->makeCryptKey('oauth-public.key')
+                $this->makeCryptKey('public')
             );
         });
     }
@@ -226,13 +229,15 @@ class PassportServiceProvider extends ServiceProvider
      * @param string $key
      * @return \League\OAuth2\Server\CryptKey
      */
-    protected function makeCryptKey($key)
+    protected function makeCryptKey($type)
     {
-        return new CryptKey(
-            'file://'.Passport::keyPath($key),
-            null,
-            false
-        );
+        $key = str_replace('\\n', "\n", $this->app->make(Config::class)->get('passport.'.$type.'_key'));
+
+        if (! $key) {
+            $key = 'file://'.Passport::keyPath('oauth-'.$type.'.key');
+        }
+
+        return new CryptKey($key, null, false);
     }
 
     /**
@@ -280,5 +285,19 @@ class PassportServiceProvider extends ServiceProvider
                 Cookie::queue(Cookie::forget(Passport::cookie()));
             }
         });
+    }
+
+    /**
+     * Setup the resource publishing groups for Passport.
+     *
+     * @return void
+     */
+    protected function offerPublishing()
+    {
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__.'/../config/passport.php' => config_path('passport.php'),
+            ], 'passport-config');
+        }
     }
 }

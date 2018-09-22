@@ -248,7 +248,7 @@ class NativeSessionStorage implements SessionStorageInterface
                 $handler = $handler->getHandler();
             }
 
-            trigger_error(sprintf('session_write_close(): Failed to write session data with %s handler', get_class($handler)), E_USER_WARNING);
+            trigger_error(sprintf('session_write_close(): Failed to write session data with %s handler', \get_class($handler)), E_USER_WARNING);
         }
 
         $this->closed = true;
@@ -346,20 +346,20 @@ class NativeSessionStorage implements SessionStorageInterface
         }
 
         $validOptions = array_flip(array(
-            'cache_limiter', 'cache_expire', 'cookie_domain', 'cookie_httponly',
+            'cache_expire', 'cache_limiter', 'cookie_domain', 'cookie_httponly',
             'cookie_lifetime', 'cookie_path', 'cookie_secure',
             'gc_divisor', 'gc_maxlifetime', 'gc_probability',
             'lazy_write', 'name', 'referer_check',
             'serialize_handler', 'use_strict_mode', 'use_cookies',
             'use_only_cookies', 'use_trans_sid', 'upload_progress.enabled',
             'upload_progress.cleanup', 'upload_progress.prefix', 'upload_progress.name',
-            'upload_progress.freq', 'upload_progress.min-freq', 'url_rewriter.tags',
+            'upload_progress.freq', 'upload_progress.min_freq', 'url_rewriter.tags',
             'sid_length', 'sid_bits_per_character', 'trans_sid_hosts', 'trans_sid_tags',
         ));
 
         foreach ($options as $key => $value) {
             if (isset($validOptions[$key])) {
-                ini_set('session.'.$key, $value);
+                ini_set('url_rewriter.tags' !== $key ? 'session.'.$key : $key, $value);
             }
         }
     }
@@ -407,8 +407,6 @@ class NativeSessionStorage implements SessionStorageInterface
         }
 
         if ($this->saveHandler instanceof SessionHandlerProxy) {
-            session_set_save_handler($this->saveHandler->getHandler(), false);
-        } elseif ($this->saveHandler instanceof \SessionHandlerInterface) {
             session_set_save_handler($this->saveHandler, false);
         }
     }

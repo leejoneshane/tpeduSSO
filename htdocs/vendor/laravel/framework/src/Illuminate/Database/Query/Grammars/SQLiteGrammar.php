@@ -138,11 +138,24 @@ class SQLiteGrammar extends Grammar
      */
     protected function dateBasedWhere($type, Builder $query, $where)
     {
-        $value = str_pad($where['value'], 2, '0', STR_PAD_LEFT);
+        $value = $this->parameter($where['value']);
 
-        $value = $this->parameter($value);
+        return "strftime('{$type}', {$this->wrap($where['column'])}) {$where['operator']} cast({$value} as text)";
+    }
 
-        return "strftime('{$type}', {$this->wrap($where['column'])}) {$where['operator']} {$value}";
+    /**
+     * Compile a "JSON length" statement into SQL.
+     *
+     * @param  string  $column
+     * @param  string  $operator
+     * @param  string  $value
+     * @return string
+     */
+    protected function compileJsonLength($column, $operator, $value)
+    {
+        list($field, $path) = $this->wrapJsonFieldAndPath($column);
+
+        return 'json_array_length('.$field.$path.') '.$operator.' '.$value;
     }
 
     /**
@@ -166,7 +179,7 @@ class SQLiteGrammar extends Grammar
         // If there is only one record being inserted, we will just use the usual query
         // grammar insert builder because no special syntax is needed for the single
         // row inserts in SQLite. However, if there are multiples, we'll continue.
-        if (count($values) == 1) {
+        if (count($values) === 1) {
             return empty(reset($values))
                     ? "insert into $table default values"
                     : parent::compileInsert($query, reset($values));
@@ -274,5 +287,24 @@ class SQLiteGrammar extends Grammar
             'delete from sqlite_sequence where name = ?' => [$query->from],
             'delete from '.$this->wrapTable($query->from) => [],
         ];
+    }
+
+    /**
+     * Wrap the given JSON selector.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    protected function wrapJsonSelector($value)
+    {
+        $parts = explode('->', $value, 2);
+
+        $field = $this->wrap($parts[0]);
+
+        $path = count($parts) > 1 ? ', '.$this->wrapJsonPath($parts[1]) : '';
+
+        $selector = 'json_extract('.$field.$path.')';
+
+        return $selector;
     }
 }

@@ -91,7 +91,7 @@ class MorphTo extends BelongsTo
      */
     public function getResults()
     {
-        return $this->ownerKey ? $this->query->first() : null;
+        return $this->ownerKey ? parent::getResults() : null;
     }
 
     /**
@@ -221,6 +221,36 @@ class MorphTo extends BelongsTo
         $this->parent->setAttribute($this->morphType, null);
 
         return $this->parent->setRelation($this->relation, null);
+    }
+
+    /**
+     * Touch all of the related models for the relationship.
+     *
+     * @return void
+     */
+    public function touch()
+    {
+        if (! is_null($this->ownerKey)) {
+            parent::touch();
+        }
+    }
+
+    /**
+     * Remove all or passed registered global scopes.
+     *
+     * @param  array|null  $scopes
+     * @return $this
+     */
+    public function withoutGlobalScopes(array $scopes = null)
+    {
+        $this->getQuery()->withoutGlobalScopes($scopes);
+
+        $this->macroBuffer[] = [
+            'method' => __FUNCTION__,
+            'parameters' => [$scopes],
+        ];
+
+        return $this;
     }
 
     /**

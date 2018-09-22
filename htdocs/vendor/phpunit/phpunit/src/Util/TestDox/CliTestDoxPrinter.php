@@ -13,6 +13,7 @@ use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Test;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\TestResult;
+use PHPUnit\Framework\TestSuite;
 use PHPUnit\Framework\Warning;
 use PHPUnit\Runner\PhptTestCase;
 use PHPUnit\TextUI\ResultPrinter;
@@ -54,28 +55,21 @@ class CliTestDoxPrinter extends ResultPrinter
 
     public function startTest(Test $test): void
     {
-        if (!$test instanceof TestCase && !$test instanceof PhptTestCase) {
+        if (!$test instanceof TestCase && !$test instanceof PhptTestCase && !$test instanceof TestSuite) {
             return;
         }
 
         $class = \get_class($test);
 
         if ($test instanceof TestCase) {
-            $annotations = $test->getAnnotations();
-
-            if (isset($annotations['class']['testdox'][0])) {
-                $className = $annotations['class']['testdox'][0];
-            } else {
-                $className = $this->prettifier->prettifyTestClass($class);
-            }
-
-            if (isset($annotations['method']['testdox'][0])) {
-                $testMethod = $annotations['method']['testdox'][0];
-            } else {
-                $testMethod = $this->prettifier->prettifyTestMethod($test->getName(false));
-            }
-
-            $testMethod .= \substr($test->getDataSetAsString(false), 5);
+            $className  = $this->prettifier->prettifyTestClass($class);
+            $testMethod = $this->prettifier->prettifyTestCase($test);
+        } elseif ($test instanceof TestSuite) {
+            $className  = $test->getName();
+            $testMethod = \sprintf(
+                'Error bootstapping suite (most likely in %s::setUpBeforeClass)',
+                $test->getName()
+            );
         } elseif ($test instanceof PhptTestCase) {
             $className  = $class;
             $testMethod = $test->getName();
@@ -94,7 +88,7 @@ class CliTestDoxPrinter extends ResultPrinter
 
     public function endTest(Test $test, float $time): void
     {
-        if (!$test instanceof TestCase && !$test instanceof PhptTestCase) {
+        if (!$test instanceof TestCase && !$test instanceof PhptTestCase && !$test instanceof TestSuite) {
             return;
         }
 

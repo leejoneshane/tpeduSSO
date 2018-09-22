@@ -30,6 +30,11 @@ class CollisionServiceProvider extends ServiceProvider
     /**
      * {@inheritdoc}
      */
+    protected $defer = true;
+
+    /**
+     * {@inheritdoc}
+     */
     public function register()
     {
         if ($this->app->runningInConsole() && ! $this->app->runningUnitTests()) {
@@ -45,5 +50,13 @@ class CollisionServiceProvider extends ServiceProvider
                 }
             );
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function provides()
+    {
+        return [ProviderContract::class];
     }
 }

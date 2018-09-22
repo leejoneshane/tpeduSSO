@@ -20,17 +20,17 @@ trait HasApiTokens
      */
     public function clients()
     {
-        return $this->hasMany(Client::class, 'user_id');
+        return $this->hasMany(Passport::clientModel(), 'user_id');
     }
 
     /**
      * Get all of the access tokens for the user.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function tokens()
     {
-        return $this->hasMany(Token::class, 'user_id')->orderBy('created_at', 'desc');
+        return $this->hasMany(Passport::tokenModel(), 'user_id')->orderBy('created_at', 'desc');
     }
 
     /**

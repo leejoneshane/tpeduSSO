@@ -133,7 +133,7 @@ final class Test
             $methodName
         );
 
-        if (isset($annotations['class']['coversNothing']) || isset($annotations['method']['coversNothing'])) {
+        if (self::shouldCoversAnnotationBeUsed($annotations) === false) {
             return false;
         }
 
@@ -243,11 +243,11 @@ final class Test
         if (!empty($required['PHP'])) {
             $operator = empty($required['PHP']['operator']) ? '>=' : $required['PHP']['operator'];
 
-            if (!\version_compare(PHP_VERSION, $required['PHP']['version'], $operator)) {
+            if (!\version_compare(\PHP_VERSION, $required['PHP']['version'], $operator)) {
                 $missing[] = \sprintf('PHP %s %s is required.', $operator, $required['PHP']['version']);
             }
         } elseif (!empty($required['PHP_constraint'])) {
-            $version = new \PharIo\Version\Version(self::sanitizeVersionNumber(PHP_VERSION));
+            $version = new \PharIo\Version\Version(self::sanitizeVersionNumber(\PHP_VERSION));
 
             if (!$required['PHP_constraint']['constraint']->complies($version)) {
                 $missing[] = \sprintf(
@@ -283,7 +283,7 @@ final class Test
         if (!empty($required['OS'])) {
             $requiredOsPattern = \sprintf('/%s/i', \addcslashes($required['OS'], '/'));
 
-            if (!\preg_match($requiredOsPattern, PHP_OS)) {
+            if (!\preg_match($requiredOsPattern, \PHP_OS)) {
                 $missing[] = \sprintf('Operating system matching %s is required.', $requiredOsPattern);
             }
         }
@@ -440,7 +440,7 @@ final class Test
     {
         $docComment = self::cleanUpMultiLineAnnotation($docComment);
 
-        if (\preg_match(self::REGEX_TEST_WITH, $docComment, $matches, PREG_OFFSET_CAPTURE)) {
+        if (\preg_match(self::REGEX_TEST_WITH, $docComment, $matches, \PREG_OFFSET_CAPTURE)) {
             $offset            = \strlen($matches[0][0]) + $matches[0][1];
             $annotationContent = \substr($docComment, $offset);
             $data              = [];
@@ -454,7 +454,7 @@ final class Test
 
                 $dataSet = \json_decode($candidateRow, true);
 
-                if (\json_last_error() !== JSON_ERROR_NONE) {
+                if (\json_last_error() !== \JSON_ERROR_NONE) {
                     throw new Exception(
                         'The data set for the @testWith annotation cannot be parsed: ' . \json_last_error_msg()
                     );
@@ -782,6 +782,15 @@ final class Test
             $element = \explode(' ', $element);
             $element = $element[0];
 
+            if ($mode === 'covers' && \interface_exists($element)) {
+                throw new InvalidCoversTargetException(
+                    \sprintf(
+                        'Trying to @cover interface "%s".',
+                        $element
+                    )
+                );
+            }
+
             $codeList = \array_merge(
                 $codeList,
                 self::resolveElementToReflectionObjects($element)
@@ -879,9 +888,8 @@ final class Test
         $docComment = \str_replace("\r\n", "\n", $docComment);
         $docComment = \preg_replace('/' . '\n' . '\s*' . '\*' . '\s?' . '/', "\n", $docComment);
         $docComment = \substr($docComment, 0, -1);
-        $docComment = \rtrim($docComment, "\n");
 
-        return $docComment;
+        return \rtrim($docComment, "\n");
     }
 
     private static function emptyHookMethodsArray(): array
@@ -901,22 +909,22 @@ final class Test
             $methodName
         );
 
-        if (isset($annotations['class'][$settingName])) {
-            if ($annotations['class'][$settingName][0] === 'enabled') {
-                return true;
-            }
-
-            if ($annotations['class'][$settingName][0] === 'disabled') {
-                return false;
-            }
-        }
-
         if (isset($annotations['method'][$settingName])) {
             if ($annotations['method'][$settingName][0] === 'enabled') {
                 return true;
             }
 
             if ($annotations['method'][$settingName][0] === 'disabled') {
+                return false;
+            }
+        }
+
+        if (isset($annotations['class'][$settingName])) {
+            if ($annotations['class'][$settingName][0] === 'enabled') {
+                return true;
+            }
+
+            if ($annotations['class'][$settingName][0] === 'disabled') {
                 return false;
             }
         }
@@ -1041,6 +1049,14 @@ final class Test
         $result = [];
 
         foreach ($reflectors as $reflector) {
+            if ($reflector instanceof ReflectionClass) {
+                foreach ($reflector->getTraits() as $trait) {
+                    $reflectors[] = $trait;
+                }
+            }
+        }
+
+        foreach ($reflectors as $reflector) {
             $filename = $reflector->getFileName();
 
             if (!isset($result[$filename])) {
@@ -1083,8 +1099,6 @@ final class Test
     /**
      * Trims any extensions from version string that follows after
      * the <major>.<minor>[.<patch>] format
-     *
-     * @return mixed
      */
     private static function sanitizeVersionNumber(string $version)
     {
@@ -1093,5 +1107,22 @@ final class Test
             '$1',
             $version
         );
+    }
+
+    private static function shouldCoversAnnotationBeUsed(array $annotations): bool
+    {
+        if (isset($annotations['method']['coversNothing'])) {
+            return false;
+        }
+
+        if (isset($annotations['method']['covers'])) {
+            return true;
+        }
+
+        if (isset($annotations['class']['coversNothing'])) {
+            return false;
+        }
+
+        return true;
     }
 }

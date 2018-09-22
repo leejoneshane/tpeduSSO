@@ -29,8 +29,6 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
-     *
      * @param  \Exception  $exception
      * @return void
      */
@@ -48,9 +46,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-	if ($exception instanceof ModelNotFoundExcaption && $request->wantsJson()) {
-	    return response()->json([ 'error' => 'Resource not found' ], 404);
-	}
         return parent::render($request, $exception);
     }
 }

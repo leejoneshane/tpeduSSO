@@ -249,6 +249,78 @@ trait ReplacesAttributes
     }
 
     /**
+     * Replace all place-holders for the gt rule.
+     *
+     * @param  string  $message
+     * @param  string  $attribute
+     * @param  string  $rule
+     * @param  array   $parameters
+     * @return string
+     */
+    protected function replaceGt($message, $attribute, $rule, $parameters)
+    {
+        if (is_null($value = $this->getValue($parameters[0]))) {
+            return str_replace(':value', $parameters[0], $message);
+        }
+
+        return str_replace(':value', $this->getSize($attribute, $value), $message);
+    }
+
+    /**
+     * Replace all place-holders for the lt rule.
+     *
+     * @param  string  $message
+     * @param  string  $attribute
+     * @param  string  $rule
+     * @param  array   $parameters
+     * @return string
+     */
+    protected function replaceLt($message, $attribute, $rule, $parameters)
+    {
+        if (is_null($value = $this->getValue($parameters[0]))) {
+            return str_replace(':value', $parameters[0], $message);
+        }
+
+        return str_replace(':value', $this->getSize($attribute, $value), $message);
+    }
+
+    /**
+     * Replace all place-holders for the gte rule.
+     *
+     * @param  string  $message
+     * @param  string  $attribute
+     * @param  string  $rule
+     * @param  array   $parameters
+     * @return string
+     */
+    protected function replaceGte($message, $attribute, $rule, $parameters)
+    {
+        if (is_null($value = $this->getValue($parameters[0]))) {
+            return str_replace(':value', $parameters[0], $message);
+        }
+
+        return str_replace(':value', $this->getSize($attribute, $value), $message);
+    }
+
+    /**
+     * Replace all place-holders for the lte rule.
+     *
+     * @param  string  $message
+     * @param  string  $attribute
+     * @param  string  $rule
+     * @param  array   $parameters
+     * @return string
+     */
+    protected function replaceLte($message, $attribute, $rule, $parameters)
+    {
+        if (is_null($value = $this->getValue($parameters[0]))) {
+            return str_replace(':value', $parameters[0], $message);
+        }
+
+        return str_replace(':value', $this->getSize($attribute, $value), $message);
+    }
+
+    /**
      * Replace all place-holders for the required_if rule.
      *
      * @param  string  $message

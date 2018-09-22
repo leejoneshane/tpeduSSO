@@ -2,6 +2,311 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.8.6 - 2018-09-05
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- [#325](https://github.com/zendframework/zend-diactoros/pull/325) changes the behavior of `ServerRequest::withParsedBody()`. Per
+- PSR-7, it now no longer allows values other than `null`, arrays, or objects.
+
+- [#325](https://github.com/zendframework/zend-diactoros/pull/325) changes the behavior of each of `Request`, `ServerRequest`, and
+  `Response` in relation to the validation of header values. Previously, we
+  allowed empty arrays to be provided via `withHeader()`; however, this was
+  contrary to the PSR-7 specification. Empty arrays are no longer allowed.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#325](https://github.com/zendframework/zend-diactoros/pull/325) ensures that `Uri::withUserInfo()` no longer ignores values of
+  `0` (numeric zero).
+
+- [#325](https://github.com/zendframework/zend-diactoros/pull/325) fixes how header values are merged when calling
+  `withAddedHeader()`, ensuring that array keys are ignored.
+
+## 1.8.5 - 2018-08-10
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#324](https://github.com/zendframework/zend-diactoros/pull/324) fixes a reference
+  to an undefined variable in the `ServerRequestFactory`, which made it
+  impossible to fetch a specific header by name.
+
+## 1.8.4 - 2018-08-01
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- This release modifies how `ServerRequestFactory` marshals the request URI. In
+  prior releases, we would attempt to inspect the `X-Rewrite-Url` and
+  `X-Original-Url` headers, using their values, if present. These headers are
+  issued by the ISAPI_Rewrite module for IIS (developed by HeliconTech).
+  However, we have no way of guaranteeing that the module is what issued the
+  headers, making it an unreliable source for discovering the URI. As such, we
+  have removed this feature in this release of Diactoros.
+
+  If you are developing a middleware application, you can mimic the
+  functionality via middleware as follows:
+
+  ```php
+  use Psr\Http\Message\ResponseInterface;
+  use Psr\Http\Message\ServerRequestInterface;
+  use Psr\Http\Server\RequestHandlerInterface;
+  use Zend\Diactoros\Uri;
+
+  public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+  {
+      $requestUri = null;
+
+      $httpXRewriteUrl = $request->getHeaderLine('X-Rewrite-Url');
+      if ($httpXRewriteUrl !== null) {
+          $requestUri = $httpXRewriteUrl;
+      }
+
+      $httpXOriginalUrl = $request->getHeaderLine('X-Original-Url');
+      if ($httpXOriginalUrl !== null) {
+          $requestUri = $httpXOriginalUrl;
+      }
+
+      if ($requestUri !== null) {
+          $request = $request->withUri(new Uri($requestUri));
+      }
+
+      return $handler->handle($request);
+  }
+  ```
+
+  If you use middleware such as the above, make sure you also instruct your web
+  server to strip any incoming headers of the same name so that you can
+  guarantee they are issued by the ISAPI_Rewrite module.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 1.8.3 - 2018-07-24
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#321](https://github.com/zendframework/zend-diactoros/pull/321) updates the logic in `Uri::withPort()` to ensure that it checks that the
+  value provided is either an integer or a string integer, as only those values
+  may be cast to integer without data loss.
+
+- [#320](https://github.com/zendframework/zend-diactoros/pull/320) adds checking within `Response` to ensure that the provided reason
+  phrase is a string; an `InvalidArgumentException` is now raised if it is not. This change
+  ensures the class adheres strictly to the PSR-7 specification.
+
+- [#319](https://github.com/zendframework/zend-diactoros/pull/319) provides a fix to `Zend\Diactoros\Response` that ensures that the status
+  code returned is _always_ an integer (and never a string containing an
+  integer), thus ensuring it strictly adheres to the PSR-7 specification.
+
+## 1.8.2 - 2018-07-19
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#318](https://github.com/zendframework/zend-diactoros/pull/318) fixes the logic for discovering whether an HTTPS scheme is in play
+  to be case insensitive when comparing header and SAPI values, ensuring no
+  false negative lookups occur.
+
+- [#314](https://github.com/zendframework/zend-diactoros/pull/314) modifies error handling around opening a file resource within
+  `Zend\Diactoros\Stream::setStream()` to no longer use the second argument to
+  `set_error_handler()`, and instead check the error type in the handler itself;
+  this fixes an issue when the handler is nested inside another error handler,
+  which currently has buggy behavior within the PHP engine.
+
+## 1.8.1 - 2018-07-09
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- [#313](https://github.com/zendframework/zend-diactoros/pull/313) changes the reason phrase associated with the status code 425
+  to "Too Early", corresponding to a new definition of the code as specified by the IANA.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#312](https://github.com/zendframework/zend-diactoros/pull/312) fixes how the `normalizeUploadedFiles()` utility function handles nested trees of
+  uploaded files, ensuring it detects them properly.
+
+## 1.8.0 - 2018-06-27
+
+### Added
+
+- [#307](https://github.com/zendframework/zend-diactoros/pull/307) adds the following functions under the `Zend\Diactoros` namespace, each of
+  which may be used to derive artifacts from SAPI supergloabls for the purposes
+  of generating a `ServerRequest` instance:
+  - `normalizeServer(array $server, callable $apacheRequestHeaderCallback = null) : array`
+    (main purpose is to aggregate the `Authorization` header in the SAPI params
+    when under Apache)
+  - `marshalProtocolVersionFromSapi(array $server) : string`
+  - `marshalMethodFromSapi(array $server) : string`
+  - `marshalUriFromSapi(array $server, array $headers) : Uri`
+  - `marshalHeadersFromSapi(array $server) : array`
+  - `parseCookieHeader(string $header) : array`
+  - `createUploadedFile(array $spec) : UploadedFile` (creates the instance from
+    a normal `$_FILES` entry)
+  - `normalizeUploadedFiles(array $files) : UploadedFileInterface[]` (traverses
+    a potentially nested array of uploaded file instances and/or `$_FILES`
+    entries, including those aggregated under mod_php, php-fpm, and php-cgi in
+    order to create a flat array of `UploadedFileInterface` instances to use in a
+    request)
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- [#307](https://github.com/zendframework/zend-diactoros/pull/307) deprecates `ServerRequestFactory::normalizeServer()`; the method is
+  no longer used internally, and users should instead use `Zend\Diactoros\normalizeServer()`,
+  to which it proxies.
+
+- [#307](https://github.com/zendframework/zend-diactoros/pull/307) deprecates `ServerRequestFactory::marshalHeaders()`; the method is
+  no longer used internally, and users should instead use `Zend\Diactoros\marshalHeadersFromSapi()`,
+  to which it proxies.
+
+- [#307](https://github.com/zendframework/zend-diactoros/pull/307) deprecates `ServerRequestFactory::marshalUriFromServer()`; the method
+  is no longer used internally. Users should use `marshalUriFromSapi()` instead.
+
+- [#307](https://github.com/zendframework/zend-diactoros/pull/307) deprecates `ServerRequestFactory::marshalRequestUri()`. the method is no longer
+  used internally, and currently proxies to `marshalUriFromSapi()`, pulling the
+  discovered path from the `Uri` instance returned by that function. Users
+  should use `marshalUriFromSapi()` instead.
+
+- [#307](https://github.com/zendframework/zend-diactoros/pull/307) deprecates `ServerRequestFactory::marshalHostAndPortFromHeaders()`; the method
+  is no longer used internally, and currently proxies to `marshalUriFromSapi()`,
+  pulling the discovered host and port from the `Uri` instance returned by that
+  function. Users should use `marshalUriFromSapi()` instead.
+
+- [#307](https://github.com/zendframework/zend-diactoros/pull/307) deprecates `ServerRequestFactory::getHeader()`; the method is no longer
+  used internally. Users should copy and paste the functionality into their own
+  applications if needed, or rely on headers from a fully-populated `Uri`
+  instance instead.
+
+- [#307](https://github.com/zendframework/zend-diactoros/pull/307) deprecates `ServerRequestFactory::stripQueryString()`; the method is no longer
+  used internally, and users can mimic the functionality via the expression
+  `$path = explode('?', $path, 2)[0];`.
+
+- [#307](https://github.com/zendframework/zend-diactoros/pull/307) deprecates `ServerRequestFactory::normalizeFiles()`; the functionality
+  is no longer used internally, and users can use `normalizeUploadedFiles()` as
+  a replacement.
+
+- [#303](https://github.com/zendframework/zend-diactoros/pull/303) deprecates `Zend\Diactoros\Response\EmitterInterface` and its various implementations. These are now provided via the
+  [zendframework/zend-httphandlerrunner](https://docs.zendframework.com/zend-httphandlerrunner) package as 1:1 substitutions.
+
+- [#303](https://github.com/zendframework/zend-diactoros/pull/303) deprecates the `Zend\Diactoros\Server` class. Users are directed to the `RequestHandlerRunner` class from the
+  [zendframework/zend-httphandlerrunner](https://docs.zendframework.com/zend-httphandlerrunner) package as an alternative.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 1.7.2 - 2018-05-29
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#301](https://github.com/zendframework/zend-diactoros/pull/301) adds stricter comparisons within the `uri` class to ensure non-empty
+  values are not treated as empty.
+
 ## 1.7.1 - 2018-02-26
 
 ### Added

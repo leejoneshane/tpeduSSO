@@ -165,8 +165,8 @@ class TokenGuard
         // We will compare the CSRF token in the decoded API token against the CSRF header
         // sent with the request. If the two don't match then this request is sent from
         // a valid source and we won't authenticate the request for further handling.
-        if (! $this->validCsrf($token, $request) ||
-            time() >= $token['expiry']) {
+        if (! Passport::$ignoreCsrfToken && (! $this->validCsrf($token, $request) ||
+            time() >= $token['expiry'])) {
             return;
         }
 
@@ -187,7 +187,7 @@ class TokenGuard
     protected function decodeJwtTokenCookie($request)
     {
         return (array) JWT::decode(
-            $this->encrypter->decrypt($request->cookie(Passport::cookie())),
+            $this->encrypter->decrypt($request->cookie(Passport::cookie()), Passport::$unserializesCookies),
             $this->encrypter->getKey(), ['HS256']
         );
     }

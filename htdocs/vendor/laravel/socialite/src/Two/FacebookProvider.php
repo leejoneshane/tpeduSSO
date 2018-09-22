@@ -19,7 +19,7 @@ class FacebookProvider extends AbstractProvider implements ProviderInterface
      *
      * @var string
      */
-    protected $version = 'v2.10';
+    protected $version = 'v3.0';
 
     /**
      * The user fields being requested.
@@ -75,8 +75,6 @@ class FacebookProvider extends AbstractProvider implements ProviderInterface
         $response = $this->getHttpClient()->post($this->getTokenUrl(), [
             $postKey => $this->getTokenFields($code),
         ]);
-
-        $data = [];
 
         $data = json_decode($response->getBody(), true);
 
