@@ -89,8 +89,7 @@ RUN chmod 755 /usr/local/bin/*.sh \
     && cp -Rp /var/www/localhost/htdocs /root \
     
 COPY htdocs /var/www/localhost/htdocs
-RUN composer update \
-    && php artisan storage:link \
+RUN php artisan storage:link \
     && php artisan passport:key \
     && chown -R apache:apache /var/www
 
