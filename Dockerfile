@@ -4,7 +4,6 @@ ENV TZ Asia/Taipei
 ENV DOMAIN ldap.tp.edu.tw
 ENV APP_URL https://ldap.tp.edu.tw
 ENV APP_DEBUG false
-ENV MAIL your@gmail.com
 ENV DB_HOST 163.21.249.80
 ENV DB_PORT 3306
 ENV DB_DATABASE laravel
