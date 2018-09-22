@@ -70,25 +70,10 @@ RUN chmod 755 /usr/local/bin/*.sh \
                         laravel/socialite \
                         laravel/passport \
                         guzzlehttp/guzzle \
-                        kingstarter/laravel-saml \
-    && sed -ri \
-           -e '/^DB_HOST=/d' \
-           -e '/^DB_PORT=/d' \
-           -e '/^DB_DATABASE=/d' \
-           -e '/^DB_USERNAME=/d' \
-           -e '/^DB_PASSWORD=/d' \
-           -e '/^REDIS_HOST=/d' \
-           -e '/^REDIS_PORT=/d' \
-           -e '/^REDIS_PASSWORD=/d' \
-           -e '/^CACHE_DRIVER=/d' \
-           -e '/^SESSION_DRIVER=/d' \
-           /var/www/localhost/htdocs/.env \
-    && cp -Rp /var/www/localhost/htdocs /root
+                        kingstarter/laravel-saml
     
 COPY htdocs /var/www/localhost/htdocs
-RUN php artisan storage:link \
-    && php artisan passport:key \
-    && chown -R apache:apache /var/www
+RUN chown -R apache:apache /var/www
 
 VOLUME ["/var/www/localhost/htdocs", "/var/www/localhost/htdocs/storage"]
 EXPOSE 80 443 
