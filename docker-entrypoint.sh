@@ -30,5 +30,12 @@ if [[ "${INIT}" == "yes" ]]; then
   fi
 fi
 
+composer dumpautoload --classmap-authoritative
+php artisan cache:clear
+php artisan opcache:clear
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
 rm -f /run/apache2/httpd.pid
 exec httpd -DFOREGROUND
