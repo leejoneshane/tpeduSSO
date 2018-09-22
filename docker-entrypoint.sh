@@ -19,10 +19,6 @@ if [[ "${INIT}" == "yes" ]]; then
   echo -e "yes\nyes\nyes\n" | php artisan migrate:refresh
   echo -e "0" | php artisan vendor:publish
   php artisan -q make:auth
-  php artisan config:clear
-  php artisan view:clear
-  php artisan cache:clear
-  php artisan opcache:clear
 
   if [[ "${MAIL}" != "your@mail.addr" ]]; then
     sed -ri -e "s/^(\s*ServerAdmin).*$/\1 ${MAIL}/g" /etc/apache2/httpd.conf
@@ -32,7 +28,6 @@ fi
 
 composer dumpautoload --classmap-authoritative
 php artisan cache:clear
-php artisan opcache:clear
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
