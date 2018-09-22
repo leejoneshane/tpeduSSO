@@ -73,7 +73,6 @@ RUN chmod 755 /usr/local/bin/*.sh \
                         laravel/socialite \
                         laravel/passport \
                         guzzlehttp/guzzle \
-                        appstract/laravel-opcache \
     && sed -ri \
            -e '/^DB_HOST=/d' \
            -e '/^DB_PORT=/d' \
