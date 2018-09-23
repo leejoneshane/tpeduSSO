@@ -1,4 +1,4 @@
-FROM alpine
+FROM alpine:3.7
 
 ENV TZ Asia/Taipei
 ENV DOMAIN ldap.tp.edu.tw
