@@ -70,7 +70,8 @@ RUN chmod 755 /usr/local/bin/*.sh \
                         laravel/socialite \
                         laravel/passport \
                         guzzlehttp/guzzle \
-                        kingstarter/laravel-saml
+                        kingstarter/laravel-saml \
+                        appstract/laravel-opcache
     
 COPY htdocs /var/www/localhost/htdocs
 RUN chown -R apache:apache /var/www
