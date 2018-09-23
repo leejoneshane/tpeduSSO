@@ -9,7 +9,6 @@ else
   php artisan passport:install
 fi
 
-composer update
 php artisan cache:clear
 php artisan config:cache
 php artisan route:cache
