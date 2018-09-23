@@ -71,7 +71,8 @@ RUN chmod 755 /usr/local/bin/*.sh \
                         laravel/passport \
                         guzzlehttp/guzzle \
                         kingstarter/laravel-saml \
-                        appstract/laravel-opcache
+                        appstract/laravel-opcache \
+    && composer update
     
 COPY htdocs /var/www/localhost/htdocs
 RUN chown -R apache:apache /var/www
