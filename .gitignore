@@ -1,4 +1,3 @@
-/htdocs/node_modules
 /htdocs/public/hot
 /htdocs/public/storage
 /htdocs/storage/saml
@@ -10,6 +9,5 @@
 /htdocs/Homestead.yaml
 /htdocs/npm-debug.log
 /htdocs/yarn-error.log
-/htdocs/.rnd
 .DS_Store
 Icon
