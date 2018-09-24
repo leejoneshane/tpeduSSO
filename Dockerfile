@@ -4,7 +4,7 @@ ENV TZ Asia/Taipei
 ENV DOMAIN ldap.tp.edu.tw
 ENV APP_URL https://ldap.tp.edu.tw
 ENV APP_DEBUG false
-ENV DB_HOST 163.21.249.80
+ENV DB_HOST mysql
 ENV DB_PORT 3306
 ENV DB_DATABASE laravel
 ENV DB_USERNAME root
@@ -12,7 +12,7 @@ ENV DB_PASSWORD password
 ENV LDAP_HOST ldaps://ldap.tp.edu.tw
 ENV LDAP_ROOTDN cn=admin,dc=tp,dc=edu,dc=tw
 ENV LDAP_ROOTPWD password
-ENV REDIS_HOST 163.21.249.80
+ENV REDIS_HOST redis
 ENV REDIS_PORT 6379
 ENV REDIS_PASSWORD null
 ENV CACHE_DRIVER redis
