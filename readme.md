@@ -2,6 +2,8 @@
 
 [臺北市教育人員單一身份驗證服務平台](https://ldap.tp.edu.tw)，為臺北市政府教育局所發展教育人員單一簽入的管理平台，由臺北市老師自主研發，若您為臺北市教師且對程式開發感興趣，請與我聯繫！目前服務平台提供之功能，包含：一般教育人員帳號管理介面、學校管理人員管理介面、局端管理介面、Oauth2 驗證服務、教育開放資料介接 Data API、SAML2 Provider。平台使用 [laravel](https://github.com/laravel/laravel) 進行開發，所有程式碼開源，歡迎各縣市網路中心自行下載使用。
 
+開發中的功能則有：國小學程校務行政系統資料介接與同步功能。
+
 ## 開發模式
 
 請先在工作站上安裝 docker([安裝文件](https://docs.docker.com/install/)) 以及 docker-compose([安裝文件](https://docs.docker.com/compose/install/))。
