@@ -64,18 +64,12 @@ RUN chmod 755 /usr/local/bin/*.sh \
            "/etc/php7/php.ini" \
        \
     && rm -f index.html \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer \
-    && /usr/bin/composer create-project --no-progress --prefer-dist laravel/laravel /var/www/localhost/htdocs
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
 COPY htdocs /var/www/localhost/htdocs
 
 RUN chown -R apache:apache /var/www \
-    && composer require predis/predis \
-                        laravel/socialite \
-                        laravel/passport \
-                        guzzlehttp/guzzle \
-                        kingstarter/laravel-saml \
-                        appstract/laravel-opcache
+    && composer update
 
 VOLUME ["/var/www/localhost/htdocs", "/var/www/localhost/htdocs/storage"]
 EXPOSE 80 443 
