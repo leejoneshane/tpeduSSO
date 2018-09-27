@@ -1,3 +1,5 @@
+/htdocs/vendor
+/htdocs/node_modules
 /htdocs/public/hot
 /htdocs/public/storage
 /htdocs/storage/saml
