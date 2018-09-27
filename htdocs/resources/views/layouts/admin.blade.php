@@ -42,6 +42,7 @@
 					<ul class="dropdown-menu" style="min-width:50px;">
                         <li><a href="{{ url('/') }}"><i class="fa fa-home fa-fw"></i>回首頁</a></li>
                         @if (Auth::user()->is_admin || Auth::user()->id == 1)
+                        <li><a class="dropdown-item" href="{{ route('sync') }}"><i class="fa fa-gears fa-fw"></i>同步作業</a></li>
                         <li><a class="dropdown-item" href="{{ route('bureau') }}"><i class="fa fa-eye fa-fw"></i>局端管理</a></li>
                         @endif
                         @if (Auth::user()->ldap['adminSchools'])
