@@ -16,7 +16,7 @@ class SimsServiceProvider extends ServiceProvider
     public function __construct()
     {
         if (is_null(self::$oauth_ps))
-            self::$oauth_ps = new GuzzleHttp\Cient([
+            self::$oauth_ps = new \GuzzleHttp\Cient([
                 'base_uri' => Config::get('sims.ps.base_uri'),
             ]);
         self::$seme = $this->seme();
