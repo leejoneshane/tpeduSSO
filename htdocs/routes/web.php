@@ -41,6 +41,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('oauth', 'oauthController@index')->name('oauth');
 });
 
+Route::group(['prefix' => 'sync', 'middleware' => 'auth.admin'], function () {
+    Route::get('/', 'SyncController@index')->name('sync');
+    Route::get('ps/runtime_test', 'SyncController@ps_testForm')->name('sync.ps.runtimetest');
+});
+
 Route::group(['prefix' => 'bureau', 'middleware' => 'auth.admin'], function () {
     Route::get('/', 'BureauController@index')->name('bureau');
 	Route::get('admin', 'BureauController@bureauAdminForm')->name('bureau.admin');
