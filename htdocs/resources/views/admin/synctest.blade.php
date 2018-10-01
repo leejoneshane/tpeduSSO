@@ -60,7 +60,7 @@
 				<label>年級：</label>
 				<input type="text" class="form-control" id="grade" name="grade" value="{{ old('grade') }}">
 				<label>科目代號：</label>
-				<input type="text" class="form-control" id="subjid"" name="subjid" value="{{ old('subjid') }}">
+				<input type="text" class="form-control" id="subjid" name="subjid" value="{{ old('subjid') }}">
 				<label>班級代號：</label>
 				<input type="text" class="form-control" id="clsid" name="clsid" value="{{ old('clsid') }}">
 				<label>教師代號：</label>
@@ -68,7 +68,7 @@
 				<label>學生學號：</label>
 				<input type="text" class="form-control" id="stdno" name="stdno" value="{{ old('stdno') }}">
 				<label>ISBN：</label>
-				<input type="text" class="form-control" id="isbn"" name="isbn" value="{{ old('isbn') }}">
+				<input type="text" class="form-control" id="isbn" name="isbn" value="{{ old('isbn') }}">
 			    <div class="form-group">
 					<button type="submit" class="btn btn-success" onsubmit="return check_all();">傳送請求</button>
 				</div>
