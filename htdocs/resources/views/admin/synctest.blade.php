@@ -122,13 +122,14 @@
 					}
 					msg = [];
 					for(i=0;i<fields.length;i++) {
-						if (fields[i] == 'sid' && $('#' + fields[i]).val() == 'undefined') msg.push('學校統一編號');
-						if (fields[i] == 'grade' && $('#' + fields[i]).val() == 'undefined') msg.push('年級');
-						if (fields[i] == 'subjid' && $('#' + fields[i]).val() == 'undefined') msg.push('科目代號');
-						if (fields[i] == 'clsid' && $('#' + fields[i]).val() == 'undefined') msg.push('班級代號');
-						if (fields[i] == 'teaid' && $('#' + fields[i]).val() == 'undefined') msg.push('教師代號');
-						if (fields[i] == 'stdno' && $('#' + fields[i]).val() == 'undefined') msg.push('學生學號');
-						if (fields[i] == 'isbn' && $('#' + fields[i]).val() == 'undefined') msg.push('書號(ISBN)');
+						alert($('#' + fields[i]).val());
+						if (fields[i] == 'sid' && !$('#' + fields[i]).val()) msg.push('學校統一編號');
+						if (fields[i] == 'grade' && !$('#' + fields[i]).val()) msg.push('年級');
+						if (fields[i] == 'subjid' && !$('#' + fields[i]).val()) msg.push('科目代號');
+						if (fields[i] == 'clsid' && !$('#' + fields[i]).val()) msg.push('班級代號');
+						if (fields[i] == 'teaid' && !$('#' + fields[i]).val()) msg.push('教師代號');
+						if (fields[i] == 'stdno' && !$('#' + fields[i]).val()) msg.push('學生學號');
+						if (fields[i] == 'isbn' && !$('#' + fields[i]).val()) msg.push('書號(ISBN)');
 					}
 					if (msg.length > 0) {
 						alert('請務必輸入' + msg.join('、') + '!');
