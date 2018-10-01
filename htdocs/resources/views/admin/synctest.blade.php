@@ -122,7 +122,6 @@
 					}
 					msg = [];
 					for(i=0;i<fields.length;i++) {
-						alert($('#' + fields[i]).val());
 						if (fields[i] == 'sid' && !$('#' + fields[i]).val()) msg.push('學校統一編號');
 						if (fields[i] == 'grade' && !$('#' + fields[i]).val()) msg.push('年級');
 						if (fields[i] == 'subjid' && !$('#' + fields[i]).val()) msg.push('科目代號');
