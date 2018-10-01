@@ -2,6 +2,7 @@
 
 return [
     'ps' => [
+        'debug' => true,
         'oauth_id' => env('PS_CLIENT_ID'),
         'oauth_secret' => urlencode(env('PS_CLIENT_SECRET')),
         'oauth_ip' => env('PS_SERVICE_IP'),

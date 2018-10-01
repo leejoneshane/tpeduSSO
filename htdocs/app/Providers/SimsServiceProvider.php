@@ -50,6 +50,7 @@ class SimsServiceProvider extends ServiceProvider
         if ($json->status == 'ok') {
             return $json->list;
         } else {
+            if (Config::get('sims.ps.debug')) Log::debug('Oauth call:'.$url.' failed! Server response:'.$json->error);
             return false;
         }
     }
