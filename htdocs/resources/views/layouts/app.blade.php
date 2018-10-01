@@ -36,7 +36,6 @@
 				<ul class="navbar-nav navbar-right ml-auto">
                         @guest
                             <li><a class="nav-link" href="{{ route('login') }}">登入</a></li>
-                            <li><a class="nav-link" href="{{ route('register') }}">註冊（暫不開放）</a></li>
                         @else
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

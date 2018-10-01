@@ -33,7 +33,6 @@
             <ul class="nav navbar-top-links navbar-right">
                 @guest
                     <li><a href="{{ route('login') }}">登入</a></li>
-                    <li><a href="{{ route('register') }}">註冊（暫不開放）</a></li>
                 @else
                 <li class="dropdown">
                     <a class="dropdown-toggle" href="#" data-toggle="dropdown">
