@@ -47,17 +47,9 @@
 			<h4>測試結果</h4>
 		</div>
 		<div class="panel-body">
-			<table class="table table-hover">
-				<tbody>
-					<tr>
-						<td id="viewport" style="word-wrap: break-word">
-						@if ($result)
-						{{ var_dump($result) }}
-						@endif
-						</td>
-					</tr>
-				</tbody>
-			</table>
+		@if ($result)
+			<pre>{{ var_export($result, true) }}</pre>
+		@endif
 		</div>
 		</div>
 	</div>
