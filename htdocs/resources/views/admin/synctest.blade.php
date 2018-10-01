@@ -17,7 +17,7 @@
 		{{ session('success') }}
 	    </div>
 	@endif
-	<div class="col-sm-12">
+	<div class="col-sm-4">
 		<div class="panel panel-default">	  
 		<div class="panel-heading">
 			<h4>學校資訊</h4>
@@ -41,7 +41,8 @@
 			</div>
 		</div>
     	</div>
-
+	</div>
+	<div class="col-sm-4">
 		<div class="panel panel-default">
 		<div class="panel-heading">
 			<h4>年級資訊</h4>
@@ -63,7 +64,8 @@
 			</div>
 		</div>
     	</div>
-
+	</div>
+	<div class="col-sm-4">
 		<div class="panel panel-default">
 		<div class="panel-heading">
 			<h4>科目資訊</h4>
@@ -85,7 +87,8 @@
 			</div>
 		</div>
     	</div>
-
+	</div>
+	<div class="col-sm-4">
 		<div class="panel panel-default">	  
 		<div class="panel-heading">
 			<h4>班級資訊</h4>
@@ -113,7 +116,8 @@
 			</div>
 		</div>
     	</div>
-
+	</div>
+	<div class="col-sm-4">
 		<div class="panel panel-default">	  
 		<div class="panel-heading">
 			<h4>教師資訊</h4>
@@ -138,7 +142,8 @@
 			</div>
 		</div>
     	</div>
-
+	</div>
+	<div class="col-sm-4">
 		<div class="panel panel-default">
 		<div class="panel-heading">
 			<h4>學生資訊</h4>
@@ -165,7 +170,8 @@
 			</div>
 		</div>
     	</div>
-
+	</div>
+	<div class="col-sm-4">
 		<div class="panel panel-default">
 		<div class="panel-heading">
 			<h4>圖書資訊</h4>
@@ -188,7 +194,8 @@
 			</div>
 		</div>
     	</div>
-
+	</div>
+	<div class="col-sm-12">
 		<div class="panel panel-default">
 		<div class="panel-heading">
 			<h4>測試結果</h4>
