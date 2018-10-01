@@ -5,19 +5,17 @@ namespace App\Providers;
 use Log;
 use Config;
 use Illuminate\Support\ServiceProvider;
-use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Client;
 
 class SimsServiceProvider extends ServiceProvider
 {
     protected $oauth_ps = null;
     protected $oauth_js = null;
-    private static $seme;
+    private static $seme = null;
 
     public function __construct()
     {
         if (is_null(self::$oauth_ps))
-            self::$oauth_ps = new Cient([
+            self::$oauth_ps = new \GuzzleHttp\Client([
                 'base_uri' => Config::get('sims.ps.base_uri'),
             ]);
         self::$seme = $this->seme();
