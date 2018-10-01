@@ -18,7 +18,7 @@
 	    </div>
 	@endif
 	<div class="col-sm-6">
-		<div class="panel panel-default">	  
+		<div class="panel panel-default">
 		<div class="panel-heading">
 			<h4>參數設定</h4>
 		</div>
@@ -118,7 +118,6 @@
 							fields = ["sid", "isbn"];
 							break;
 					}
-					if ()
 					var msg = [];
 					for(i=0;i<fields.length;i++) {
 						if (fields[i] == 'sid' && $('#' + fields[i]).val() == '') msg[msg.length] = '學校統一編號';
