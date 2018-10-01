@@ -74,6 +74,8 @@
 				</div>
 			</form>
 			<script type="text/javascript">
+				var fields = [];
+				var msg = [];
       			function check_all() {
 					field = $('#field').val();
 					switch(field) {
@@ -118,7 +120,7 @@
 							fields = ["sid", "isbn"];
 							break;
 					}
-					var msg = [];
+					msg = [];
 					for(i=0;i<fields.length;i++) {
 						if (fields[i] == 'sid' && $('#' + fields[i]).val() == '') msg[msg.length] = '學校統一編號';
 						if (fields[i] == 'grade' && $('#' + fields[i]).val() == '') msg[msg.length] = '年級';
