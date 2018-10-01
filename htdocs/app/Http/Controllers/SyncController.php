@@ -38,44 +38,26 @@ class SyncController extends Controller
 		$my_field = $request->get('field');
 		$http = new SimsServiceProvider();
 		$result = array();
-		switch ($scope) {
-			case 0:
-				if ($my_field && $request->has('sid')) {
-					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid') ]);
-				}
-				break;
-			case 1:
-				if ($my_field && $request->has('sid') && $request->has('grade')) {
-					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid'), '{grade}' => $request->get('grade') ]);
-				}
-				break;
-			case 2:
-				if ($my_field && $request->has('sid') && $request->has('subjid')) {
-					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid'), '{subjid}' => $request->get('subjid') ]);
-				}
-				break;
-			case 3:
-				if ($my_field && $request->has('sid') && $request->has('clsid')) {
-					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid'), '{clsid}' => $request->get('clsid') ]);
-				}
-				break;
-			case 4:
-				if ($my_field && $request->has('sid') && $request->has('teaid')) {
-					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid'), '{teaid}' => $request->get('teaid') ]);
-				}
-				break;
-			case 5:
-				if ($my_field && $request->has('sid') && $request->has('stdno')) {
-					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid'), '{stdno}' => $request->get('stdno') ]);
-				}
-				break;
-			case 6:
-				if ($my_field && $request->has('sid') && $request->has('isbn')) {
-					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid'), '{isbn}' => $request->get('isbn') ]);
-				} else {
-					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid') ]);
-				}
-				break;
+		if ($my_field && $request->has('sid')) {
+			$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid') ]);
+		}
+		if ($my_field && $request->has('sid') && $request->has('grade')) {
+			$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid'), '{grade}' => $request->get('grade') ]);
+		}
+		if ($my_field && $request->has('sid') && $request->has('subjid')) {
+			$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid'), '{subjid}' => $request->get('subjid') ]);
+		}
+		if ($my_field && $request->has('sid') && $request->has('clsid')) {
+			$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid'), '{clsid}' => $request->get('clsid') ]);
+		}
+		if ($my_field && $request->has('sid') && $request->has('teaid')) {
+			$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid'), '{teaid}' => $request->get('teaid') ]);
+		}
+		if ($my_field && $request->has('sid') && $request->has('stdno')) {
+			$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid'), '{stdno}' => $request->get('stdno') ]);
+		}
+		if ($my_field && $request->has('sid') && $request->has('isbn')) {
+			$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid'), '{isbn}' => $request->get('isbn') ]);
 		}
 		return view('admin.synctest', [ 'my_field' => $my_field, 'result' => $result ]);
     }
