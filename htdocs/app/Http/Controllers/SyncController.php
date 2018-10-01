@@ -40,40 +40,40 @@ class SyncController extends Controller
 		$result = array();
 		switch ($scope) {
 			case 0:
-				if ($my_field && $request->has('sid0')) {
-					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid0') ]);
+				if ($my_field && $request->has('sid')) {
+					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid') ]);
 				}
 				break;
 			case 1:
-				if ($my_field && $request->has('sid1') && $request->has('grade')) {
-					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid1'), '{grade}' => $request->get('grade') ]);
+				if ($my_field && $request->has('sid') && $request->has('grade')) {
+					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid'), '{grade}' => $request->get('grade') ]);
 				}
 				break;
 			case 2:
-				if ($my_field && $request->has('sid2') && $request->has('subjid')) {
-					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid2'), '{subjid}' => $request->get('subjid') ]);
+				if ($my_field && $request->has('sid') && $request->has('subjid')) {
+					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid'), '{subjid}' => $request->get('subjid') ]);
 				}
 				break;
 			case 3:
-				if ($my_field && $request->has('sid3') && $request->has('clsid')) {
-					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid3'), '{clsid}' => $request->get('clsid') ]);
+				if ($my_field && $request->has('sid') && $request->has('clsid')) {
+					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid'), '{clsid}' => $request->get('clsid') ]);
 				}
 				break;
 			case 4:
-				if ($my_field && $request->has('sid4') && $request->has('teaid')) {
-					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid4'), '{teaid}' => $request->get('teaid') ]);
+				if ($my_field && $request->has('sid') && $request->has('teaid')) {
+					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid'), '{teaid}' => $request->get('teaid') ]);
 				}
 				break;
 			case 5:
-				if ($my_field && $request->has('sid5') && $request->has('stdno')) {
-					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid5'), '{stdno}' => $request->get('stdno') ]);
+				if ($my_field && $request->has('sid') && $request->has('stdno')) {
+					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid'), '{stdno}' => $request->get('stdno') ]);
 				}
 				break;
 			case 6:
-				if ($my_field && $request->has('sid6') && $request->has('isbn')) {
-					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid6'), '{isbn}' => $request->get('isbn') ]);
+				if ($my_field && $request->has('sid') && $request->has('isbn')) {
+					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid'), '{isbn}' => $request->get('isbn') ]);
 				} else {
-					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid6') ]);
+					$result = $http->ps_call($my_field, [ '{sid}' => $request->get('sid') ]);
 				}
 				break;
 		}
