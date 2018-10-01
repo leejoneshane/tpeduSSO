@@ -77,7 +77,7 @@ class SyncController extends Controller
 				}
 				break;
 		}
-		return view('admin.synctest', [ 'my_field' => $my_field, 'sid' => $sid, 'result' => $result ]);
+		return view('admin.synctest', [ 'my_field' => $my_field, 'result' => $result ]);
     }
 
 }
