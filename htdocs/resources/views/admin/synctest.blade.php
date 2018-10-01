@@ -32,9 +32,9 @@
 					<option value="calendar_info" {{ $my_field == 'calendar_info' ? 'selected' : '' }}>學校行事曆</option>
 				</select>
 				<label>學校統一編號：</label>
-				<input type="text" class="form-control" id="sid" name="sid" value="{{ old('sid') }}" required>
+				<input type="text" class="form-control" id="sid0" name="sid0" value="{{ old('sid0') }}" required>
 				<span class="input-group-btn">
-					<button class="btn btn-default" type="button" onclick="location='{{ url()->current() }}?scope=0&field=' + $('#field').val() + '&sid=' + $('#sid').val();">
+					<button class="btn btn-default" type="button" onclick="location='{{ url()->current() }}?scope=0&field=' + $('#field').val() + '&sid=' + $('#sid0').val();">
 						傳送請求
 					</button>
 				</span>
@@ -53,11 +53,11 @@
 					<option value="classses_by_grade" {{ $my_field == 'classses_by_grade' ? 'selected' : '' }}>各年級班級列表</option>
 				</select>
 				<label>學校統一編號：</label>
-				<input type="text" class="form-control" id="sid" name="sid" value="{{ old('sid') }}" required>
+				<input type="text" class="form-control" id="sid1" name="sid1" value="{{ old('sid1') }}" required>
 				<label>年級：</label>
 				<input type="text" class="form-control" id="grade" name="grade" value="{{ old('grade') }}" required>
 				<span class="input-group-btn">
-					<button class="btn btn-default" type="button" onclick="location='{{ url()->current() }}?scope=1&field=' + $('#field').val() + '&sid=' + $('#sid').val() + '&grade=' + $('#grade').val();">
+					<button class="btn btn-default" type="button" onclick="location='{{ url()->current() }}?scope=1&field=' + $('#field').val() + '&sid=' + $('#sid1').val() + '&grade=' + $('#grade').val();">
 						傳送請求
 					</button>
 				</span>
@@ -76,11 +76,11 @@
 					<option value="subject_info" {{ $my_field == 'subject_info' ? 'selected' : '' }}>科目資訊</option>
 				</select>
 				<label>學校統一編號：</label>
-				<input type="text" class="form-control" id="sid" name="sid" value="{{ old('sid') }}" required>
+				<input type="text" class="form-control" id="sid2" name="sid2" value="{{ old('sid2') }}" required>
 				<label>科目代號：</label>
 				<input type="text" class="form-control" id="subjid"" name="subjid" value="{{ old('subjid') }}" required>
 				<span class="input-group-btn">
-					<button class="btn btn-default" type="button" onclick="location='{{ url()->current() }}?scope=2&field=' + $('#field').val() + '&sid=' + $('#sid').val() + '&subjid=' + $('#subjid').val();">
+					<button class="btn btn-default" type="button" onclick="location='{{ url()->current() }}?scope=2&field=' + $('#field').val() + '&sid=' + $('#sid2').val() + '&subjid=' + $('#subjid').val();">
 						傳送請求
 					</button>
 				</span>
@@ -105,11 +105,11 @@
 					<option value="class_lend_record" {{ $my_field == 'class_lend_record' ? 'selected' : '' }}>圖書借閱紀錄</option>
 				</select>
 				<label>學校統一編號：</label>
-				<input type="text" class="form-control" id="sid" name="sid" value="{{ old('sid') }}" required>
+				<input type="text" class="form-control" id="sid3" name="sid3" value="{{ old('sid3') }}" required>
 				<label>班級代號：</label>
 				<input type="text" class="form-control" id="clsid" name="clsid" value="{{ old('clsid') }}" required>
 				<span class="input-group-btn">
-					<button class="btn btn-default" type="button" onclick="location='{{ url()->current() }}?scope=3&field=' + $('#field').val() + '&sid=' + $('#sid').val() + '&clsid=' + $('#clsid').val();">
+					<button class="btn btn-default" type="button" onclick="location='{{ url()->current() }}?scope=3&field=' + $('#field').val() + '&sid=' + $('#sid3').val() + '&clsid=' + $('#clsid').val();">
 						傳送請求
 					</button>
 				</span>
@@ -131,11 +131,11 @@
 					<option value="subject_assign_to_teacher" {{ $my_field == 'subject_assign_to_teacher' ? 'selected' : '' }}>教師配課表</option>
 				</select>
 				<label>學校統一編號：</label>
-				<input type="text" class="form-control" id="sid" name="sid" value="{{ old('sid') }}" required>
+				<input type="text" class="form-control" id="sid4" name="sid4" value="{{ old('sid4') }}" required>
 				<label>教師代號：</label>
 				<input type="text" class="form-control" id="teaid" name="teaid" value="{{ old('teaid') }}" required>
 				<span class="input-group-btn">
-					<button class="btn btn-default" type="button" onclick="location='{{ url()->current() }}?scope=4&field=' + $('#field').val() + '&sid=' + $('#sid').val() + '&teaid=' + $('#teaid').val();">
+					<button class="btn btn-default" type="button" onclick="location='{{ url()->current() }}?scope=4&field=' + $('#field').val() + '&sid=' + $('#sid4').val() + '&teaid=' + $('#teaid').val();">
 						傳送請求
 					</button>
 				</span>
@@ -159,11 +159,11 @@
 					<option value="student_parents_info" {{ $my_field == 'student_parents_info' ? 'selected' : '' }}>家長資訊</option>
 				</select>
 				<label>學校統一編號：</label>
-				<input type="text" class="form-control" id="sid" name="sid" value="{{ old('sid') }}" required>
+				<input type="text" class="form-control" id="sid5" name="sid5" value="{{ old('sid5') }}" required>
 				<label>學生學號：</label>
 				<input type="text" class="form-control" id="stdno" name="stdno" value="{{ old('stdno') }}" required>
 				<span class="input-group-btn">
-					<button class="btn btn-default" type="button" onclick="location='{{ url()->current() }}?scope=5&field=' + $('#field').val() + '&sid=' + $('#sid').val() + '&stdno=' + $('#stdno').val();">
+					<button class="btn btn-default" type="button" onclick="location='{{ url()->current() }}?scope=5&field=' + $('#field').val() + '&sid=' + $('#sid5').val() + '&stdno=' + $('#stdno').val();">
 						傳送請求
 					</button>
 				</span>
@@ -183,11 +183,11 @@
 					<option value="book_info" {{ $my_field == 'book_info' ? 'selected' : '' }}>圖書基本資料</option>
 				</select>
 				<label>學校統一編號：</label>
-				<input type="text" class="form-control" id="sid" name="sid" value="{{ old('sid') }}" required>
+				<input type="text" class="form-control" id="sid6" name="sid6" value="{{ old('sid6') }}" required>
 				<label>ISBN：</label>
 				<input type="text" class="form-control" id="isbn"" name="isbn" value="{{ old('isbn') }}" required>
 				<span class="input-group-btn">
-					<button class="btn btn-default" type="button" onclick="location='{{ url()->current() }}?scope=6&field=' + $('#field').val() + '&sid=' + $('#sid').val() + '&isbn=' + $('#isbn').val();">
+					<button class="btn btn-default" type="button" onclick="location='{{ url()->current() }}?scope=6&field=' + $('#field').val() + '&sid=' + $('#sid6').val() + '&isbn=' + $('#isbn').val();">
 						傳送請求
 					</button>
 				</span>
