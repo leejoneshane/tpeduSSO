@@ -57,17 +57,17 @@
 				<label>學校統一編號：</label>
 				<input type="text" class="form-control" id="sid" name="sid" value="{{ old('sid') }}" required>
 				<label>年級：</label>
-				<input type="text" class="form-control" id="grade" name="grade" value="{{ old('grade') }}" required>
+				<input type="text" class="form-control" id="grade" name="grade" value="{{ old('grade') }}">
 				<label>科目代號：</label>
-				<input type="text" class="form-control" id="subjid"" name="subjid" value="{{ old('subjid') }}" required>
+				<input type="text" class="form-control" id="subjid"" name="subjid" value="{{ old('subjid') }}">
 				<label>班級代號：</label>
-				<input type="text" class="form-control" id="clsid" name="clsid" value="{{ old('clsid') }}" required>
+				<input type="text" class="form-control" id="clsid" name="clsid" value="{{ old('clsid') }}">
 				<label>教師代號：</label>
-				<input type="text" class="form-control" id="teaid" name="teaid" value="{{ old('teaid') }}" required>
+				<input type="text" class="form-control" id="teaid" name="teaid" value="{{ old('teaid') }}">
 				<label>學生學號：</label>
-				<input type="text" class="form-control" id="stdno" name="stdno" value="{{ old('stdno') }}" required>
+				<input type="text" class="form-control" id="stdno" name="stdno" value="{{ old('stdno') }}">
 				<label>ISBN：</label>
-				<input type="text" class="form-control" id="isbn"" name="isbn" value="{{ old('isbn') }}" required>
+				<input type="text" class="form-control" id="isbn"" name="isbn" value="{{ old('isbn') }}">
 			    <div class="form-group">
 					<button type="submit" class="btn btn-success" onsubmit="return check_all();">傳送請求</button>
 				</div>
