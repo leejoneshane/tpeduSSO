@@ -10,7 +10,7 @@ class SimsServiceProvider extends ServiceProvider
 {
     protected $oauth_ps = null;
     protected $oauth_js = null;
-    private static $seme = null;
+    private $seme = null;
 
     public function __construct()
     {
