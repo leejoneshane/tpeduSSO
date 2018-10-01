@@ -37,6 +37,7 @@ class SyncController extends Controller
 		$my_field = $request->get('field');
 		$sid = $request->get('sid');
 		$http = new SimsServiceProvider();
+		$result = array();
 		if ($my_field && $sid) {
 			$result = $http->ps_call($my_field, [ '{sid}' => $sid ]);
 		}
