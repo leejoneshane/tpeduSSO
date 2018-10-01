@@ -26,6 +26,7 @@
 			<div class="form-group custom-search-form">
 			<form role="form" method="POST" action="{{ route('sync.ps.runtime_test') }}" enctype="multipart/form-data">
 		    	@csrf
+				<label>資料項目：</label>
 				<select id="field" name="field" class="form-control">
 					<option value="school_info" {{ $my_field == 'school_info' ? 'selected' : '' }}>學校基本資料</option>
 					<option value="department_info" {{ $my_field == 'department_info' ? 'selected' : '' }}>處室聯絡人資訊</option>
