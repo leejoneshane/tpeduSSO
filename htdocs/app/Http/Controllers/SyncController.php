@@ -34,7 +34,6 @@ class SyncController extends Controller
     
     public function ps_testForm(Request $request)
     {
-		$scope = $request->get('scope');
 		$my_field = $request->get('field');
 		$http = new SimsServiceProvider();
 		$result = array();
