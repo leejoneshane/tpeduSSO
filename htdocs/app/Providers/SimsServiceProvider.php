@@ -8,9 +8,9 @@ use Illuminate\Support\ServiceProvider;
 
 class SimsServiceProvider extends ServiceProvider
 {
-    protected $oauth_ps = null;
-    protected $oauth_js = null;
-    private $seme = null;
+    private static $oauth_ps = null;
+    private static $oauth_js = null;
+    private static $seme = null;
 
     public function __construct()
     {
