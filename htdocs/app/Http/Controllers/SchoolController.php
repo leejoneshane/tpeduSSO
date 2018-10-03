@@ -1977,7 +1977,13 @@ class SchoolController extends Controller
 		    $idno = $request->get('new-admin');
 	    	$entry = $openldap->getUserEntry($idno);
 		    if ($entry) {
-				$orgs = $openldap->getUserData($entry, [ "o", "cn", "tpAdminSchools" ]);
+				$orgs = array();
+				$data = $openldap->getUserData($entry, [ "o", "cn", "tpAdminSchools" ]);
+				if (is_array($data['tpAdminSchools'])) {
+					$orgs = $data['tpAdminSchools'];
+				} elseif (!empty($data['tpAdminSchools'])) {
+					$orgs[] = $data['tpAdminSchools'];
+				}
 				$orgs[] = $dc;
 				$orgs = array_values(array_unique($orgs));
 				$openldap->updateData($entry, [ 'tpAdminSchools' => $orgs ]);
