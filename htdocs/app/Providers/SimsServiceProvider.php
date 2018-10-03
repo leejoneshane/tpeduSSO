@@ -24,11 +24,11 @@ class SimsServiceProvider extends ServiceProvider
     public function ps_send($url)
     {
         //AES-128-CBC
-        $p = md5(Config::get('sims.ps.oauth_secret'), true);
+/*        $p = md5(Config::get('sims.ps.oauth_secret'), true);
         $m = 'aes-128-cbc';
         $iv = md5(Config::get('sims.ps.aes_iv') . date('YmdH'), true);
         $e = base64_encode(openssl_encrypt($url, $m, $p, OPENSSL_ZERO_PADDING, $iv));
-
+*/
         $response = self::$oauth_ps->request('GET', $url, [
             'headers' => [
                 'Authorization' => 'Special key '.Config::get('sims.ps.oauth_id'),
@@ -38,13 +38,13 @@ class SimsServiceProvider extends ServiceProvider
             'http_errors' => false,
         ]);
 
-/*        $response = self::$oauth_ps->request('GET', $url, [
+        $response = self::$oauth_ps->request('GET', $url, [
             'headers' => [
                 'Authorization' => 'Special ip '.Config::get('sims.ps.oauth_id'),
                 'Accept' => 'application/json',
             ],
             'http_errors' => false,
-        ]);*/
+        ]);
         return $response;
     }
 
