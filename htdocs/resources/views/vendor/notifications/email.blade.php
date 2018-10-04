@@ -21,13 +21,11 @@
 <?php
     switch ($level) {
         case 'success':
-            $color = 'green';
-            break;
         case 'error':
-            $color = 'red';
+            $color = $level;
             break;
         default:
-            $color = 'blue';
+            $color = 'primary';
     }
 ?>
 @component('mail::button', ['url' => $actionUrl, 'color' => $color])
@@ -52,7 +50,7 @@
 @isset($actionText)
 @component('mail::subcopy')
 如果您無法按下 "{{ $actionText }}" 按鈕, 請將下列網址複製貼到瀏覽器直接連線：
- [{{ $actionUrl }}]({{ $actionUrl }})
+[{{ $actionUrl }}]({!! $actionUrl !!})
 @endcomponent
 @endisset
 @endcomponent

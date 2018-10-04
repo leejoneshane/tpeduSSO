@@ -21,7 +21,7 @@
     {{-- Footer --}}
     @slot('footer')
         @component('mail::footer')
-            &copy; {{ date('Y') }} {{ config('app.name') }} 版權所有
+            © {{ date('Y') }} {{ config('app.name') }} 版權所有
         @endcomponent
     @endslot
 @endcomponent
