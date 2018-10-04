@@ -7,7 +7,7 @@ return [
         'oauth_secret' => urlencode(env('PS_CLIENT_SECRET')),
         'aes_key' => env('PS_AES_KEY'),
         'aes_iv' => env('PS_AES_IV'),
-        'base_uri' => 'http://163.21.249.80/dataapi_web/',
+        'base_uri' => 'https://eschool-restful.tp.edu.tw/dataapi_web/',
         'school_info' => 'public/{sid}/schoolinfo/schoolinfo',
         'department_info' => 'public/{sid}/schoolinfo/departmentinfo',
         'classes_info' => 'public/{sid}/schoolinfo/clsinfo',
