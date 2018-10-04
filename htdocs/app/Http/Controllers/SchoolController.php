@@ -1979,7 +1979,7 @@ class SchoolController extends Controller
 		    if ($entry) {
 				$orgs = array();
 				$data = $openldap->getUserData($entry, [ "o", "cn", "tpAdminSchools" ]);
-				if (is_array($data['tpAdminSchools'])) {
+				if (array_key_exists('tpAdminSchools', $data) && is_array($data['tpAdminSchools'])) {
 					$orgs = $data['tpAdminSchools'];
 				} elseif (!empty($data['tpAdminSchools'])) {
 					$orgs[] = $data['tpAdminSchools'];
