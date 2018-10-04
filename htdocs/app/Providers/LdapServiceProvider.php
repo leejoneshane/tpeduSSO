@@ -8,35 +8,51 @@ use Illuminate\Support\ServiceProvider;
 
 class LdapServiceProvider extends ServiceProvider
 {
-    private static $ldapConnectId = null;
+    private static $ldap_read = null;
+    private static $ldap_write = null;
 
     public function __construct()
     {
-        if (is_null(self::$ldapConnectId))
+        if (is_null(self::$ldap_read) || is_null(self::$ldap_write))
             $this->connect();
     }
 
     public function error()
     {
-        if (is_null(self::$ldapConnectId)) return;
-        return ldap_error(self::$ldapConnectId);
+        if (is_null(self::$ldap_read) || is_null(self::$ldap_write)) return;
+        return ldap_error(self::$ldap_read).ldap_error(self::$ldap_write);
     }
 
     public function connect()
     {
-        if ($ldapconn = @ldap_connect(Config::get('ldap.host')))
+		$rhost = Config::get('ldap.rhost');
+		if (!$rhost) $rhost = Config::get('ldap.host');
+		$whost = Config::get('ldap.whost');
+		if (!$whost) $whost = Config::get('ldap.host');
+
+        if ($ldapconn = @ldap_connect($rhost))
         {
             @ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, intval(Config::get('ldap.version')));
             @ldap_set_option($ldapconn, LDAP_OPT_REFERRALS, 0);
-            self::$ldapConnectId = $ldapconn;
+            self::$ldap_read = $ldapconn;
         }
         else
             Log::error("Connecting LDAP server failed.\n");
-    }
+		
+		if ($whost != $rhost && $ldapconn = @ldap_connect($whost))
+		{
+			@ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, intval(Config::get('ldap.version')));
+			@ldap_set_option($ldapconn, LDAP_OPT_REFERRALS, 0);
+			self::$ldap_write = $ldapconn;
+		}
+		else
+			Log::error("Connecting LDAP server failed.\n");
+	}
 
     public function administrator() 
     {
-		@ldap_bind(self::$ldapConnectId, Config::get('ldap.rootdn'), Config::get('ldap.rootpwd'));
+		@ldap_bind(self::$ldap_read, Config::get('ldap.rootdn'), Config::get('ldap.rootpwd'));
+		@ldap_bind(self::$ldap_write, Config::get('ldap.rootdn'), Config::get('ldap.rootpwd'));
     }
     
     public function authenticate($username, $password)
@@ -45,7 +61,7 @@ class LdapServiceProvider extends ServiceProvider
     	$account = Config::get('ldap.authattr')."=".$username;
     	$base_dn = Config::get('ldap.authdn');
     	$auth_dn = "$account,$base_dn";
-    	return @ldap_bind(self::$ldapConnectId, $auth_dn, $password);
+    	return @ldap_bind(self::$ldap_read, $auth_dn, $password);
     }
 
     public function userLogin($username, $password)
@@ -53,7 +69,7 @@ class LdapServiceProvider extends ServiceProvider
         if (empty($username) || empty($password)) return false;
     	$base_dn = Config::get('ldap.userdn');
     	$user_dn = "$username,$base_dn";
-    	return @ldap_bind(self::$ldapConnectId, $user_dn, $password);
+    	return @ldap_bind(self::$ldap_read, $user_dn, $password);
     }
 
     public function schoolLogin($username, $password)
@@ -61,14 +77,14 @@ class LdapServiceProvider extends ServiceProvider
         if (empty($username) || empty($password)) return false;
     	$base_dn = Config::get('ldap.rdn');
     	$sch_dn = "$username,$base_dn";
-    	return @ldap_bind(self::$ldapConnectId, $sch_dn, $password);
+    	return @ldap_bind(self::$ldap_read, $sch_dn, $password);
     }
 
     public function checkIdno($idno)
     {
     	if (empty($idno)) return false;
 		$this->administrator();
-		$resource = @ldap_search(self::$ldapConnectId, Config::get('ldap.userdn'), $idno);
+		$resource = @ldap_search(self::$ldap_read, Config::get('ldap.userdn'), $idno);
 		if ($resource) {
 	    	return substr($idno,3);
 		}
@@ -79,9 +95,9 @@ class LdapServiceProvider extends ServiceProvider
     {
 		if (empty($dc)) return false;
 		$this->administrator();
-		$resource = @ldap_search(self::$ldapConnectId, Config::get('ldap.rdn'), $dc, array("tpAdministrator"));
+		$resource = @ldap_search(self::$ldap_read, Config::get('ldap.rdn'), $dc, array("tpAdministrator"));
 		if ($resource) {
-	    	$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+	    	$entry = ldap_first_entry(self::$ldap_read, $resource);
 			if (!$entry) return false;
 			return true;
 		}
@@ -93,11 +109,11 @@ class LdapServiceProvider extends ServiceProvider
         if (empty($username)) return false;
         $filter = "uid=".$username;
 		$this->administrator();
-		$resource = @ldap_search(self::$ldapConnectId, Config::get('ldap.authdn'), $filter, array("cn"));
+		$resource = @ldap_search(self::$ldap_read, Config::get('ldap.authdn'), $filter, array("cn"));
 		if ($resource) {
-	    	$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+	    	$entry = ldap_first_entry(self::$ldap_read, $resource);
 	    	if (!$entry) return false;
-	    	$id = ldap_get_values(self::$ldapConnectId, $entry, "cn");
+	    	$id = ldap_get_values(self::$ldap_read, $entry, "cn");
 	    	return $id[0];
 		}
         return false;
@@ -108,11 +124,11 @@ class LdapServiceProvider extends ServiceProvider
         if (empty($email)) return false;
         $filter = "mail=".$email."*";
 		$this->administrator();
-		$resource = @ldap_search(self::$ldapConnectId, Config::get('ldap.userdn'), $filter, array("cn"));
+		$resource = @ldap_search(self::$ldap_read, Config::get('ldap.userdn'), $filter, array("cn"));
 		if ($resource) {
-	    	$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+	    	$entry = ldap_first_entry(self::$ldap_read, $resource);
 	    	if (!$entry) return false;
-	    	$id = ldap_get_values(self::$ldapConnectId, $entry, "cn");
+	    	$id = ldap_get_values(self::$ldap_read, $entry, "cn");
 	    	return $id[0];
 		} 
         return false;
@@ -123,11 +139,11 @@ class LdapServiceProvider extends ServiceProvider
         if (empty($mobile)) return false;
         $filter = "mobile=".$mobile;
 		$this->administrator();
-		$resource = ldap_search(self::$ldapConnectId, Config::get('ldap.userdn'), $filter, array("cn"));
+		$resource = ldap_search(self::$ldap_read, Config::get('ldap.userdn'), $filter, array("cn"));
 		if ($resource) {
-	    	$entry = @ldap_first_entry(self::$ldapConnectId, $resource);
+	    	$entry = @ldap_first_entry(self::$ldap_read, $resource);
 	    	if (!$entry) return false;
-	    	$id = ldap_get_values(self::$ldapConnectId, $entry, "cn");
+	    	$id = ldap_get_values(self::$ldap_read, $entry, "cn");
 	    	return $id[0];
 		} 
         return false;
@@ -139,8 +155,8 @@ class LdapServiceProvider extends ServiceProvider
 
         $filter = "(&(uid=".$account.")(!(".Config::get('ldap.userattr')."=".$idno.")))";
 		$this->administrator();
-		$resource = @ldap_search(self::$ldapConnectId, Config::get('ldap.userdn'), $filter);
-		if (ldap_first_entry(self::$ldapConnectId, $resource)) {
+		$resource = @ldap_search(self::$ldap_read, Config::get('ldap.userdn'), $filter);
+		if (ldap_first_entry(self::$ldap_read, $resource)) {
 	    	return false;
 		} else {
             return true;
@@ -153,8 +169,8 @@ class LdapServiceProvider extends ServiceProvider
 
         $filter = "(&(mail=".$mailaddr.")(!(".Config::get('ldap.userattr')."=".$idno.")))";
 		$this->administrator();
-		$resource = @ldap_search(self::$ldapConnectId, Config::get('ldap.userdn'), $filter);
-		if (ldap_first_entry(self::$ldapConnectId, $resource)) {
+		$resource = @ldap_search(self::$ldap_read, Config::get('ldap.userdn'), $filter);
+		if (ldap_first_entry(self::$ldap_read, $resource)) {
 	    	return false;
 		} else {
             return true;
@@ -167,8 +183,8 @@ class LdapServiceProvider extends ServiceProvider
 
         $filter = "(&(mobile=".$mobile.")(!(".Config::get('ldap.userattr')."=".$idno.")))";
 		$this->administrator();
-		$resource = @ldap_search(self::$ldapConnectId, Config::get('ldap.userdn'), $filter);
-		if (ldap_first_entry(self::$ldapConnectId, $resource)) {
+		$resource = @ldap_search(self::$ldap_read, Config::get('ldap.userdn'), $filter);
+		if (ldap_first_entry(self::$ldap_read, $resource)) {
 	    	return false;
 		} else {
             return true;
@@ -181,17 +197,17 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$base_dn = Config::get('ldap.rdn');
 		if (empty($filter)) $filter = "objectClass=tpeduSchool";
-		$resource = @ldap_search(self::$ldapConnectId, $base_dn, $filter, ['o', 'st', 'tpUniformNumbers', 'description']);
-		$entry = @ldap_first_entry(self::$ldapConnectId, $resource);
+		$resource = @ldap_search(self::$ldap_read, $base_dn, $filter, ['o', 'st', 'tpUniformNumbers', 'description']);
+		$entry = @ldap_first_entry(self::$ldap_read, $resource);
 		if ($entry) {
 		    do {
 	    		$school = new \stdClass();
 	    		foreach (['o', 'st', 'tpUniformNumbers', 'description'] as $field) {
-					$value = @ldap_get_values(self::$ldapConnectId, $entry, $field);
+					$value = @ldap_get_values(self::$ldap_read, $entry, $field);
 					if ($value) $school->$field = $value[0];
 	    		}
 	    		$schools[] = $school;
-		    } while ($entry=ldap_next_entry(self::$ldapConnectId, $entry));
+		    } while ($entry=ldap_next_entry(self::$ldap_read, $entry));
 		}
 		return $schools;
     }
@@ -201,9 +217,9 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$base_dn = Config::get('ldap.rdn');
 		$sch_rdn = Config::get('ldap.schattr')."=".$identifier;
-		$resource = @ldap_search(self::$ldapConnectId, $base_dn, $sch_rdn);
+		$resource = @ldap_search(self::$ldap_read, $base_dn, $sch_rdn);
 		if ($resource) {
-			$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+			$entry = ldap_first_entry(self::$ldap_read, $resource);
 			return $entry;
 		}
 		return false;
@@ -235,7 +251,7 @@ class LdapServiceProvider extends ServiceProvider
 	
 		$info = array();
         foreach ($fields as $field) {
-	    	$value = @ldap_get_values(self::$ldapConnectId, $entry, $field);
+	    	$value = @ldap_get_values(self::$ldap_read, $entry, $field);
 	    	if ($value) {
 				if ($value['count'] == 1) {
 		    		$info[$field] = $value[0];
@@ -255,11 +271,11 @@ class LdapServiceProvider extends ServiceProvider
 		$base_dn = Config::get('ldap.rdn');
 		$sch_rdn = Config::get('ldap.schattr')."=".$dc;
 		$sch_dn = "$sch_rdn,$base_dn";
-		$resource = @ldap_search(self::$ldapConnectId, $sch_dn, "objectClass=tpeduSchool", array("description"));
+		$resource = @ldap_search(self::$ldap_read, $sch_dn, "objectClass=tpeduSchool", array("description"));
 		if ($resource) {
-			$entry = @ldap_first_entry(self::$ldapConnectId, $resource);
+			$entry = @ldap_first_entry(self::$ldap_read, $resource);
 			if ($entry) {
-				$value = @ldap_get_values(self::$ldapConnectId, $entry, "description");
+				$value = @ldap_get_values(self::$ldap_read, $entry, "description");
 				if ($value) return $value[0];
 			}
 		}
@@ -271,7 +287,7 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$dn = Config::get('ldap.schattr')."=".$old_dc.",".Config::get('ldap.rdn');
 		$rdn = Config::get('ldap.schattr')."=".$new_dc;
-		$result = @ldap_rename(self::$ldapConnectId, $dn, $rdn, null, true);
+		$result = @ldap_rename(self::$ldap_write, $dn, $rdn, null, true);
 		if ($result) {
 			$users = $openldap->findUsers("o=$old_dc");
 			if ($users) {
@@ -291,8 +307,8 @@ class LdapServiceProvider extends ServiceProvider
 		$sch_rdn = Config::get('ldap.schattr')."=".$dc;
 		$sch_dn = "$sch_rdn,$base_dn";
 		$filter = "objectClass=organizationalUnit";
-		$resource = @ldap_search(self::$ldapConnectId, $sch_dn, $filter, ["businessCategory", "ou", "description"]);
-		$entry = @ldap_first_entry(self::$ldapConnectId, $resource);
+		$resource = @ldap_search(self::$ldap_read, $sch_dn, $filter, ["businessCategory", "ou", "description"]);
+		$entry = @ldap_first_entry(self::$ldap_read, $resource);
 		if ($entry) {
 			do {
 	    		$ou = new \stdClass();
@@ -302,7 +318,7 @@ class LdapServiceProvider extends ServiceProvider
 				if ($info['businessCategory'] == '教學班級') $ou->grade = substr($info['ou'], 0, 1);
 	    		$ou->description = $info['description'];
 	    		$ous[] = $ou;
-			} while ($entry=ldap_next_entry(self::$ldapConnectId, $entry));
+			} while ($entry=ldap_next_entry(self::$ldap_read, $entry));
 			return $ous;
 		}
 		return false;
@@ -313,9 +329,9 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$sch_dn = Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
 		$filter = "ou=$ou";
-		$resource = @ldap_search(self::$ldapConnectId, $sch_dn, $filter);
+		$resource = @ldap_search(self::$ldap_read, $sch_dn, $filter);
 		if ($resource) {
-			$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+			$entry = ldap_first_entry(self::$ldap_read, $resource);
 			return $entry;
 		}
 		return false;
@@ -336,7 +352,7 @@ class LdapServiceProvider extends ServiceProvider
 	
 		$info = array();
         	foreach ($fields as $field) {
-	    	$value = @ldap_get_values(self::$ldapConnectId, $entry, $field);
+	    	$value = @ldap_get_values(self::$ldap_read, $entry, $field);
 	    	if ($value) {
 				if ($value['count'] == 1) {
 		    		$info[$field] = $value[0];
@@ -355,11 +371,11 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$sch_dn = Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
 		$filter = "ou=$ou";
-		$resource = @ldap_search(self::$ldapConnectId, $sch_dn, $filter, array("description"));
+		$resource = @ldap_search(self::$ldap_read, $sch_dn, $filter, array("description"));
 		if ($resource) {
-			$entry = @ldap_first_entry(self::$ldapConnectId, $resource);
+			$entry = @ldap_first_entry(self::$ldap_read, $resource);
 			if ($entry) {
-				$value = @ldap_get_values(self::$ldapConnectId, $entry, "description");
+				$value = @ldap_get_values(self::$ldap_read, $entry, "description");
 				if ($value) return $value[0];
 			}
 		}
@@ -423,8 +439,8 @@ class LdapServiceProvider extends ServiceProvider
 		$sch_rdn = Config::get('ldap.schattr')."=".$dc;
 		$sch_dn = "$sch_rdn,$base_dn";
 		$filter = "objectClass=tpeduSubject";
-		$resource = @ldap_search(self::$ldapConnectId, $sch_dn, $filter, ["tpSubject", "description"]);
-		$entry = @ldap_first_entry(self::$ldapConnectId, $resource);
+		$resource = @ldap_search(self::$ldap_read, $sch_dn, $filter, ["tpSubject", "description"]);
+		$entry = @ldap_first_entry(self::$ldap_read, $resource);
 		if ($entry) {
 			do {
 	    		$subj = new \stdClass();
@@ -432,7 +448,7 @@ class LdapServiceProvider extends ServiceProvider
 	    		$subj->subject = $info['tpSubject'];
 	    		$subj->description = $info['description'];
 	    		$subjs[] = $subj;
-			} while ($entry=ldap_next_entry(self::$ldapConnectId, $entry));
+			} while ($entry=ldap_next_entry(self::$ldap_read, $entry));
 		}
 		return $subjs;
     }
@@ -444,9 +460,9 @@ class LdapServiceProvider extends ServiceProvider
 		$sch_rdn = Config::get('ldap.schattr')."=".$dc;
 		$sch_dn = "$sch_rdn,$base_dn";
 		$filter = "tpSubject=$subj";
-		$resource = @ldap_search(self::$ldapConnectId, $sch_dn, $filter);
+		$resource = @ldap_search(self::$ldap_read, $sch_dn, $filter);
 		if ($resource) {
-			$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+			$entry = ldap_first_entry(self::$ldap_read, $resource);
 			return $entry;
 		}
 		return false;
@@ -467,7 +483,7 @@ class LdapServiceProvider extends ServiceProvider
 	
 		$info = array();
         	foreach ($fields as $field) {
-	    	$value = @ldap_get_values(self::$ldapConnectId, $entry, $field);
+	    	$value = @ldap_get_values(self::$ldap_read, $entry, $field);
 	    	if ($value) {
 				if ($value['count'] == 1) {
 		    		$info[$field] = $value[0];
@@ -486,11 +502,11 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$sch_dn = Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
 		$filter = "tpSubject=$subj";
-		$resource = @ldap_search(self::$ldapConnectId, $sch_dn, $filter, array("description"));
+		$resource = @ldap_search(self::$ldap_read, $sch_dn, $filter, array("description"));
 		if ($resource) {
-			$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+			$entry = ldap_first_entry(self::$ldap_read, $resource);
 			if ($entry) {
-				$value = @ldap_get_values(self::$ldapConnectId, $entry, "description");
+				$value = @ldap_get_values(self::$ldap_read, $entry, "description");
 				if ($value) return $value[0];
 			}
 		}
@@ -522,9 +538,9 @@ class LdapServiceProvider extends ServiceProvider
 		$sch_rdn = Config::get('ldap.schattr')."=".$dc;
 		$sch_dn = "$sch_rdn,$base_dn";
 		$filter = "businessCategory=行政部門";
-		$resource = @ldap_search(self::$ldapConnectId, $sch_dn, $filter, ["ou", "description"]);
+		$resource = @ldap_search(self::$ldap_read, $sch_dn, $filter, ["ou", "description"]);
 		if ($resource) {
-			$entry = @ldap_first_entry(self::$ldapConnectId, $resource);
+			$entry = @ldap_first_entry(self::$ldap_read, $resource);
 			if ($entry) {
 				do {
 					$unit = $this->getOuData($entry);
@@ -537,7 +553,7 @@ class LdapServiceProvider extends ServiceProvider
 						$role->description = "$uname".$role_obj->description;
 						$roles[] = $role;
 					}
-				} while ($entry=ldap_next_entry(self::$ldapConnectId, $entry));
+				} while ($entry=ldap_next_entry(self::$ldap_read, $entry));
 			}
 		}
 		return $roles;
@@ -552,9 +568,9 @@ class LdapServiceProvider extends ServiceProvider
 		$sch_dn = "$sch_rdn,$base_dn";
 		$ou_dn = "ou=$ou,$sch_dn";
 		$filter = "objectClass=organizationalRole";
-		$resource = @ldap_search(self::$ldapConnectId, $ou_dn, $filter, ["cn", "description"]);
+		$resource = @ldap_search(self::$ldap_read, $ou_dn, $filter, ["cn", "description"]);
 		if ($resource) {
-			$entry = @ldap_first_entry(self::$ldapConnectId, $resource);
+			$entry = @ldap_first_entry(self::$ldap_read, $resource);
 			if ($entry) {
 				do {
 		    		$role = new \stdClass();
@@ -562,7 +578,7 @@ class LdapServiceProvider extends ServiceProvider
 		    		$role->cn = $info['cn'];
 		    		$role->description = $info['description'];
 	    			$roles[] = $role;
-				} while ($entry=ldap_next_entry(self::$ldapConnectId, $entry));
+				} while ($entry=ldap_next_entry(self::$ldap_read, $entry));
 			}
 		}
 		return $roles;
@@ -573,9 +589,9 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$ou_dn = "ou=$ou,".Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
 		$filter = "cn=$role_id";
-		$resource = @ldap_search(self::$ldapConnectId, $ou_dn, $filter);
+		$resource = @ldap_search(self::$ldap_read, $ou_dn, $filter);
 		if ($resource) {
-			$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+			$entry = ldap_first_entry(self::$ldap_read, $resource);
 			return $entry;
 		}
 		return false;
@@ -596,7 +612,7 @@ class LdapServiceProvider extends ServiceProvider
 	
 		$info = array();
         foreach ($fields as $field) {
-	    	$value = @ldap_get_values(self::$ldapConnectId, $entry, $field);
+	    	$value = @ldap_get_values(self::$ldap_read, $entry, $field);
 	    	if ($value) {
 				if ($value['count'] == 1) {
 		    		$info[$field] = $value[0];
@@ -615,11 +631,11 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$ou_dn = "ou=$ou,".Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
 		$filter = "cn=$role";
-		$resource = @ldap_search(self::$ldapConnectId, $ou_dn, $filter, array("description"));
+		$resource = @ldap_search(self::$ldap_read, $ou_dn, $filter, array("description"));
 		if ($resource) {
-			$entry = @ldap_first_entry(self::$ldapConnectId, $resource);
+			$entry = @ldap_first_entry(self::$ldap_read, $resource);
 			if ($entry) {
-				$value = @ldap_get_values(self::$ldapConnectId, $entry, "description");
+				$value = @ldap_get_values(self::$ldap_read, $entry, "description");
 				if ($value) return $value[0];
 			}
 		}
@@ -631,13 +647,13 @@ class LdapServiceProvider extends ServiceProvider
 		$userinfo = array();
 		$this->administrator();
 		$base_dn = Config::get('ldap.userdn');
-		$resource = @ldap_search(self::$ldapConnectId, $base_dn, $filter, array("*","entryUUID"));
+		$resource = @ldap_search(self::$ldap_read, $base_dn, $filter, array("*","entryUUID"));
 		if ($resource) {
-			$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+			$entry = ldap_first_entry(self::$ldap_read, $resource);
 			if ($entry) {
 				do {
 	    			$userinfo[] = $this->getUserData($entry, $attr);
-				} while ($entry=ldap_next_entry(self::$ldapConnectId, $entry));
+				} while ($entry=ldap_next_entry(self::$ldap_read, $entry));
 			}
 			return $userinfo;
 		}
@@ -653,9 +669,9 @@ class LdapServiceProvider extends ServiceProvider
 		} else { //uuid
 	    	$filter = "entryUUID=".$identifier;
 		}
-		$resource = @ldap_search(self::$ldapConnectId, $base_dn, $filter, array("*","entryUUID"));
+		$resource = @ldap_search(self::$ldap_read, $base_dn, $filter, array("*","entryUUID"));
 		if ($resource) {
-			$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+			$entry = ldap_first_entry(self::$ldap_read, $resource);
 			return $entry;
 		}
 		return false;
@@ -714,7 +730,7 @@ class LdapServiceProvider extends ServiceProvider
 	
 		$userinfo = array();
         foreach ($fields as $field) {
-	    	$value = @ldap_get_values(self::$ldapConnectId, $entry, $field);
+	    	$value = @ldap_get_values(self::$ldap_read, $entry, $field);
 	    	if ($value) {
 				if ($value['count'] == 1) {
 		    		$userinfo[$field] = $value[0];
@@ -875,35 +891,35 @@ class LdapServiceProvider extends ServiceProvider
 		$entry = $this->getUserEntry($old_idno);
 		$new_pwd = $openldap->make_ssha_password(substr($new_idno, -6));
 		$this->updateData($entry, ["userPassword" => $new_pwd]);
-		$accounts = @ldap_get_values(self::$ldapConnectId, $entry, "uid");
+		$accounts = @ldap_get_values(self::$ldap_read, $entry, "uid");
 		for($i=0;$i<$accounts['count'];$i++) {
 			$account_entry = $this->getAccountEntry($accounts[$i]);
 			$this->updateData($account_entry, array( "cn" => $new_idno ));
 		}
-		$result = @ldap_rename(self::$ldapConnectId, $dn, $rdn, null, true);
+		$result = @ldap_rename(self::$ldap_write, $dn, $rdn, null, true);
 		return $result;
     }
 
     public function addData($entry, array $fields)
     {
-		$dn = @ldap_get_dn(self::$ldapConnectId, $entry);
-		$value = @ldap_mod_add(self::$ldapConnectId, $dn, $fields);
+		$dn = @ldap_get_dn(self::$ldap_read, $entry);
+		$value = @ldap_mod_add(self::$ldap_write, $dn, $fields);
 		if (!$value) Log::error("Data can't add into openldap:\n".print_r($fields, true)."\n");
 		return $value;
     }
 
     public function updateData($entry, array $fields)
     {
-		$dn = @ldap_get_dn(self::$ldapConnectId, $entry);
-		$value = @ldap_mod_replace(self::$ldapConnectId, $dn, $fields);
+		$dn = @ldap_get_dn(self::$ldap_read, $entry);
+		$value = @ldap_mod_replace(self::$ldap_write, $dn, $fields);
 		if (!$value) Log::error("Data can't update to openldap:\n".print_r($fields, true)."\n");
 		return $value;
     }
 
     public function deleteData($entry, array $fields)
     {
-		$dn = @ldap_get_dn(self::$ldapConnectId, $entry);
-		$value = @ldap_mod_del(self::$ldapConnectId, $dn, $fields);
+		$dn = @ldap_get_dn(self::$ldap_read, $entry);
+		$value = @ldap_mod_del(self::$ldap_write, $dn, $fields);
 		if (!$value) Log::error("Data can't remove from openldap:\n".print_r($fields, true)."\n");
 		return $value;
     }
@@ -913,15 +929,15 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$dn = $info['dn'];
 		unset($info['dn']);
-		$value = @ldap_add(self::$ldapConnectId, $dn, $info);
+		$value = @ldap_add(self::$ldap_write, $dn, $info);
 		return $value;
     }
 
     public function deleteEntry($entry)
     {
 		$this->administrator();
-		$dn = @ldap_get_dn(self::$ldapConnectId, $entry);
-		$value = @ldap_delete(self::$ldapConnectId, $dn);
+		$dn = @ldap_get_dn(self::$ldap_read, $entry);
+		$value = @ldap_delete(self::$ldap_write, $dn);
 		return $value;
     }
 
@@ -930,9 +946,9 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$base_dn = Config::get('ldap.authdn');
 		$auth_rdn = Config::get('ldap.authattr')."=".$identifier;
-		$resource = @ldap_search(self::$ldapConnectId, $base_dn, $auth_rdn);
+		$resource = @ldap_search(self::$ldap_read, $base_dn, $auth_rdn);
 		if ($resource) {
-			return @ldap_first_entry(self::$ldapConnectId, $resource);
+			return @ldap_first_entry(self::$ldap_read, $resource);
 		}
 		return false;
     }
@@ -951,8 +967,8 @@ class LdapServiceProvider extends ServiceProvider
     public function addAccount($entry, $account, $idno, $memo)
     {
 		$this->administrator();
-		$dn = @ldap_get_dn(self::$ldapConnectId, $entry);
-		@ldap_mod_add(self::$ldapConnectId, $dn, array( "uid" => $account));
+		$dn = @ldap_get_dn(self::$ldap_read, $entry);
+		@ldap_mod_add(self::$ldap_write, $dn, array( "uid" => $account));
 		$acc_entry = $this->getAccountEntry($account);
 		if (!$acc_entry) {
 	    	$dn = Config::get('ldap.authattr')."=".$account.",".Config::get('ldap.authdn');
@@ -960,10 +976,10 @@ class LdapServiceProvider extends ServiceProvider
 	    	$account_info['objectClass'] = "radiusObjectProfile";
 	    	$account_info['uid'] = $account;
 	    	$account_info['cn'] = $idno;
-	    	$pwd = @ldap_get_values(self::$ldapConnectId, $entry, "userPassword");
+	    	$pwd = @ldap_get_values(self::$ldap_read, $entry, "userPassword");
 	    	$account_info['userPassword'] = $pwd[0];
 	    	$account_info['description'] = $memo;
-	    	@ldap_add(self::$ldapConnectId, $dn, $account_info);
+	    	@ldap_add(self::$ldap_write, $dn, $account_info);
 		}
     }
 
@@ -972,24 +988,24 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$dn = Config::get('ldap.authattr')."=".$old_account.",".Config::get('ldap.authdn');
 		$rdn = Config::get('ldap.authattr')."=".$new_account;
-		$accounts = @ldap_get_values(self::$ldapConnectId, $entry, "uid");
+		$accounts = @ldap_get_values(self::$ldap_read, $entry, "uid");
 		for($i=0;$i<$accounts['count'];$i++) {
 	    	if ($accounts[$i] == $old_account) $accounts[$i] = $new_account;
 		}
 		unset($accounts['count']);
 		$this->updateData($entry, array( "uid" => $accounts));
 
-		$result = @ldap_rename(self::$ldapConnectId, $dn, $rdn, null, true);
+		$result = @ldap_rename(self::$ldap_write, $dn, $rdn, null, true);
  		return $result;
    }
 
     public function deleteAccount($entry, $account)
     {
 		$this->administrator();
-		$dn = @ldap_get_dn(self::$ldapConnectId, $entry);
-		@ldap_mod_del(self::$ldapConnectId, $dn, array('uid' => $account));
+		$dn = @ldap_get_dn(self::$ldap_read, $entry);
+		@ldap_mod_del(self::$ldap_write, $dn, array('uid' => $account));
 		$dn = Config::get('ldap.authattr')."=".$account.",".Config::get('ldap.authdn');
-		@ldap_delete(self::$ldapConnectId, $dn);
+		@ldap_delete(self::$ldap_write, $dn);
     }
 
     public function getGroupEntry($cn)
@@ -997,9 +1013,9 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$base_dn = Config::get('ldap.groupdn');
 		$grp_rdn = Config::get('ldap.groupattr')."=".$cn;
-		$resource = ldap_search(self::$ldapConnectId, $base_dn, $grp_rdn);
+		$resource = ldap_search(self::$ldap_read, $base_dn, $grp_rdn);
 		if ($resource) {
-			$entry = ldap_first_entry(self::$ldapConnectId, $resource);
+			$entry = ldap_first_entry(self::$ldap_read, $resource);
 			return $entry;
 		}
 		return false;
@@ -1010,7 +1026,7 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$dn = Config::get('ldap.groupattr')."=".$old_cn.",".Config::get('ldap.groupdn');
 		$rdn = Config::get('ldap.groupattr')."=".$new_cn;
-		$result = @ldap_rename(self::$ldapConnectId, $dn, $rdn, null, true);
+		$result = @ldap_rename(self::$ldap_write, $dn, $rdn, null, true);
 		return $result;
     }
 
@@ -1018,9 +1034,9 @@ class LdapServiceProvider extends ServiceProvider
     {
 		$this->administrator();
         $filter = "objectClass=groupOfURLs";
-        $resource = @ldap_search(self::$ldapConnectId, Config::get('ldap.groupdn'), $filter);
+        $resource = @ldap_search(self::$ldap_read, Config::get('ldap.groupdn'), $filter);
         if ($resource) {
-        	$info = @ldap_get_entries(self::$ldapConnectId, $resource);
+        	$info = @ldap_get_entries(self::$ldap_read, $resource);
         	$groups = array();
         	for ($i=0;$i<$info['count'];$i++) {
 		    	$group = new \stdClass();
@@ -1038,11 +1054,11 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$entry = $this->getGroupEntry($identifier);
 		if ($entry) {
-	    	$data = @ldap_get_values(self::$ldapConnectId, $entry, "memberURL");
+	    	$data = @ldap_get_values(self::$ldap_read, $entry, "memberURL");
 	    	preg_match("/^ldap:\/\/\/".Config::get('ldap.userdn')."\?(\w+)\?sub\?\(.*\)$/", $data[0], $matchs);
 	    	$field = $matchs[1];
 			$member = array();
-	    	$value = @ldap_get_values(self::$ldapConnectId, $entry, $field);
+	    	$value = @ldap_get_values(self::$ldap_read, $entry, $field);
 	    	if ($value) {
 				if ($value['count'] == 1) {
 		    		$member[] = $value[0];

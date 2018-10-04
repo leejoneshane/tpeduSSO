@@ -2,6 +2,8 @@
 
 return [
     'host'	=> env('LDAP_HOST', '127.0.0.1'),
+    'rhost'	=> env('LDAP_HOST_R', ''),
+    'whost'	=> env('LDAP_HOST_W', ''),
     'rdn'	=> 'dc=tp,dc=edu,dc=tw',
     'schattr'	=> 'dc',
     'version'	=> '3',
