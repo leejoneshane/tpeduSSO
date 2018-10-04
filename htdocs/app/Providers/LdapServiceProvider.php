@@ -26,9 +26,9 @@ class LdapServiceProvider extends ServiceProvider
     public function connect()
     {
 		$rhost = Config::get('ldap.rhost');
-		if (!$rhost) $rhost = Config::get('ldap.host');
+		if (empty($rhost)) $rhost = Config::get('ldap.host');
 		$whost = Config::get('ldap.whost');
-		if (!$whost) $whost = Config::get('ldap.host');
+		if (empty($whost)) $whost = Config::get('ldap.host');
 
         if ($ldapconn = @ldap_connect($rhost))
         {
@@ -39,7 +39,7 @@ class LdapServiceProvider extends ServiceProvider
         else
             Log::error("Connecting LDAP server failed.\n");
 		
-		if ($whost != $rhost && $ldapconn = @ldap_connect($whost))
+		if ($ldapconn = @ldap_connect($whost))
 		{
 			@ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, intval(Config::get('ldap.version')));
 			@ldap_set_option($ldapconn, LDAP_OPT_REFERRALS, 0);
