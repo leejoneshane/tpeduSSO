@@ -11,6 +11,7 @@ class SimsServiceProvider extends ServiceProvider
     private static $oauth_ps = null;
     private static $oauth_js = null;
     private static $seme = null;
+    private static $error = '';
 
     public function __construct()
     {
@@ -49,6 +50,11 @@ class SimsServiceProvider extends ServiceProvider
         return $response;
     }
 
+    public function ps_error()
+    {
+        return self::$error;
+    }
+
     public function ps_call($info, array $replacement)
     {
         if (!is_array($replacement)) return;
@@ -66,6 +72,7 @@ class SimsServiceProvider extends ServiceProvider
         if ($json->status == 'ok') {
             return $json->list;
         } else {
+            self::$error = $json->error;
             if (Config::get('sims.ps.debug')) Log::debug('Oauth call:'.$url.' failed! Server response:'.$json->error);
             return false;
         }

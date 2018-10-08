@@ -282,6 +282,24 @@ class LdapServiceProvider extends ServiceProvider
 		return '';
     }
     
+    public function getOrgID($dc)
+    {
+		if (empty($dc)) return '';
+		$this->administrator();
+		$base_dn = Config::get('ldap.rdn');
+		$sch_rdn = Config::get('ldap.schattr')."=".$dc;
+		$sch_dn = "$sch_rdn,$base_dn";
+		$resource = @ldap_search(self::$ldap_read, $sch_dn, "objectClass=tpeduSchool", array("description"));
+		if ($resource) {
+			$entry = @ldap_first_entry(self::$ldap_read, $resource);
+			if ($entry) {
+				$value = @ldap_get_values(self::$ldap_read, $entry, "tpUniformNumbers");
+				if ($value) return $value[0];
+			}
+		}
+		return '';
+    }
+    
     public function renameOrg($old_dc, $new_dc)
     {
 		$this->administrator();

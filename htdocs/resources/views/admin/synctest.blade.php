@@ -56,19 +56,19 @@
 					<option value="book_info" {{ $my_field == 'book_info' ? 'selected' : '' }}>圖書基本資料</option>
 				</select>
 				<label>學校統一編號：</label>
-				<input type="text" class="form-control" id="sid" name="sid" value="{{ old('sid') }}" required>
+				<input type="text" class="form-control" id="sid" name="sid" value="{{ $sid }}" required>
 				<label>年級：</label>
-				<input type="text" class="form-control" id="grade" name="grade" value="{{ old('grade') }}">
+				<input type="text" class="form-control" id="grade" name="grade" value="{{ $grade }}">
 				<label>科目代號：</label>
-				<input type="text" class="form-control" id="subjid" name="subjid" value="{{ old('subjid') }}">
+				<input type="text" class="form-control" id="subjid" name="subjid" value="{{ $subjid }}">
 				<label>班級代號：</label>
-				<input type="text" class="form-control" id="clsid" name="clsid" value="{{ old('clsid') }}">
+				<input type="text" class="form-control" id="clsid" name="clsid" value="{{ $clsid }}">
 				<label>教師代號：</label>
-				<input type="text" class="form-control" id="teaid" name="teaid" value="{{ old('teaid') }}">
+				<input type="text" class="form-control" id="teaid" name="teaid" value="{{ $teaid }}">
 				<label>學生學號：</label>
-				<input type="text" class="form-control" id="stdno" name="stdno" value="{{ old('stdno') }}">
+				<input type="text" class="form-control" id="stdno" name="stdno" value="{{ $stdno }}">
 				<label>ISBN：</label>
-				<input type="text" class="form-control" id="isbn" name="isbn" value="{{ old('isbn') }}">
+				<input type="text" class="form-control" id="isbn" name="isbn" value="{{ $isbn }}">
 			    <div class="form-group">
 					<button type="submit" class="btn btn-success">傳送請求</button>
 				</div>

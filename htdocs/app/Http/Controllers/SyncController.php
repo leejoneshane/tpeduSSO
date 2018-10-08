@@ -86,7 +86,45 @@ class SyncController extends Controller
 				$result = $http->ps_call($my_field, [ '{sid}' => $sid, '{isbn}' => $isbn ]);
 				break;
 		}
-		return view('admin.synctest', [ 'my_field' => $my_field, 'result' => $result ]);
-    }
+		return view('admin.synctest', [ 'my_field' => $my_field, 'sid' => $sid, 'grade' => $grade, 'subjid' => $subjid, 'clsid' => $clsid, 'teaid' => $teaid, 'stdno' => $stdno, 'isbn' => $isbn, 'result' => $result ]);
+	}
+	
+    public function ps_syncSeatForm(Request $request)
+    {
+		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$area = $request->get('area');
+		if (empty($area)) $area = $areas[0];
+		$filter = "st=$area";
+		$openldap = new LdapServiceProvider();
+		$schools = $openldap->getOrgs($filter);
+		$dc = $request->get('dc');
+		$result = '';
+		if ($dc) {
+			$result = ps_syncSeat($dc);
+			return redirect()->back()->with("success", $result);
+		} else
+			return view('admin.syncseat', [ 'area' => $area, 'dc' => $dc ]);
+	}
+	
+	public function ps_syncSeat($dc)
+	{
+		$openldap = new LdapServiceProvider();
+		$http = new SimsServiceProvider();
+		$sid = $openldap->getOrgID($dc);
+		$students = $openldap->findUsers('(&(o=$dc)(employeeType=學生))', ["cn", "displayName", "employeeNumber", "tpClass", "tpSeat"]);
+		$messages = array();
+		foreach ($students as $stu) {
+			$stdno = $stu['employeeNumber'];
+			$data = $http->ps_call('student_info', [ '{sid}' => $sid, '{stdno}' => $stdno ]);
+			if ($data) {
+				$user_entry = $openldap->getUserEntry($stu['cn']);
+				$openldap->updateData($user_entry, [ 'tpClass' => $data[0]->class, 'tpSeat' => $data[0]->seat ]);
+				$messages[] = "cn=". $stu['cn'] .",stdno=". $stu['employeeNumber'] .",name=". $stu['displayName'] ." 就讀班級座號變更為 ". $data[0]->class . $data[0]->seat;
+			} else {
+				$messages[] = "cn=". $stu['cn'] .",stdno=". $stu['employeeNumber'] .",name=". $stu['displayName'] ." 無法同步：". $http->ps_error();
+			}
+		}
+		return $messages;
+	}
 
 }
