@@ -11,6 +11,9 @@
                                 <li {{ (Request::is('sync/ps/runtime_test') ? 'class="active"' : '') }}>
                                     <a href="{{ route('sync.ps.runtime_test') }}">連線測試</a>
                                 </li>
+                                <li {{ (Request::is('sync/ps/sync_seat') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('sync.ps.sync_seat') }}">同步就讀班級座號</a>
+                                </li>
                             </ul>
                         </li>
                         <li {{ (Request::is('bureau/organization') ? 'class="active"' : '') }}>
