@@ -73,7 +73,7 @@ class SimsServiceProvider extends ServiceProvider
             return $json->list;
         } else {
             self::$error = $json->error;
-            if (Config::get('sims.ps.debug')) Log::debug('Oauth call:'.$url.' failed! Server response:'.$json->error);
+            if (Config::get('sims.ps.debug')) Log::debug('Oauth call:'.$url.' failed! Server response:'.$res->getBody());
             return false;
         }
     }
