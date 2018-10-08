@@ -104,7 +104,7 @@ class SyncController extends Controller
 			$result = ps_syncSeat($dc);
 			return redirect()->back()->with("success", $result);
 		} else
-			return view('admin.syncseat', [ 'area' => $area, 'areas' => $areas, 'dc' => $dc ]);
+			return view('admin.syncseat', [ 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc ]);
 	}
 	
 	public function ps_syncSeat($dc)
