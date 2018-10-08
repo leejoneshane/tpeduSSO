@@ -289,7 +289,7 @@ class LdapServiceProvider extends ServiceProvider
 		$base_dn = Config::get('ldap.rdn');
 		$sch_rdn = Config::get('ldap.schattr')."=".$dc;
 		$sch_dn = "$sch_rdn,$base_dn";
-		$resource = @ldap_search(self::$ldap_read, $sch_dn, "objectClass=tpeduSchool", array("description"));
+		$resource = @ldap_search(self::$ldap_read, $sch_dn, "objectClass=tpeduSchool", [ 'tpUniformNumbers' ]);
 		if ($resource) {
 			$entry = @ldap_first_entry(self::$ldap_read, $resource);
 			if ($entry) {
