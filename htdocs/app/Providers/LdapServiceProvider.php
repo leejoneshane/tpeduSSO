@@ -736,7 +736,7 @@ class LdapServiceProvider extends ServiceProvider
 		if (in_array('uid',$fields)) {
 			$fields = array_values(array_unique($fields + ['mail', 'mobile']));
 		}
-		if (in_array('ou',$fields) || in_array('tpTeachClass',$fields)) {
+		if (in_array('ou',$fields) || in_array('tpClass',$fields) || in_array('tpTeachClass',$fields)) {
 			$fields = array_values(array_unique($fields + ['o']));
 		}
 		if (in_array('tpAdminSchools',$fields)) {
