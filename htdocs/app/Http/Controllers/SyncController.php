@@ -101,7 +101,7 @@ class SyncController extends Controller
 		$dc = $request->get('dc');
 		$result = '';
 		if ($dc) {
-			$result = ps_syncSeat($dc);
+			$result = $this->ps_syncSeat($dc);
 			return redirect()->back()->with("success", $result);
 		} else
 			return view('admin.syncseat', [ 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc ]);
