@@ -112,7 +112,7 @@ class SyncController extends Controller
 		$openldap = new LdapServiceProvider();
 		$http = new SimsServiceProvider();
 		$sid = $openldap->getOrgID($dc);
-		$students = $openldap->findUsers('(&(o=$dc)(employeeType=學生))', ["cn", "displayName", "employeeNumber", "tpClass", "tpSeat"]);
+		$students = $openldap->findUsers("(&(o=$dc)(employeeType=學生))", ["cn", "displayName", "employeeNumber", "tpClass", "tpSeat"]);
 		$messages = array();
 		foreach ($students as $stu) {
 			$stdno = $stu['employeeNumber'];
