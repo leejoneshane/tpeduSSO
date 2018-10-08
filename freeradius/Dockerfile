@@ -9,6 +9,6 @@ ADD clients.conf /etc/raddb/clients.conf
 ADD proxy.conf /etc/raddb/proxy.conf
 ADD ldap /etc/raddb/mods-enabled/ldap
 
-VOLUME ["/etc/raddb/"]
+VOLUME ["/etc/raddb/", "/etc/openvpn/"]
 EXPOSE 1812/udp 1813/udp 18120
 CMD ["radiusd","-xx","-f"]
