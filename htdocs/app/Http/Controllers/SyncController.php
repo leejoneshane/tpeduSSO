@@ -6,6 +6,7 @@ use Config;
 use Validator;
 use Auth;
 use Illuminate\Http\Request;
+use App\Providers\LdapServiceProvider;
 use App\Providers\SimsServiceProvider;
 use App\Rules\idno;
 use App\Rules\ipv4cidr;
