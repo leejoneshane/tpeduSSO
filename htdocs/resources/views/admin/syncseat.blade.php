@@ -33,7 +33,7 @@
 			</select>
             <span class="input-group-btn" style="width: auto">
             	<button class="btn btn-default" type="button" onclick="location='{{ url()->current() }}?area=' + $('#area').val() + '&dc=' + $('#dc').val();">
-            		<i class="fa fa-search"></i>
+            		開始同步
             	</button>
         	</span>
     	</div>
