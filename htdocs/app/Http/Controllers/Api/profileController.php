@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Support\Facades\Auth;
 use App\Providers\LdapServiceProvider;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -12,11 +11,10 @@ class profileController extends Controller
 {
     public function logout(Request $request)
     {
-		$accessToken = $request->user()->token();
-		$accessToken->revoke();
-		Auth::logout();
-		$request->session()->flush();
-		$request->session()->regenerate();
+		$user = $request->user();
+		$user->token()->revoke();
+		$user->remember_token = null;
+		$user->save();
         return response()->json(null, 204);
     }
 
