@@ -12,14 +12,18 @@ class profileController extends Controller
 {
     public function logout(Request $request)
     {
-    	$accessToken = $request->user()->token();
-    	DB::table('oauth_refresh_tokens')
+		$accessToken = $request->user()->token();
+		$accessToken->revoke();
+		$this->guard()->logout();
+		$request->session()->flush();
+		$request->session()->regenerate();
+/*    	DB::table('oauth_refresh_tokens')
             ->where('access_token_id', $accessToken->id)
-            ->update([
-                'revoked' => true
-            ]);
-        $accessToken->revoke();
-        
+            ->update(['revoked' => true]);
+		DB::table('oauth_access_tokens')
+            ->where('id', $accessToken->id)
+            ->update(['revoked' => true]);
+*/        
         return response()->json(null, 204);
     }
 
