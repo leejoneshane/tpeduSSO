@@ -14,7 +14,7 @@ class profileController extends Controller
     {
 		$accessToken = $request->user()->token();
 		$accessToken->revoke();
-		Auth::guard('api')->logout();
+		Auth::logout();
 		$request->session()->flush();
 		$request->session()->regenerate();
         return response()->json(null, 204);
