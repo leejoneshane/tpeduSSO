@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use DB;
+use Auth;
 use App\Providers\LdapServiceProvider;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -12,14 +12,8 @@ class v2_profileController extends Controller
 {
     public function logout(Request $request)
     {
-    	$accessToken = $request->user()->token();
-    	DB::table('oauth_refresh_tokens')
-            ->where('access_token_id', $accessToken->id)
-            ->update([
-                'revoked' => true
-            ]);
-        $accessToken->revoke();
-        
+		$request->user()->token()->revoke();
+		if (Auth::guard('web')->check()) Auth::guard('web')->logout();
         return response()->json(null, 204);
     }
 
