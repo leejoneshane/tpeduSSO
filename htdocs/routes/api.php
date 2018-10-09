@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 
 Route::group(['middleware' => 'auth:api'], function () {
-    Route::get('logout', 'Auth\LoginController@logout');
+    Route::get('logout', 'Api\profileController@logout');
     Route::get('me', 'Api\profileController@me')->middleware('scope:me');
     Route::get('email', 'Api\profileController@email')->middleware('scope:email');
     Route::get('user', 'Api\profileController@user')->middleware('scope:user');
