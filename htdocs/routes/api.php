@@ -12,9 +12,9 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::get('logout', 'Api\profileController@logout');
 
 Route::group(['middleware' => 'auth:api'], function () {
-    Route::get('logout', 'Api\profileController@logout');
     Route::get('me', 'Api\profileController@me')->middleware('scope:me');
     Route::get('email', 'Api\profileController@email')->middleware('scope:email');
     Route::get('user', 'Api\profileController@user')->middleware('scope:user');

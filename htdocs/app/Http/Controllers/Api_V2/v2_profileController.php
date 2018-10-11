@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use Auth;
+use Cookie;
 use App\Providers\LdapServiceProvider;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -13,8 +14,10 @@ class v2_profileController extends Controller
     public function logout(Request $request)
     {
 		$request->user()->token()->revoke();
-		if (Auth::guard('web')->check()) Auth::guard('web')->logout();
-        return response()->json(null, 204);
+		$request->session()->flush();
+		$request->session()->regenerate();
+		$cookie = Cookie::forget('laravel_session', 'laravel_token');
+        return redirect()->back()->withCookie($cookie);
     }
 
     public function me(Request $request)
