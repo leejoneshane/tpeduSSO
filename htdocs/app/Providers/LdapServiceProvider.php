@@ -307,10 +307,10 @@ class LdapServiceProvider extends ServiceProvider
 		$rdn = Config::get('ldap.schattr')."=".$new_dc;
 		$result = @ldap_rename(self::$ldap_write, $dn, $rdn, null, true);
 		if ($result) {
-			$users = $openldap->findUsers("o=$old_dc");
+			$users = $this->findUsers("o=$old_dc");
 			if ($users) {
 				foreach ($users as $user) {
-					$openldap->UpdateData($user, [ 'o' => $new_dc ]); 
+					$this->UpdateData($user, [ 'o' => $new_dc ]); 
 				}
 			}
 		}
@@ -907,7 +907,7 @@ class LdapServiceProvider extends ServiceProvider
 		$dn = Config::get('ldap.userattr')."=".$old_idno.",".Config::get('ldap.userdn');
 		$rdn = Config::get('ldap.userattr')."=".$new_idno;
 		$entry = $this->getUserEntry($old_idno);
-		$new_pwd = $openldap->make_ssha_password(substr($new_idno, -6));
+		$new_pwd = $this->make_ssha_password(substr($new_idno, -6));
 		$this->updateData($entry, ["userPassword" => $new_pwd]);
 		$accounts = @ldap_get_values(self::$ldap_read, $entry, "uid");
 		for($i=0;$i<$accounts['count'];$i++) {

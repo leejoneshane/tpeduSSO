@@ -13,7 +13,6 @@ class v2_profileController extends Controller
 {
     public function logout(Request $request)
     {
-		$request->user()->token()->revoke();
 		$request->session()->flush();
 		$request->session()->regenerate();
 		$cookie = Cookie::forget('laravel_session', 'laravel_token');
