@@ -1,34 +1,26 @@
 {
 	"info": {
-		"_postman_id": "58725606-3e83-4e73-88f9-1445a9462828",
-		"name": "ldap.tp.edu.tw",
+		"_postman_id": "dcc7cd3f-a31a-460c-893a-d9d98b3f214d",
+		"name": "ldap.tp.edu.tw copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "專案授權",
-			"description": null,
 			"item": [
 				{
 					"name": "專案驗證",
 					"request": {
-						"auth": {
-							"type": "noauth"
-						},
 						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
 								"value": "application/json"
-							},
-							{
-								"key": "Accept",
-								"value": "application/json"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\"grant_type\": \"client_credentials\",\n\"client_id\": 3,\n\"client_secret\": \"your_secret\",\n\"scope\": \"school\"\n}"
+							"raw": "{\n\"grant_type\": \"client_credentials\",\n\"client_id\": 2,\n\"client_secret\": \"your_redirect_uri\",\n\"scope\": \"school\"\n}"
 						},
 						"url": {
 							"raw": "https://ldap.tp.edu.tw/oauth/token",
@@ -125,93 +117,6 @@
 								"api",
 								"school",
 								"meps"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "取得學校科目列表",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/school/meps/subject",
-							"protocol": "https",
-							"host": [
-								"ldap",
-								"tp",
-								"edu",
-								"tw"
-							],
-							"path": [
-								"api",
-								"school",
-								"meps",
-								"subject"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "取得學校科目資料",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/school/meps/subject/sub01",
-							"protocol": "https",
-							"host": [
-								"ldap",
-								"tp",
-								"edu",
-								"tw"
-							],
-							"path": [
-								"api",
-								"school",
-								"meps",
-								"subject",
-								"sub01"
 							]
 						}
 					},
@@ -390,6 +295,93 @@
 								"dept02",
 								"role",
 								"roleC17"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得學校科目列表",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school/meps/subject",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school",
+								"meps",
+								"subject"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得學校科目資料",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school/meps/subject/sub01",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school",
+								"meps",
+								"subject",
+								"sub01"
 							]
 						}
 					},
@@ -576,7 +568,6 @@
 		},
 		{
 			"name": "代理授權",
-			"description": null,
 			"item": [
 				{
 					"name": "取得個人金鑰列表",
@@ -685,18 +676,67 @@
 						}
 					},
 					"response": []
-				}
-			]
-		},
-		{
-			"name": "第一方授權",
-			"description": null,
-			"item": [
+				},
 				{
-					"name": "使用者登入驗證",
+					"name": "取得學校人員資訊",
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"idno\": \"A123456789\",\n\"password\": \"my_password\",\n\"type\": \"學生\",\n\"lastname\": \"姓\",\n\"firstname\": \"名字\",\n\"stdno\": \"106001\",\n\"class\": \"101\",\n\"seat\": \"10\",\n\"memo\": \"特殊身份註記\",\n\"gender\": 1,\n\"birthdate\": \"19790208\",\n\"mail\": \"teacher@mail.xxps.tp.edu.tw\",\n\"mobile\": \"0911000001\",\n\"fax\": \"(02)23096737\",\n\"otel\": \"(02)23096737\",\n\"htel\": \"(02)23096737\",\n\"address\": \"臺北市中正區龍光里1鄰南海路58號\",\n\"conn_address\": \"臺北市南海路58號\",\n\"www\": \"http://stu.meps.tp.edu.tw/sean/\",\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school/meps/people\b/a4c4513a-a678-1037-955a-15429bf75900",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school",
+								"meps",
+								"people\b",
+								"a4c4513a-a678-1037-955a-15429bf75900"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "新增學校人員（教師）",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [
@@ -711,7 +751,282 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\"grant_type\": \"password\",\n\"client_id\": 2,\n\"client_secret\": \"your_secret\",\n\"username\": \"user\",\n\"password\": \"password\",\n\"scope\": \"*\"\n}"
+							"raw": "{\n\"idno\": \"A123456789\",\n\"password\": \"my_password\",\n\"type\": \"教師\",\n\"lastname\": \"姓\",\n\"firstname\": \"名字\",\n\"unit\": \"meps,dept002\",\n\"role\": \"meps,dept002,roleC17\",\n\"tclass\": \"meps,501,subj12\",\n\"memo\": \"特殊身份註記\",\n\"gender\": 1,\n\"birthdate\": \"19790208\",\n\"mail\": \"teacher@mail.xxps.tp.edu.tw\",\n\"mobile\": \"0911000001\",\n\"fax\": \"(02)23096737\",\n\"otel\": \"(02)23096737\",\n\"htel\": \"(02)23096737\",\n\"address\": \"臺北市中正區龍光里1鄰南海路58號\",\n\"conn_address\": \"臺北市南海路58號\",\n\"www\": \"http://stu.meps.tp.edu.tw/sean/\"\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school/meps/people",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school",
+								"meps",
+								"people"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "新增學校人員（學生）",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"idno\": \"A123456789\",\n\"password\": \"my_password\",\n\"type\": \"學生\",\n\"lastname\": \"姓\",\n\"firstname\": \"名字\",\n\"stdno\": \"106001\",\n\"class\": \"101\",\n\"seat\": \"10\",\n\"memo\": \"特殊身份註記\",\n\"gender\": 1,\n\"birthdate\": \"19790208\",\n\"mail\": \"teacher@mail.xxps.tp.edu.tw\",\n\"mobile\": \"0911000001\",\n\"fax\": \"(02)23096737\",\n\"otel\": \"(02)23096737\",\n\"htel\": \"(02)23096737\",\n\"address\": \"臺北市中正區龍光里1鄰南海路58號\",\n\"conn_address\": \"臺北市南海路58號\",\n\"www\": \"http://stu.meps.tp.edu.tw/sean/\",\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school/meps/people",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school",
+								"meps",
+								"people"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "修改學校資訊",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fax\": \"new_fax\",\n  \"tel\": \"new_tel\",\n  \"ipv4\": \"new_ipv4\",\n  \"ipv6\": \"new_ipv6\",\n  \"admins\": [ \"admin1_idno\", \"admin2_idno\" ],\n  \"ous\": [\n  \t{ \"id\": \"dept01\", \"name\": \"校長室\", \"roles\": [{ \"role001\": \"校長\" }] }\n  \t],\n  \"subjects\": [\n  \t{ \"id\": \"subj001\", \"domain\": \"語文\", \"title\": \"國語\" }\n  \t],\n  \"classes\": [\n  \t{ \"101\": \"一年一班\" }, { \"102\": \"一年二班\" }\n  \t]\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school/meps",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school",
+								"meps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "修改學校人員（教師）",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"idno\": \"A123456789\",\n\"password\": \"my_password\",\n\"type\": \"教師\",\n\"lastname\": \"姓\",\n\"firstname\": \"名字\",\n\"unit\": \"meps,dept002\",\n\"role\": \"meps,dept002,roleC17\",\n\"tclass\": \"meps,501,subj12\",\n\"memo\": \"特殊身份註記\",\n\"gender\": 1,\n\"birthdate\": \"19790208\",\n\"mail\": \"teacher@mail.xxps.tp.edu.tw\",\n\"mobile\": \"0911000001\",\n\"fax\": \"(02)23096737\",\n\"otel\": \"(02)23096737\",\n\"htel\": \"(02)23096737\",\n\"address\": \"臺北市中正區龍光里1鄰南海路58號\",\n\"conn_address\": \"臺北市南海路58號\",\n\"www\": \"http://stu.meps.tp.edu.tw/sean/\"\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school/meps/people/a4c4513a-a678-1037-955a-15429bf75900",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school",
+								"meps",
+								"people",
+								"a4c4513a-a678-1037-955a-15429bf75900"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "修改學校人員（學生）",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"idno\": \"A123456789\",\n\"password\": \"my_password\",\n\"type\": \"學生\",\n\"lastname\": \"姓\",\n\"firstname\": \"名字\",\n\"stdno\": \"106001\",\n\"class\": \"101\",\n\"seat\": \"10\",\n\"memo\": \"特殊身份註記\",\n\"gender\": 1,\n\"birthdate\": \"19790208\",\n\"mail\": \"teacher@mail.xxps.tp.edu.tw\",\n\"mobile\": \"0911000001\",\n\"fax\": \"(02)23096737\",\n\"otel\": \"(02)23096737\",\n\"htel\": \"(02)23096737\",\n\"address\": \"臺北市中正區龍光里1鄰南海路58號\",\n\"conn_address\": \"臺北市南海路58號\",\n\"www\": \"http://stu.meps.tp.edu.tw/sean/\",\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school/meps/people/a4c4513a-a678-1037-955a-15429bf75900",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school",
+								"meps",
+								"people",
+								"a4c4513a-a678-1037-955a-15429bf75900"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "刪除學校人員",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/school/meps/people/a4c4513a-a678-1037-955a-15429bf75900",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"school",
+								"meps",
+								"people",
+								"a4c4513a-a678-1037-955a-15429bf75900"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "第一方授權",
+			"item": [
+				{
+					"name": "使用者登入驗證",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"grant_type\": \"password\",\n\"client_id\": 2,\n\"client_secret\": \"your_secret\",\n\"username\": \"username\",\n\"password\": \"yourpassword\",\n\"scope\": \"user\"\n}"
 						},
 						"url": {
 							"raw": "https://ldap.tp.edu.tw/oauth/token",
@@ -725,6 +1040,47 @@
 							"path": [
 								"oauth",
 								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得登入者一般資訊",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/user",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"user"
 							]
 						}
 					},
@@ -807,47 +1163,6 @@
 							"path": [
 								"api",
 								"me"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "取得登入者一般資訊",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/user",
-							"protocol": "https",
-							"host": [
-								"ldap",
-								"tp",
-								"edu",
-								"tw"
-							],
-							"path": [
-								"api",
-								"user"
 							]
 						}
 					},
@@ -977,51 +1292,6 @@
 					"response": []
 				},
 				{
-					"name": "變更登入者資訊",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"email\": \"new_mail\",\n  \"mobile\": \"new_tel\",\n  \"email_login\": \"false\",\n  \"mobile_login\": \"false\"\n}"
-						},
-						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/user",
-							"protocol": "https",
-							"host": [
-								"ldap",
-								"tp",
-								"edu",
-								"tw"
-							],
-							"path": [
-								"api",
-								"user"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "變更登入者帳號密碼",
 					"request": {
 						"auth": {
@@ -1061,6 +1331,51 @@
 							"path": [
 								"api",
 								"account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "變更登入者資訊",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"new_mail\",\n  \"mobile\": \"new_tel\",\n  \"email_login\": \"false\",\n  \"mobile_login\": \"false\"\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/user",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"user"
 							]
 						}
 					},
@@ -1116,7 +1431,6 @@
 		},
 		{
 			"name": "第三方個資授權（使用者介入）",
-			"description": null,
 			"item": [
 				{
 					"name": "導向到登入頁面",
@@ -1128,7 +1442,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://ldap.tp.edu.tw/oauth/authorize?client_id=3&redirect_uri=your_api_client_url&response_type=code&scope=user",
+							"raw": "https://ldap.tp.edu.tw/oauth/authorize?client_id=2&redirect_uri=your_redirect_uri&response_type=code&scope=user%20profile",
 							"protocol": "https",
 							"host": [
 								"ldap",
@@ -1143,11 +1457,11 @@
 							"query": [
 								{
 									"key": "client_id",
-									"value": "3"
+									"value": "2"
 								},
 								{
 									"key": "redirect_uri",
-									"value": "your_api_client_url"
+									"value": "your_redirect_uri"
 								},
 								{
 									"key": "response_type",
@@ -1155,8 +1469,86 @@
 								},
 								{
 									"key": "scope",
-									"value": "user"
+									"value": "user%20profile"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "進行登入",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "_token",
+									"value": "csrf_token_at_web_page",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "username",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "yourpassword",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/login",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "行使同意權",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "\b_token",
+									"value": "csrf_token_at_web_page",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/oauth/authorize",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"oauth",
+								"authorize"
 							]
 						}
 					},

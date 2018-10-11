@@ -444,7 +444,8 @@ class schoolController extends Controller
 		    return response()->json(["error" => "The user has no right to manager this school!"], 403);
 		}
 		$entry = $openldap->getUserEntry($uuid);
-		$result = $openldap->deleteEntry($entry);
+        $result = $openldap->updateData($entry,  [ 'inetUserStatus' => 'deleted' ]);
+//		$result = $openldap->deleteEntry($entry);
 		if ($result)
 		    return response()->json([ 'success' => 'The people has been deleted!'], 410);
 		else
