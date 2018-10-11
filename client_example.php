@@ -44,4 +44,7 @@ $response = http_get('https://ldap.tp.edu.tw/api/user', $header);
 $user = json_decode($response);
 $response = http_get('https://ldap.tp.edu.tw/api/profile', $header);
 $profile = json_decode($response);
+
+//logout
+http_redirect('https://ldap.tp.edu.tw/api/logout');
 ?>
