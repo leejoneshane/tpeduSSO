@@ -2,10 +2,8 @@
 set -euo pipefail
 chown -R apache:apache /var/www
 
+php artisan clear
 php artisan cache:clear
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
 
 if mysqlshow --host=${DB_HOST} --user=${DB_USERNAME} --password=${DB_PASSWORD} ${DB_DATABASE} users; then
   echo "database ready!"
