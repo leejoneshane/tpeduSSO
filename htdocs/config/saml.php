@@ -69,7 +69,7 @@ return [
         /**
          * SP Entry ID for G suits domain ms.tp.edu.tw
          */
-        'aHR0cHM6Ly9tYWlsLmdvb2dsZS5jb20vYS9tcy50cC5lZHUudHc=' => [        
+        'aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS9hL21zLnRwLmVkdS50dy9hY3M=' => [        
             // The destination is the consuming SAML URL. This might be a SamlAuthController receiving the SAML response.  
             'destination' => 'https://www.google.com/a/ms.tp.edu.tw/acs',
             // Issuer could be anything, mostly it makes sense to pass the metadata URL
