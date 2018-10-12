@@ -2029,8 +2029,16 @@ class SchoolController extends Controller
 		    $idno = $request->get('delete-admin');
 	    	$entry = $openldap->getUserEntry($idno);
 		    if ($entry) {
-				$orgs = $openldap->getUserData($entry, [ "o", "cn", "tpAdminSchools" ]);
-				$orgs = array_values(array_diff($orgs, [ $dc ]));
+				$orgs = array();
+				$data = $openldap->getUserData($entry, [ "o", "cn", "tpAdminSchools" ]);
+				if (array_key_exists('tpAdminSchools', $data)) {
+					if (is_array($data['tpAdminSchools'])) {
+						$orgs = $data['tpAdminSchools'];
+					} elseif (!empty($data['tpAdminSchools'])) {
+						$orgs[] = $data['tpAdminSchools'];
+					}
+				}
+				$orgs = array_values(array_diff($orgs, [$dc]));
 				$openldap->updateData($entry, [ 'tpAdminSchools' => $orgs ]);
 	    	}
 		    $entry = $openldap->getOrgEntry($dc);
