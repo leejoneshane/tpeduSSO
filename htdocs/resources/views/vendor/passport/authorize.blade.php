@@ -43,7 +43,7 @@
             <div class="col-md-6">
                 <div class="card card-default">
                     <div class="card-header">
-                        Authorization Request
+                        授權請求
                     </div>
                     <div class="card-body">
                         <!-- Introduction -->
