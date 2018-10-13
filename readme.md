@@ -37,6 +37,7 @@ docker-compose up
 * __APP_URL: https://ldap.tp.edu.tw__ 可省略，預設值同前，若為其他縣市請務必修改。
 * __CACHE_DRIVER: redis__ 不可省略，可以使用 redis 或 file 作為網站快取。
 * __SESSION_DRIVER: redis__ 不可省略，可以使用 redis 或 file 作為連線快取。
+* __SESSION_CONNECTION: session__ 不可省略，指定連線 session 要儲存在哪一個 redis 資料庫。
 * __REDIS_HOST: 172.17.0.3__ 不可省略，redis 快取系統的網址名稱或IP，若使用容器快取伺服器，請填寫容器名稱。
 * __REDIS_PORT: 6379__ 可省略，預設值同前，為 redis 快取的連線埠號。
 * __REDIS_PASSWORD: null__ 可省略，預設值同前，為 redis 快取的操作密碼。
