@@ -48,8 +48,8 @@ return [
     
     'idp' => [
         'metadata'  => 'idp/metadata.xml',
-        'cert'      => 'idp/rsacert.pem',
-        'key'       => 'idp/rsaprivkey.pem',
+        'cert'      => 'idp/dsacert.pem',
+        'key'       => 'idp/dsaprivkey.pem',
     ],
 
     /*
