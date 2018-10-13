@@ -48,7 +48,7 @@ class User extends Authenticatable
 			$this->attributes['uuid'] = $data['entryUUID'];
 		}
 		if (array_key_exists('uid', $data)) {
-	    	if (is_array($data['uname'])) {
+	    	if (is_array($data['uid'])) {
 				$this->attributes['uname'] = $data['uid'][0];
 		    } else {
 		    	$this->attributes['uname'] = $data['uid'];
