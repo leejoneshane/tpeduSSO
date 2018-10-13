@@ -230,11 +230,11 @@ trait SamlAuth
         $postBinding = $bindingFactory->create(\LightSaml\SamlConstants::BINDING_SAML2_HTTP_POST);
         $messageContext = new \LightSaml\Context\Profile\MessageContext();
         $messageContext->setMessage($response)->asResponse();
-        if (config('saml.debug_saml_request')) {
-            Log::debug($messageContext);
-        }
         /** @var \Symfony\Component\HttpFoundation\Response $httpResponse */
         $httpResponse = $postBinding->send($messageContext);
+        if (config('saml.debug_saml_request')) {
+            Log::debug($httpResponse->getContent());
+        }
         print $httpResponse->getContent()."\n\n";
     }
 
