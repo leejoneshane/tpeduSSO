@@ -47,6 +47,13 @@ class User extends Authenticatable
 		if (array_key_exists('entryUUID', $data)) {
 			$this->attributes['uuid'] = $data['entryUUID'];
 		}
+		if (array_key_exists('uid', $data)) {
+	    	if (is_array($data['uname'])) {
+				$this->attributes['uname'] = $data['uid'][0];
+		    } else {
+		    	$this->attributes['uname'] = $data['uid'];
+		    }
+		}
 		if (array_key_exists('mail', $data)) {
 	    	if (is_array($data['mail'])) {
 				$this->attributes['email'] = $data['mail'][0];

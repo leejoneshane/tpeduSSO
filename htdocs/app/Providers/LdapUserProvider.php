@@ -46,7 +46,14 @@ class LdapUserProvider extends EloquentUserProvider
 				if ($entry) {
 					$data = $this->openLDAP->getUserData($entry);
 		        	$user = new \App\User();
-		        	$user->idno = $id;
+					$user->idno = $id;
+					if (isset($data['uid'])) {
+						if (is_array($data['uid'])) {
+							$user->uname = $data['uid'][0];
+						} else {
+							$user->uname = $data['uid'];
+						}
+					}
 	    	    	$user->name = $data['displayName'];
 					$user->uuid = $data['entryUUID'];
 					if (isset($credentials['email'])) {

@@ -146,10 +146,7 @@ trait SamlAuth
         $roles = array();
         if(\Auth::check()){
             $user  = \Auth::user();
-            if (is_array($user->ldap['uid']))
-                $email = $user->ldap['uid'][0].'@'.config('saml.email_domain');
-            else
-                $email = $user->ldap['uid'].'@'.config('saml.email_domain');
+            $email = $user->uname.'@'.config('saml.email_domain');
             $name  = $user->name;
             if (config('saml.forward_roles'))
                 $roles = $user->roles->pluck('name')->all();
