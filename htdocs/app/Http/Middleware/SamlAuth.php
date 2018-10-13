@@ -232,9 +232,6 @@ trait SamlAuth
         $messageContext->setMessage($response)->asResponse();
         /** @var \Symfony\Component\HttpFoundation\Response $httpResponse */
         $httpResponse = $postBinding->send($messageContext);
-        if (config('saml.debug_saml_request')) {
-            Log::debug($httpResponse->getContent());
-        }
         print $httpResponse->getContent()."\n\n";
     }
 

@@ -14,6 +14,7 @@
         "laravel/passport": "^7.0",
         "laravel/socialite": "^3.1",
         "laravel/tinker": "^1.0",
+        "lightsaml/lightsaml": "^1.4",
         "predis/predis": "^1.1"
     },
     "require-dev": {
