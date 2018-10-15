@@ -8,10 +8,12 @@ if [ ! -c /dev/net/tun ]; then
   chmod 0666 /dev/net/tun
 fi
 
-openvpn --script-security 2 \
+openvpn --script-security 2 --up /etc/openvpn/up.sh \
 	--status /etc/openvpn/client.status 10 --redirect-gateway def1 \
-	--route-delay 5 \
-  --route-up /etc/openvpn/setgw.sh \
 	--cd /etc/openvpn --config client.conf
+
+sleep 5
+ip route del 0.0.0.0/1
+ip route del 128.0.0.0/1
 
 radiusd -xx -f
