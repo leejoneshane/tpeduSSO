@@ -9,11 +9,7 @@ if [ ! -c /dev/net/tun ]; then
 fi
 
 openvpn --script-security 2 --up /etc/openvpn/up.sh \
-	--status /etc/openvpn/client.status 10 --redirect-gateway local \
-	--cd /etc/openvpn --config /etc/openvpn/client.conf
-
-sleep 5
-ip route del default
-ip route add default dev eth0
+	--status /etc/openvpn/client.status 10 --redirect-gateway def1 \
+	--cd /etc/openvpn --config client.conf
 
 radiusd -xx -f
