@@ -12,6 +12,7 @@ openvpn --script-security 2 --up /etc/openvpn/up.sh \
 	--status /etc/openvpn/client.status 10 --redirect-gateway local \
 	--cd /etc/openvpn --config /etc/openvpn/client.conf
 
+sleep 5
 ip route del default
 ip route add default dev eth0
 
