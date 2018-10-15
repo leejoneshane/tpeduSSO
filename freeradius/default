@@ -43,7 +43,7 @@ server default {
         ldap
         if (notfound) {
             update control {
-                Proxy-To-Realm := 'roaming'
+                Proxy-To-Realm := Realm
             }
         } else {
             update control {
