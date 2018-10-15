@@ -45,6 +45,10 @@ server default {
             update control {
                 Proxy-To-Realm := 'roaming'
             }
+        } else {
+            update control {
+                Auth-Type := ldap
+            }
         }
         expiration
         logintime
