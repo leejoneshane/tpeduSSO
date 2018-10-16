@@ -1,6 +1,6 @@
 __臺北市教育人員無線認證服務__，為臺北市政府教育局所發展教育人員單一身份驗證的高效率 freeradius 伺服器，大小僅 16 MB，由臺北市老師自主研發，若您為臺北市教師且對程式開發感興趣，請與我聯繫！
 
-這個資料夾內的資料是用來建置一台 freeradius server 的 Docker 映像檔，伺服器設定成透過 openldap 伺服器驗證使用者是否為教育人員，如果找不到該帳號，則進行封包轉送。帶有其他縣市 realm 的帳號，將轉送到 __臺灣學術網路無線漫遊中心__ 漫遊到各縣市認證主機；其餘帳號將轉送到臺北市教育網路中心的 __臺灣學術網路無線漫遊伺服器__ 上進行登入驗證，以便相容舊有的市網帳號。詳情可查閱 [default](https://github.com/leejoneshane/tpeduSSO/tree/master/freeradius/default) 文件。
+這個資料夾內的資料是用來建置一台 freeradius server 的 Docker 映像檔，伺服器設定成透過 openldap 伺服器驗證使用者是否為教育人員，如果找不到該帳號，則進行封包轉送。；帶有 tp.edu.tw 的帳號將轉送到臺北市教育網路中心的 __臺灣學術網路無線漫遊伺服器__ 上進行登入驗證，以便相容舊有的市網帳號。其餘帳號將轉送到 __臺灣學術網路無線漫遊中心__ 漫遊到各縣市認證主機詳情可查閱 [default](https://github.com/leejoneshane/tpeduSSO/tree/master/freeradius/default) 文件。
 
 上述設定可以透過 docker 環境變數調整，以適應各縣市的需求，請參考下方關於執行環境的說明。另外還需要修改 [clients.conf](https://github.com/leejoneshane/tpeduSSO/tree/master/freeradius/clients.conf) 文件，請設定貴縣市的 IP 範圍，以便讓下屬單位送來的認證請求封包能被伺服器接受和處理。
 
