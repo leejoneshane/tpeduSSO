@@ -64,7 +64,7 @@
 					@foreach ($students as $student)
 					<tr>
 						<td style="vertical-align: inherit;">
-							<span>{{ $student['inetUserStatus'] == 'active' ? '啟用' : '' }}{{ $student['inetUserStatus'] == 'inactive' ? '停用' : '' }}{{ $student['inetUserStatus'] == 'deleted' ? '已刪除' : '' }}</span>
+							<span>{{ empty($student['inetUserStatus']) || $student['inetUserStatus'] == 'active' ? '啟用' : '' }}{{ $student['inetUserStatus'] == 'inactive' ? '停用' : '' }}{{ $student['inetUserStatus'] == 'deleted' ? '已刪除' : '' }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
 							<span>{{ $student['entryUUID'] }}</span>
@@ -92,7 +92,7 @@
 							<button type="button" class="btn btn-warning"
 							 	onclick="$('#form').attr('action','{{ route('school.toggle', [ 'uuid' => $student['entryUUID'] ]) }}');
 										 $('#form').attr('method', 'POST');
-										 $('#form').submit();">{{ $student['inetUserStatus'] == 'active' ? '停用' : '啟用' }}</button>
+										 $('#form').submit();">{{ $student['inetUserStatus'] == 'inactive' ? '啟用' : '停用' }}</button>
 							<button type="button" class="btn btn-danger"
 							 	onclick="$('#form').attr('action','{{ route('school.remove', [ 'uuid' => $student['entryUUID'] ]) }}');
 										 $('#form').attr('method', 'POST');

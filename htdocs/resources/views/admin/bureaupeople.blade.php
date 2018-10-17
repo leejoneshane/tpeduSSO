@@ -73,7 +73,7 @@
 					@foreach ($people as $user)
 					<tr>
 						<td style="vertical-align: inherit;">
-							<span>{{ $user['inetUserStatus'] == 'active' ? '啟用' : '' }}{{ $user['inetUserStatus'] == 'inactive' ? '停用' : '' }}{{ $user['inetUserStatus'] == 'deleted' ? '已刪除' : '' }}</span>
+							<span>{{ empty($user['inetUserStatus']) || $user['inetUserStatus'] == 'active' ? '啟用' : '' }}{{ $user['inetUserStatus'] == 'inactive' ? '停用' : '' }}{{ $user['inetUserStatus'] == 'deleted' ? '已刪除' : '' }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
 							<span>{{ $user['entryUUID'] }}</span>
@@ -98,7 +98,7 @@
 							<button type="button" class="btn btn-warning"
 							 	onclick="$('#form').attr('action','{{ route('bureau.togglePeople', [ 'uuid' => $user['entryUUID'] ]) }}');
 										 $('#form').attr('method', 'POST');
-										 $('#form').submit();">{{ $user['inetUserStatus'] == 'active' ? '停用' : '啟用' }}</button>
+										 $('#form').submit();">{{ $user['inetUserStatus'] == 'inactive' ? '啟用' : '停用' }}</button>
 							<button type="button" class="btn btn-danger"
 							 	onclick="$('#form').attr('action','{{ route('bureau.removePeople', [ 'uuid' => $user['entryUUID'] ]) }}');
 										 $('#form').attr('method', 'POST');
