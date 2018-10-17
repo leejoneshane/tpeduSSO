@@ -23,7 +23,7 @@
             	@csrf
             	    <div class="row">
             		<div class="col-md-4 text-md-right">身份別</div>
-            		<div class="col-md-6 text-md-left">{{ $user->ldap['employeeType'] }}</div>
+            		<div class="col-md-6 text-md-left">{{ isset($user->ldap['employeeType']) ? $user->ldap['employeeType'] : '' }}</div>
                     </div>
             	    <div class="row">
             		<div class="col-md-4 text-md-right">姓名</div>
