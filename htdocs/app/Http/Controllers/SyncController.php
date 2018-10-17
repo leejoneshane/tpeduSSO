@@ -124,7 +124,7 @@ class SyncController extends Controller
 					$openldap->updateData($user_entry, [ 'inetUserStatus' => 'deleted' ]);
 					$messages[] = "cn=". $stu['cn'] .",stdno=". $stu['employeeNumber'] .",name=". $stu['displayName'] ." 已畢業，標註為刪除！";
 				} else {
-					$openldap->updateData($user_entry, [ 'tpClass' => $data[0]->class, 'tpSeat' => $data[0]->seat ]);
+					$openldap->updateData($user_entry, [ 'tpClass' => (int)$data[0]->class, 'tpSeat' => (int)$data[0]->seat ]);
 					$messages[] = "cn=". $stu['cn'] .",stdno=". $stu['employeeNumber'] .",name=". $stu['displayName'] ." 就讀班級座號變更為 ". $data[0]->class . $data[0]->seat;
 				}
 			} else {

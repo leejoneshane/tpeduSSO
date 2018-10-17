@@ -43,11 +43,13 @@ class SyncSchoolInfo implements ShouldQueue
 			$stdno = $stu['employeeNumber'];
 			$data = $http->ps_call('student_info', [ '{sid}' => $sid, '{stdno}' => $stdno ]);
 			if ($data) {
+                $c = (int) $data[0]->class;
+                $s = (int) $data[0]->seat;
 				$user_entry = $openldap->getUserEntry($stu['cn']);
-				if (substr($data[0]->class, 0, 1) == 'Z') {
+				if (substr($c, 0, 1) == 'Z') {
 					$openldap->updateData($user_entry, [ 'inetUserStatus' => 'deleted' ]);
 				} else {
-					$openldap->updateData($user_entry, [ 'tpClass' => $data[0]->class, 'tpSeat' => $data[0]->seat ]);
+					$openldap->updateData($user_entry, [ 'tpClass' => $c, 'tpSeat' => $s ]);
 				}
 			} else {
                 $this->release(3600);
