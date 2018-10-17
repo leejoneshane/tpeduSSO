@@ -45,6 +45,7 @@ RUN chmod 755 /usr/local/bin/*.sh \
            -e 's!^(\s*ErrorLog)\s+\S+!\1 /proc/self/fd/2!g' \
            "/etc/apache2/httpd.conf" \
        \
+    && echo "TimeOut 72000" >> /etc/apache2/httpd.conf \
     && sed -ri \
            -e 's!^DocumentRoot "/var/www/localhost/htdocs"$!DocumentRoot "/var/www/localhost/htdocs/public"!g' \
            -e 's!^ServerName .*$!ServerName localhost!g' \
