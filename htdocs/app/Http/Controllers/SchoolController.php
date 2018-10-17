@@ -71,9 +71,10 @@ class SchoolController extends Controller
 		$students = array();
 		if (!empty($filter)) {
 			$students = $openldap->findUsers($filter, ["cn", "displayName", "o", "tpClass", "tpSeat", "entryUUID", "inetUserStatus"]);
+			usort($students, function ($a, $b) { return $a['tpSeat'] <=> $b['tpSeat']; });
 		}
 		return view('admin.schoolstudent', [ 'dc' => $dc, 'my_field' => $my_field, 'keywords' => $keywords, 'classes' => $ous, 'students' => $students ]);
-    }
+	}
 
     public function schoolStudentJSONForm(Request $request, $dc)
 	{
