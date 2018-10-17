@@ -1486,7 +1486,7 @@ class SchoolController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$users = $openldap->findUsers("(&(o=$dc)(ou=*$ou)(title=*$role))", "cn");
-		if ($users && $users['count']>0) {
+		if (!empty($users)) {
 			return redirect()->back()->with("error", "尚有人員從事該職務，因此無法刪除！");
 		}
 		$entry = $openldap->getRoleEntry($dc, $ou, $role);
@@ -1508,9 +1508,9 @@ class SchoolController extends Controller
 			$grades = array();
 			$classes = array();
 			$all_classes = array();
-			for ($i=0;$i < $users['count'];$i++) {
-				$idno = $users[$i]['cn'][0];
-				$cid = $users[$i]['tpClass'][0];
+			foreach ($users as $user) {
+				$idno = $user['cn'];
+				$cid = $user['tpClass'];
 				if (!empty($cid)) {
 					$class = new \stdClass();
 					$class->ou = $cid;
@@ -1667,8 +1667,8 @@ class SchoolController extends Controller
 		
 		$openldap = new LdapServiceProvider();
 		$users = $openldap->findUsers("(&(o=$dc)(tpClass=$class))", "cn");
-		for ($i=0;$i < $users['count'];$i++) {
-	    	$idno = $users[$i]['cn'][0];
+		foreach ($users as $user) {
+	    	$idno = $user['cn'];
 	    	$user_entry = $openldap->getUserEntry($idno);
 	    	$openldap->updateData($user_entry, ['tpClassTitle' => $info['description'] ]);
 		}
@@ -1685,7 +1685,7 @@ class SchoolController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$users = $openldap->findUsers("(&(o=$dc)(|(tpClass=$class)(tpTeachClass=$class*)))", "cn");
-		if (count($users)>0) {
+		if (!empty($users)) {
 			return redirect()->back()->with("error", "尚有人員隸屬於該行政部門，因此無法刪除！");
 		}
 		$entry = $openldap->getOUEntry($dc, $class);
@@ -1754,7 +1754,7 @@ class SchoolController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$users = $openldap->findUsers("(&(o=$dc)(tpTeachClass=*$subj))", "cn");
-		if ($users && $users['count']>0) {
+		if (!empty($users)) {
 			return redirect()->back()->with("error", "此科目已經配課給老師和班級，因此無法刪除！");
 		}
 		$entry = $openldap->getSubjectEntry($dc, $subj);
@@ -1843,7 +1843,7 @@ class SchoolController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$users = $openldap->findUsers("(&(o=$dc)(ou=*$ou))", "cn");
-		if ($users && $users['count']>0) {
+		if (!empty($users)) {
 			return redirect()->back()->with("error", "尚有人員隸屬於該行政部門，因此無法刪除！");
 		}
 		$entry = $openldap->getOUEntry($dc, $ou);

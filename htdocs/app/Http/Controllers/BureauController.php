@@ -1097,7 +1097,7 @@ class BureauController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$users = $openldap->findUsers("o=$dc", "cn");
-		if ($users && $users['count']>0) {
+		if (!empty($users)) {
 			return redirect()->back()->with("error", "尚有人員隸屬於該教育機構，因此無法刪除！");
 		}
 		$entry = $openldap->getOrgEntry($dc);
