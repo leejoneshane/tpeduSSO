@@ -109,6 +109,7 @@ class SyncController extends Controller
 	
 	public function ps_syncSeat($dc)
 	{
+		set_time_limit(0);
 		$openldap = new LdapServiceProvider();
 		$http = new SimsServiceProvider();
 		$sid = $openldap->getOrgID($dc);
@@ -119,8 +120,13 @@ class SyncController extends Controller
 			$data = $http->ps_call('student_info', [ '{sid}' => $sid, '{stdno}' => $stdno ]);
 			if ($data) {
 				$user_entry = $openldap->getUserEntry($stu['cn']);
-				$openldap->updateData($user_entry, [ 'tpClass' => $data[0]->class, 'tpSeat' => $data[0]->seat ]);
-				$messages[] = "cn=". $stu['cn'] .",stdno=". $stu['employeeNumber'] .",name=". $stu['displayName'] ." 就讀班級座號變更為 ". $data[0]->class . $data[0]->seat;
+				if (substr($data[0]->class, 0, 1) == 'Z') {
+					$openldap->updateData($user_entry, [ 'inetUserStatus' => 'deleted' ]);
+					$messages[] = "cn=". $stu['cn'] .",stdno=". $stu['employeeNumber'] .",name=". $stu['displayName'] ." 已畢業，標註為刪除！";
+				} else {
+					$openldap->updateData($user_entry, [ 'tpClass' => $data[0]->class, 'tpSeat' => $data[0]->seat ]);
+					$messages[] = "cn=". $stu['cn'] .",stdno=". $stu['employeeNumber'] .",name=". $stu['displayName'] ." 就讀班級座號變更為 ". $data[0]->class . $data[0]->seat;
+				}
 			} else {
 				$messages[] = "cn=". $stu['cn'] .",stdno=". $stu['employeeNumber'] .",name=". $stu['displayName'] ." 無法同步：". $http->ps_error();
 			}
