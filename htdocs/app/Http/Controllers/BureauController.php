@@ -63,13 +63,11 @@ class BureauController extends Controller
 		if (substr($my_field,0,3) == 'ou=') {
 			$my_ou = substr($my_field,3);
 			if ($my_ou == 'empty') {
-				$filter = "(&(o=$dc)(|(!(ou=*))(!(tpClass=*))))";
+				$filter = "(&(o=$dc)(&(!(ou=*))(!(tpClass=*))))";
 			} elseif ($my_ou == 'deleted') {
 				$filter = "(&(o=$dc)(inetUserStatus=deleted))";
-			} elseif (is_numeric($my_ou)) {
-				$filter = "(&(o=$dc)(tpClass=$my_ou)(!(inetUserStatus=deleted)))";
 			} else {
-				$filter = "(&(o=$dc)(ou=*$my_ou)(!(inetUserStatus=deleted)))";
+				$filter = "(&(o=$dc)(|(tpClass=$my_ou)(ou=*$my_ou))(!(inetUserStatus=deleted)))";
 			}
 		} elseif ($my_field == 'uuid' && !empty($keywords)) {
 			$filter = "(&(o=$dc)(entryUUID=*".$keywords."*))";
