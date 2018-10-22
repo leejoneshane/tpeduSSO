@@ -109,10 +109,51 @@ class SyncController extends Controller
 	
 	public function ps_syncSeat($dc)
 	{
-		set_time_limit(0);
 		$openldap = new LdapServiceProvider();
 		$http = new SimsServiceProvider();
 		$sid = $openldap->getOrgID($dc);
+		$org_classes = $openldap->getOus($dc, '教學班級');
+		$classes = $http->ps_call('classes_info', [ '{sid}' => $sid ]);
+		if ($classes) {
+			foreach ($classes as $class) {
+				for ($i=0;$i<count($org_classes);$i++) {
+					if ($class->clsid == $org_classes[$i]->ou) array_splice($org_classes, $i, 1);
+				}
+				$class_entry = $openldap->getOuEntry($dc, $class->clsid);
+				if ($class_entry) {
+					$result = $openldap->updateData($class_entry, [ 'description' => $class->clsname ]);
+					if ($result) {
+						$messages[] = "ou=". $class->clsid ." 已將班級名稱變更為：". $class->clsname;
+					} else {
+						$messages[] = "ou=". $class->clsid ." 無法變更班級名稱：". $openldap->error();
+					}
+				} else {
+					$info = array();
+					$info['objectClass'] = 'organizationalUnit';
+					$info['businessCategory']='教學班級';
+					$info['ou'] = $class->clsid;
+					$info['description'] = $class->clsname;
+					$info['dn'] = "ou=".$info['ou'].",dc=$dc,".Config::get('ldap.rdn');
+					$result = $openldap->createEntry($info);
+					if ($result) {
+						$messages[] = "ou=". $class->clsid ." 已經為您建立班級，班級名稱為：". $class->clsname;
+					} else {
+						$messages[] = "ou=". $class->clsid ." 班級建立失敗：". $openldap->error();
+					}
+				}
+			}
+			foreach ($org_classes as $org_class) {
+				$class_entry = $openldap->getOuEntry($dc, $org_class->ou);
+				$result = $openldap->deleteEntry($class_entry);
+				if ($result) {
+					$messages[] = "ou=". $org_class->ou ." 已經為您刪除班級，班級名稱為：". $org_class->description;
+				} else {
+					$messages[] = "ou=". $org_class->ou ." 班級刪除失敗：". $openldap->error();
+				}
+			}
+		} else {
+			$messages[] = "無法同步班級資訊：". $http->ps_error();
+		}
 		$students = $openldap->findUsers("(&(o=$dc)(employeeType=學生))", ["cn", "o", "displayName", "employeeNumber", "tpClass", "tpSeat"]);
 		$messages = array();
 		foreach ($students as $stu) {
@@ -122,17 +163,17 @@ class SyncController extends Controller
 				$user_entry = $openldap->getUserEntry($stu['cn']);
 				if (substr($data[0]->class, 0, 1) == 'Z') {
 					$result = $openldap->updateData($user_entry, [ 'inetUserStatus' => 'deleted' ]);
-					if (!$result) {
-						$messages[] = "cn=". $stu['cn'] .",stdno=". $stu['employeeNumber'] .",name=". $stu['displayName'] ." 無法標註畢業學生：". $http->ps_error();
-					} else {
+					if ($result) {
 						$messages[] = "cn=". $stu['cn'] .",stdno=". $stu['employeeNumber'] .",name=". $stu['displayName'] ." 已畢業，標註為刪除！";
+					} else {
+						$messages[] = "cn=". $stu['cn'] .",stdno=". $stu['employeeNumber'] .",name=". $stu['displayName'] ." 無法標註畢業學生：". $openldap->error();
 					}
 				} else {
 					$result = $openldap->updateData($user_entry, [ 'tpClass' => (int)$data[0]->class, 'tpSeat' => (int)$data[0]->seat ]);
-					if (!$result) {
-						$messages[] = "cn=". $stu['cn'] .",stdno=". $stu['employeeNumber'] .",name=". $stu['displayName'] ." 無法變更班級座號：". $http->ps_error();
-					} else {
+					if ($result) {
 						$messages[] = "cn=". $stu['cn'] .",stdno=". $stu['employeeNumber'] .",name=". $stu['displayName'] ." 就讀班級座號變更為 ". $data[0]->class . $data[0]->seat;
+					} else {
+						$messages[] = "cn=". $stu['cn'] .",stdno=". $stu['employeeNumber'] .",name=". $stu['displayName'] ." 無法變更班級座號：". $openldap->error();
 					}
 				}
 			} else {

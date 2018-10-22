@@ -1806,7 +1806,6 @@ class SchoolController extends Controller
 		$info['description'] = $request->get('description');
 		
 		$openldap = new LdapServiceProvider();
-		$openldap = new LdapServiceProvider();
 		if ($role != $info['cn']) {
 			$users = $openldap->findUsers("(&(o=$dc)(ou=*$ou))", [ "cn", "o", "ou" ]);
 			foreach ($users as $user) {
