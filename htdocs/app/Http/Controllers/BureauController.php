@@ -116,7 +116,7 @@ class BureauController extends Controller
 			$user = $openldap->getUserData($entry);
     		$org_entry = $openldap->getOrgEntry($dc);
     		$data = $openldap->getOrgData($org_entry);
-    		$area = $data['st'];
+    		if (array_key_exists('st', $data)) $area = $data['st'];
     		if ($user['employeeType'] != '學生') {
 				return view('admin.bureauteacheredit', [ 'my_field' => $my_field, 'keywords' => $keywords, 'area' => $area, 'dc' => $dc, 'areas' => $areas, 'schools' => $schools, 'types' => $types, 'user' => $user ]);
 			} else {

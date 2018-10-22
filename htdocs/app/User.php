@@ -101,14 +101,16 @@ class User extends Authenticatable
 		$ssha = $openldap->make_ssha_password($value);
 		$new_passwd = array( 'userPassword' => $ssha );
 		$accounts = array();
-		if (is_array($this->ldap['uid'])) {
-		    $accounts = $this->ldap['uid'];
-		} else {
-		    $accounts[] = $this->ldap['uid'];
-		}
-		foreach ($accounts as $account) {
-		    $entry = $openldap->getAccountEntry($account);
-		    if ($entry) $openldap->updateData($entry,$new_passwd);
+		if (isset($this->ldap['uid'])) {
+			if (is_array($this->ldap['uid'])) {
+				$accounts = $this->ldap['uid'];
+			} else {
+				$accounts[] = $this->ldap['uid'];
+			}
+			foreach ($accounts as $account) {
+				$entry = $openldap->getAccountEntry($account);
+				if ($entry) $openldap->updateData($entry,$new_passwd);
+			}
 		}
 		$entry = $openldap->getUserEntry($this->attributes['idno']);
 		if ($entry) $openldap->updateData($entry,$new_passwd);
