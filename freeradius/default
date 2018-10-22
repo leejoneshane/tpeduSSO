@@ -42,8 +42,14 @@ server default {
         suffix
         ldap
         if (notfound) {
-            update control {
-                Proxy-To-Realm := Realm
+            if (Realm =~ /tp\.edu\.tw/) {
+                update control {
+                    Proxy-To-Realm := tpedu
+                }
+            } else {
+                update control {
+                    Proxy-To-Realm := roam
+                }
             }
         } else {
             update control {
