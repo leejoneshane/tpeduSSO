@@ -183,4 +183,83 @@ class SyncController extends Controller
 		return $messages;
 	}
 
+    public function ps_syncSubjectForm(Request $request)
+    {
+		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$area = $request->get('area');
+		if (empty($area)) $area = $areas[0];
+		$filter = "(&(st=$area)(businessCategory=國民小學))";
+		$openldap = new LdapServiceProvider();
+		$schools = $openldap->getOrgs($filter);
+		$dc = $request->get('dc');
+		$result = '';
+		if ($dc) {
+			$result = $this->ps_syncSubject($dc);
+			return redirect()->back()->with("success", $result);
+		} else
+			return view('admin.syncsubject', [ 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc ]);
+	}
+	
+	public function ps_syncSubject($dc)
+	{
+		$openldap = new LdapServiceProvider();
+		$http = new SimsServiceProvider();
+		$sid = $openldap->getOrgID($dc);
+		$classes = $openldap->getOus($dc, '教學班級');
+		$messages = array();
+		$subjects = array();
+		foreach ($classes as $class) {
+			$data = $http->ps_call('subject_for_class', [ '{sid}' => $sid, '{clsid}' => $class->ou ]);
+			if (isset($data[0]['subjects'])) {
+				$class_subjects = $data[0]['subjects'];
+				foreach (array_keys($class_subjects) as $subj_name) {
+					if (!in_array($subj_name, $subjects)) $subjects[] = $subj_name;
+				}
+			} else {
+				$messages[] = "ou=". $class->ou ." 無法取得班級配課資訊：". $http->ps_error();
+			}
+		}
+		$org_subjects = $openldap->getSubjects($dc);
+		for ($i=0;$i<count($org_subjects);$i++) {
+			if (!in_array($org_subjects[$i]->description, $subjects)) {
+				$entry = $openldap->getSubjectEntry($dc, $org_subjects[$i]->subject);
+				$result = $openldap->deleteEntry($entry);
+				if ($result) {
+					array_splice($org_subjects, $i, 1);
+					$messages[] = "subject=". $org_subjects[$i]->subject ." 已經刪除！";
+				} else {
+					$messages[] = "subject=". $org_subjects[$i]->subject ." 已經不再使用，但無法刪除：". $http->ps_error();
+				}
+			}
+		}
+		$subject_ids = array();
+		$subject_names = array();
+		foreach ($org_subjects as $subj) {
+			$subject_ids[] = $subj->subject;
+			$subject_names[] = $subj->description;
+		}
+		foreach ($subjects as $subj_name) {
+			if (!in_array($subj_name, $subject_names)) {
+				for ($j=1;$j<100;$j++) {
+					$new_id = 'subj'. iif($j<10,'0'.$j,$j);
+					if (!in_array($new_id, $subject_ids)) {
+						$subject_ids[] = $new_id;
+						break;
+					}
+				}
+				$info = array();
+				$info['objectClass'] = 'tpeduSubject';
+				$info['tpSubject'] = $new_id;
+				$info['description'] = $subj_name;
+				$info['dn'] = "tpSubject=".$new_id.",dc=$dc,".Config::get('ldap.rdn');
+				$result = $openldap->addEntry($info);
+				if ($result) {
+					$messages[] = "subject=". $new_id ." 已將科目名稱設定為：". $subj_name;
+				} else {
+					$messages[] = "subject=". $new_id ." 無法新增：". $openldap->error();
+				}
+			}
+		}
+		return $messages;
+	}
 }
