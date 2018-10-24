@@ -252,7 +252,7 @@ class SyncController extends Controller
 				$info['tpSubject'] = $new_id;
 				$info['description'] = $subj_name;
 				$info['dn'] = "tpSubject=".$new_id.",dc=$dc,".Config::get('ldap.rdn');
-				$result = $openldap->addEntry($info);
+				$result = $openldap->createEntry($info);
 				if ($result) {
 					$messages[] = "subject=". $new_id ." 已將科目名稱設定為：". $subj_name;
 				} else {
