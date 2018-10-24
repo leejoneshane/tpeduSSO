@@ -3,7 +3,7 @@
 /htdocs/public/hot
 /htdocs/public/storage
 /htdocs/storage/saml
-/htdocs/storage/framework
+/htdocs/storage/framework/views/*
 /htdocs/storage/*.key
 /htdocs/.idea
 /htdocs/.vscode
