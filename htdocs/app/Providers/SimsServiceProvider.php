@@ -61,7 +61,7 @@ class SimsServiceProvider extends ServiceProvider
         $search = array();
         $values = array();
         foreach ($replacement as $key => $data) {
-            $search[] = "{$key}";
+            $search[] = '{'.$key.'}';
             $values[] = $data;
         }
         $search[] = "{seme}";

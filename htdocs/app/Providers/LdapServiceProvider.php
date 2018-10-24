@@ -457,13 +457,14 @@ class LdapServiceProvider extends ServiceProvider
 		$sch_rdn = Config::get('ldap.schattr')."=".$dc;
 		$sch_dn = "$sch_rdn,$base_dn";
 		$filter = "objectClass=tpeduSubject";
-		$resource = @ldap_search(self::$ldap_read, $sch_dn, $filter, ["tpSubject", "description"]);
+		$resource = @ldap_search(self::$ldap_read, $sch_dn, $filter, ["tpSubject", "tpSubjectDomian", "description"]);
 		$entry = @ldap_first_entry(self::$ldap_read, $resource);
 		if ($entry) {
 			do {
 	    		$subj = new \stdClass();
 	    		$info = $this->getSubjectData($entry);
 	    		$subj->subject = $info['tpSubject'];
+	    		$subj->domain = $info['tpSubjectDomain'];
 	    		$subj->description = $info['description'];
 	    		$subjs[] = $subj;
 			} while ($entry=ldap_next_entry(self::$ldap_read, $entry));

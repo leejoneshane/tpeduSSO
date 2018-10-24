@@ -1685,9 +1685,9 @@ class SchoolController extends Controller
     public function removeSchoolClass(Request $request, $dc, $class)
     {
 		$openldap = new LdapServiceProvider();
-		$users = $openldap->findUsers("(&(o=$dc)(|(tpClass=$class)(tpTeachClass=$class*)))", "cn");
+		$users = $openldap->findUsers("(&(o=$dc)(tpClass=$class))", "cn");
 		if (!empty($users)) {
-			return redirect()->back()->with("error", "尚有人員隸屬於該行政部門，因此無法刪除！");
+			return redirect()->back()->with("error", "尚有人員隸屬於該班級，因此無法刪除！");
 		}
 		$entry = $openldap->getOUEntry($dc, $class);
 		$roles = $openldap->getRoles($dc, $class);
@@ -1754,7 +1754,7 @@ class SchoolController extends Controller
     public function removeSchoolSubject(Request $request, $dc, $subj)
     {
 		$openldap = new LdapServiceProvider();
-		$users = $openldap->findUsers("(&(o=$dc)(tpTeachClass=*$subj))", "cn");
+		$users = $openldap->findUsers("(&(o=$dc)(tpTeachClass=*,$subj))", "cn");
 		if (!empty($users)) {
 			return redirect()->back()->with("error", "此科目已經配課給老師和班級，因此無法刪除！");
 		}

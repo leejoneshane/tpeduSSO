@@ -52,13 +52,13 @@ class SyncController extends Controller
 			case 'special_info':
 			case 'calendar_info':
 			case 'library_books':
-				$result = $http->ps_call($my_field, [ '{sid}' => $sid ]);
+				$result = $http->ps_call($my_field, [ 'sid' => $sid ]);
 				break;
 			case 'classses_by_grade':
-				$result = $http->ps_call($my_field, [ '{sid}' => $sid, '{grade}' => $grade ]);
+				$result = $http->ps_call($my_field, [ 'sid' => $sid, 'grade' => $grade ]);
 				break;
 			case 'subject_info':
-				$result = $http->ps_call($my_field, [ '{sid}' => $sid, '{subjid}' => $subjid ]);
+				$result = $http->ps_call($my_field, [ 'sid' => $sid, 'subjid' => $subjid ]);
 				break;
 			case 'classs_info':
 			case 'classs_schedule':
@@ -67,13 +67,13 @@ class SyncController extends Controller
 			case 'teachers_in_class':
 			case 'subject_for_class':
 			case 'class_lend_record':
-				$result = $http->ps_call($my_field, [ '{sid}' => $sid, '{clsid}' => $clsid ]);
+				$result = $http->ps_call($my_field, [ 'sid' => $sid, 'clsid' => $clsid ]);
 				break;
 			case 'teacher_info':
 			case 'teacher_schedule':
 			case 'teacher_tutor_students':
 			case 'subject_assign_to_teacher':
-				$result = $http->ps_call($my_field, [ '{sid}' => $sid, '{teaid}' => $teaid ]);
+				$result = $http->ps_call($my_field, [ 'sid' => $sid, 'teaid' => $teaid ]);
 				break;
 			case 'student_info':
 			case 'student_subjects_score':
@@ -81,10 +81,10 @@ class SyncController extends Controller
 			case 'student_attendance_record':
 			case 'student_health_record':
 			case 'student_parents_info':
-				$result = $http->ps_call($my_field, [ '{sid}' => $sid, '{stdno}' => $stdno ]);
+				$result = $http->ps_call($my_field, [ 'sid' => $sid, 'stdno' => $stdno ]);
 				break;
 			case 'book_info':
-				$result = $http->ps_call($my_field, [ '{sid}' => $sid, '{isbn}' => $isbn ]);
+				$result = $http->ps_call($my_field, [ 'sid' => $sid, 'isbn' => $isbn ]);
 				break;
 		}
 		return view('admin.synctest', [ 'my_field' => $my_field, 'sid' => $sid, 'grade' => $grade, 'subjid' => $subjid, 'clsid' => $clsid, 'teaid' => $teaid, 'stdno' => $stdno, 'isbn' => $isbn, 'result' => $result ]);
@@ -113,7 +113,7 @@ class SyncController extends Controller
 		$http = new SimsServiceProvider();
 		$sid = $openldap->getOrgID($dc);
 		$org_classes = $openldap->getOus($dc, '教學班級');
-		$classes = $http->ps_call('classes_info', [ '{sid}' => $sid ]);
+		$classes = $http->ps_call('classes_info', [ 'sid' => $sid ]);
 		if ($classes) {
 			foreach ($classes as $class) {
 				for ($i=0;$i<count($org_classes);$i++) {
@@ -158,7 +158,7 @@ class SyncController extends Controller
 		$messages = array();
 		foreach ($students as $stu) {
 			$stdno = $stu['employeeNumber'];
-			$data = $http->ps_call('student_info', [ '{sid}' => $sid, '{stdno}' => $stdno ]);
+			$data = $http->ps_call('student_info', [ 'sid' => $sid, 'stdno' => $stdno ]);
 			if ($data) {
 				$user_entry = $openldap->getUserEntry($stu['cn']);
 				if (substr($data[0]->class, 0, 1) == 'Z') {
@@ -209,7 +209,7 @@ class SyncController extends Controller
 		$messages = array();
 		$subjects = array();
 		foreach ($classes as $class) {
-			$data = $http->ps_call('subject_for_class', [ '{sid}' => $sid, '{clsid}' => $class->ou ]);
+			$data = $http->ps_call('subject_for_class', [ 'sid' => $sid, 'clsid' => $class->ou ]);
 			if (isset($data[0]->subjects)) {
 				$class_subjects = $data[0]->subjects;
 				foreach ($class_subjects as list($subj_name, $subj_num)) {
