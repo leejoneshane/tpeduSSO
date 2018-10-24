@@ -43,7 +43,7 @@
 						<td>
 							<select class="form-control" name="domain">
 							@foreach ($domains as $domain)
-			    				<option value="{{ $domain }}"{{ $subj->domain == $domain ? ' selected' : '' }}>{{ $domain }}</option>
+			    				<option value="{{ $domain }}"{{ (isset($subj->domain) && $subj->domain == $domain) ? ' selected' : '' }}>{{ $domain }}</option>
 							@endforeach
 							</select>
 						</td>
