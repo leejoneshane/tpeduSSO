@@ -241,7 +241,7 @@ class SyncController extends Controller
 		foreach ($subjects as $subj_name) {
 			if (!in_array($subj_name, $subject_names)) {
 				for ($j=1;$j<100;$j++) {
-					$new_id = 'subj'. iif($j<10,'0'.$j,$j);
+					$new_id = 'subj'. ($j<10) ? '0'.$j : $j;
 					if (!in_array($new_id, $subject_ids)) {
 						$subject_ids[] = $new_id;
 						break;
