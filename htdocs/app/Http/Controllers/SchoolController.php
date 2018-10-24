@@ -1612,7 +1612,7 @@ class SchoolController extends Controller
 				$tclass = $data['tpTeachClass'];
 				if (!is_array($tclass)) $tclass[] = $tclass;
 				foreach ($tclass as $assign_pair) {
-					$a = split(',', $assign_pair);
+					$a = explode(',', $assign_pair);
 					if (count($a) == 3 && $a[0] != $dc) {
 						$assign[] = $assign_pair;
 					}
