@@ -464,7 +464,7 @@ class LdapServiceProvider extends ServiceProvider
 	    		$subj = new \stdClass();
 	    		$info = $this->getSubjectData($entry);
 	    		$subj->subject = $info['tpSubject'];
-	    		$subj->domain = $info['tpSubjectDomain'];
+	    		if (array_key_exists('tpSubjectDomain', $info)) $subj->domain = $info['tpSubjectDomain'];
 	    		$subj->description = $info['description'];
 	    		$subjs[] = $subj;
 			} while ($entry=ldap_next_entry(self::$ldap_read, $entry));
