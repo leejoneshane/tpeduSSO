@@ -212,7 +212,7 @@ class SyncController extends Controller
 			$data = $http->ps_call('subject_for_class', [ '{sid}' => $sid, '{clsid}' => $class->ou ]);
 			if (isset($data[0]->subjects)) {
 				$class_subjects = $data[0]->subjects;
-				foreach (array_keys($class_subjects) as $subj_name) {
+				foreach ($class_subjects as list($subj_name, $subj_num)) {
 					if (!in_array($subj_name, $subjects)) $subjects[] = $subj_name;
 				}
 			} else {
@@ -241,7 +241,8 @@ class SyncController extends Controller
 		foreach ($subjects as $subj_name) {
 			if (!in_array($subj_name, $subject_names)) {
 				for ($j=1;$j<100;$j++) {
-					$new_id = 'subj'. ($j<10) ? '0'.$j : $j;
+					$new_id = 'subj';
+					$new_id .= ($j<10) ? '0'.$j : $j;
 					if (!in_array($new_id, $subject_ids)) {
 						$subject_ids[] = $new_id;
 						break;

@@ -10,7 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use App\Providers\LdapServiceProvider;
 use App\Providers\SimsServiceProvider;
 
-class SyncSchoolInfo implements ShouldQueue
+class SyncStudentSeat implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     
