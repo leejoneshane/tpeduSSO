@@ -4,6 +4,7 @@ chown -R apache:apache /var/www
 
 php artisan clear
 php artisan cache:clear
+php artisan view:clear
 
 if mysqlshow --host=${DB_HOST} --user=${DB_USERNAME} --password=${DB_PASSWORD} ${DB_DATABASE} users; then
   echo "database ready!"
