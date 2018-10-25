@@ -213,7 +213,7 @@ class SyncController extends Controller
 			if (isset($data[0]->subjects)) {
 				$class_subjects = $data[0]->subjects;
 				foreach ($class_subjects as $subj) {
-					$subj_name = array_key_first((array)$subj);
+					$subj_name = array_keys((array)$subj)[0];
 					if (!in_array($subj_name, $subjects)) $subjects[] = $subj_name;
 				}
 			} else {
