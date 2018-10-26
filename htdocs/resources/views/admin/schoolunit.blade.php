@@ -32,6 +32,7 @@
 					</tr>
 				</thead>
 				<tbody>
+					@if ($ous)
 					@foreach ($ous as $ou)
 					<tr>
 						<form role="form" method="POST" action="{{ route('school.updateUnit', [ 'dc' => $dc, 'ou' => $ou->ou ]) }}">
@@ -51,6 +52,7 @@
 						</form>
 					</tr>
 					@endforeach
+					@endif
 				</tbody>
 			</table>
 		</div>

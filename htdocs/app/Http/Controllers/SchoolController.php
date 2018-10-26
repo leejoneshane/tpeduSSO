@@ -29,7 +29,10 @@ class SchoolController extends Controller
      */
     public function index($dc)
     {
-        return view('school', [ 'dc' => $dc ]);
+		$openldap = new LdapServiceProvider();
+		$school = $openldap->getOrgEntry($dc);
+		$catagory = $openldap->getOrgData($school, 'businessCategory');
+        return view('school', [ 'dc' => $dc, 'catagory' => $catagory ]);
     }
     
     public function schoolStudentSearchForm(Request $request, $dc)
@@ -1705,7 +1708,7 @@ class SchoolController extends Controller
 	
     public function schoolSubjectForm(Request $request, $dc)
     {
-		$domains = [ '語文', '數學', '社會', '自然科學', '藝術', '綜合活動', '科技', '健康與體育' ];
+		$domains = [ '生活', '語文', '數學', '社會', '自然科學', '藝術', '綜合活動', '科技', '健康與體育', '彈性課程', '教育議題' ];
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getSubjects($dc);
 		return view('admin.schoolsubject', [ 'dc' => $dc, 'domains' => $domains, 'subjs' => $data ]);

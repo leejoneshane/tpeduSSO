@@ -18,11 +18,26 @@
                             <a href="{{ route('school.role', [ 'dc' => $dc, 'ou' => 'null' ]) }}"><i class="fa fa-suitcase fa-fw"></i> 職稱管理</a>
                         </li>
                         <li {{ (Request::is('school/subject') ? 'class="active"' : '') }}>
-                            <a href="{{ route('school.subject', [ 'dc' => $dc ]) }}"><i class="fa fa-flask fa-fw"></i> 教學科目管理</a>
+                            <a href="#"><i class="fa fa-flask fa-fw"></i> 教學科目管理<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li {{ (Request::is('school/subject') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('school.subject', [ 'dc' => $dc ]) }}">編輯科目資訊</a>
+                                </li>
+                                @if ($catagory == '國民小學')
+                                <li {{ (Request::is('ps/sync_subject') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('school.ps.sync_subject') }}">同步教學科目</a>
+                                </li>
+                                @endif
+                            </ul>
                         </li>
                         <li {{ (Request::is('school/class') ? 'class="active"' : '') }}>
                             <a href="#"><i class="fa fa-graduation-cap fa-fw"></i> 班級管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
+                                @if ($catagory == '國民小學')
+                                <li {{ (Request::is('ps/sync_class') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('school.ps.sync_class') }}">同步班級</a>
+                                </li>
+                                @endif
                                 <li {{ (Request::is('school/class') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.class', [ 'dc' => $dc ]) }}">變更班級名稱</a>
                                 </li>

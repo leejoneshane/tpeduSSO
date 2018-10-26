@@ -50,6 +50,8 @@ Route::group(['prefix' => 'sync', 'middleware' => 'auth.admin'], function () {
     Route::get('/', 'SyncController@index')->name('sync');
     Route::get('ps/runtime_test', 'SyncController@ps_testForm');
     Route::post('ps/runtime_test', 'SyncController@ps_testForm')->name('sync.ps.runtime_test');
+    Route::get('ps/sync_class', 'SyncController@ps_syncClassForm');
+    Route::post('ps/sync_class', 'SyncController@ps_syncClassForm')->name('sync.ps.sync_class');
     Route::get('ps/sync_seat', 'SyncController@ps_syncSeatForm');
     Route::post('ps/sync_seat', 'SyncController@ps_syncSeatForm')->name('sync.ps.sync_seat');
     Route::get('ps/sync_subject', 'SyncController@ps_syncSubjectForm');
@@ -109,12 +111,16 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
 	Route::post('{dc}/subject', 'SchoolController@createSchoolSubject')->name('school.createSubject');
 	Route::post('{dc}/subject/{subject}/update', 'SchoolController@updateSchoolSubject')->name('school.updateSubject');
 	Route::post('{dc}/subject/{subject}/remove', 'SchoolController@removeSchoolSubject')->name('school.removeSubject');
+    Route::get('{dc}/ps/sync_subject', 'SyncController@ps_syncSubjectHelp');
+    Route::post('{dc}/ps/sync_subject', 'SyncController@ps_syncSubjectHelp')->name('school.ps.sync_subject');
 	Route::get('{dc}/class', 'SchoolController@schoolClassForm')->name('school.class');
 	Route::post('{dc}/class', 'SchoolController@createSchoolClass')->name('school.createClass');
 	Route::post('{dc}/class/{ou}/update', 'SchoolController@updateSchoolClass')->name('school.updateClass');
 	Route::post('{dc}/class/{ou}/remove', 'SchoolController@removeSchoolClass')->name('school.removeClass');
 	Route::get('{dc}/class/assign', 'SchoolController@schoolClassAssignForm');
 	Route::post('{dc}/class/assign', 'SchoolController@assignSchoolClass')->name('school.assignClass');
+    Route::get('{dc}/ps/sync_class', 'SyncController@ps_syncClassHelp');
+    Route::post('{dc}/ps/sync_class', 'SyncController@ps_syncClassHelp')->name('school.ps.sync_class');
 	Route::get('{dc}/teacher', 'SchoolController@schoolTeacherSearchForm')->name('school.teacher');
 	Route::get('{dc}/teacher/{uuid}/update', 'SchoolController@schoolTeacherEditForm');
 	Route::post('{dc}/teacher/{uuid}/update', 'SchoolController@updateSchoolTeacher')->name('school.updateTeacher');
