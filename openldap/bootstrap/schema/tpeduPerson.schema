@@ -39,7 +39,7 @@ attributetype ( 2.5.4.102
 
 attributetype ( 2.5.4.103
 	NAME 'tpTeachClass'
-	DESC 'A pair string first is uniquely identifying a class, second is uniquely identifying a subject'
+	DESC 'The teaching classes for Teacher'
 	EQUALITY caseIgnoreMatch
 	SUBSTR caseIgnoreSubstringsMatch
 	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
@@ -56,11 +56,17 @@ attributetype ( 2.5.4.109
 	EQUALITY caseIgnoreMatch
 	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
 	
+attributetype ( 2.5.4.115
+	NAME 'tpTutorClass'
+	DESC 'The performer class for teacher'
+	EQUALITY caseIgnoreMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+	
 objectclass ( 2.5.4.110
 	NAME 'tpeduPerson'
 	DESC 'Custom Shema for Taipei Education people use.'
 	SUP inetOrgPerson
 	STRUCTURAL
 		MAY (
-			birthDate $ gender $info $ tpClass $ tpClassTitle $ tpSeat $ tpCharacter $ tpTeachClass $ uidNumber $ wWWHomePage $ tpAdminSchools )
+			birthDate $ gender $info $ tpClass $ tpClassTitle $ tpSeat $ tpCharacter $ tpTeachClass $ tpTutorClass $ uidNumber $ wWWHomePage $ tpAdminSchools )
 		)
