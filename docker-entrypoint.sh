@@ -1,6 +1,8 @@
 #!/bin/sh
 set -euo pipefail
-mkdir -p /var/www/localhost/htdocs/storage/framework/views
+if ! [ -d /var/www/localhost/htdocs/storage/framework/views ]; then
+  mkdir -p /var/www/localhost/htdocs/storage/framework/views
+fi
 chown -R apache:apache /var/www
 
 php artisan clear
