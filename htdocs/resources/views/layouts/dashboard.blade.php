@@ -20,14 +20,14 @@
                         <li {{ (Request::is('school/subject') ? 'class="active"' : '') }}>
                             <a href="#"><i class="fa fa-flask fa-fw"></i> 教學科目管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                                <li {{ (Request::is('school/subject') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.subject', [ 'dc' => $dc ]) }}">編輯科目資訊</a>
-                                </li>
                                 @if ($category['businessCategory'] == '國民小學')
                                 <li {{ (Request::is('ps/sync_subject') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.ps.sync_subject', [ 'dc' => $dc ]) }}">同步教學科目</a>
                                 </li>
                                 @endif
+                                <li {{ (Request::is('school/subject') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('school.subject', [ 'dc' => $dc ]) }}">編輯科目資訊</a>
+                                </li>
                             </ul>
                         </li>
                         <li {{ (Request::is('school/class') ? 'class="active"' : '') }}>
@@ -72,6 +72,11 @@
                                 <li {{ (Request::is('school/student/json') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.jsonStudent', [ 'dc' => $dc ]) }}">匯入JSON</a>
                                 </li>
+                                @if ($category['businessCategory'] == '國民小學')
+                                <li {{ (Request::is('ps/sync_seat') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('school.ps.sync_seat', [ 'dc' => $dc ]) }}">同步年班座號</a>
+                                </li>
+                                @endif
                             </ul>
                         </li>
                     </ul>

@@ -168,6 +168,18 @@ class SyncController extends Controller
 		}
 	}
 
+    public function ps_syncSeatHelp(Request $request, $dc)
+    {
+		$openldap = new LdapServiceProvider();
+		$school = $openldap->getOrgEntry($dc);
+		$category = $openldap->getOrgData($school, 'businessCategory');
+		if ($request->has('submit')) {
+			$result = $this->ps_syncSeat($dc);
+			return view('admin.syncsubjectinfo', [ 'category' => $category, 'dc' => $dc, 'result' => $result ]);
+		} else
+			return view('admin.syncsubjectinfo', [ 'category' => $category, 'dc' => $dc ]);
+	}
+	
     public function ps_syncSeatForm(Request $request)
     {
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];

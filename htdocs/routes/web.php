@@ -135,6 +135,8 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
 	Route::post('{dc}/student/new', 'SchoolController@createSchoolStudent')->name('school.createStudent');
 	Route::get('{dc}/student/json', 'SchoolController@schoolStudentJSONForm');
 	Route::post('{dc}/student/json', 'SchoolController@importSchoolStudent')->name('school.jsonStudent');
+    Route::get('{dc}/ps/sync_seat', 'SyncController@ps_syncSeatHelp');
+    Route::post('{dc}/ps/sync_seat', 'SyncController@ps_syncSeatHelp')->name('school.ps.sync_seat');
 	Route::get('{dc}/roles/{ou_id}', 'Api\schoolController@allRole');
 	Route::get('{dc}/classes/{grade}', 'Api\schoolController@listClasses');
 	Route::get('{dc}/teachers/{ou}', 'Api\schoolController@listTeachers');
