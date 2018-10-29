@@ -72,6 +72,6 @@ COPY htdocs /var/www/localhost/htdocs
 RUN chown -R apache:apache /var/www \
     && composer update
 
-VOLUME ["/var/www/localhost/htdocs", "/var/www/localhost/htdocs/storage"]
+VOLUME ["/var/www/localhost/htdocs"]
 EXPOSE 80 443 
 CMD ["docker-entrypoint.sh"]
