@@ -175,9 +175,9 @@ class SyncController extends Controller
 		$category = $openldap->getOrgData($school, 'businessCategory');
 		if ($request->has('submit')) {
 			$result = $this->ps_syncSeat($dc);
-			return view('admin.syncsubjectinfo', [ 'category' => $category, 'dc' => $dc, 'result' => $result ]);
+			return view('admin.syncseatinfo', [ 'category' => $category, 'dc' => $dc, 'result' => $result ]);
 		} else
-			return view('admin.syncsubjectinfo', [ 'category' => $category, 'dc' => $dc ]);
+			return view('admin.syncseatinfo', [ 'category' => $category, 'dc' => $dc ]);
 	}
 	
     public function ps_syncSeatForm(Request $request)
