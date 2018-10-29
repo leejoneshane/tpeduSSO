@@ -23,9 +23,9 @@
                                 <li {{ (Request::is('school/subject') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.subject', [ 'dc' => $dc ]) }}">編輯科目資訊</a>
                                 </li>
-                                @if ($catagory == '國民小學')
+                                @if ($category['businessCategory'] == '國民小學')
                                 <li {{ (Request::is('ps/sync_subject') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.ps.sync_subject') }}">同步教學科目</a>
+                                    <a href="{{ route('school.ps.sync_subject', [ 'dc' => $dc ]) }}">同步教學科目</a>
                                 </li>
                                 @endif
                             </ul>
@@ -33,9 +33,9 @@
                         <li {{ (Request::is('school/class') ? 'class="active"' : '') }}>
                             <a href="#"><i class="fa fa-graduation-cap fa-fw"></i> 班級管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                                @if ($catagory == '國民小學')
+                                @if ($category['businessCategory'] == '國民小學')
                                 <li {{ (Request::is('ps/sync_class') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.ps.sync_class') }}">同步班級</a>
+                                    <a href="{{ route('school.ps.sync_class', [ 'dc' => $dc ]) }}">同步班級</a>
                                 </li>
                                 @endif
                                 <li {{ (Request::is('school/class') ? 'class="active"' : '') }}>

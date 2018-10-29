@@ -92,11 +92,14 @@ class SyncController extends Controller
 	
     public function ps_syncClassHelp(Request $request, $dc)
     {
+		$openldap = new LdapServiceProvider();
+		$school = $openldap->getOrgEntry($dc);
+		$category = $openldap->getOrgData($school, 'businessCategory');
 		if ($request->has('submit')) {
 			$result = $this->ps_syncClass($dc);
-			return view('admin.syncclassinfo', [ 'result' => $result ]);
+			return view('admin.syncclassinfo', [ 'category' => $category, 'dc' => $dc, 'result' => $result ]);
 		} else
-			return view('admin.syncclassinfo');
+			return view('admin.syncclassinfo', [ 'category' => $category, 'dc' => $dc ]);
 	}
 	
     public function ps_syncClassForm(Request $request)
@@ -218,11 +221,14 @@ class SyncController extends Controller
 
     public function ps_syncSubjectHelp(Request $request, $dc)
     {
+		$openldap = new LdapServiceProvider();
+		$school = $openldap->getOrgEntry($dc);
+		$category = $openldap->getOrgData($school, 'businessCategory');
 		if ($request->has('submit')) {
 			$result = $this->ps_syncClass($dc);
-			return view('admin.syncsubjectinfo', [ 'result' => $result ]);
+			return view('admin.syncsubjectinfo', [ 'category' => $category, 'dc' => $dc, 'result' => $result ]);
 		} else
-			return view('admin.syncsubjectinfo');
+			return view('admin.syncsubjectinfo', [ 'category' => $category, 'dc' => $dc ]);
 	}
 	
     public function ps_syncSubjectForm(Request $request)

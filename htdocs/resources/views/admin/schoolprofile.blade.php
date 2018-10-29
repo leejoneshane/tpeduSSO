@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+@extends('layouts.dashboard', [ 'category' => $category ])
 
 @section('page_heading')
 學校基本資料

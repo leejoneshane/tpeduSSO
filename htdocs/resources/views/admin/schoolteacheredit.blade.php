@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+@extends('layouts.dashboard', [ 'category' => $category ])
 
 @section('page_heading')
 {{ isset($user) ? '編輯' : '新增' }}教師資訊

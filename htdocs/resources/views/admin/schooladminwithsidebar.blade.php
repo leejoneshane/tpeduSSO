@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+@extends('layouts.dashboard', [ 'category' => $category ])
 
 @section('page_heading')
 設定管理員
