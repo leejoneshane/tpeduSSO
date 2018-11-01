@@ -9,7 +9,9 @@ class AuthenticateSchoolAdmin
 {
     public function handle($request, Closure $next, $guard = null)
     {
-        if (Auth::guard($guard)->guest() || !Auth::guard($guard)->user()->ldap['adminSchools']) {
+        $user = $request->user();
+        $dc = $request->route('dc');
+        if (Auth::guard($guard)->guest() || !in_array($dc, $user->ldap['adminSchools'])) {
             if ($request->ajax() || $request->wantsJson()) {
                 return response('Unauthorized.', 401);
             } else {
