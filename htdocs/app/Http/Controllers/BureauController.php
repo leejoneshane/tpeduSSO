@@ -1005,7 +1005,7 @@ class BureauController extends Controller
 			'street' => 'nullable|string',
 			'postOfficeBox' => 'nullable|digits:3',
 			'wWWHomePage' => 'nullable|url',
-			'tpUniformNumbers' => 'required|digits:6',
+			'tpUniformNumbers' => 'required|string|size:6',
 			'tpIpv4' => new ipv4cidr,
 			'tpIpv6' => new ipv6cidr,
 		]);
@@ -1021,7 +1021,7 @@ class BureauController extends Controller
 		if (!empty($request->get('street'))) $info['street'] = $request->get('street');
 		if (!empty($request->get('postOfficeBox'))) $info['postOfficeBox'] = $request->get('postOfficeBox');
         if (!empty($request->get('wWWHomePage'))) $info['wWWHomePage'] = $request->get('wWWHomePage');
-		$info['tpUniformNumbers'] = $request->get('tpUniformNumbers');
+		$info['tpUniformNumbers'] = strtoupper($request->get('tpUniformNumbers'));
 		if (!empty($request->get('tpIpv4'))) $info['tpIpv4'] = $request->get('tpIpv4');
 		if (!empty($request->get('tpIpv6'))) $info['tpIpv6'] = $request->get('tpIpv6');
 		$info['dn'] = Config::get('ldap.schattr')."=".$request->get('dc').",".Config::get('ldap.rdn');
@@ -1047,7 +1047,7 @@ class BureauController extends Controller
 			'street' => 'nullable|string',
 			'postOfficeBox' => 'nullable|digits:3',
 			'wWWHomePage' => 'nullable|url',
-			'tpUniformNumbers' => 'required|digits:6',
+			'tpUniformNumbers' => 'required|string|size:6',
 			'tpIpv4' => new ipv4cidr,
 			'tpIpv6' => new ipv6cidr,
 		]);
@@ -1068,7 +1068,7 @@ class BureauController extends Controller
 		if (!empty($request->get('postOfficeBox'))) $info['postOfficeBox'] = $request->get('postOfficeBox');
 		$info['wWWHomePage'] = [];
         if (!empty($request->get('wWWHomePage'))) $info['wWWHomePage'] = $request->get('wWWHomePage');
-		$info['tpUniformNumbers'] = $request->get('tpUniformNumbers');
+		$info['tpUniformNumbers'] = strtoupper($request->get('tpUniformNumbers'));
 		$info['tpIpv4'] = [];
 		if (!empty($request->get('tpIpv4'))) $info['tpIpv4'] = $request->get('tpIpv4');
 		$info['tpIpv6'] = [];

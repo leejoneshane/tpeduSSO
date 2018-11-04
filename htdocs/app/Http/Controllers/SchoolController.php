@@ -1911,7 +1911,7 @@ class SchoolController extends Controller
 			'street' => 'required|string',
 			'postOfficeBox' => 'required|digits:3',
 			'wWWHomePage' => 'nullable|url',
-			'tpUniformNumbers' => 'required|digits:6',
+			'tpUniformNumbers' => 'required|string|size:6',
 			'tpIpv4' => new ipv4cidr,
 			'tpIpv6' => new ipv6cidr,
 		]);
@@ -1927,7 +1927,7 @@ class SchoolController extends Controller
 		$info['postOfficeBox'] = $request->get('postOfficeBox');
 		$info['wWWHomePage'] = [];
         if (!empty($request->get('wWWHomePage'))) $info['wWWHomePage'] = $request->get('wWWHomePage');
-		$info['tpUniformNumbers'] = $request->get('tpUniformNumbers');
+		$info['tpUniformNumbers'] = strtoupper($request->get('tpUniformNumbers'));
 		$info['tpIpv4'] = [];
 		if (!empty($request->get('tpIpv4'))) $info['tpIpv4'] = $request->get('tpIpv4');
 		$info['tpIpv6'] = [];
