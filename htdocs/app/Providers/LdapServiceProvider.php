@@ -765,7 +765,7 @@ class LdapServiceProvider extends ServiceProvider
 		}
 		if (!empty($userinfo['tpClass'])) {
 			$classname = $this->getOuTitle($userinfo['o'], $userinfo['tpClass']);
-			if (!isset($userinfo['tpClassTitle']) || $userinfo['tpClassTitle'] != $classname) {
+			if (!empty($classname) && (!isset($userinfo['tpClassTitle']) || $userinfo['tpClassTitle'] != $classname)) {
 				$this->updateData($entry, [ "tpClassTitle" => $classname ]);
 			}
 		}
