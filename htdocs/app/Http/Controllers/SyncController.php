@@ -95,7 +95,7 @@ class SyncController extends Controller
 		$openldap = new LdapServiceProvider();
 		$school = $openldap->getOrgEntry($dc);
 		$category = $openldap->getOrgData($school, 'businessCategory');
-		if ($request->has('submit')) {
+		if ($request->isMethod('post')) {
 			$result = $this->ps_syncClass($dc);
 			return view('admin.syncclassinfo', [ 'category' => $category, 'dc' => $dc, 'result' => $result ]);
 		} else
@@ -173,7 +173,7 @@ class SyncController extends Controller
 		$openldap = new LdapServiceProvider();
 		$school = $openldap->getOrgEntry($dc);
 		$category = $openldap->getOrgData($school, 'businessCategory');
-		if ($request->has('submit')) {
+		if ($request->isMethod('post')) {
 			$result = $this->ps_syncSeat($dc);
 			return view('admin.syncseatinfo', [ 'category' => $category, 'dc' => $dc, 'result' => $result ]);
 		} else
@@ -236,7 +236,7 @@ class SyncController extends Controller
 		$openldap = new LdapServiceProvider();
 		$school = $openldap->getOrgEntry($dc);
 		$category = $openldap->getOrgData($school, 'businessCategory');
-		if ($request->has('submit')) {
+		if ($request->isMethod('post')) {
 			$result = $this->ps_syncClass($dc);
 			return view('admin.syncsubjectinfo', [ 'category' => $category, 'dc' => $dc, 'result' => $result ]);
 		} else
