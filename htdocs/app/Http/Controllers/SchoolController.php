@@ -1521,6 +1521,7 @@ class SchoolController extends Controller
     public function schoolClassForm(Request $request, $dc)
     {
 		$my_grade = $request->get('grade', 1);
+		$my_ou = $request->get('ou', '');
 		$openldap = new LdapServiceProvider();
 		$school = $openldap->getOrgEntry($dc);
 		$category = $openldap->getOrgData($school, 'businessCategory');
@@ -1565,7 +1566,15 @@ class SchoolController extends Controller
 				if ($class->grade == $my_grade) $classes[] = $class;
 			}
 		}
-		return view('admin.schoolclass', [ 'category' => $category, 'dc' => $dc, 'my_grade' => $my_grade, 'grades' => $grades, 'classes' => $classes ]);
+		$ous = $openldap->getOus($dc, '行政部門');
+		if (empty($my_ou) && !empty($ous)) $my_ou = $ous[0]->ou;
+		foreach ($ous as $ou) {
+			if (strpos($ou->description, '級任') || strpos($ou->description, '導師')) {
+				$my_ou = $ou->ou;
+			}
+		}
+		$teachers = $openldap->findUsers("(&(o=$dc)(ou=*$my_ou))");
+		return view('admin.schoolclass', [ 'category' => $category, 'dc' => $dc, 'my_grade' => $my_grade, 'grades' => $grades, 'classes' => $classes, 'my_ou' => $my_ou, 'ous' => $ous, 'teachers' => $teachers ]);
     }
 
     public function schoolClassAssignForm(Request $request, $dc)
@@ -1662,17 +1671,23 @@ class SchoolController extends Controller
 
     public function createSchoolClass(Request $request, $dc)
     {
+		$openldap = new LdapServiceProvider();
 		$validatedData = $request->validate([
 			'new-ou' => 'required|digits:3',
 			'new-desc' => 'required|string',
 		]);
+		$class = $request->get('new-ou');
+		$idno = $request->get('new-teacher');
+		if (!empty($idno)) {
+			$teacher = $openldap->getUserEntry($idno);
+			if ($teacher) $openldap->updateData($teacher, [ 'tpTutorClass' => $class ]);
+		}
 		$info = array();
 		$info['objectClass'] = 'organizationalUnit';
 		$info['businessCategory']='教學班級'; //右列選一:行政部門,教學領域,教師社群或社團,學生社團或營隊
-		$info['ou'] = $request->get('new-ou');
+		$info['ou'] = $class;
 		$info['description'] = $request->get('new-desc');
-		$info['dn'] = "ou=".$info['ou'].",dc=$dc,".Config::get('ldap.rdn');
-		$openldap = new LdapServiceProvider();
+		$info['dn'] = "ou=".$class.",dc=$dc,".Config::get('ldap.rdn');
 		$result = $openldap->createEntry($info);
 		if ($result) {
 			return redirect()->back()->with("success", "已經為您建立班級！");
@@ -1688,8 +1703,13 @@ class SchoolController extends Controller
 		]);
 		$info = array();
 		$info['description'] = $request->get('description');
-		
+
 		$openldap = new LdapServiceProvider();
+		$idno = $request->get($class.'teacher');
+		if (!empty($idno)) {
+			$teacher = $openldap->getUserEntry($idno);
+			if ($teacher) $openldap->updateData($teacher, [ 'tpTutorClass' => $class ]);
+		}
 		$users = $openldap->findUsers("(&(o=$dc)(tpClass=$class))", "cn");
 		foreach ($users as $user) {
 	    	$idno = $user['cn'];
@@ -1712,12 +1732,13 @@ class SchoolController extends Controller
 		if (!empty($users)) {
 			return redirect()->back()->with("error", "尚有人員隸屬於該班級，因此無法刪除！");
 		}
-		$entry = $openldap->getOUEntry($dc, $class);
-		$roles = $openldap->getRoles($dc, $class);
-		foreach ($roles as $role) {
-			$role_entry = $openldap->getRoleEntry($dc, $class, $role->cn);
-			$openldap->deleteEntry($role_entry);
+		$teacher = $this->findUsers("(&(o=$dc)(tpTutorClass=$class))", 'cn');
+		if ($teacher) {
+			$idno = $teacher[0]['cn'];
+			$teacher_entry = $openldap->getUserEntry($idno);
+			if ($teacher_entry) $openldap->deleteData($teacher_entry, [ 'tpTutorClass' => [] ]);
 		}
+		$entry = $openldap->getOUEntry($dc, $class);
 		$result = $openldap->deleteEntry($entry);
 		if ($result) {
 			return redirect()->back()->with("success", "已經為您移除班級！");

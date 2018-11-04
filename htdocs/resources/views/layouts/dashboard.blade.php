@@ -39,7 +39,7 @@
                                 </li>
                                 @endif
                                 <li {{ (Request::is('school/class') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.class', [ 'dc' => $dc ]) }}">變更班級名稱</a>
+                                    <a href="{{ route('school.class', [ 'dc' => $dc ]) }}">編輯班級資訊</a>
                                 </li>
                                 <li {{ (Request::is('school/class/assign') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.assignClass', [ 'dc' => $dc ]) }}">管理班級配課</a>

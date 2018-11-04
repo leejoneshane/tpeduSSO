@@ -333,8 +333,12 @@ class LdapServiceProvider extends ServiceProvider
 	    		$info = $this->getOuData($entry);
 	    		if (!empty($category) && $info['businessCategory'] != $category) continue;
 				$ou->ou = $info['ou'];
-				if ($info['businessCategory'] == '教學班級') $ou->grade = substr($info['ou'], 0, 1);
 	    		$ou->description = $info['description'];
+				if ($info['businessCategory'] == '教學班級') {
+					$ou->grade = substr($info['ou'], 0, 1);
+					$teacher = $this->findUsers("(&(o=$dc)(tpTutorClass=".$info['ou']."))", 'cn');
+					if ($teacher) $ou->teacher = $teacher[0]['cn'];
+				}
 	    		$ous[] = $ou;
 			} while ($entry=ldap_next_entry(self::$ldap_read, $entry));
 			return $ous;
