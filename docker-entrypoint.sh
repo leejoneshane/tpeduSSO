@@ -1,5 +1,8 @@
 #!/bin/sh
 set -euo pipefail
+if ! [ -d /var/www/localhost/htdocs/vendor ]; then
+  composer update
+fi
 if ! [ -d /var/www/localhost/htdocs/storage/framework/views ]; then
   mkdir -p /var/www/localhost/htdocs/storage/framework/views
 fi
