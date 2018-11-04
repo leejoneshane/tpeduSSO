@@ -140,8 +140,8 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
 	Route::get('{dc}/roles/{ou_id}', 'Api\schoolController@allRole');
 	Route::get('{dc}/classes/{grade}', 'Api\schoolController@listClasses');
 	Route::get('{dc}/teachers/{ou}', 'Api\schoolController@listTeachers');
-	Route::post('people/{uuid}/remove', 'SchoolController@remove')->name('school.remove');
-	Route::post('people/{uuid}/toggle', 'SchoolController@toggle')->name('school.toggle');
-	Route::post('people/{uuid}/undo', 'SchoolController@undo')->name('school.undo');
-	Route::post('people/{uuid}/resetpass', 'SchoolController@resetpass')->name('school.resetpass');
+	Route::post('{dc}/people/{uuid}/remove', 'SchoolController@remove')->name('school.remove');
+	Route::post('{dc}/people/{uuid}/toggle', 'SchoolController@toggle')->name('school.toggle');
+	Route::post('{dc}/people/{uuid}/undo', 'SchoolController@undo')->name('school.undo');
+	Route::post('{dc}/people/{uuid}/resetpass', 'SchoolController@resetpass')->name('school.resetpass');
 });

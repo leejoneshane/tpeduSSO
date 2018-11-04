@@ -1344,7 +1344,7 @@ class SchoolController extends Controller
 		}
 	}
 	
-    public function toggle(Request $request, $uuid)
+    public function toggle(Request $request, $dc, $uuid)
     {
 		$info = array();
 		$openldap = new LdapServiceProvider();
@@ -1362,7 +1362,7 @@ class SchoolController extends Controller
 		}
 	}
 	
-    public function remove(Request $request, $uuid)
+    public function remove(Request $request, $dc, $uuid)
     {
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getUserEntry($uuid);
@@ -1376,7 +1376,7 @@ class SchoolController extends Controller
 		}
 	}
 	
-    public function undo(Request $request, $uuid)
+    public function undo(Request $request, $dc, $uuid)
     {
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getUserEntry($uuid);
@@ -1390,7 +1390,7 @@ class SchoolController extends Controller
 		}
 	}
 	
-    public function resetpass(Request $request, $uuid)
+    public function resetpass(Request $request, $dc, $uuid)
     {
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getUserEntry($uuid);
