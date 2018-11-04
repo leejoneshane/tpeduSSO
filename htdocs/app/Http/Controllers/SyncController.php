@@ -97,7 +97,7 @@ class SyncController extends Controller
 		$category = $openldap->getOrgData($school, 'businessCategory');
 		if ($request->isMethod('post')) {
 			$result = $this->ps_syncClass($dc);
-			return view('admin.syncclassinfo', [ 'category' => $category, 'dc' => $dc, 'result' => $result ]);
+			return redirect()->back()->with("success", $result);
 		} else
 			return view('admin.syncclassinfo', [ 'category' => $category, 'dc' => $dc ]);
 	}
@@ -175,7 +175,7 @@ class SyncController extends Controller
 		$category = $openldap->getOrgData($school, 'businessCategory');
 		if ($request->isMethod('post')) {
 			$result = $this->ps_syncSeat($dc);
-			return view('admin.syncseatinfo', [ 'category' => $category, 'dc' => $dc, 'result' => $result ]);
+			return redirect()->back()->with("success", $result);
 		} else
 			return view('admin.syncseatinfo', [ 'category' => $category, 'dc' => $dc ]);
 	}
@@ -237,8 +237,8 @@ class SyncController extends Controller
 		$school = $openldap->getOrgEntry($dc);
 		$category = $openldap->getOrgData($school, 'businessCategory');
 		if ($request->isMethod('post')) {
-			$result = $this->ps_syncClass($dc);
-			return view('admin.syncsubjectinfo', [ 'category' => $category, 'dc' => $dc, 'result' => $result ]);
+			$result = $this->ps_syncSubject($dc);
+			return redirect()->back()->with("success", $result);
 		} else
 			return view('admin.syncsubjectinfo', [ 'category' => $category, 'dc' => $dc ]);
 	}
