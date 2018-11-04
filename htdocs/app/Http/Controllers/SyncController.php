@@ -95,7 +95,7 @@ class SyncController extends Controller
 		$openldap = new LdapServiceProvider();
 		$school = $openldap->getOrgEntry($dc);
 		$category = $openldap->getOrgData($school, 'businessCategory');
-		if ($request->isMethod('post')) {
+		if ($request->isMethod('POST')) {
 			$result = $this->ps_syncClass($dc);
 			return redirect()->back()->with("success", $result);
 		} else
@@ -173,7 +173,7 @@ class SyncController extends Controller
 		$openldap = new LdapServiceProvider();
 		$school = $openldap->getOrgEntry($dc);
 		$category = $openldap->getOrgData($school, 'businessCategory');
-		if ($request->isMethod('post')) {
+		if ($request->isMethod('POST')) {
 			$result = $this->ps_syncSeat($dc);
 			return redirect()->back()->with("success", $result);
 		} else
@@ -236,7 +236,7 @@ class SyncController extends Controller
 		$openldap = new LdapServiceProvider();
 		$school = $openldap->getOrgEntry($dc);
 		$category = $openldap->getOrgData($school, 'businessCategory');
-		if ($request->isMethod('post')) {
+		if ($request->isMethod('POST')) {
 			$result = $this->ps_syncSubject($dc);
 			return redirect()->back()->with("success", $result);
 		} else

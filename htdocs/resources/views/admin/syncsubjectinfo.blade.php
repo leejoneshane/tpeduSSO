@@ -7,9 +7,8 @@
 @section('section')
 <div class="container">
 	<div class="row">
-	<div class="col-sm-12">
 	@if (session('success'))
-		<div class="alert alert-success">
+		<div class="alert alert-info">
 			@foreach (session('success') as $line)
 				{{ $line }}<br>
 			@endforeach
@@ -26,7 +25,6 @@
 		</div>
 		</form>
 	@endif
-	</div>
 	</div>
 </div>
 @endsection
