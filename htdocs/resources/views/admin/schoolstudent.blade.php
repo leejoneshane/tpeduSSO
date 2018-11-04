@@ -90,21 +90,21 @@
 										 $('#form').submit();">編輯</button>
 							@if ($student['inetUserStatus'] != 'deleted')
 							<button type="button" class="btn btn-warning"
-							 	onclick="$('#form').attr('action','{{ route('school.toggle', [ 'uuid' => $student['entryUUID'] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('school.toggle', [ 'dc' => $dc, 'uuid' => $student['entryUUID'] ]) }}');
 										 $('#form').attr('method', 'POST');
 										 $('#form').submit();">{{ $student['inetUserStatus'] == 'inactive' ? '啟用' : '停用' }}</button>
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#form').attr('action','{{ route('school.remove', [ 'uuid' => $student['entryUUID'] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('school.remove', [ 'dc' => $dc, 'uuid' => $student['entryUUID'] ]) }}');
 										 $('#form').attr('method', 'POST');
 										 $('#form').submit();">刪除</button>
 							@else
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#form').attr('action','{{ route('school.undo', [ 'uuid' => $student['entryUUID'] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('school.undo', [ 'dc' => $dc, 'uuid' => $student['entryUUID'] ]) }}');
 										 $('#form').attr('method', 'POST');
 										 $('#form').submit();">救回</button>
 							@endif
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#form').attr('action','{{ route('school.resetpass', [ 'uuid' => $student['entryUUID'] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('school.resetpass', [ 'dc' => $dc, 'uuid' => $student['entryUUID'] ]) }}');
 										 $('#form').attr('method', 'POST');
 										 $('#form').submit();">回復密碼</button>
 						</td>
