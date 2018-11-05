@@ -81,6 +81,7 @@ class profileController extends Controller
 	    if (array_key_exists('department', $user->ldap)) $json->unit = array_values($user->ldap['department'][$o])[0];
 	    if (array_key_exists('titleName', $user->ldap)) $json->title = array_values($user->ldap['titleName'][$o])[0];
 	    if (array_key_exists('teachClass', $user->ldap)) $json->teachClass = array_values($user->ldap['teachClass'][$o]);
+		if (array_key_exists('tpTutorClass', $user->ldap)) $json->tutorClass = $user->ldap['tpTutorClass'];
 	}
 	if (array_key_exists('tpCharacter', $user->ldap)) $json->character = $user->ldap['tpCharacter'];
     return json_encode($json, JSON_UNESCAPED_UNICODE);
