@@ -69,6 +69,7 @@ Route::group(['prefix' => 'v2'], function () {
     Route::group(['middleware' => 'clientid:school'], function () {
         Route::get('school', 'Api_V2\v2_schoolController@all');
         Route::get('school/{dc}', 'Api_V2\v2_schoolController@one');
+        Route::get('school/{dc}/people', 'Api_V2\v2_schoolController@peopleSearch');
         Route::get('school/{dc}/teachers', 'Api_V2\v2_schoolController@allTeachersByOrg');
         Route::get('school/{dc}/subject', 'Api_V2\v2_schoolController@allSubject');
         Route::get('school/{dc}/subject/{subj_id}', 'Api_V2\v2_schoolController@oneSubject');

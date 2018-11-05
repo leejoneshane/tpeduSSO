@@ -12,14 +12,30 @@ use Illuminate\Http\Response;
 
 class v2_schoolController extends Controller
 {
-    public function all()
+    public function all(Request $request)
     {
 		$openldap = new LdapServiceProvider();
-		$json = $openldap->getOrgs();
+        $area = $request->get('area');
+        if ($area) $condition[] = "(st=$area)";
+        $name = $request->get('name');
+        if ($name) $condition[] = "(description=*$name*)";
+        $sid = $request->get('sid');
+        if ($sid) $condition[] = "(tpUniformNumbers=$sid)";
+        if (count($condition) > 1) {
+            $filter = '(&';
+            foreach ($condition as $c) {
+                $filter .= $c;
+            }
+            $filter .= ')';
+        } else {
+            $filter = '';
+            if ($condition) $filter = $condition[0];
+        }
+        $json = $openldap->getOrgs($filter);
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
-    
-    public function one($dc)
+
+    public function one(Request $request, $dc)
     {
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getOrgEntry($dc);
@@ -27,25 +43,68 @@ class v2_schoolController extends Controller
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
-    public function allTeachersByOrg($dc)
+    public function allTeachersByOrg(Request $request, $dc)
     {
-		$json = array();
 		$openldap = new LdapServiceProvider();
-		$teachers = $openldap->findUsers("(&(o=$dc)(!(employeeType=學生)))", "entryUUID");
+        $filter = "(&(o=$dc)(!(employeeType=學生))";
+        $teachers = $openldap->findUsers($filter, "entryUUID");
+		$json = array();
 		foreach ($teachers as $teacher) {
 	    	$json[] = $teacher['entryUUID'];
 		}
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
-    public function allOu($dc)
+    public function peopleSearch(Request $request, $dc)
+    {
+		$openldap = new LdapServiceProvider();
+        $condition[] = "(o=$dc)";
+        $role = $request->get('role');
+        if ($role) {
+            if ($role == '學生') 
+                $condition[] = "(employeeType=學生)";
+            else
+                $condition[] = "(!(employeeType=學生))";
+        }
+        $idno = $request->get('idno');
+        if ($idno) $condition[] = "(cn=$idno)";
+        $sysid = $request->get('sysid');
+        if ($sysid) $condition[] = "(employeeNumber=$sysid)";
+        $gender = $request->get('gender');
+        if ($gender) $condition[] = "(gender=$gender)";
+        $name = $request->get('name');
+        if ($name) $condition[] = "(description=*$name*)";
+        $email = $request->get('email');
+        if ($email) $condition[] = "(mail=*$email*)";
+        $tel = $request->get('tel');
+        if ($tel) $condition[] = "(|(mobile=$tel)(facsimileTelephoneNumber=$tel)(telephoneNumber=$tel)(homePhone=$tel))";
+        $address = $request->get('address');
+        if ($address) $condition[] = "(|(registeredAddress=*$address*)(homePostalAddress=*$address*))";
+        if (count($condition) > 1) {
+            $filter = '(&';
+            foreach ($condition as $c) {
+                $filter .= $c;
+            }
+            $filter .= ')';
+            $people = $openldap->findUsers($filter, "entryUUID");
+    		$json = array();
+	    	foreach ($people as $one) {
+	        	$json[] = $one['entryUUID'];
+		    }
+            return json_encode($json, JSON_UNESCAPED_UNICODE);
+        } else {
+            return response()->json([ 'error' => 'please give me the search filters!'], 500);
+        }
+    }
+
+    public function allOu(Request $request, $dc)
     {
 		$openldap = new LdapServiceProvider();
 		$json = $openldap->getOus($dc, "行政部門");
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
-    public function oneOu($dc, $ou_id)
+    public function oneOu(Request $request, $dc, $ou_id)
     {
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getOuEntry($dc,$ou_id);
@@ -53,7 +112,7 @@ class v2_schoolController extends Controller
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
-    public function allTeachersByUnit($dc, $ou_id)
+    public function allTeachersByUnit(Request $request, $dc, $ou_id)
     {
 		$json = array();
 		$openldap = new LdapServiceProvider();
@@ -64,14 +123,14 @@ class v2_schoolController extends Controller
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
-    public function allSubject($dc)
+    public function allSubject(Request $request, $dc)
     {
 		$openldap = new LdapServiceProvider();
 		$json = $openldap->getSubjects($dc);
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
-    public function oneSubject($dc, $subj_id)
+    public function oneSubject(Request $request, $dc, $subj_id)
     {
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getSubjectEntry($dc,$subj_id);
@@ -79,7 +138,7 @@ class v2_schoolController extends Controller
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
-    public function allTeachersBySubject($dc, $subj_id)
+    public function allTeachersBySubject(Request $request, $dc, $subj_id)
     {
 		$json = array();
 		$openldap = new LdapServiceProvider();
@@ -90,7 +149,7 @@ class v2_schoolController extends Controller
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
-    public function allClassesBySubject($dc, $subj_id)
+    public function allClassesBySubject(Request $request, $dc, $subj_id)
     {
         $json = array();
         $classes = array();
@@ -111,14 +170,14 @@ class v2_schoolController extends Controller
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
-    public function allRole($dc, $ou_id)
+    public function allRole(Request $request, $dc, $ou_id)
     {
 		$openldap = new LdapServiceProvider();
 		$json = $openldap->getRoles($dc,$ou_id);
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
-    public function oneRole($dc, $ou_id, $role_id)
+    public function oneRole(Request $request, $dc, $ou_id, $role_id)
     {
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getRoleEntry($dc,$ou_id,$role_id);
@@ -126,7 +185,7 @@ class v2_schoolController extends Controller
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
-    public function allTeachersByRole($dc, $ou_id, $role_id)
+    public function allTeachersByRole(Request $request, $dc, $ou_id, $role_id)
     {
 		$json = array();
 		$openldap = new LdapServiceProvider();
@@ -137,14 +196,14 @@ class v2_schoolController extends Controller
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
-    public function allClass($dc)
+    public function allClass(Request $request, $dc)
     {
 		$openldap = new LdapServiceProvider();
 		$json = $openldap->getOus($dc, "教學班級");
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
-    public function oneClass($dc, $class_id)
+    public function oneClass(Request $request, $dc, $class_id)
     {
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getOuEntry($dc,$class_id);
@@ -152,7 +211,7 @@ class v2_schoolController extends Controller
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
-    public function allTeachersByClass($dc, $class_id)
+    public function allTeachersByClass(Request $request, $dc, $class_id)
     {
 		$json = array();
 		$openldap = new LdapServiceProvider();
@@ -163,7 +222,7 @@ class v2_schoolController extends Controller
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
-    public function allStudentsByClass($dc, $class_id)
+    public function allStudentsByClass(Request $request, $dc, $class_id)
     {
 		$json = array();
 		$openldap = new LdapServiceProvider();
@@ -174,7 +233,7 @@ class v2_schoolController extends Controller
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
-    public function allSubjectsByClass($dc, $class_id)
+    public function allSubjectsByClass(Request $request, $dc, $class_id)
     {
         $json = array();
         $classes = array();
@@ -469,7 +528,7 @@ class v2_schoolController extends Controller
     }
 
     // below function for ajax calling
-    public function listOrgs($area = '')
+    public function listOrgs(Request $request, $area = '')
     {
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getOrgs();
@@ -482,7 +541,7 @@ class v2_schoolController extends Controller
 		return json_encode($orgs, JSON_UNESCAPED_UNICODE);
     }
     
-    public function listClasses($dc, $grade = '')
+    public function listClasses(Request $request, $dc, $grade = '')
     {
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getOus($dc, "教學班級");
@@ -493,7 +552,7 @@ class v2_schoolController extends Controller
 		return json_encode($classes, JSON_UNESCAPED_UNICODE);
     }
 
-    public function listTeachers($dc, $ou)
+    public function listTeachers(Request $request, $dc, $ou)
     {
 		$json = array();
 		$openldap = new LdapServiceProvider();
