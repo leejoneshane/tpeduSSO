@@ -33,8 +33,8 @@ class SyncController extends Controller
         return view('sync');
     }
     
-    public function ps_testForm(Request $request)
-    {
+	public function ps_testForm(Request $request)
+	{
 		$my_field = $request->get('field');
 		$sid = $request->get('sid');
 		$grade = $request->get('grade');
@@ -90,20 +90,20 @@ class SyncController extends Controller
 		return view('admin.synctest', [ 'my_field' => $my_field, 'sid' => $sid, 'grade' => $grade, 'subjid' => $subjid, 'clsid' => $clsid, 'teaid' => $teaid, 'stdno' => $stdno, 'isbn' => $isbn, 'result' => $result ]);
 	}
 	
-    public function ps_syncClassHelp(Request $request, $dc)
+    public function ps_syncClassForm(Request $request, $dc)
     {
 		$openldap = new LdapServiceProvider();
 		$school = $openldap->getOrgEntry($dc);
 		$category = $openldap->getOrgData($school, 'businessCategory');
-		if ($request->isMethod('POST')) {
+		if ($request->get('submit')) {
 			$result = $this->ps_syncClass($dc);
 			return redirect()->back()->with("success", $result);
 		} else
 			return view('admin.syncclassinfo', [ 'category' => $category, 'dc' => $dc ]);
 	}
 	
-    public function ps_syncClassForm(Request $request)
-    {
+	public function ps_syncClassHelp(Request $request)
+	{
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
@@ -173,7 +173,7 @@ class SyncController extends Controller
 		$openldap = new LdapServiceProvider();
 		$school = $openldap->getOrgEntry($dc);
 		$category = $openldap->getOrgData($school, 'businessCategory');
-		if ($request->isMethod('POST')) {
+		if ($request->get('submit')) {
 			$result = $this->ps_syncSeat($dc);
 			return redirect()->back()->with("success", $result);
 		} else
@@ -236,7 +236,7 @@ class SyncController extends Controller
 		$openldap = new LdapServiceProvider();
 		$school = $openldap->getOrgEntry($dc);
 		$category = $openldap->getOrgData($school, 'businessCategory');
-		if ($request->isMethod('POST')) {
+		if ($request->get('submit')) {
 			$result = $this->ps_syncSubject($dc);
 			return redirect()->back()->with("success", $result);
 		} else

@@ -19,7 +19,7 @@
 		<form role="form" method="POST" action="{{ route('school.ps.sync_class', [ 'dc' => $dc ]) }}">
 			@csrf
 			<div class="form-group">
-				<button class="btn btn-default" type="submit">
+				<button class="btn btn-default" type="submit" name="submit" value="true">
 					我瞭解了，請開始同步
 				</button>
 			</div>

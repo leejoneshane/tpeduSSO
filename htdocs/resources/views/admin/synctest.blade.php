@@ -24,7 +24,7 @@
 		</div>
 		<div class="panel-body">
 			<div class="form-group custom-search-form">
-			<form role="form" method="POST" action="{{ route('sync.ps.runtime_test') }}" enctype="multipart/form-data" onsubmit="return check_all();">
+			<form role="form" method="POST" action="{{ route('sync.ps.runtime_test') }}" onsubmit="return check_all();">
 		    	@csrf
 				<label>資料項目：</label>
 				<select id="field" name="field" class="form-control">
