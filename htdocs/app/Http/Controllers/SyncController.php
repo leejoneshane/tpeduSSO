@@ -121,6 +121,7 @@ class SyncController extends Controller
 		$sid = $openldap->getOrgID($dc);
 		$org_classes = $openldap->getOus($dc, '教學班級');
 		$classes = $http->ps_call('classes_info', [ 'sid' => $sid ]);
+		$messages[] = "開始進行同步";
 		if ($classes) {
 			foreach ($classes as $class) {
 				for ($i=0;$i<count($org_classes);$i++) {
@@ -158,9 +159,11 @@ class SyncController extends Controller
 					$messages[] = "ou=". $org_class->ou ." 班級刪除失敗：". $openldap->error();
 				}
 			}
+			$messages[] = "同步完成！";
 		} else {
 			$messages[] = "無法同步班級資訊：". $http->ps_error();
 		}
+		return $messages;
 	}
 
     public function ps_syncSeatHelp(Request $request, $dc)
@@ -193,7 +196,7 @@ class SyncController extends Controller
 		$http = new SimsServiceProvider();
 		$sid = $openldap->getOrgID($dc);
 		$students = $openldap->findUsers("(&(o=$dc)(employeeType=學生))", ["cn", "o", "displayName", "employeeNumber", "tpClass", "tpSeat"]);
-		$messages = array();
+		$messages[] = "開始進行同步";
 		foreach ($students as $stu) {
 			$stdno = $stu['employeeNumber'];
 			$data = $http->ps_call('student_info', [ 'sid' => $sid, 'stdno' => $stdno ]);
@@ -218,6 +221,7 @@ class SyncController extends Controller
 				$messages[] = "cn=". $stu['cn'] .",stdno=". $stu['employeeNumber'] .",name=". $stu['displayName'] ." 無法同步：". $http->ps_error();
 			}
 		}
+		$messages[] = "同步完成！";
 		return $messages;
 	}
 
@@ -251,7 +255,7 @@ class SyncController extends Controller
 		$http = new SimsServiceProvider();
 		$sid = $openldap->getOrgID($dc);
 		$classes = $openldap->getOus($dc, '教學班級');
-		$messages = array();
+		$messages[] = "開始進行同步";
 		$subjects = array();
 		foreach ($classes as $class) {
 			$data = $http->ps_call('subject_for_class', [ 'sid' => $sid, 'clsid' => $class->ou ]);
@@ -285,7 +289,9 @@ class SyncController extends Controller
 			$subject_names[] = $subj->description;
 		}
 		foreach ($subjects as $subj_name) {
-			if (!in_array($subj_name, $subject_names)) {
+			if (in_array($subj_name, $subject_names)) {
+				$messages[] = $subj_name ." 科目已存在，略過不處理！";
+			} else {
 				for ($j=1;$j<100;$j++) {
 					$new_id = 'subj';
 					$new_id .= ($j<10) ? '0'.$j : $j;
@@ -307,6 +313,7 @@ class SyncController extends Controller
 				}
 			}
 		}
+		$messages[] = "同步完成！";
 		return $messages;
 	}
 }
