@@ -33,6 +33,7 @@ class AuthServiceProvider extends ServiceProvider
         Passport::tokensExpireIn(Carbon::now()->addDay());
         Passport::refreshTokensExpireIn(Carbon::now()->addDays(30));
         Passport::tokensCan([
+    	    'me' => '想要取得您的電子郵件和姓名',
     	    'email' => '想要取得您的電子郵件',
     	    'user' => '想要取得和修改您的識別代號、姓名、電子郵件、手機號碼等資訊',
     	    'idno' => '想要取得您的身分證字號',
