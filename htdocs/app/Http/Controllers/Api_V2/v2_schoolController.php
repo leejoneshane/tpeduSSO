@@ -243,6 +243,9 @@ class v2_schoolController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$json = $openldap->getOus($dc, "教學班級");
+        foreach (array_keys($json) as $key) {
+            unset($json[$key]->teacher);
+        }
         if ($json)
             return json_encode($json, JSON_UNESCAPED_UNICODE);
         else
