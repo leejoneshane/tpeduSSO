@@ -23,7 +23,7 @@ return [
         'student_parents_info' => 'user/{sid}/parents/student/{stdno}',
         'teacher_info' => 'user/{sid}/teachers/teacher/{teaid}',
         'teachers_in_class' => 'user/{sid}/teachers/class/{clsid}',
-        'teacher_schedule' => 'user/{sid}/subjects/teacher/{teaid}',
+        'teacher_schedule' => 'admin/{sid}/subjects/teacher/{teaid}',
         'teacher_tutor_students' => 'user/{sid}/teachers/student/{teaid}',
         'subject_info' => 'admin/{sid}/subjects/subject/{subjid}',
         'subject_for_class' => 'admin/{sid}/subjects/class/{clsid}',
