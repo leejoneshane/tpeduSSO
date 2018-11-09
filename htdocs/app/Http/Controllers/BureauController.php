@@ -427,6 +427,8 @@ class BureauController extends Controller
 		]);
 		$idno = strtoupper($request->get('idno'));
 		$orgs = $request->get('o');
+		if ($openldap->checkIdno("cn=$idno"))
+			return redirect('bureau/people?area='.$area.'&dc='.$orgs[0].'&field='.$my_field.'&keywords='.$keywords)->with("error", "人員已經存在，所以無法新增！");
 		$educloud = array();
 		foreach ($orgs as $o) {
 			$entry = $openldap->getOrgEntry($o);
@@ -434,13 +436,17 @@ class BureauController extends Controller
 			$sid = $data['tpUniformNumbers'];
 			$educloud[] = json_encode([ "sid" => $sid, "role" => $request->get('type') ], JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 		}
+		$account = array();
 		$info = array();
 		$info['dn'] = Config::get('ldap.userattr').'='.$idno.','.Config::get('ldap.userdn');
 		$info['objectClass'] = array('tpeduPerson', 'inetUser');
+		$info['cn'] = $idno;
 		$info['o'] = $orgs;
 		$info['info'] = $educloud;
+		$info['inetUserStatus'] = 'active';
 		if ($request->get('type') != '學生') {
 			$info['employeeType'] = $request->get('type');
+			$account["uid"] = $orgs[0].substr($idno, -9);
 		} else {
 			$validatedData = $request->validate([
 				'stdno' => 'required|string',
@@ -450,10 +456,19 @@ class BureauController extends Controller
 			$info['employeeNumber'] = $request->get('stdno');
 			$info['tpClass'] = $request->get('tclass');
 			$info['tpSeat'] = $request->get('seat');
+			$account["uid"] = $orgs[0].$info['employeeNumber'];
 		}
-		$info['inetUserStatus'] = 'active';
-		$info['cn'] = $idno;
-	    $info["userPassword"] = $openldap->make_ssha_password(substr($idno, -6));
+		$account["userPassword"] = $openldap->make_ssha_password(substr($idno, -6));
+		$account["objectClass"] = "radiusObjectProfile";
+		$account["cn"] = $idno;
+		$account["description"] = '管理員新增';
+		$account_dn = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+		$result = $openldap->createEntry($account);
+		if (!$result) {
+			return redirect('bureau/people?area='.$area.'&dc='.$orgs[0].'&field='.$my_field.'&keywords='.$keywords)->with("error", "因為預設帳號無法建立，人員新增失敗！".$openldap->error());
+		}
+		$info["uid"] = $account["uid"];
+	    $info["userPassword"] = $account["userPassword"];
 		$info['sn'] = $request->get('sn');
 		$info['givenName'] = $request->get('gn');
 		$info['displayName'] = $info['sn'].$info['givenName'];

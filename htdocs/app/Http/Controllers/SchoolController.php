@@ -389,11 +389,25 @@ class SchoolController extends Controller
 			'www' => 'nullable|url',
 		]);
 		$idno = strtoupper($request->get('idno'));
+		if ($openldap->checkIdno("cn=$idno"))
+			return redirect('school/'.$dc.'/teacher?field='.$my_field)->with("error", "學生已經存在，所以無法新增！");
+		$account = array();
+		$account["uid"] = $dc.$request->get('stdno');
+		$account["userPassword"] = $openldap->make_ssha_password(substr($idno, -6));
+		$account["objectClass"] = "radiusObjectProfile";
+		$account["cn"] = $idno;
+		$account["description"] = '管理員新增';
+		$account_dn = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+		$result = $openldap->createEntry($account);
+		if (!$result) {
+			return redirect('school/'.$dc.'/teacher?field='.$my_field)->with("error", "因為預設帳號無法建立，學生新增失敗！".$openldap->error());
+		}
 		$info = array();
 		$info['dn'] = Config::get('ldap.userattr').'='.$idno.','.Config::get('ldap.userdn');
 		$info['objectClass'] = array('tpeduPerson', 'inetUser');
 		$info['cn'] = $idno;
-	    $info["userPassword"] = $openldap->make_ssha_password(substr($idno, -6));
+		$info["uid"] = $account["uid"];
+	    $info["userPassword"] = $account["userPassword"];
 		$info['o'] = $dc;
 		$info['employeeType'] = '學生';
 		$info['inetUserStatus'] = 'active';
@@ -1054,6 +1068,19 @@ class SchoolController extends Controller
 			'www' => 'nullable|url',
 		]);
 		$idno = strtoupper($request->get('idno'));
+		if ($openldap->checkIdno("cn=$idno"))
+			return redirect('school/'.$dc.'/teacher?field='.$my_field)->with("error", "教師已經存在，所以無法新增！");
+		$account = array();
+		$account["uid"] = $dc.substr($idno, -9);
+		$account["userPassword"] = $openldap->make_ssha_password(substr($idno, -6));
+		$account["objectClass"] = "radiusObjectProfile";
+		$account["cn"] = $idno;
+		$account["description"] = '管理員新增';
+		$account_dn = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+		$result = $openldap->createEntry($account);
+		if (!$result) {
+			return redirect('school/'.$dc.'/teacher?field='.$my_field)->with("error", "因為預設帳號無法建立，教師新增失敗！".$openldap->error());
+		}
 		$info = array();
 		$info['objectClass'] = array('tpeduPerson', 'inetUser');
 		$info['o'] = $dc;
@@ -1077,7 +1104,8 @@ class SchoolController extends Controller
 		$info['sn'] = $request->get('sn');
 		$info['givenName'] = $request->get('gn');
 		$info['displayName'] = $info['sn'].$info['givenName'];
-	    $info["userPassword"] = $openldap->make_ssha_password(substr($idno, -6));
+		$info["uid"] = $account["uid"];
+	    $info["userPassword"] = $account["userPassword"];
 		if (!empty($request->get('gender'))) $info['gender'] = (int) $request->get('gender');
 		if (!empty($request->get('birth'))) $info['birthDate'] = str_replace('-', '', $request->get('birth')).'000000Z';
 		if (!empty($request->get('raddress'))) $info['registeredAddress'] = $request->get('raddress');
