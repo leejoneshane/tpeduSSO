@@ -430,7 +430,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('character');
 			}
-			$info['tpCharacter'] = $data;
+			$info['tpCharacter'] = array_values(array_filter($data));
 		}
 		if (!is_null($request->get('mail'))) {
 			$data = array();
@@ -439,7 +439,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('mail');
 			}
-			$info['mail'] = $data;
+			$info['mail'] = array_values(array_filter($data));
 		}
 		if (!is_null($request->get('mobile'))) {
 			$data = array();
@@ -448,7 +448,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('mobile');
 			}
-			$info['mobile'] = $data;
+			$info['mobile'] = array_values(array_filter($data));
 		}
 		if (!is_null($request->get('fax'))) {
 			$data = array();
@@ -457,7 +457,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('fax');
 			}
-			$info['facsimileTelephoneNumber'] = $data;
+			$info['facsimileTelephoneNumber'] = array_values(array_filter($data));
 		}
 		if (!is_null($request->get('otel'))) {
 			$data = array();
@@ -466,7 +466,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('otel');
 			}
-			$info['telephoneNumber'] = $data;
+			$info['telephoneNumber'] = array_values(array_filter($data));
 		}
 		if (!is_null($request->get('htel'))) {
 			$data = array();
@@ -475,7 +475,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('htel');
 			}
-			$info['homePhone'] = $data;
+			$info['homePhone'] = array_values(array_filter($data));
 		}
 				
 		$result = $openldap->createEntry($info);
@@ -532,7 +532,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('character');
 			}
-			$info['tpCharacter'] = $data;
+			$info['tpCharacter'] = array_values(array_filter($data));
 		}
 		if (is_null($request->get('mail'))) {
 			$info['mail'] = [];
@@ -543,7 +543,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('mail');
 			}
-			$info['mail'] = $data;
+			$info['mail'] = array_values(array_filter($data));
 		}
 		if (is_null($request->get('mobile'))) {
 			$info['mobile'] = [];
@@ -554,7 +554,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('mobile');
 			}
-			$info['mobile'] = $data;
+			$info['mobile'] = array_values(array_filter($data));
 		}
 		if (is_null($request->get('fax'))) {
 			$info['facsimileTelephoneNumber'] = [];
@@ -565,7 +565,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('fax');
 			}
-			$info['facsimileTelephoneNumber'] = $data;
+			$info['facsimileTelephoneNumber'] = array_values(array_filter($data));
 		}
 		if (is_null($request->get('otel'))) {
 			$info['telephoneNumber'] = [];
@@ -576,7 +576,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('otel');
 			}
-			$info['telephoneNumber'] = $data;
+			$info['telephoneNumber'] = array_values(array_filter($data));
 		}
 		if (is_null($request->get('htel'))) {
 			$info['homePhone'] = [];
@@ -587,7 +587,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('htel');
 			}
-			$info['homePhone'] = $data;
+			$info['homePhone'] = array_values(array_filter($data));
 		}
 				
 		$entry = $openldap->getUserEntry($uuid);
@@ -1129,7 +1129,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('character');
 			}
-			$info['tpCharacter'] = $data;
+			$info['tpCharacter'] = array_values(array_filter($data));
 		}
 		if (!is_null($request->get('mail'))) {
 			$data = array();
@@ -1138,7 +1138,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('mail');
 			}
-			$info['mail'] = $data;
+			$info['mail'] = array_values(array_filter($data));
 		}
 		if (!is_null($request->get('mobile'))) {
 			$data = array();
@@ -1147,7 +1147,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('mobile');
 			}
-			$info['mobile'] = $data;
+			$info['mobile'] = array_values(array_filter($data));
 		}
 		if (!is_null($request->get('fax'))) {
 			$data = array();
@@ -1156,7 +1156,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('fax');
 			}
-			$info['facsimileTelephoneNumber'] = $data;
+			$info['facsimileTelephoneNumber'] = array_values(array_filter($data));
 		}
 		if (!is_null($request->get('otel'))) {
 			$data = array();
@@ -1165,7 +1165,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('otel');
 			}
-			$info['telephoneNumber'] = $data;
+			$info['telephoneNumber'] = array_values(array_filter($data));
 		}
 		if (!is_null($request->get('htel'))) {
 			$data = array();
@@ -1174,7 +1174,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('htel');
 			}
-			$info['homePhone'] = $data;
+			$info['homePhone'] = array_values(array_filter($data));
 		}
 
 		$result = $openldap->createEntry($info);
@@ -1290,7 +1290,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('character');
 			}
-			$info['tpCharacter'] = $data;
+			$info['tpCharacter'] = array_values(array_filter($data));
 		}
 		if (is_null($request->get('mail'))) {
 			$info['mail'] = [];
@@ -1301,7 +1301,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('mail');
 			}
-			$info['mail'] = $data;
+			$info['mail'] = array_values(array_filter($data));
 		}
 		if (is_null($request->get('mobile'))) {
 			$info['mobile'] = [];
@@ -1312,7 +1312,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('mobile');
 			}
-			$info['mobile'] = $data;
+			$info['mobile'] = array_values(array_filter($data));
 		}
 		if (is_null($request->get('fax'))) {
 			$info['facsimileTelephoneNumber'] = [];
@@ -1323,7 +1323,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('fax');
 			}
-			$info['facsimileTelephoneNumber'] = $data;
+			$info['facsimileTelephoneNumber'] = array_values(array_filter($data));
 		}
 		if (is_null($request->get('otel'))) {
 			$info['telephoneNumber'] = [];
@@ -1334,7 +1334,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('otel');
 			}
-			$info['telephoneNumber'] = $data;
+			$info['telephoneNumber'] = array_values(array_filter($data));
 		}
 		if (is_null($request->get('htel'))) {
 			$info['homePhone'] = [];
@@ -1345,7 +1345,7 @@ class SchoolController extends Controller
 			} else {
 	    		$data[] = $request->get('htel');
 			}
-			$info['homePhone'] = $data;
+			$info['homePhone'] = array_values(array_filter($data));
 		}
 		
 		$entry = $openldap->getUserEntry($uuid);
