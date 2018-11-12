@@ -54,7 +54,7 @@ class v2_schoolController extends Controller
     public function allTeachersByOrg(Request $request, $dc)
     {
 		$openldap = new LdapServiceProvider();
-        $filter = "(&(o=$dc)(!(employeeType=學生))";
+        $filter = "(&(o=$dc)(!(employeeType=學生)))";
         $teachers = $openldap->findUsers($filter, "entryUUID");
 		$json = array();
 		foreach ($teachers as $teacher) {
@@ -297,7 +297,7 @@ class v2_schoolController extends Controller
         $json = array();
         $classes = array();
 		$openldap = new LdapServiceProvider();
-		$teachers = $openldap->findUsers("(&(o=$dc)(tpTeachClass=*$class_id*))", ["o", "tpTeachClass"]);
+		$teachers = $openldap->findUsers("(&(o=$dc)(tpTeachClass=*,$class_id,*))", ["o", "tpTeachClass"]);
 		foreach ($teachers as $teacher) {
             if (is_array($teacher['tpTeachClass'])) {
                 $classes = $teacher['tpTeachClass'];
