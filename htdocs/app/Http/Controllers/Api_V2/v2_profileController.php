@@ -15,8 +15,8 @@ class v2_profileController extends Controller
     {
 		$request->session()->flush();
 		$request->session()->regenerate();
-		$cookie = Cookie::forget('laravel_session', 'laravel_token');
-        return redirect()->back()->withCookie($cookie);
+		Cookie::queue(Cookie::forget('laravel_session', 'laravel_token'));
+        return "<script>history.go(-1);</script>";
     }
 
     public function me(Request $request)
