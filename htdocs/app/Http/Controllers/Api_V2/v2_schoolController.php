@@ -15,7 +15,7 @@ class v2_schoolController extends Controller
     public function all(Request $request)
     {
         $openldap = new LdapServiceProvider();
-        $condition = array();
+        $condition[] = "(objectClass=tpeduSchool)";
         $area = $request->get('area');
         if ($area) $condition[] = "(st=$area)";
         $name = $request->get('name');
@@ -29,8 +29,7 @@ class v2_schoolController extends Controller
             }
             $filter .= ')';
         } else {
-            $filter = '';
-            if ($condition) $filter = $condition[0];
+            $filter = $condition[0];
         }
         $json = $openldap->getOrgs($filter);
         if ($json)
