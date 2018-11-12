@@ -14,7 +14,8 @@ class v2_schoolController extends Controller
 {
     public function all(Request $request)
     {
-		$openldap = new LdapServiceProvider();
+        $openldap = new LdapServiceProvider();
+        $condition = array();
         $area = $request->get('area');
         if ($area) $condition[] = "(st=$area)";
         $name = $request->get('name');
