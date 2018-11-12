@@ -90,10 +90,11 @@ class v2_schoolController extends Controller
             }
             $filter .= ')';
             $people = $openldap->findUsers($filter, "entryUUID");
-    		$json = array();
-	    	foreach ($people as $one) {
-	        	$json[] = $one['entryUUID'];
-		    }
+            $json = array();
+            if ($people)
+	    	    foreach ($people as $one) {
+	        	    $json[] = $one['entryUUID'];
+		        }
             if ($json)
                 return json_encode($json, JSON_UNESCAPED_UNICODE);
             else
