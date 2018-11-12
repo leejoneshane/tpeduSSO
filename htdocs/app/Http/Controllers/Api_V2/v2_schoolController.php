@@ -99,7 +99,7 @@ class v2_schoolController extends Controller
             if ($json)
                 return json_encode($json, JSON_UNESCAPED_UNICODE);
             else
-                return response()->json([ 'error' => '找不到符合條件的人員'], 404);
+                return response()->json([ 'error' => "找不到符合條件($filter)的人員"], 404);
         } else {
             return response()->json([ 'error' => '請提供搜尋條件'], 500);
         }
