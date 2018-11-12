@@ -69,13 +69,8 @@ class v2_schoolController extends Controller
     {
 		$openldap = new LdapServiceProvider();
         $condition[] = "(o=$dc)";
-        $role = $request->get('role');
-        if ($role) {
-            if ($role == '學生') 
-                $condition[] = "(employeeType=學生)";
-            else
-                $condition[] = "(!(employeeType=學生))";
-        }
+        $type = $request->get('type');
+        if ($type) $condition[] = "(employeeType=$type)";
         $idno = $request->get('idno');
         if ($idno) $condition[] = "(cn=$idno)";
         $sysid = $request->get('sysid');
