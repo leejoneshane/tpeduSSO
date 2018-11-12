@@ -78,13 +78,13 @@ class v2_schoolController extends Controller
         $gender = $request->get('gender');
         if ($gender) $condition[] = "(gender=$gender)";
         $name = $request->get('name');
-        if ($name) $condition[] = "(description=*$name*)";
+        if ($name) $condition[] = "(displayName=*$name*)";
         $email = $request->get('email');
         if ($email) $condition[] = "(mail=*$email*)";
         $tel = $request->get('tel');
-        if ($tel) $condition[] = "(|(mobile=$tel)(facsimileTelephoneNumber=$tel)(telephoneNumber=$tel)(homePhone=$tel))";
+        if ($tel) $condition[] = "(|(mobile=$tel)(telephoneNumber=$tel))";
         $address = $request->get('address');
-        if ($address) $condition[] = "(|(registeredAddress=*$address*)(homePostalAddress=*$address*))";
+        if ($address) $condition[] = "(homePostalAddress=$address)";
         if (count($condition) > 1) {
             $filter = '(&';
             foreach ($condition as $c) {
@@ -99,7 +99,7 @@ class v2_schoolController extends Controller
             if ($json)
                 return json_encode($json, JSON_UNESCAPED_UNICODE);
             else
-                return response()->json([ 'error' => "找不到符合條件($filter)的人員"], 404);
+                return response()->json([ 'error' => "找不到符合條件 $filter 的人員"], 404);
         } else {
             return response()->json([ 'error' => '請提供搜尋條件'], 500);
         }

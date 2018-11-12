@@ -11,11 +11,11 @@ olcdbindex: tpTeachClass sub
 olcdbindex: tpTutorClass eq
 olcdbindex: cn eq
 olcdbindex: uid eq
-olcdbindex: displayName eq
+olcdbindex: displayName eq,sub
 olcdbindex: mail eq,sub
 olcdbindex: mobile eq
 olcdbindex: memberOf eq
-olcdbindex: postalAddress eq
+olcdbindex: homePostalAddress eq
 olcdbindex: telephoneNumber eq
 olcdbindex: entryCSN eq
 olcdbindex: entryUUID eq
