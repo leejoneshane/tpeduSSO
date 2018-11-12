@@ -148,7 +148,7 @@ class SchoolController extends Controller
 				}
 				$idno = strtoupper($person->id);
 				if (!isset($idno) || empty($idno)) {
-					$messages[] = "第 $i 筆記錄，無身分證字號，跳過不處理！";
+					$messages[] = "第 $i 筆記錄，".$person->name."無身分證字號，跳過不處理！";
 		    		continue;
 				}
 				$validator = Validator::make(
@@ -170,11 +170,19 @@ class SchoolController extends Controller
 					$messages[] = "第 $i 筆記錄，".$person->name."無座號，跳過不處理！";
 		    		continue;
 				}
+    			if (!isset($person->gender)) {
+					$messages[] = "第 $i 筆記錄，".$person->name."性別未輸入，跳過不處理！";
+	    			continue;
+				}
 				$validator = Validator::make(
     				[ 'gender' => $person->gender ], [ 'gender' => 'required|digits:1' ]
     			);
     			if ($validator->fails()) {
 					$messages[] = "第 $i 筆記錄，".$person->name."性別資訊不正確，跳過不處理！";
+	    			continue;
+				}
+    			if (!isset($person->birthdate)) {
+					$messages[] = "第 $i 筆記錄，".$person->name."出生日期未輸入，跳過不處理！";
 	    			continue;
 				}
 				$validator = Validator::make(
@@ -722,7 +730,7 @@ class SchoolController extends Controller
 				}
 				$idno = strtoupper($person->id);
 				if (!isset($idno) || empty($idno)) {
-					$messages[] = "第 $i 筆記錄，無身分證字號，跳過不處理！";
+					$messages[] = "第 $i 筆記錄，".$person->name."無身分證字號，跳過不處理！";
 		    		continue;
 				}
 				$validator = Validator::make(
@@ -732,11 +740,19 @@ class SchoolController extends Controller
 					$messages[] = "第 $i 筆記錄，".$person->name."身分證字號格式或內容不正確，跳過不處理！";
 		    		continue;
 				}
+    			if (!isset($person->gender)) {
+					$messages[] = "第 $i 筆記錄，".$person->name."性別未輸入，跳過不處理！";
+	    			continue;
+				}
 				$validator = Validator::make(
     				[ 'gender' => $person->gender ], [ 'gender' => 'required|digits:1' ]
     			);
     			if ($validator->fails()) {
 					$messages[] = "第 $i 筆記錄，".$person->name."性別資訊不正確，跳過不處理！";
+	    			continue;
+				}
+    			if (!isset($person->birthdate)) {
+					$messages[] = "第 $i 筆記錄，".$person->name."出生日期未輸入，跳過不處理！";
 	    			continue;
 				}
 				$validator = Validator::make(

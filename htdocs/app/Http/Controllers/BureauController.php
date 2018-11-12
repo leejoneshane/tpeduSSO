@@ -222,11 +222,19 @@ class BureauController extends Controller
 		    			continue;
 					}
 				}
+    			if (!isset($person->gender)) {
+					$messages[] = "第 $i 筆記錄，".$person->name."性別未輸入，跳過不處理！";
+	    			continue;
+				}
 				$validator = Validator::make(
     				[ 'gender' => $person->gender ], [ 'gender' => 'required|digits:1' ]
     			);
     			if ($validator->fails()) {
 					$messages[] = "第 $i 筆記錄，".$person->name."性別資訊不正確，跳過不處理！";
+	    			continue;
+				}
+    			if (!isset($person->birthdate)) {
+					$messages[] = "第 $i 筆記錄，".$person->name."出生日期未輸入，跳過不處理！";
 	    			continue;
 				}
 				$validator = Validator::make(
