@@ -170,7 +170,7 @@ class SchoolController extends Controller
 					$messages[] = "第 $i 筆記錄，".$person->name."無座號，跳過不處理！";
 		    		continue;
 				}
-    			if (!isset($person->gender)) {
+    			if (!isset($person->gender) || empty($person->gender)) {
 					$messages[] = "第 $i 筆記錄，".$person->name."性別未輸入，跳過不處理！";
 	    			continue;
 				}
@@ -181,7 +181,7 @@ class SchoolController extends Controller
 					$messages[] = "第 $i 筆記錄，".$person->name."性別資訊不正確，跳過不處理！";
 	    			continue;
 				}
-    			if (!isset($person->birthdate)) {
+    			if (!isset($person->birthdate) || empty($person->birthdate)) {
 					$messages[] = "第 $i 筆記錄，".$person->name."出生日期未輸入，跳過不處理！";
 	    			continue;
 				}
@@ -224,7 +224,7 @@ class SchoolController extends Controller
     			$entry["sn"] = $person->sn;
     			$entry["givenName"] = $person->gn;
     			$entry["displayName"] = $person->name;
-    			$entry["gender"] = $person->gender;
+    			$entry["gender"] = (int) $person->gender;
 				$entry["birthDate"] = $person->birthdate."000000Z";
     			$entry["o"] = $orgs;
 				$entry['info'] = $educloud;
@@ -426,8 +426,8 @@ class SchoolController extends Controller
 		$info['sn'] = $request->get('sn');
 		$info['givenName'] = $request->get('gn');
 		$info['displayName'] = $info['sn'].$info['givenName'];
-		$info['gender'] = $request->get('gender');
-		$info['birthDate'] = $request->get('birth');
+		$info['gender'] = (int) $request->get('gender');
+		$info['birthDate'] = str_replace('-', '', $request->get('birth')).'000000Z';
 		if (!empty($request->get('raddress'))) $info['registeredAddress'] = $request->get('raddress');
 		if (!empty($request->get('address'))) $info['homePostalAddress'] = $request->get('address');
 		if (!empty($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
@@ -740,7 +740,7 @@ class SchoolController extends Controller
 					$messages[] = "第 $i 筆記錄，".$person->name."身分證字號格式或內容不正確，跳過不處理！";
 		    		continue;
 				}
-    			if (!isset($person->gender)) {
+    			if (!isset($person->gender) || empty($person->gender)) {
 					$messages[] = "第 $i 筆記錄，".$person->name."性別未輸入，跳過不處理！";
 	    			continue;
 				}
@@ -751,7 +751,7 @@ class SchoolController extends Controller
 					$messages[] = "第 $i 筆記錄，".$person->name."性別資訊不正確，跳過不處理！";
 	    			continue;
 				}
-    			if (!isset($person->birthdate)) {
+    			if (!isset($person->birthdate) || empty($person->birthdate)) {
 					$messages[] = "第 $i 筆記錄，".$person->name."出生日期未輸入，跳過不處理！";
 	    			continue;
 				}
@@ -867,8 +867,8 @@ class SchoolController extends Controller
     			$info["sn"] = $person->sn;
     			$info["givenName"] = $person->gn;
     			$info["displayName"] = $person->name;
-				if (!empty($person->gender)) $info['gender'] = (int) $person->gender;
-				if (!empty($person->birthdate)) $info['birthDate'] = str_replace('-', '', $person->birthdate).'000000Z';
+				$info['gender'] = (int) $person->gender;
+				$info['birthDate'] = $person->birthdate.'000000Z';
     			$info["o"] = $orgs;
     			$info["ou"] = $units;
     			$info["title"] = $roles;
@@ -1122,8 +1122,8 @@ class SchoolController extends Controller
 		$info['displayName'] = $info['sn'].$info['givenName'];
 		$info["uid"] = $account["uid"];
 	    $info["userPassword"] = $account["userPassword"];
-		if (!empty($request->get('gender'))) $info['gender'] = (int) $request->get('gender');
-		if (!empty($request->get('birth'))) $info['birthDate'] = str_replace('-', '', $request->get('birth')).'000000Z';
+		$info['gender'] = (int) $request->get('gender');
+		$info['birthDate'] = str_replace('-', '', $request->get('birth')).'000000Z';
 		if (!empty($request->get('raddress'))) $info['registeredAddress'] = $request->get('raddress');
 		if (!empty($request->get('address'))) $info['homePostalAddress'] = $request->get('address');
 		if (!empty($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
@@ -1224,8 +1224,8 @@ class SchoolController extends Controller
 		$info['sn'] = $request->get('sn');
 		$info['givenName'] = $request->get('gn');
 		$info['displayName'] = $info['sn'].$info['givenName'];
-		if (!empty($request->get('gender'))) $info['gender'] = (int) $request->get('gender');
-		if (!empty($request->get('birth'))) $info['birthDate'] = str_replace('-', '', $request->get('birth')).'000000Z';
+		$info['gender'] = (int) $request->get('gender');
+		$info['birthDate'] = str_replace('-', '', $request->get('birth')).'000000Z';
 		$ous = array();
 		$units = array();
 		if (isset($original['ou'])) {
