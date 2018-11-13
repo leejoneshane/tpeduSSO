@@ -30,7 +30,7 @@ return [
     
     // Allow debugging within SamlAuth trait to get SP data during SAML auth
     // request. The debug output is written to storage/logs/laravel.log.
-    'debug_saml_request' => true,
+    'debug_saml_request' => false,
 
     'email_domain'	=> env('SAML_MAIL', 'ms.tp.edu.tw'),
     /*
@@ -78,7 +78,7 @@ return [
             // OPTIONAL: Use a specific audience restriction value when creating the SAMLRequest object.
             //           Default value is the assertion consumer service URL (the base64 encoded SP url). 
             //           This is a bugfix for Nextcloud as SP and can be removed for normal SPs.
-            'audience_restriction' => 'https://www.google.com/a/ms.tp.edu.tw/acs',
+            //'audience_restriction' => 'https://www.google.com/a/ms.tp.edu.tw/acs',
         ],
         
     ],
