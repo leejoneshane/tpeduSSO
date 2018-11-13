@@ -15,7 +15,8 @@ olcdbindex: displayName eq,sub
 olcdbindex: mail eq,sub
 olcdbindex: mobile eq
 olcdbindex: memberOf eq
-olcdbindex: homePostalAddress eq
+olcdbindex: tpUniformNumbers eq
+olcdbindex: employeeNumber eq
 olcdbindex: telephoneNumber eq
 olcdbindex: entryCSN eq
 olcdbindex: entryUUID eq
