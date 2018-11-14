@@ -1020,8 +1020,10 @@ class SchoolController extends Controller
 		$category = $openldap->getOrgData($school, 'businessCategory');
 		$data = $openldap->getSubjects($dc);
 		$subjects = array();
-		foreach ($data as $subj) {
-			if (!array_key_exists($subj->subject, $subjects)) $subjects[$subj->subject] = $subj->description;
+		if ($data) {
+			foreach ($data as $subj) {
+				if (!array_key_exists($subj->subject, $subjects)) $subjects[$subj->subject] = $subj->description;
+			}
 		}
 		$data = $openldap->getOus($dc, '教學班級');
 		$classes = array();
@@ -1032,8 +1034,10 @@ class SchoolController extends Controller
 		}
 		$data = $openldap->allRoles($dc);
 		$roles = array();
-		foreach ($data as $role) {
-			if (!array_key_exists($role->cn, $roles)) $roles[$role->cn] = $role->description;
+		if ($data) {
+			foreach ($data as $role) {
+				if (!array_key_exists($role->cn, $roles)) $roles[$role->cn] = $role->description;
+			}
 		}
     	if (!is_null($uuid)) {//edit
     		$entry = $openldap->getUserEntry($uuid);

@@ -1170,7 +1170,7 @@ class BureauController extends Controller
 		    		continue;
 				}
 				$validator = Validator::make(
-    				[ 'sid' => $org->sid ], [ 'sid' => 'required|digits:6' ]
+    				[ 'sid' => $org->sid ], [ 'sid' => 'required|string|size:6' ]
     			);
 				if ($validator->fails()) {
 					$messages[] = "第 $i 筆記錄，".$org->name."統一編號格式不正確，跳過不處理！";

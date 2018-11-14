@@ -33,32 +33,34 @@
 					</tr>
 				</thead>
 				<tbody>
+					@if ($subjs)
 					@foreach ($subjs as $subj)
 					<tr>
-						<form role="form" method="POST" action="{{ route('school.updateSubject', [ 'dc' => $dc, 'subject' => $subj->subject ]) }}">
+						<form role="form" method="POST" action="{{ route('school.updateSubject', [ 'dc' => $dc, 'subject' => $subj['tpSubject'] ]) }}">
 		    			@csrf
 						<td style="vertical-align: inherit;">
-							<label>{{ $subj->subject }}</label>
+							<label>{{ $subj['tpSubject'] }}</label>
 						</td>
 						<td>
 							<select class="form-control" name="domain">
 							@foreach ($domains as $domain)
-			    				<option value="{{ $domain }}"{{ isset($subj->domain) && $subj->domain == $domain ? ' selected' : '' }}>{{ $domain }}</option>
+			    				<option value="{{ $domain }}"{{ array_key_exists('tpSubjectDomain', $subj) && $subj['tpSubjectDomain'] == $domain ? ' selected' : '' }}>{{ $domain }}</option>
 							@endforeach
 							</select>
 						</td>
 						<td>
-							<input id="description" type="text" class="form-control" name="description" value="{{ $subj->description ? $subj->description : old('description') }}">
+							<input id="description" type="text" class="form-control" name="description" value="{{ $subj['description'] ? $subj['description'] : old('description') }}">
 						</td>
 						<td>
 							<button type="submit" class="btn btn-primary">修改</button>
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#remove-form').attr('action','{{ route('school.removeSubject', [ 'dc' => $dc, 'subject' => $subj->subject ]) }}');
+							 	onclick="$('#remove-form').attr('action','{{ route('school.removeSubject', [ 'dc' => $dc, 'subject' => $subj['tpSubject'] ]) }}');
 										 $('#remove-form').submit();">刪除</button>
 						</td>
 						</form>
 					</tr>
 					@endforeach
+					@endif
 				</tbody>
 			</table>
 		</div>
