@@ -222,7 +222,7 @@ class BureauController extends Controller
 		    			continue;
 					}
 				}
-    			if (!isset($person->gender)) {
+    			if (!isset($person->gender) || empty($person->gender)) {
 					$messages[] = "第 $i 筆記錄，".$person->name."性別未輸入，跳過不處理！";
 	    			continue;
 				}
@@ -233,7 +233,7 @@ class BureauController extends Controller
 					$messages[] = "第 $i 筆記錄，".$person->name."性別資訊不正確，跳過不處理！";
 	    			continue;
 				}
-    			if (!isset($person->birthdate)) {
+    			if (!isset($person->birthdate) || empty($person->birthdate)) {
 					$messages[] = "第 $i 筆記錄，".$person->name."出生日期未輸入，跳過不處理！";
 	    			continue;
 				}
@@ -269,7 +269,7 @@ class BureauController extends Controller
 				} else {
 					$entry["displayName"] = $person->sn.$person->gn;
 				}
-    			$entry["gender"] = $person->gender;
+    			$entry["gender"] = (int) $person->gender;
 				$entry["birthDate"] = $person->birthdate."000000Z";
     			$entry["o"] = $orgs;
 				$entry['info'] = $educloud;
