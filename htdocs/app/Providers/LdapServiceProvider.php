@@ -86,7 +86,12 @@ class LdapServiceProvider extends ServiceProvider
 		if (strlen($idno) != 10) return false;
 		$this->administrator();
 		$resource = @ldap_search(self::$ldap_read, Config::get('ldap.userdn'), "cn=$idno");
-		if ($resource) return $idno;
+		if ($resource) {
+	    	$entry = ldap_first_entry(self::$ldap_read, $resource);
+	    	if (!$entry) return false;
+	    	$id = ldap_get_values(self::$ldap_read, $entry, "cn");
+	    	return $id[0];
+		}
         return false;
     }
 
