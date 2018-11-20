@@ -436,7 +436,7 @@ class BureauController extends Controller
 		$idno = strtoupper($request->get('idno'));
 		$orgs = $request->get('o');
 		if ($idno = $openldap->checkIdno($idno))
-			return redirect('bureau/people?area='.$area.'&dc='.$orgs[0].'&field='.$my_field.'&keywords='.$keywords)->with("error", "人員 $idno 已經存在，所以無法新增！");
+			return redirect('bureau/people?area='.$area.'&dc='.$orgs[0].'&field='.$my_field.'&keywords='.$keywords)->with("error", "人員已經存在，所以無法新增！");
 		$educloud = array();
 		foreach ($orgs as $o) {
 			$entry = $openldap->getOrgEntry($o);
@@ -470,7 +470,7 @@ class BureauController extends Controller
 		$account["objectClass"] = "radiusObjectProfile";
 		$account["cn"] = $idno;
 		$account["description"] = '管理員新增';
-		$account_dn = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+		$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
 		$result = $openldap->createEntry($account);
 		if (!$result) {
 			return redirect('bureau/people?area='.$area.'&dc='.$orgs[0].'&field='.$my_field.'&keywords='.$keywords)->with("error", "因為預設帳號無法建立，人員新增失敗！".$openldap->error());

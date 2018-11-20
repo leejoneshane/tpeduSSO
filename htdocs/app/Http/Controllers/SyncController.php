@@ -271,22 +271,22 @@ class SyncController extends Controller
 		}
 		$org_subjects = $openldap->getSubjects($dc);
 		for ($i=0;$i<count($org_subjects);$i++) {
-			if (!in_array($org_subjects[$i]->description, $subjects)) {
-				$entry = $openldap->getSubjectEntry($dc, $org_subjects[$i]->subject);
+			if (!in_array($org_subjects[$i]['description'], $subjects)) {
+				$entry = $openldap->getSubjectEntry($dc, $org_subjects[$i]['tpSubject']);
 				$result = $openldap->deleteEntry($entry);
 				if ($result) {
 					array_splice($org_subjects, $i, 1);
-					$messages[] = "subject=". $org_subjects[$i]->subject ." 已經刪除！";
+					$messages[] = "subject=". $org_subjects[$i]['tpSubject'] ." 已經刪除！";
 				} else {
-					$messages[] = "subject=". $org_subjects[$i]->subject ." 已經不再使用，但無法刪除：". $http->ps_error();
+					$messages[] = "subject=". $org_subjects[$i]['tpSubject'] ." 已經不再使用，但無法刪除：". $http->ps_error();
 				}
 			}
 		}
 		$subject_ids = array();
 		$subject_names = array();
 		foreach ($org_subjects as $subj) {
-			$subject_ids[] = $subj->subject;
-			$subject_names[] = $subj->description;
+			$subject_ids[] = $subj['tpSubject'];
+			$subject_names[] = $subj['description'];
 		}
 		foreach ($subjects as $subj_name) {
 			if (in_array($subj_name, $subject_names)) {

@@ -1022,7 +1022,7 @@ class SchoolController extends Controller
 		$subjects = array();
 		if ($data) {
 			foreach ($data as $subj) {
-				if (!array_key_exists($subj->subject, $subjects)) $subjects[$subj->subject] = $subj->description;
+				if (!array_key_exists($subj['tpSubject'], $subjects)) $subjects[$subj['tpSubject']] = $subj['description'];
 			}
 		}
 		$data = $openldap->getOus($dc, '教學班級');
@@ -1537,7 +1537,7 @@ class SchoolController extends Controller
 					if (count($a) == 3 && ($a[0] != $dc || $a[1] != $ou || $a[2] != $role)) $roles[] = $title; 
 					if (count($a) == 1 && $a[0] != $role) $roles[] = $dc.','.$ou.','.$title;
 				}
-				$roles = array_value(array_unique($roles + [ $dc.','.$ou.','.$info['cn'] ]));
+				$roles = array_values(array_unique($roles + [ $dc.','.$ou.','.$info['cn'] ]));
 	    		$openldap->updateData($user_entry, [ 'title' => $roles ]);
 			}
 		}

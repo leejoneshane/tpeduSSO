@@ -87,8 +87,8 @@
 				    		<option value="{{ $ou }}"{{ isset($pair['class']) && $pair['class'] == $ou ? ' selected' : '' }}>{{ $desc }}</option>
 				    	@endforeach
 						</select><select class="form-control" style="width:25%;display:inline" name="subj[]">
-						@foreach ($subjects as $id => $name)
-				    		<option value="{{ $id }}"{{ isset($pair['subject']) && $pair['subject'] == $id ? ' selected' : '' }}>{{ $name }}</option>
+						@foreach ($subjects as $subj)
+				    		<option value="{{ $subj['tpSubject'] }}"{{ isset($pair['subject']) && $pair['subject'] == $subj['tpSubject'] ? ' selected' : '' }}>{{ $subj['description'] }}</option>
 				    	@endforeach
 						</select><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().prev().remove();$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
 						@endforeach

@@ -9,6 +9,7 @@ olcdbindex: title eq
 olcdbindex: tpSubject eq
 olcdbindex: tpTeachClass sub
 olcdbindex: tpTutorClass eq
+olcdbindex: tpCharacter eq
 olcdbindex: cn eq
 olcdbindex: uid eq
 olcdbindex: displayName eq,sub
