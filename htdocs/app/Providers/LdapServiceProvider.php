@@ -82,12 +82,11 @@ class LdapServiceProvider extends ServiceProvider
 
     public function checkIdno($idno)
     {
-    	if (empty($idno)) return false;
+		if (strlen($idno) == 13) $idno = substr($idno,3);
+		if (strlen($idno) != 10) return false;
 		$this->administrator();
-		$resource = @ldap_search(self::$ldap_read, Config::get('ldap.userdn'), $idno);
-		if ($resource) {
-	    	return substr($idno,3);
-		}
+		$resource = @ldap_search(self::$ldap_read, Config::get('ldap.userdn'), "cn=$idno");
+		if ($resource) return $idno;
         return false;
     }
 

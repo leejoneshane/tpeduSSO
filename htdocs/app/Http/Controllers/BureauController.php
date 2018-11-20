@@ -435,7 +435,7 @@ class BureauController extends Controller
 		]);
 		$idno = strtoupper($request->get('idno'));
 		$orgs = $request->get('o');
-		if ($openldap->checkIdno("cn=$idno"))
+		if ($openldap->checkIdno($idno) == $idno)
 			return redirect('bureau/people?area='.$area.'&dc='.$orgs[0].'&field='.$my_field.'&keywords='.$keywords)->with("error", "人員已經存在，所以無法新增！");
 		$educloud = array();
 		foreach ($orgs as $o) {
