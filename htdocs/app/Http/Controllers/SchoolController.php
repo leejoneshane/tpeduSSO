@@ -1022,7 +1022,10 @@ class SchoolController extends Controller
 		$subjects = array();
 		if ($data) {
 			foreach ($data as $subj) {
-				if (!array_key_exists($subj['tpSubject'], $subjects)) $subjects[$subj['tpSubject']] = $subj['description'];
+				if (!array_key_exists($subj['tpSubject'], $subjects)) {
+					$subj_id = $subj['tpSubject'];
+					$subjects[$subj_id] = $subj['description'];
+				}
 			}
 		}
 		$data = $openldap->getOus($dc, '教學班級');
