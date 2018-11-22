@@ -428,9 +428,9 @@ class SchoolController extends Controller
 		$info['displayName'] = $info['sn'].$info['givenName'];
 		$info['gender'] = (int) $request->get('gender');
 		$info['birthDate'] = str_replace('-', '', $request->get('birth')).'000000Z';
-		if ($request->has('raddress')) $info['registeredAddress'] = $request->get('raddress');
-		if ($request->has('address')) $info['homePostalAddress'] = $request->get('address');
-		if ($request->has('www')) $info['wWWHomePage'] = $request->get('www');
+		if (!empty($request->has('raddress'))) $info['registeredAddress'] = $request->get('raddress');
+		if (!empty($request->has('address'))) $info['homePostalAddress'] = $request->get('address');
+		if (!empty($request->has('www'))) $info['wWWHomePage'] = $request->get('www');
 		if ($request->has('character')) {
 			$data = array();
 			if (is_array($request->get('character'))) {
@@ -1148,9 +1148,9 @@ class SchoolController extends Controller
 			}
 			$info['tpTeachClass'] = $assign;
 		}
-		if ($request->has('raddress')) $info['registeredAddress'] = $request->get('raddress');
-		if ($request->has('address')) $info['homePostalAddress'] = $request->get('address');
-		if ($request->has('www')) $info['wWWHomePage'] = $request->get('www');
+		if (!empty($request->has('raddress'))) $info['registeredAddress'] = $request->get('raddress');
+		if (!empty($request->has('address'))) $info['homePostalAddress'] = $request->get('address');
+		if (!empty($request->has('www'))) $info['wWWHomePage'] = $request->get('www');
 		if ($request->has('character')) {
 			$data = array();
 			if (is_array($request->get('character'))) {
@@ -1594,33 +1594,35 @@ class SchoolController extends Controller
 			$grades = array();
 			$classes = array();
 			$all_classes = array();
-			foreach ($users as $user) {
-				$idno = $user['cn'];
-				$cid = $user['tpClass'];
-				if (!empty($cid)) {
-					$class = new \stdClass();
-					$class->ou = $cid;
-					$class->grade = substr($cid, 0, 1);
-					$class->description = substr($cid,0,1).'年'.intval(substr($cid,-2)).'班';
-					if ($cid && !in_array($cid, $all_classes)) {
-						$all_classes[] = $class;
-						if (!in_array($class->grade, $grades)) $grades[] = $class->grade;
-						if ($class->grade == $my_grade) $classes[] = $class;
+			if ($users)
+				foreach ($users as $user) {
+					$idno = $user['cn'];
+					$cid = $user['tpClass'];
+					if (!empty($cid)) {
+						$class = new \stdClass();
+						$class->ou = $cid;
+						$class->grade = substr($cid, 0, 1);
+						$class->description = substr($cid,0,1).'年'.intval(substr($cid,-2)).'班';
+						if ($cid && !in_array($cid, $all_classes)) {
+							$all_classes[] = $class;
+							if (!in_array($class->grade, $grades)) $grades[] = $class->grade;
+							if ($class->grade == $my_grade) $classes[] = $class;
+						}
 					}
 				}
-			}
-			foreach($all_classes as $class) {
-				$class_entry = $openldap->getOuEntry($dc, $class->ou);
-				if (!$class_entry) {
-					$info = array();
-					$info["objectClass"] = "organizationalUnit";
-					$info["ou"] = $class->ou;
-					$info["businessCategory"] = '教學班級';
-					$info["description"] = $class->description;
-					$info["dn"] = "ou=$class->ou,".Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
-					$openldap->createEntry($info);
+			if (!empty($all_classes))
+				foreach($all_classes as $class) {
+					$class_entry = $openldap->getOuEntry($dc, $class->ou);
+					if (!$class_entry) {
+						$info = array();
+						$info["objectClass"] = "organizationalUnit";
+						$info["ou"] = $class->ou;
+						$info["businessCategory"] = '教學班級';
+						$info["description"] = $class->description;
+						$info["dn"] = "ou=$class->ou,".Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
+						$openldap->createEntry($info);
+					}
 				}
-			}
 		} else {
 			$grades = array();
 			$classes = array();
@@ -1653,11 +1655,12 @@ class SchoolController extends Controller
 		$grades = array();
 		$classes = array();
 		$data = $openldap->getOus($dc, '教學班級');
-		foreach ($data as $class) {
-			$grade = substr($class->ou, 0, 1);
-			if (!in_array($grade, $grades)) $grades[] = $grade;
-			if ($grade == $my_grade) $classes[] = $class;
-		}		
+		if ($data)
+			foreach ($data as $class) {
+				$grade = substr($class->ou, 0, 1);
+				if (!in_array($grade, $grades)) $grades[] = $grade;
+				if ($grade == $my_grade) $classes[] = $class;
+			}
 		$ous = $openldap->getOus($dc, '行政部門');
 		if (empty($my_ou) && !empty($ous)) $my_ou = $ous[0]->ou;
 		$teachers = $openldap->findUsers("(&(o=$dc)(ou=*$my_ou))");

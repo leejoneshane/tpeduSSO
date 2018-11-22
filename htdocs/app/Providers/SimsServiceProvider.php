@@ -69,7 +69,7 @@ class SimsServiceProvider extends ServiceProvider
         $url = str_replace($search, $values, Config::get("sims.ps.$info"));
         $res = $this->ps_send($url);
         $json = json_decode((string) $res->getBody());
-        if ($json->status == 'ok') {
+        if (isset($json->status) && $json->status == 'ok') {
             return $json->list;
         } else {
             self::$error = $json->error;
