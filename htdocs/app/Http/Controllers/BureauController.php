@@ -492,7 +492,8 @@ class BureauController extends Controller
 			} else {
 	    		$data[] = $request->get('character');
 			}
-			$info['tpCharacter'] = $data;
+			$data = array_values(array_filter($data));
+			if (!empty($data)) $info['tpCharacter'] = $data;
 		}
 		if ($request->has('mail')) {
 			$data = array();
@@ -501,7 +502,8 @@ class BureauController extends Controller
 			} else {
 	    		$data[] = $request->get('mail');
 			}
-			$info['mail'] = array_values(array_filter($data));
+			$data = array_values(array_filter($data));
+			if (!empty($data)) $info['mail'] = $data;
 		}
 		if ($request->has('mobile')) {
 			$data = array();
@@ -510,7 +512,8 @@ class BureauController extends Controller
 			} else {
 	    		$data[] = $request->get('mobile');
 			}
-			$info['mobile'] = array_values(array_filter($data));
+			$data = array_values(array_filter($data));
+			if (!empty($data)) $info['mobile'] = $data;
 		}
 		if ($request->has('fax')) {
 			$data = array();
@@ -519,7 +522,8 @@ class BureauController extends Controller
 			} else {
 	    		$data[] = $request->get('fax');
 			}
-			$info['facsimileTelephoneNumber'] = array_values(array_filter($data));
+			$data = array_values(array_filter($data));
+			if (!empty($data)) $info['facsimileTelephoneNumber'] = $data;
 		}
 		if ($request->has('otel')) {
 			$data = array();
@@ -528,7 +532,8 @@ class BureauController extends Controller
 			} else {
 	    		$data[] = $request->get('otel');
 			}
-			$info['telephoneNumber'] = array_values(array_filter($data));
+			$data = array_values(array_filter($data));
+			if (!empty($data)) $info['telephoneNumber'] = $data;
 		}
 		if ($request->has('htel')) {
 			$data = array();
@@ -537,7 +542,8 @@ class BureauController extends Controller
 			} else {
 	    		$data[] = $request->get('htel');
 			}
-			$info['homePhone'] = array_values(array_filter($data));
+			$data = array_values(array_filter($data));
+			if (!empty($data)) $info['homePhone'] = $data;
 		}
 
 		$result = $openldap->createEntry($info);
