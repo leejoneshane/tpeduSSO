@@ -481,7 +481,7 @@ class BureauController extends Controller
 		$info['givenName'] = $request->get('gn');
 		$info['displayName'] = $info['sn'].$info['givenName'];
 		$info['gender'] = $request->get('gender');
-		$info['birthDate'] = $request->get('birth');
+		$info['birthDate'] = str_replace('-', '', $request->get('birth')).'000000Z';
 		if (!empty($request->has('raddress'))) $info['registeredAddress'] = $request->get('raddress');
 		if (!empty($request->has('address'))) $info['homePostalAddress'] = $request->get('address');
 		if (!empty($request->has('www'))) $info['wWWHomePage'] = $request->get('www');
