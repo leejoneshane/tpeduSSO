@@ -405,7 +405,7 @@ class SchoolController extends Controller
 		$account["objectClass"] = "radiusObjectProfile";
 		$account["cn"] = $idno;
 		$account["description"] = '管理員新增';
-		$account_dn = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+		$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
 		$result = $openldap->createEntry($account);
 		if (!$result) {
 			return redirect('school/'.$dc.'/teacher?field='.$my_field)->with("error", "因為預設帳號無法建立，學生新增失敗！".$openldap->error());
@@ -1105,7 +1105,7 @@ class SchoolController extends Controller
 		$account["objectClass"] = "radiusObjectProfile";
 		$account["cn"] = $idno;
 		$account["description"] = '管理員新增';
-		$account_dn = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+		$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
 		$result = $openldap->createEntry($account);
 		if (!$result) {
 			return redirect('school/'.$dc.'/teacher?field='.$my_field)->with("error", "因為預設帳號無法建立，教師新增失敗！".$openldap->error());
@@ -1117,7 +1117,7 @@ class SchoolController extends Controller
 		$info['inetUserStatus'] = 'active';
 		$info['info'] = json_encode(array("sid" => $sid, "role" => $info['employeeType']), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 		$info['cn'] = $idno;
-		$info['dn'] = Config::get('ldap.userattr').'='.$info['cn'].','.Config::get('ldap.userdn');
+		$info['dn'] = Config::get('ldap.userattr').'='.$idno.','.Config::get('ldap.userdn');
 		$units = array();
 		$roles = array();
 		$titles = $request->get('roles');
