@@ -7,6 +7,7 @@ use Validator;
 use Auth;
 use DB;
 use Illuminate\Http\Request;
+use App\User;
 use App\Providers\LdapServiceProvider;
 use App\Rules\idno;
 use App\Rules\ipv4cidr;
@@ -895,6 +896,11 @@ class BureauController extends Controller
 			
 			$result = $openldap->updateData($entry, $info);
 			if ($result) {
+				$user = User::where('idno', $idno)->firstOrFail();
+				if ($user) {
+					$user->password = \Hash::make(substr($idno,-6));
+					$user->save();
+				}
 				return redirect()->back()->with("success", "已經將人員密碼重設為身分證字號後六碼！");
 			} else {
 				return redirect()->back()->with("error", "無法變更人員密碼！".$openldap->error());
