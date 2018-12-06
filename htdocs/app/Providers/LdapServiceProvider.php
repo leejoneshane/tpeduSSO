@@ -160,7 +160,7 @@ class LdapServiceProvider extends ServiceProvider
         $filter = "(&(uid=".$account.")(!(".Config::get('ldap.userattr')."=".$idno.")))";
 		$this->administrator();
 		$resource = @ldap_search(self::$ldap_read, Config::get('ldap.userdn'), $filter);
-		if ($resource) {
+		if (ldap_first_entry(self::$ldap_read, $resource)) {
 	    	return false;
 		} else {
             return true;
