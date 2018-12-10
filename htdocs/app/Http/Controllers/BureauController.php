@@ -486,7 +486,7 @@ class BureauController extends Controller
 		if (!empty($request->get('raddress'))) $info['registeredAddress'] = $request->get('raddress');
 		if (!empty($request->get('address'))) $info['homePostalAddress'] = $request->get('address');
 		if (!empty($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
-		if ($request->has('character')) {
+		if (!empty($request->get('character'))) {
 			$data = array();
 			if (is_array($request->get('character'))) {
 	    		$data = $request->get('character');
@@ -496,7 +496,7 @@ class BureauController extends Controller
 			$data = array_values(array_filter($data));
 			if (!empty($data)) $info['tpCharacter'] = $data;
 		}
-		if ($request->has('mail')) {
+		if (!empty($request->get('mail'))) {
 			$data = array();
 			if (is_array($request->get('mail'))) {
 	    		$data = $request->get('mail');
@@ -506,7 +506,7 @@ class BureauController extends Controller
 			$data = array_values(array_filter($data));
 			if (!empty($data)) $info['mail'] = $data;
 		}
-		if ($request->has('mobile')) {
+		if (!empty($request->get('mobile'))) {
 			$data = array();
 			if (is_array($request->get('mobile'))) {
 	    		$data = $request->get('mobile');
@@ -516,7 +516,7 @@ class BureauController extends Controller
 			$data = array_values(array_filter($data));
 			if (!empty($data)) $info['mobile'] = $data;
 		}
-		if ($request->has('fax')) {
+		if (!empty($request->get('fax'))) {
 			$data = array();
 			if (is_array($request->get('fax'))) {
 	    		$data = $request->get('fax');
@@ -526,7 +526,7 @@ class BureauController extends Controller
 			$data = array_values(array_filter($data));
 			if (!empty($data)) $info['facsimileTelephoneNumber'] = $data;
 		}
-		if ($request->has('otel')) {
+		if (!empty($request->get('otel'))) {
 			$data = array();
 			if (is_array($request->get('otel'))) {
 	    		$data = $request->get('otel');
@@ -536,7 +536,7 @@ class BureauController extends Controller
 			$data = array_values(array_filter($data));
 			if (!empty($data)) $info['telephoneNumber'] = $data;
 		}
-		if ($request->has('htel')) {
+		if (!empty($request->get('htel'))) {
 			$data = array();
 			if (is_array($request->get('htel'))) {
 	    		$data = $request->get('htel');

@@ -432,7 +432,7 @@ class SchoolController extends Controller
 		if (!empty($request->get('raddress'))) $info['registeredAddress'] = $request->get('raddress');
 		if (!empty($request->get('address'))) $info['homePostalAddress'] = $request->get('address');
 		if (!empty($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
-		if ($request->has('character')) {
+		if (!empty($request->get('character'))) {
 			$data = array();
 			if (is_array($request->get('character'))) {
 	    		$data = $request->get('character');
@@ -442,7 +442,7 @@ class SchoolController extends Controller
 			$data = array_values(array_filter($data));
 			if (!empty($data)) $info['tpCharacter'] = $data;
 		}
-		if ($request->has('mail')) {
+		if (!empty($request->get('mail'))) {
 			$data = array();
 			if (is_array($request->get('mail'))) {
 	    		$data = $request->get('mail');
@@ -452,7 +452,7 @@ class SchoolController extends Controller
 			$data = array_values(array_filter($data));
 			if (!empty($data)) $info['mail'] = $data;
 		}
-		if ($request->has('mobile')) {
+		if (!empty($request->get('mobile'))) {
 			$data = array();
 			if (is_array($request->get('mobile'))) {
 	    		$data = $request->get('mobile');
@@ -462,7 +462,7 @@ class SchoolController extends Controller
 			$data = array_values(array_filter($data));
 			if (!empty($data)) $info['mobile'] = $data;
 		}
-		if ($request->has('fax')) {
+		if (!empty($request->get('fax'))) {
 			$data = array();
 			if (is_array($request->get('fax'))) {
 	    		$data = $request->get('fax');
@@ -472,7 +472,7 @@ class SchoolController extends Controller
 			$data = array_values(array_filter($data));
 			if (!empty($data)) $info['facsimileTelephoneNumber'] = $data;
 		}
-		if ($request->has('otel')) {
+		if (!empty($request->get('otel'))) {
 			$data = array();
 			if (is_array($request->get('otel'))) {
 	    		$data = $request->get('otel');
@@ -482,7 +482,7 @@ class SchoolController extends Controller
 			$data = array_values(array_filter($data));
 			if (!empty($data)) $info['telephoneNumber'] = $data;
 		}
-		if ($request->has('htel')) {
+		if (!empty($request->get('htel'))) {
 			$data = array();
 			if (is_array($request->get('htel'))) {
 	    		$data = $request->get('htel');
@@ -1152,7 +1152,7 @@ class SchoolController extends Controller
 		if (!empty($request->get('raddress'))) $info['registeredAddress'] = $request->get('raddress');
 		if (!empty($request->get('address'))) $info['homePostalAddress'] = $request->get('address');
 		if (!empty($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
-		if ($request->has('character')) {
+		if (!empty($request->get('character'))) {
 			$data = array();
 			if (is_array($request->get('character'))) {
 	    		$data = $request->get('character');
@@ -1162,7 +1162,7 @@ class SchoolController extends Controller
 			$data = array_values(array_filter($data));
 			if (!empty($data)) $info['tpCharacter'] = $data;
 		}
-		if ($request->has('mail')) {
+		if (!empty($request->get('mail'))) {
 			$data = array();
 			if (is_array($request->get('mail'))) {
 	    		$data = $request->get('mail');
@@ -1172,7 +1172,7 @@ class SchoolController extends Controller
 			$data = array_values(array_filter($data));
 			if (!empty($data)) $info['mail'] = $data;
 		}
-		if ($request->has('mobile')) {
+		if (!empty($request->get('mobile'))) {
 			$data = array();
 			if (is_array($request->get('mobile'))) {
 	    		$data = $request->get('mobile');
@@ -1182,7 +1182,7 @@ class SchoolController extends Controller
 			$data = array_values(array_filter($data));
 			if (!empty($data)) $info['mobile'] = $data;
 		}
-		if ($request->has('fax')) {
+		if (!empty($request->get('fax'))) {
 			$data = array();
 			if (is_array($request->get('fax'))) {
 	    		$data = $request->get('fax');
@@ -1192,7 +1192,7 @@ class SchoolController extends Controller
 			$data = array_values(array_filter($data));
 			if (!empty($data)) $info['facsimileTelephoneNumber'] = $data;
 		}
-		if ($request->has('otel')) {
+		if (!empty($request->get('otel'))) {
 			$data = array();
 			if (is_array($request->get('otel'))) {
 	    		$data = $request->get('otel');
@@ -1202,7 +1202,7 @@ class SchoolController extends Controller
 			$data = array_values(array_filter($data));
 			if (!empty($data)) $info['telephoneNumber'] = $data;
 		}
-		if ($request->has('htel')) {
+		if (!empty($request->get('htel'))) {
 			$data = array();
 			if (is_array($request->get('htel'))) {
 	    		$data = $request->get('htel');
@@ -1458,7 +1458,7 @@ class SchoolController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getUserEntry($uuid);
-		$data = $openldap->getUserData($entry, array('cn', 'uid', 'mail', 'mobile'));
+		$data = $openldap->getUserData($entry, array('cn', 'uid', 'mail', 'mobile', 'employeeType', 'employeeNumber'));
 		if (array_key_exists('cn', $data)) {
 			$idno = $data['cn'];
 			$info = array();
@@ -1474,6 +1474,20 @@ class SchoolController extends Controller
 					$account_entry = $openldap->getAccountEntry($data['uid']);
 					$openldap->updateData($account_entry, $info);
 				}
+			} else {
+				$account = array();
+				if ($data['employeeType'] != '學生') {
+					$account["uid"] = $dc.substr($idno, -9);
+				} else {
+					$account["uid"] = $dc.$data['employeeNumber'];
+				}
+				$account["userPassword"] = $openldap->make_ssha_password(substr($idno, -6));
+				$account["objectClass"] = "radiusObjectProfile";
+				$account["cn"] = $idno;
+				$account["description"] = '管理員新增';
+				$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+				$openldap->createEntry($account);
+				$info["uid"] = $account["uid"];
 			}
 			$result = $openldap->updateData($entry, $info);
 			if ($result) {
