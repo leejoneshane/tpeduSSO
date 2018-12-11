@@ -43,10 +43,12 @@
 					<option value="subject_for_class" {{ $my_field == 'subject_for_class' ? 'selected' : '' }}>班級學科列表</option>
 					<option value="class_lend_record" {{ $my_field == 'class_lend_record' ? 'selected' : '' }}>圖書借閱紀錄</option>
 					<option value="teacher_info" {{ $my_field == 'teacher_info' ? 'selected' : '' }}>教師基本資料</option>
+					<option value="teacher_detail" {{ $my_field == 'teacher_detail' ? 'selected' : '' }}>教師個人資料</option>
 					<option value="teacher_schedule" {{ $my_field == 'teacher_schedule' ? 'selected' : '' }}>教師課表</option>
 					<option value="teacher_tutor_students" {{ $my_field == 'teacher_tutor_students' ? 'selected' : '' }}>任教學生列表</option>
 					<option value="subject_assign_to_teacher" {{ $my_field == 'subject_assign_to_teacher' ? 'selected' : '' }}>教師配課表</option>
 					<option value="student_info" {{ $my_field == 'student_info' ? 'selected' : '' }}>學生基本資料</option>
+					<option value="student_detail" {{ $my_field == 'student_detail' ? 'selected' : '' }}>學生個人資料</option>
 					<option value="student_subjects_score" {{ $my_field == 'student_subjects_score' ? 'selected' : '' }}>學期各科成績</option>
 					<option value="student_domains_score" {{ $my_field == 'student_domains_score' ? 'selected' : '' }}>學期領域成績</option>
 					<option value="student_attendance_record" {{ $my_field == 'student_attendance_record' ? 'selected' : '' }}>學生出勤紀錄</option>
@@ -103,12 +105,14 @@
 							fields = ["sid", "clsid"];
 							break;
 						case 'teacher_info':
+						case 'teacher_detail':
 						case 'teacher_schedule':
 						case 'teacher_tutor_students':
 						case 'subject_assign_to_teacher':
 							fields = ["sid", "teaid"];
 							break;
 						case 'student_info':
+						case 'student_detail':
 						case 'student_subjects_score':
 						case 'student_domains_score':
 						case 'student_attendance_record':
