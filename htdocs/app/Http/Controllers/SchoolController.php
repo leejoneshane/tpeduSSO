@@ -89,8 +89,6 @@ class SchoolController extends Controller
 		$category = $openldap->getOrgData($school, 'businessCategory');
 		$user = new \stdClass;
 		$user->id = 'B123456789';
-		$user->account = 'myaccount';
-		$user->password = 'My_p@ssw0rD';
 		$user->stdno = '102247';
 		$user->class = '601';
 		$user->seat = '7';
@@ -232,23 +230,19 @@ class SchoolController extends Controller
     			$entry["employeeType"] = "學生";
     			$entry["employeeNumber"] = $person->stdno;
     			$entry["tpClass"] = $person->class;
-    			$entry["tpSeat"] = $person->seat;
-				$account = array();
-   				$account["objectClass"] = "radiusObjectProfile";
-			    $account["cn"] = $person->id;
-			    $account["description"] = '管理員匯入';
-				if (isset($person->account) && !empty($person->account))
-					$account["uid"] = $person->account;
-				else
+				$entry["tpSeat"] = $person->seat;
+				if (!$user_entry) {
+					$account = array();
+					$account["objectClass"] = "radiusObjectProfile";
+					$account["cn"] = $idno;
+					$account["description"] = '管理員匯入';
 					$account["uid"] = $dc.$person->stdno;
-    			$entry["uid"] = $account["uid"];
-				if (isset($person->password) && !empty($person->password))
-					$password = $openldap->make_ssha_password($person->password);
-				else
-					$password = $openldap->make_ssha_password(substr($person->id, -6));
-	   			$account["userPassword"] = $password;
-	   			$account_dn = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
-	   			$entry["userPassword"] = $password;
+					$entry["uid"] = $account["uid"];
+					$password = $openldap->make_ssha_password(substr($idno, -6));
+					$account["userPassword"] = $password;
+					$account['dn'] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+					$entry["userPassword"] = $password;
+				 }				   
 		    	if (isset($person->character)) {
 		    	    if (empty($person->character))
 	    			    $entry['tpCharacter'] = [];
@@ -330,7 +324,6 @@ class SchoolController extends Controller
 	    		if (isset($person->address) && !empty($person->address)) $entry["homePostalAddress"]=self::chomp_address($person->address);
 	    		if (isset($person->www) && !empty($person->www)) $entry["wWWHomePage"]=$person->www;
 				
-				$user_entry = $openldap->getUserEntry($entry['cn']);
 				if ($user_entry) {
 					$openldap->updateData($user_entry, $entry);
 					$messages[] = "第 $i 筆記錄，".$person->name."學生資訊已經更新！";
@@ -338,15 +331,15 @@ class SchoolController extends Controller
 					$entry['dn'] = $user_dn;
 					$openldap->createEntry($entry);
 					$messages[] = "第 $i 筆記錄，".$person->name."學生資訊已經建立！";
-				}
-				$account_entry = $openldap->getAccountEntry($account['uid']);
-				if ($account_entry) {
-					$openldap->updateData($account_entry, $account);
-					$messages[] = "第 $i 筆記錄，".$person->name."帳號資訊已經更新！";
-				} else {
-					$account['dn'] = $account_dn;
-					$openldap->createEntry($account);
-					$messages[] = "第 $i 筆記錄，".$person->name."帳號資訊已經建立！";
+					$account_entry = $openldap->getAccountEntry($account['uid']);
+					if ($account_entry) {
+						unset($account['dn']);
+						$openldap->updateData($account_entry, $account);
+						$messages[] = "第 $i 筆記錄，".$person->name."帳號資訊已經更新！";
+					} else {
+						$openldap->createEntry($account);
+						$messages[] = "第 $i 筆記錄，".$person->name."帳號資訊已經建立！";
+					}
 				}
 			}
 			$messages[0] = "學生資訊匯入完成！報表如下：";
@@ -680,8 +673,6 @@ class SchoolController extends Controller
 		$category = $openldap->getOrgData($school, 'businessCategory');
 		$user = new \stdClass;
 		$user->id = 'A123456789';
-		$user->account = 'myaccount';
-		$user->password = 'My_p@ssw0rD';
 		$user->ou = array('dept02', 'dept07');
 		$user->role = 'dept02,role014';
 		$user->tclass = array('606,sub01', '607,sub01', '608,sub01', '609,sub01', '610,sub01');
@@ -824,6 +815,17 @@ class SchoolController extends Controller
 							if (count($a) == 3 && $a[0] != $dc) $assign[] = $pair;
 						}
 					}
+				} else {
+					$account = array();
+					$account["objectClass"] = "radiusObjectProfile";
+					$account["cn"] = $idno;
+					$account["description"] = '管理員匯入';
+					$account["uid"] = $dc.substr($idno, -9);
+					$info["uid"] = $account["uid"];
+					$password = $openldap->make_ssha_password(substr($idno, -6));
+					$account["userPassword"] = $password;
+					$account['dn'] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+					$info["userPassword"] = $password;
 				}
 				$orgs[] = $dc;
 				$educloud = array();
@@ -870,7 +872,7 @@ class SchoolController extends Controller
 				$info = array();
 				$info["objectClass"] = array("tpeduPerson","inetUser");
  				$info["inetUserStatus"] = "active";
-   				$info["cn"] = strtoupper($person->id);
+   				$info["cn"] = $idno;
     			$info["sn"] = $person->sn;
     			$info["givenName"] = $person->gn;
     			$info["displayName"] = $person->name;
@@ -882,22 +884,6 @@ class SchoolController extends Controller
     			$info["employeeType"] = "教師";
 				$info['info'] = $educloud;
     			$info['tpTeachClass'] = $assign;
-				$account = array();
-   				$account["objectClass"] = "radiusObjectProfile";
-			    $account["cn"] = $person->id;
-			    $account["description"] = '管理員匯入';
-				if (isset($person->account) && !empty($person->account))
-					$account["uid"] = $person->account;
-				else
-					$account["uid"] = $dc.substr($person->id, -9);
-    			$info["uid"] = $account["uid"];
-				if (isset($person->password) && !empty($person->password))
-					$password = $openldap->make_ssha_password($person->password);
-				else
-					$password = $openldap->make_ssha_password(substr($person->id, -6));
-	   			$account["userPassword"] = $password;
-	   			$account_dn = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
-	   			$info["userPassword"] = $password;
 		    	if (isset($person->character)) {
 		    	    if (empty($person->character))
 	    			    $info['tpCharacter'] = [];
@@ -979,7 +965,6 @@ class SchoolController extends Controller
 	    		if (isset($person->address) && !empty($person->address)) $info["homePostalAddress"]=self::chomp_address($person->address);
 	    		if (isset($person->www) && !empty($person->www)) $info["wWWHomePage"]=$person->www;
 			
-				$user_entry = $openldap->getUserEntry($info['cn']);
 				if ($user_entry) {
 					$result = $openldap->updateData($user_entry, $info);
 					if ($result)
@@ -993,21 +978,21 @@ class SchoolController extends Controller
 						$messages[] = "第 $i 筆記錄，".$person->name."教師資訊已經建立！";
 					else
 						$messages[] = "第 $i 筆記錄，".$person->name."教師資訊無法建立！".$openldap->error();
-				}
-				$account_entry = $openldap->getAccountEntry($account['uid']);
-				if ($account_entry) {
-					$result = $openldap->updateData($account_entry, $account);
-					if ($result)
-						$messages[] = "第 $i 筆記錄，".$person->name."帳號資訊已經更新！";
-					else
-						$messages[] = "第 $i 筆記錄，".$person->name."帳號資訊無法更新！".$openldap->error();
-				} else {
-					$account['dn'] = $account_dn;
-					$result = $openldap->createEntry($account);
-					if ($result)
-						$messages[] = "第 $i 筆記錄，".$person->name."帳號資訊已經建立！";
-					else
-						$messages[] = "第 $i 筆記錄，".$person->name."帳號資訊無法建立！".$openldap->error();
+					$account_entry = $openldap->getAccountEntry($account['uid']);
+					if ($account_entry) {
+						unset($account['dn']);
+						$result = $openldap->updateData($account_entry, $account);
+						if ($result)
+							$messages[] = "第 $i 筆記錄，".$person->name."帳號資訊已經更新！";
+						else
+							$messages[] = "第 $i 筆記錄，".$person->name."帳號資訊無法更新！".$openldap->error();
+					} else {
+						$result = $openldap->createEntry($account);
+						if ($result)
+							$messages[] = "第 $i 筆記錄，".$person->name."帳號資訊已經建立！";
+						else
+							$messages[] = "第 $i 筆記錄，".$person->name."帳號資訊無法建立！".$openldap->error();
+					}
 				}
 			}
 			$messages[0] = "教師資訊匯入完成！報表如下：";

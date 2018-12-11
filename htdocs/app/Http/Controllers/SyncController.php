@@ -70,12 +70,14 @@ class SyncController extends Controller
 				$result = $http->ps_call($my_field, [ 'sid' => $sid, 'clsid' => $clsid ]);
 				break;
 			case 'teacher_info':
+			case 'teacher_detail':
 			case 'teacher_schedule':
 			case 'teacher_tutor_students':
 			case 'subject_assign_to_teacher':
 				$result = $http->ps_call($my_field, [ 'sid' => $sid, 'teaid' => $teaid ]);
 				break;
 			case 'student_info':
+			case 'student_detail':
 			case 'student_subjects_score':
 			case 'student_domains_score':
 			case 'student_attendance_record':
