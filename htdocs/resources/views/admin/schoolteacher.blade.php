@@ -51,7 +51,7 @@
 				<thead>
 					<tr>
 						<th>狀態</th>
-						<th>UUID</th>
+						<th>帳號</th>
 						<th>身分證字號</th>
 						<th>姓名</th>
 						<th>單位</th>
@@ -62,12 +62,16 @@
 				<tbody>
 					@if ($teachers)
 					@foreach ($teachers as $teacher)
-					<tr>
+					<tr title="{{ $teacher['entryUUID'] }}">
 						<td style="vertical-align: inherit;">
 							<span>{{ empty($teacher['inetUserStatus']) || $teacher['inetUserStatus'] == 'active' ? '啟用' : '' }}{{ $teacher['inetUserStatus'] == 'inactive' ? '停用' : '' }}{{ $teacher['inetUserStatus'] == 'deleted' ? '已刪除' : '' }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<span>{{ $teacher['entryUUID'] }}</span>
+						@if (is_array($teacher['uid']))
+							<span>{{ join(" ", $teacher['uid']) }}</span>
+						@else
+							<span>{{ $teacher['uid'] }}</span>
+						@endif
 						</td>
 						<td style="vertical-align: inherit;">
 							<span>{{ $teacher['cn'] }}</span>

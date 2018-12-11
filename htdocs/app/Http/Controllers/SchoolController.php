@@ -76,7 +76,7 @@ class SchoolController extends Controller
 		}
 		$students = array();
 		if (!empty($filter)) {
-			$students = $openldap->findUsers($filter, ["cn", "displayName", "o", "tpClass", "tpSeat", "entryUUID", "inetUserStatus"]);
+			$students = $openldap->findUsers($filter, ["cn", "displayName", "o", "tpClass", "tpSeat", "entryUUID", "uid", "inetUserStatus"]);
 			usort($students, function ($a, $b) { return $a['tpSeat'] <=> $b['tpSeat']; });
 		}
 		return view('admin.schoolstudent', [ 'category' => $category, 'dc' => $dc, 'my_field' => $my_field, 'keywords' => $keywords, 'classes' => $ous, 'students' => $students ]);
@@ -661,7 +661,7 @@ class SchoolController extends Controller
 		}
 		$teachers = array();
 		if (!empty($filter)) {
-			$teachers = $openldap->findUsers($filter, ["cn","displayName","o","ou","title","entryUUID","inetUserStatus"]);
+			$teachers = $openldap->findUsers($filter, ["cn","displayName","o","ou","title","entryUUID","uid","inetUserStatus"]);
 		}
 		return view('admin.schoolteacher', [ 'category' => $category, 'dc' => $dc, 'my_field' => $my_field, 'keywords' => $keywords, 'ous' => $ous, 'teachers' => $teachers ]);
     }
