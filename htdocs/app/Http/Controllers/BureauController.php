@@ -888,8 +888,22 @@ class BureauController extends Controller
 					$account_entry = $openldap->getAccountEntry($data['uid']);
 					$openldap->updateData($account_entry, $info);
 				}
+			} else {
+				$account = array();
+				if ($data['employeeType'] != '學生') {
+					$account["uid"] = $dc.substr($idno, -9);
+				} else {
+					$account["uid"] = $dc.$data['employeeNumber'];
+				}
+				$account["userPassword"] = $openldap->make_ssha_password(substr($idno, -6));
+				$account["objectClass"] = "radiusObjectProfile";
+				$account["cn"] = $idno;
+				$account["description"] = '管理員新增';
+				$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+				$openldap->createEntry($account);
+				$info["uid"] = $account["uid"];
 			}
-			
+		
 			$result = $openldap->updateData($entry, $info);
 			if ($result) {
 				$user = User::where('idno', $idno)->firstOrFail();

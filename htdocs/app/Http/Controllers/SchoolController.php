@@ -1449,7 +1449,7 @@ class SchoolController extends Controller
 			$info = array();
 			$info['userPassword'] = $openldap->make_ssha_password(substr($idno,-6));
 		
-			if (array_key_exists('uid', $data)) {
+			if (array_key_exists('uid', $data) && !empty($data['uid'])) {
 				if (is_array($data['uid'])) {
 					foreach ($data['uid'] as $account) {
 						$account_entry = $openldap->getAccountEntry($account);

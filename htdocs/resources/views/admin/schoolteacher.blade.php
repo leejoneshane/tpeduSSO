@@ -74,7 +74,7 @@
 							<span>{{ $teacher['uid'] }}</span>
 							@endif
 						@else
-							<span>無</span>
+							<span>無（請按回覆密碼）</span>
 						@endif
 						</td>
 						<td style="vertical-align: inherit;">
