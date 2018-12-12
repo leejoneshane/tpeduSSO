@@ -67,10 +67,14 @@
 							<span>{{ empty($student['inetUserStatus']) || $student['inetUserStatus'] == 'active' ? '啟用' : '' }}{{ $student['inetUserStatus'] == 'inactive' ? '停用' : '' }}{{ $student['inetUserStatus'] == 'deleted' ? '已刪除' : '' }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
-						@if (is_array($student['uid']))
+						@if (array_key_exists('uid', $student))
+							@if (is_array($student['uid']))
 							<span>{{ join(" ", $student['uid']) }}</span>
-						@else
+							@else
 							<span>{{ $student['uid'] }}</span>
+							@endif
+						@else
+							<span>無</span>
 						@endif
 						</td>
 						<td style="vertical-align: inherit;">
