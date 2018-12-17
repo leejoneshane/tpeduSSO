@@ -13,6 +13,7 @@ return [
         'classes_info' => 'public/{sid}/schoolinfo/clsinfo',
         'special_info' => 'public/{sid}/schoolinfo/specilinfo',
         'calendar_info' => 'public/{sid}/schoolinfo/calendarinfo',
+        'teachers_info' => 'user/{sid}/teachers/teacher/all',
         'student_info' => 'user/{sid}/students/student/{stdno}',
         'student_detail' => 'user/{sid}/profile/profile/{stdno}',
         'students_in_class' => 'user/{sid}/students/class/{clsid}',

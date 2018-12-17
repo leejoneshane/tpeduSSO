@@ -312,16 +312,22 @@ class v2_schoolController extends Controller
     // below function for schoolAdmin scope.
     public function updateSchool(Request $request, $dc)
     {
-		$openldap = new LdapServiceProvider();
-		$user = $request->user();
-		$entry = $openldap->getOrgEntry($dc);
-		$data = $openldap->getOrgData($entry, 'tpAdministrator');
-		if (is_array($data['tpAdministrator'])) {
-            if (!in_array($user->idno, $data['tpAdministrator']))
+        if (Auth::check()) {
+            $user = $request->user();
+            $openldap = new LdapServiceProvider();
+            $entry = $openldap->getOrgEntry($dc);
+            $data = $openldap->getOrgData($entry, 'tpAdministrator');
+            if (is_array($data['tpAdministrator'])) {
+                if (!in_array($user->idno, $data['tpAdministrator']))
+                    return response()->json(["error" => "你未被權限管理此機關學校"], 403);
+            } elseif ($user->idno != $data['tpAdministrator']) {
                 return response()->json(["error" => "你未被權限管理此機關學校"], 403);
-		} elseif ($user->idno != $data['tpAdministrator']) {
-		    return response()->json(["error" => "你未被權限管理此機關學校"], 403);
-		}
+            }
+        } else {
+            $permission = false;
+            if ($request->get('oauth_client_id') == 1) $permision=true;
+            if (!$permision) return response()->json(["error" => "此專案不是特權專案"], 403);
+        }
         $schoolinfo = array();
         if (!empty($request->get('area'))) $schoolinfo['st'] = $request->get('area');
 		if (!empty($request->get('name'))) $schoolinfo['description'] = $request->get('name');
@@ -346,16 +352,22 @@ class v2_schoolController extends Controller
 
     public function peopleAdd(Request $request, $dc)
     {
-		$user = $request->user();
-		$openldap = new LdapServiceProvider();
-		$entry = $openldap->getOrgEntry($dc);
-		$data = $openldap->getOrgData($entry, 'tpAdministrator');
-		if (is_array($data['tpAdministrator'])) {
-            if (!in_array($user->idno, $data['tpAdministrator']))
+        if (Auth::check()) {
+            $user = $request->user();
+            $openldap = new LdapServiceProvider();
+            $entry = $openldap->getOrgEntry($dc);
+            $data = $openldap->getOrgData($entry, 'tpAdministrator');
+            if (is_array($data['tpAdministrator'])) {
+                if (!in_array($user->idno, $data['tpAdministrator']))
+                    return response()->json(["error" => "你未被權限管理此機關學校"], 403);
+            } elseif ($user->idno != $data['tpAdministrator']) {
                 return response()->json(["error" => "你未被權限管理此機關學校"], 403);
-		} elseif ($user->idno != $data['tpAdministrator']) {
-		    return response()->json(["error" => "你未被權限管理此機關學校"], 403);
-		}
+            }
+        } else {
+            $permission = false;
+            if ($request->get('oauth_client_id') == 1) $permision=true;
+            if (!$permision) return response()->json(["error" => "此專案不是特權專案"], 403);
+        }
         $idno = strtoupper($request->get('idno'));
         if (empty(idno)) return response()->json(["error" => "請提供身分證字號"], 400);
         $entry = $openldap->getUserEntry($idno);
@@ -427,16 +439,22 @@ class v2_schoolController extends Controller
 
     public function peopleUpdate(Request $request, $dc, $uuid)
     {
-		$user = $request->user();
-		$openldap = new LdapServiceProvider();
-		$entry = $openldap->getOrgEntry($dc);
-		$data = $openldap->getOrgData($entry, 'tpAdministrator');
-		if (is_array($data['tpAdministrator'])) {
-            if (!in_array($user->idno, $data['tpAdministrator']))
+        if (Auth::check()) {
+            $user = $request->user();
+            $openldap = new LdapServiceProvider();
+            $entry = $openldap->getOrgEntry($dc);
+            $data = $openldap->getOrgData($entry, 'tpAdministrator');
+            if (is_array($data['tpAdministrator'])) {
+                if (!in_array($user->idno, $data['tpAdministrator']))
+                    return response()->json(["error" => "你未被權限管理此機關學校"], 403);
+            } elseif ($user->idno != $data['tpAdministrator']) {
                 return response()->json(["error" => "你未被權限管理此機關學校"], 403);
-		} elseif ($user->idno != $data['tpAdministrator']) {
-		    return response()->json(["error" => "你未被權限管理此機關學校"], 403);
-		}
+            }
+        } else {
+            $permission = false;
+            if ($request->get('oauth_client_id') == 1) $permision=true;
+            if (!$permision) return response()->json(["error" => "此專案不是特權專案"], 403);
+        }
         $entry = $openldap->getUserEntry($uuid);
         $person = $openldap->getUserData($entry);
         $info = array();
@@ -556,16 +574,22 @@ class v2_schoolController extends Controller
     
     public function peopleRemove(Request $request, $dc, $uuid)
     {
-		$user = $request->user();
-		$openldap = new LdapServiceProvider();
-		$entry = $openldap->getOrgEntry($dc);
-		$data = $openldap->getOrgData($entry, 'tpAdministrator');
-		if (is_array($data['tpAdministrator'])) {
-            if (!in_array($user->idno, $data['tpAdministrator']))
+        if (Auth::check()) {
+            $user = $request->user();
+            $openldap = new LdapServiceProvider();
+            $entry = $openldap->getOrgEntry($dc);
+            $data = $openldap->getOrgData($entry, 'tpAdministrator');
+            if (is_array($data['tpAdministrator'])) {
+                if (!in_array($user->idno, $data['tpAdministrator']))
+                    return response()->json(["error" => "你未被權限管理此機關學校"], 403);
+            } elseif ($user->idno != $data['tpAdministrator']) {
                 return response()->json(["error" => "你未被權限管理此機關學校"], 403);
-		} elseif ($user->idno != $data['tpAdministrator']) {
-		    return response()->json(["error" => "你未被權限管理此機關學校"], 403);
-		}
+            }
+        } else {
+            $permission = false;
+            if ($request->get('oauth_client_id') == 1) $permision=true;
+            if (!$permision) return response()->json(["error" => "此專案不是特權專案"], 403);
+        }
 		$entry = $openldap->getUserEntry($uuid);
         $result = $openldap->updateData($entry,  [ 'inetUserStatus' => 'deleted' ]);
 //		$result = $openldap->deleteEntry($entry);
@@ -577,16 +601,22 @@ class v2_schoolController extends Controller
     
     public function people(Request $request, $dc, $uuid)
     {
-		$user = $request->user();
-		$openldap = new LdapServiceProvider();
-		$entry = $openldap->getOrgEntry($dc);
-		$data = $openldap->getOrgData($entry, 'tpAdministrator');
-		if (is_array($data['tpAdministrator'])) {
-            if (!in_array($user->idno, $data['tpAdministrator']))
+        if (Auth::check()) {
+            $user = $request->user();
+            $openldap = new LdapServiceProvider();
+            $entry = $openldap->getOrgEntry($dc);
+            $data = $openldap->getOrgData($entry, 'tpAdministrator');
+            if (is_array($data['tpAdministrator'])) {
+                if (!in_array($user->idno, $data['tpAdministrator']))
+                    return response()->json(["error" => "你未被權限管理此機關學校"], 403);
+            } elseif ($user->idno != $data['tpAdministrator']) {
                 return response()->json(["error" => "你未被權限管理此機關學校"], 403);
-		} elseif ($user->idno != $data['tpAdministrator']) {
-		    return response()->json(["error" => "你未被權限管理此機關學校"], 403);
-		}
+            }
+        } else {
+            $permission = false;
+            if ($request->get('oauth_client_id') == 1) $permision=true;
+            if (!$permision) return response()->json(["error" => "此專案不是特權專案"], 403);
+        }
 		$entry = $openldap->getUserEntry($uuid);
 		$json = $openldap->getUserData($entry);
         if ($json)

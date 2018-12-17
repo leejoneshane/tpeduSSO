@@ -29,6 +29,7 @@
 				<label>資料項目：</label>
 				<select id="field" name="field" class="form-control">
 					<option value="school_info" {{ $my_field == 'school_info' ? 'selected' : '' }}>學校基本資料</option>
+					<option value="teachers_info" {{ $my_field == 'teachers_info' ? 'selected' : '' }}>全校教職員列表</option>
 					<option value="department_info" {{ $my_field == 'department_info' ? 'selected' : '' }}>處室聯絡人資訊</option>
 					<option value="classes_info" {{ $my_field == 'classes_info' ? 'selected' : '' }}>班級資訊</option>
 					<option value="special_info" {{ $my_field == 'special_info' ? 'selected' : '' }}>特殊教育概況</option>
@@ -87,6 +88,7 @@
 						case 'special_info':
 						case 'calendar_info':
 						case 'library_books':
+						case 'teachers_info':
 							fields = ["sid"];
 							break;
 						case 'classses_by_grade':
