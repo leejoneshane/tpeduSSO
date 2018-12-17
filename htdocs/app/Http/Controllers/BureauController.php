@@ -870,6 +870,10 @@ class BureauController extends Controller
 	
     public function resetpass(Request $request, $uuid)
     {
+		$area = $request->session()->get('area');
+		$dc = $request->session()->get('dc');
+		$my_field = $request->session()->get('field');
+		$keywords = $request->session()->get('keywords');
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getUserEntry($uuid);
 		$data = $openldap->getUserData($entry, array('cn', 'uid', 'mail', 'mobile'));
@@ -911,9 +915,9 @@ class BureauController extends Controller
 					$user->password = \Hash::make(substr($idno,-6));
 					$user->save();
 				}
-				return redirect()->back()->with("success", "已經將人員密碼重設為身分證字號後六碼！");
+				return redirect('bureau/people?area='.$area.'&dc='.$dc.'&field='.$my_field.'&keywords='.$keywords)->with("success", "已經將人員密碼重設為身分證字號後六碼！");
 			} else {
-				return redirect()->back()->with("error", "無法變更人員密碼！".$openldap->error());
+				return redirect('bureau/people?area='.$area.'&dc='.$dc.'&field='.$my_field.'&keywords='.$keywords)->with("error", "無法變更人員密碼！".$openldap->error());
 			}
 		}
 	}

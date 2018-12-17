@@ -290,34 +290,9 @@ class SyncController extends Controller
 		$openldap = new LdapServiceProvider();
 		$http = new SimsServiceProvider();
 		$sid = $openldap->getOrgID($dc);
-		$data = $http->ps_call('student_info', [ 'sid' => $sid, 'stdno' => $stdno ]);
-
-		$students = $openldap->findUsers("(&(o=$dc)(!(employeeType=學生)))", ["cn", "o", "displayName", "employeeNumber", "tpClass", "tpSeat"]);
+		$data = $http->ps_call('teachers_info', [ 'sid' => $sid ]);
 		$messages[] = "開始進行同步";
-		foreach ($students as $stu) {
-			$stdno = $stu['employeeNumber'];
-			$data = $http->ps_call('student_info', [ 'sid' => $sid, 'stdno' => $stdno ]);
-			if ($data) {
-				$user_entry = $openldap->getUserEntry($stu['cn']);
-				if (substr($data[0]->class, 0, 1) == 'Z') {
-					$result = $openldap->updateData($user_entry, [ 'inetUserStatus' => 'deleted' ]);
-					if ($result) {
-						$messages[] = "cn=". $stu['cn'] .",stdno=". $stu['employeeNumber'] .",name=". $stu['displayName'] ." 已畢業，標註為刪除！";
-					} else {
-						$messages[] = "cn=". $stu['cn'] .",stdno=". $stu['employeeNumber'] .",name=". $stu['displayName'] ." 無法標註畢業學生：". $openldap->error();
-					}
-				} else {
-					$result = $openldap->updateData($user_entry, [ 'tpClass' => (int)$data[0]->class, 'tpSeat' => (int)$data[0]->seat ]);
-					if ($result) {
-						$messages[] = "cn=". $stu['cn'] .",stdno=". $stu['employeeNumber'] .",name=". $stu['displayName'] ." 就讀班級座號變更為 ". $data[0]->class . $data[0]->seat;
-					} else {
-						$messages[] = "cn=". $stu['cn'] .",stdno=". $stu['employeeNumber'] .",name=". $stu['displayName'] ." 無法變更班級座號：". $openldap->error();
-					}
-				}
-			} else {
-				$messages[] = "cn=". $stu['cn'] .",stdno=". $stu['employeeNumber'] .",name=". $stu['displayName'] ." 無法同步：". $http->ps_error();
-			}
-		}
+//not yet, 等待全誼修正 data api
 		$messages[] = "同步完成！";
 		return $messages;
 	}
