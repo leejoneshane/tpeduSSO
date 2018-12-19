@@ -921,15 +921,13 @@ class LdapServiceProvider extends ServiceProvider
 			$accounts[] = $data['uid'];
 		}
 		for ($i=0;$i<count($accounts);$i++) {
-			if (is_array($data['mail'])) {
-				if (in_array($accounts[$i], $data['mail'])) unset($accounts[$i]);
-			} else {
-				if ($accounts[$i] == $data['mail']) unset($accounts[$i]);
+			if (is_numeric($accounts[$i])) {
+				unset($accounts[$i]);
+				continue;
 			}
-			if (is_array($data['mobile'])) {
-				if (in_array($accounts[$i], $data['mobile'])) unset($accounts[$i]);
-			} else {
-				if ($accounts[$i] == $data['mobile']) unset($accounts[$i]);
+			if (strpos($accounts[$i], '@')) {
+				unset($accounts[$i]);
+				continue;
 			}
 		}
 		return $accounts;
