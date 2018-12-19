@@ -75,8 +75,8 @@ services:
       MAIL_ENCRYPTION: tls
       SAML_MAIL: ms.tp.edu.tw
     ports:
-      - "80:80"
-      - "443:443"
+      - 80
+      - 443
     links:
       - mysql:mysql
       - redis:redis

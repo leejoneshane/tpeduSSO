@@ -176,7 +176,7 @@ class BureauController extends Controller
     		$content = file_get_contents($path);
     		$json = json_decode($content);
     		if (!$json)
-				return redirect()->back()->with("error", "檔案剖析失敗，請檢查 JSON 格式是否正確？");
+				return back()->with("error", "檔案剖析失敗，請檢查 JSON 格式是否正確？");
 			$rule = new idno;
 			$teachers = array();
 			if (is_array($json)) { //批量匯入
@@ -410,9 +410,9 @@ class BureauController extends Controller
 				}
 			}
 			$messages[0] = "人員資訊匯入完成！報表如下：";
-			return redirect()->back()->with("success", $messages);
+			return back()->with("success", $messages);
     	} else {
-			return redirect()->back()->with("error", "檔案上傳失敗！");
+			return back()->with("error", "檔案上傳失敗！");
     	}
 	}
 	
@@ -834,9 +834,9 @@ class BureauController extends Controller
 			$info['inetUserStatus'] = 'active';
 		$result = $openldap->updateData($entry, $info);
 		if ($result) {
-			return redirect()->back()->with("success", "已經將人員標註為".($info['inetUserStatus'] == 'active' ? '啟用' : '停用')."！");
+			return back()->with("success", "已經將人員標註為".($info['inetUserStatus'] == 'active' ? '啟用' : '停用')."！");
 		} else {
-			return redirect()->back()->with("error", "無法變更人員狀態！".$openldap->error());
+			return back()->with("error", "無法變更人員狀態！".$openldap->error());
 		}
 	}
 	
@@ -848,9 +848,9 @@ class BureauController extends Controller
 		$info['inetUserStatus'] = 'deleted';
 		$result = $openldap->updateData($entry, $info);
 		if ($result) {
-			return redirect()->back()->with("success", "已經將人員標註為刪除！");
+			return back()->with("success", "已經將人員標註為刪除！");
 		} else {
-			return redirect()->back()->with("error", "無法變更人員狀態！".$openldap->error());
+			return back()->with("error", "無法變更人員狀態！".$openldap->error());
 		}
 	}
 	
@@ -862,18 +862,14 @@ class BureauController extends Controller
 		$info['inetUserStatus'] = 'active';
 		$result = $openldap->updateData($entry, $info);
 		if ($result) {
-			return redirect()->back()->with("success", "已經將人員標註為啟用！");
+			return back()->with("success", "已經將人員標註為啟用！");
 		} else {
-			return redirect()->back()->with("error", "無法變更人員狀態！".$openldap->error());
+			return back()->with("error", "無法變更人員狀態！".$openldap->error());
 		}
 	}
 	
     public function resetpass(Request $request, $uuid)
     {
-		$area = $request->session()->get('area');
-		$dc = $request->session()->get('dc');
-		$my_field = $request->session()->get('field');
-		$keywords = $request->session()->get('keywords');
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getUserEntry($uuid);
 		$data = $openldap->getUserData($entry, array('cn', 'uid', 'mail', 'mobile'));
@@ -910,14 +906,14 @@ class BureauController extends Controller
 		
 			$result = $openldap->updateData($entry, $info);
 			if ($result) {
-				$user = User::where('idno', $idno)->firstOrFail();
+				$user = User::where('idno', $idno)->first();
 				if ($user) {
 					$user->password = \Hash::make(substr($idno,-6));
 					$user->save();
 				}
-				return redirect('bureau/people?area='.$area.'&dc='.$dc.'&field='.$my_field.'&keywords='.$keywords)->with("success", "已經將人員密碼重設為身分證字號後六碼！");
+				return back()->with("success", "已經將人員密碼重設為身分證字號後六碼！");
 			} else {
-				return redirect('bureau/people?area='.$area.'&dc='.$dc.'&field='.$my_field.'&keywords='.$keywords)->with("error", "無法變更人員密碼！".$openldap->error());
+				return back()->with("error", "無法變更人員密碼！".$openldap->error());
 			}
 		}
 	}
@@ -953,15 +949,15 @@ class BureauController extends Controller
 		} elseif ($request->has('perform') && !empty($request->get('perform'))) {
 			$info['memberURL'] = 'ldap:///ou=people,dc=tp,dc=edu,dc=tw?'.$request->get('model').'?sub?('.$request->get('field').'='.$request->get('perform').')';
 		} else {
-			return redirect()->back()->with("error", "過濾條件填寫不完整！");
+			return back()->withInput()->with("error", "過濾條件填寫不完整！");
 		}
 		$info['dn'] = 'cn='.$info['cn'].','.Config::get('ldap.groupdn');
 		$openldap = new LdapServiceProvider();
 		$result = $openldap->createEntry($info);
 		if ($result) {
-			return redirect()->back()->with("success", "已經為您建立動態群組！");
+			return back()->withInput()->with("success", "已經為您建立動態群組！");
 		} else {
-			return redirect()->back()->with("error", "動態群組建立失敗！".$openldap->error());
+			return back()->withInput()->with("error", "動態群組建立失敗！".$openldap->error());
 		}
     }
 
@@ -972,9 +968,9 @@ class BureauController extends Controller
 		$openldap = new LdapServiceProvider();
 		$result = $openldap->renameGroup($cn, $new_cn);
 		if ($result) {
-			return redirect()->back()->with("success", "已經為您修改群組名稱！");
+			return back()->withInput()->with("success", "已經為您修改群組名稱！");
 		} else {
-			return redirect()->back()->with("error", "群組名稱更新失敗！".$openldap->error());
+			return back()->withInput()->with("error", "群組名稱更新失敗！".$openldap->error());
 		}
     }
 
@@ -984,9 +980,9 @@ class BureauController extends Controller
 		$entry = $openldap->getGroupEntry($cn);
 		$result = $openldap->deleteEntry($entry);
 		if ($result) {
-			return redirect()->back()->with("success", "已經為您移除動態群組！");
+			return back()->with("success", "已經為您移除動態群組！");
 		} else {
-			return redirect()->back()->with("error", "動態群組刪除失敗！".$openldap->error());
+			return back()->with("error", "動態群組刪除失敗！".$openldap->error());
 		}
     }
 
@@ -1145,7 +1141,7 @@ class BureauController extends Controller
 		$openldap = new LdapServiceProvider();
 		$users = $openldap->findUsers("o=$dc", "cn");
 		if (!empty($users)) {
-			return redirect()->back()->with("error", "尚有人員隸屬於該教育機構，因此無法刪除！");
+			return back()->with("error", "尚有人員隸屬於該教育機構，因此無法刪除！");
 		}
 		$entry = $openldap->getOrgEntry($dc);
 		$ous = $openldap->getOus($dc);
@@ -1162,9 +1158,9 @@ class BureauController extends Controller
 		}
 		$result = $openldap->deleteEntry($entry);
 		if ($result) {
-			return redirect()->back()->with("success", "已經為您移除教育機構！");
+			return back()->with("success", "已經為您移除教育機構！");
 		} else {
-			return redirect()->back()->with("error", "教育機構刪除失敗！".$openldap->error());
+			return back()->with("error", "教育機構刪除失敗！".$openldap->error());
 		}
     }
 
@@ -1177,7 +1173,7 @@ class BureauController extends Controller
     		$content = file_get_contents($path);
     		$json = json_decode($content);
     		if (!$json)
-				return redirect()->back()->with("error", "檔案剖析失敗，請檢查 JSON 格式是否正確？");
+				return back()->with("error", "檔案剖析失敗，請檢查 JSON 格式是否正確？");
 			$orgs = array();
 			if (is_array($json)) { //批量匯入
 				$orgs = $json;
@@ -1310,9 +1306,9 @@ class BureauController extends Controller
 				}
 			}
 			$messages[0] = "機構資訊匯入完成！報表如下：";
-			return redirect()->back()->with("success", $messages);
+			return back()->with("success", $messages);
     	} else {
-			return redirect()->back()->with("error", "檔案上傳失敗！");
+			return back()->with("error", "檔案上傳失敗！");
     	}
 	}
 
@@ -1332,15 +1328,15 @@ class BureauController extends Controller
 			$idno = Config::get('ldap.userattr')."=".$request->get('new-admin');
 	    	$entry = $openldap->getUserEntry($request->get('new-admin'));
 			if (!$entry) {
-				return redirect()->back()->with("error","您輸入的身分證字號，不存在於系統！");
+				return back()->withInput()->with("error","您輸入的身分證字號，不存在於系統！");
 	    	}
 	    
 			$admin = DB::table('users')->where('idno', $request->get('new-admin'))->first();	
 	    	if ($admin) {
 	    		DB::table('users')->where('id', $admin->id)->update(['is_admin' => 1]);
-				return redirect()->back()->with("success", "已經為您新增局端管理員！");
+				return back()->withInput()->with("success", "已經為您新增局端管理員！");
 			} else {
-				return redirect()->back()->with("error", "尚未登入的人員無法設定為管理員！");
+				return back()->withInput()->with("error", "尚未登入的人員無法設定為管理員！");
 			}
 	    }
     }
@@ -1351,9 +1347,9 @@ class BureauController extends Controller
 			$admin = DB::table('users')->where('idno', $request->get('delete-admin'))->first();	
 	    	if ($admin) {
 	    		DB::table('users')->where('id', $admin->id)->update(['is_admin' => 0]);
-				return redirect()->back()->with("success", "已經為您移除局端管理員！");
+				return back()->with("success", "已經為您移除局端管理員！");
 			} else {
-				return redirect()->back()->with("error", "找不到管理員，是否已經刪除了呢？");
+				return back()->with("error", "找不到管理員，是否已經刪除了呢？");
 			}
 		}
     }
