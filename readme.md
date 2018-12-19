@@ -29,8 +29,6 @@ docker-compose up
 
 若要讓系統實際上線服務，請務必修改環境變數，在 docker-compose.yml 檔案中，請設定以下參數：
 
-* __FETCH: no__ 可省略，預設為 no，用來將掛載磁區複寫為映像檔原始內容，若掛載磁區是空的，會自動執行複寫功能，並忽略此設定值。
-* __INIT: no__ 可省略，預設為 no，用來將外部資料庫系統啟始化，若外部資料庫系統找不到 laravel 資料庫時，會自動執行啟始化功能，並忽略此設定值。
 * __DOMAIN: ldap.tp.edu.tw__ 可省略，用來設定 nginx 伺服器的 FQDN。
 * __MAIL: your@gmail.com__ 可省略，用來設定 nginx 伺服器的管理員信箱。
 * __APP_DEBUG: true__ 可省略，預設為 false，除錯功能的開關。
