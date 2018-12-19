@@ -777,15 +777,19 @@ class LdapServiceProvider extends ServiceProvider
 		if (isset($userinfo['uid']) && is_array($userinfo['uid'])) {
 	    	if (isset($userinfo['mail'])) {
 	    		if (is_array($userinfo['mail'])) {
-	    			if (in_array($userinfo['mail'][0], $userinfo['uid'])) $userinfo['email_login'] = true;
+					foreach ($userinfo['mail'] as $mail) {
+						if (in_array($mail, $userinfo['uid'])) $userinfo['email_login'] = true;
+					}
 	    		} else {
 	    			if (in_array($userinfo['mail'], $userinfo['uid'])) $userinfo['email_login'] = true;
 	    		}
 	    	}
 	    	if (isset($userinfo['mobile'])) {
 	    		if (is_array($userinfo['mobile'])) {
-	    			if (in_array($userinfo['mobile'][0], $userinfo['uid'])) $userinfo['mobile_login'] = true;
-	    		} else {
+					foreach ($userinfo['mobile'] as $mobile) {
+						if (in_array($mobile, $userinfo['uid'])) $userinfo['mobile_login'] = true;
+					}
+				} else {
 	    			if (in_array($userinfo['mobile'], $userinfo['uid'])) $userinfo['mobile_login'] = true;
 	    		}
 	    	}
@@ -905,6 +909,32 @@ class LdapServiceProvider extends ServiceProvider
 		return $name['displayName'];
     }
 
+	public function getUserAccounts($identifier)
+    {
+		$entry = $this->getUserEntry($identifier);
+		$data = $this->getUserData($entry, ['uid', 'mail', 'mobile']);
+		$accounts = array();
+		if (!isset($data['uid'])) return $accounts;
+		if (is_array($data['uid'])) {
+			$accounts = $data['uid'];
+		} else {
+			$accounts[] = $data['uid'];
+		}
+		for ($i=0;$i<count($accounts);$i++) {
+			if (is_array($data['mail'])) {
+				if (in_array($accounts[$i], $data['mail'])) unset($accounts[$i]);
+			} else {
+				if ($accounts[$i] == $data['mail']) unset($accounts[$i]);
+			}
+			if (is_array($data['mobile'])) {
+				if (in_array($accounts[$i], $data['mobile'])) unset($accounts[$i]);
+			} else {
+				if ($accounts[$i] == $data['mobile']) unset($accounts[$i]);
+			}
+		}
+		return $accounts;
+    }
+
     public function renameUser($old_idno, $new_idno)
     {
 		$this->administrator();
@@ -972,39 +1002,53 @@ class LdapServiceProvider extends ServiceProvider
 		$auth_rdn = Config::get('ldap.authattr')."=".$identifier;
 		$resource = @ldap_search(self::$ldap_read, $base_dn, $auth_rdn);
 		if ($resource) {
-			return @ldap_first_entry(self::$ldap_read, $resource);
+			$entry = @ldap_first_entry(self::$ldap_read, $resource);
+			return $entry;
 		}
 		return false;
     }
     
-    public function updateAccount($entry, $old_account, $new_account, $idno, $memo)
+    public function updateAccounts($entry, $accounts)
     {
+		if (!$entry || empty($accounts)) return;
 		$this->administrator();
-		$acc_entry = $this->getAccountEntry($old_account);
-		if ($acc_entry) {
-	    	$this->renameAccount($entry, $old_account, $new_account);
+		$data = $this->getUserData($entry, 'uid');
+		if (!isset($data['uid']) || empty($data['uid'])) {
+			foreach ($accounts as $account) {
+				$this->addAccount($entry, $account, '自建帳號');
+			}
 		} else {
-	    	$this->addAccount($entry, $new_account, $idno, $memo);
+			$uids = array();
+			if (is_array($data['uid'])) {
+				$uids = $data['uid'];
+			} else {
+				$uids[] = $data['uid'];
+			}
+			foreach ($uids as $uid) {
+				if (!in_array($uid, $accounts)) $this->deleteAccount($entry, $uid);
+			}
+			foreach ($accounts as $account) {
+				if (!in_array($account, $uids)) $this->addAccount($entry, $account, '自建帳號');
+			}
 		}
     }
 
-    public function addAccount($entry, $account, $idno, $memo)
+    public function addAccount($entry, $account, $memo)
     {
 		$this->administrator();
-		$dn = @ldap_get_dn(self::$ldap_read, $entry);
-		@ldap_mod_add(self::$ldap_write, $dn, array( "uid" => $account));
-		$acc_entry = $this->getAccountEntry($account);
-		if (!$acc_entry) {
-	    	$dn = Config::get('ldap.authattr')."=".$account.",".Config::get('ldap.authdn');
-	    	$account_info = array();
-	    	$account_info['objectClass'] = "radiusObjectProfile";
-	    	$account_info['uid'] = $account;
-	    	$account_info['cn'] = $idno;
-	    	$pwd = @ldap_get_values(self::$ldap_read, $entry, "userPassword");
-	    	$account_info['userPassword'] = $pwd[0];
-	    	$account_info['description'] = $memo;
-	    	@ldap_add(self::$ldap_write, $dn, $account_info);
-		}
+		$data = $this->getUserData($entry, ['cn', 'userPassword']);
+		$idno = $data['cn'];
+		$password = $data['userPassword'];
+		$this->addData($entry, array( "uid" => $account));
+
+		$account_info = array();
+		$account_info['dn'] = Config::get('ldap.authattr')."=".$account.",".Config::get('ldap.authdn');
+	    $account_info['objectClass'] = "radiusObjectProfile";
+	    $account_info['uid'] = $account;
+	    $account_info['cn'] = $idno;
+	    $account_info['userPassword'] = $password;
+	    $account_info['description'] = $memo;
+	    $this->createEntry($account_info);
     }
 
     public function renameAccount($entry, $old_account, $new_account)
@@ -1012,13 +1056,18 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$dn = Config::get('ldap.authattr')."=".$old_account.",".Config::get('ldap.authdn');
 		$rdn = Config::get('ldap.authattr')."=".$new_account;
-		$accounts = @ldap_get_values(self::$ldap_read, $entry, "uid");
-		for($i=0;$i<$accounts['count'];$i++) {
+		$data = $this->getUserData($entry, 'uid');
+		$uid = $data['uid'];
+		$accounts = array();
+		if (is_array($uid)) {
+			$accounts = $uid;
+		} else {
+			$accounts[] = $uid;
+		}
+		for ($i=0;$i<count($accounts);$i++) {
 	    	if ($accounts[$i] == $old_account) $accounts[$i] = $new_account;
 		}
-		unset($accounts['count']);
 		$this->updateData($entry, array( "uid" => $accounts));
-
 		$result = @ldap_rename(self::$ldap_write, $dn, $rdn, null, true);
  		return $result;
    }
@@ -1026,10 +1075,9 @@ class LdapServiceProvider extends ServiceProvider
     public function deleteAccount($entry, $account)
     {
 		$this->administrator();
-		$dn = @ldap_get_dn(self::$ldap_read, $entry);
-		@ldap_mod_del(self::$ldap_write, $dn, array('uid' => $account));
-		$dn = Config::get('ldap.authattr')."=".$account.",".Config::get('ldap.authdn');
-		@ldap_delete(self::$ldap_write, $dn);
+		$this->deleteData($entry, array('uid' => $account));
+		$acc_entry = $this->getAccountEntry($account);
+		if ($acc_entry) $this->deleteEntry($acc_entry);;
     }
 
     public function getGroupEntry($cn)

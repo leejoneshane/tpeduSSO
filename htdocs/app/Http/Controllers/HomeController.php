@@ -41,47 +41,34 @@ class HomeController extends Controller
 		$email = $request->get('email');
 		$mobile = $request->get('mobile');
 		$user = Auth::user();
+		$idno = $user->idno;
+		$accounts = $openldap->getUserAccounts($idno);
 		$userinfo = array();
 		if ($email != $user->email) {
 	    	$validatedData = $request->validate([
 			    'email' => 'required|email|unique:users',
 			]);
-	    	if (!$openldap->emailAvailable($user->idno, $email))
+	    	if (!$openldap->emailAvailable($idno, $email))
 				return back()->withInput()->with("error","您輸入的電子郵件已經被別人使用，請您重新輸入一次！");
 	    	$userinfo['mail'] = $email;
-	    	$user->email = $userinfo['mail'];
+	    	$user->email = $mail;
 		}
-		if ($mobile != $user->mobile) {
+		if ($mobile != $old_mobile) {
 	    	$validatedData = $request->validate([
 			    'mobile' => 'string|digits:10|numeric',
 			]);
-	    	if (!$openldap->mobileAvailable($user->idno, $mobile))
+	    	if (!$openldap->mobileAvailable($idno, $mobile))
 				return back()->withInput()->with("error","您輸入的手機號碼已經被別人使用，請您重新輸入一次！");
 	    	$userinfo['mobile'] = $mobile;
-	    	$user->mobile = $userinfo['mobile'];
-		}
-		$entry = $openldap->getUserEntry($user->idno);
-		$result = $openldap->updateData($entry, $userinfo);
-		if (!$result) return back()->withInput()->with("error", "無法變更人員資訊！".$openldap->error());
-		if ($request->has('login-by-email')) {
-	    	if (array_key_exists('mail', $userinfo)) {
-				$openldap->updateAccount($entry, $user->email, $userinfo['mail'], $user->idno, '電子郵件登入');
-	    	} else {
-				$openldap->addAccount($entry, $user->email, $user->idno, '電子郵件登入');
-	    	}
-		} else {
-	    	$openldap->deleteAccount($entry, $user->email);
-		}
-		if ($request->has('login-by-mobile')) {
-	    	if (array_key_exists('mobile', $userinfo)) {
-				$openldap->updateAccount($entry, $user->mobile, $userinfo['mobile'], $user->idno, '手機號碼登入');
-	    	} else {
-				$openldap->addAccount($entry, $user->mobile, $user->idno, '手機號碼登入');
-	    	}
-		} else {
-	    	$openldap->deleteAccount($entry, $user->mobile);
+	    	$user->mobile = $mobile;
 		}
 		$user->save();
+		$entry = $openldap->getUserEntry($idno);
+		$result = $openldap->updateData($entry, $userinfo);
+		if (!$result) return back()->withInput()->with("error", "無法變更人員資訊！".$openldap->error());
+		if ($request->has('login-by-email')) $accounts[] = $email;
+		if ($request->has('login-by-mobile')) $accounts[] = $mobile;
+		$openldap->updateAccounts($entry, $accounts);
 		return back()->withInput()->with("success","您的個人資料設定已經儲存！");
     }
 
@@ -93,38 +80,24 @@ class HomeController extends Controller
     public function changeAccount(Request $request)
     {
 		$user = Auth::user();
-		$accounts = array();
-		if (array_key_exists('uid',$user->ldap)) {
-			if (is_array($user->ldap['uid'])) {
-		    	$accounts = $user->ldap['uid'];
-			} else {
-	    		$accounts[] = $user->ldap['uid'];
-			}
-			$match = false;
-			foreach ($accounts as $account) {
-	    		if ($account != $user->email) {
-					if (array_key_exists('mobile', $user->ldap)) {
-		    			if  ($account != $user->ldap['mobile']) {
-							if ($request->get('current-account') == $account) $match = true;
-		    			}
-					} else {
-		    			if ($request->get('current-account') == $account) $match = true;
-					}
-	    		}
-				if (!$match) return back()->withInput()->with("error","您輸入的帳號不正確，請您重新輸入一次！");
-			}
+		$openldap = new LdapServiceProvider();
+		$accounts = $openldap->getUserAccounts($user->idno);
+		$match = false;
+		foreach ($accounts as $account) {
+    		if ($request->get('current-account') == $account) $match = true;
 		}
+		if (empty($accounts)) $match = true;
+		if (!$match) return back()->withInput()->with("error","您輸入的帳號不正確，請您重新輸入一次！");
+
 		if(strcmp($request->get('current-account'), $request->get('new-account')) == 0)
-	    return back()->withInput()->with("error","新帳號不可以跟舊的帳號相同，請重新想一個新帳號再試一次！");
+	    	return back()->withInput()->with("error","新帳號不可以跟舊的帳號相同，請重新想一個新帳號再試一次！");
 		$validatedData = $request->validate([
 			'new-account' => 'required|string|min:6|confirmed',
 		]);
-		$openldap = new LdapServiceProvider();
 		if (!$openldap->accountAvailable($user->idno, $request->get('new-account')))
 	    	return back()->withInput()->with("error","您輸入的帳號已經被別人使用，請您重新輸入一次！");
-		$entry = $openldap->getUserEntry($user->idno);
-		if (empty($request->get('current-account'))) {
-			$openldap->addAccount($entry, $request->get('new-account'), $user->idno, "自建帳號");
+		if (empty($accounts)) {
+			$openldap->addAccount($entry, $request->get('new-account'), "自建帳號");
 			return back()->withInput()->with("success","帳號建立成功！");
 		} else {
 			$openldap->renameAccount($entry, $request->get('current-account'), $request->get('new-account'));
