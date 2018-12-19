@@ -386,6 +386,9 @@ class BureauController extends Controller
 					else
 						$messages[] = "第 $i 筆記錄，".$person->name."人員資訊無法更新！".$openldap->error();
 				} else {
+					foreach ($entry as $key => $value) {
+						if (empty($value)) unset($entry[$key]);
+					}
 					$entry['dn'] = $user_dn;
 					$result = $openldap->createEntry($entry);
 					if ($result)

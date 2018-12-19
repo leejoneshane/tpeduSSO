@@ -53,7 +53,7 @@ class HomeController extends Controller
 	    	$userinfo['mail'] = $email;
 	    	$user->email = $mail;
 		}
-		if ($mobile != $old_mobile) {
+		if ($mobile != $user->mobile) {
 	    	$validatedData = $request->validate([
 			    'mobile' => 'string|digits:10|numeric',
 			]);

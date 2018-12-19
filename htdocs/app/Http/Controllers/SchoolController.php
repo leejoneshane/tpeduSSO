@@ -326,20 +326,35 @@ class SchoolController extends Controller
 	    		if (isset($person->www) && !empty($person->www)) $entry["wWWHomePage"]=$person->www;
 				
 				if ($user_entry) {
-					$openldap->updateData($user_entry, $entry);
-					$messages[] = "第 $i 筆記錄，".$person->name."學生資訊已經更新！";
+					$result = $openldap->updateData($user_entry, $entry);
+					if ($result)
+						$messages[] = "第 $i 筆記錄，".$person->name."學生資訊已經更新！";
+					else
+						$messages[] = "第 $i 筆記錄，".$person->name."學生資訊無法更新！".$openldap->error();
 				} else {
+					foreach ($entry as $key => $value) {
+						if (empty($value)) unset($entry[$key]);
+					}
 					$entry['dn'] = $user_dn;
-					$openldap->createEntry($entry);
-					$messages[] = "第 $i 筆記錄，".$person->name."學生資訊已經建立！";
+					$result = $openldap->createEntry($entry);
+					if ($result)
+						$messages[] = "第 $i 筆記錄，".$person->name."學生資訊已經建立！";
+					else
+						$messages[] = "第 $i 筆記錄，".$person->name."學生資訊無法建立！".$openldap->error();
 					$account_entry = $openldap->getAccountEntry($account['uid']);
 					if ($account_entry) {
 						unset($account['dn']);
-						$openldap->updateData($account_entry, $account);
-						$messages[] = "第 $i 筆記錄，".$person->name."帳號資訊已經更新！";
+						$result = $openldap->updateData($account_entry, $account);
+						if ($result)
+							$messages[] = "第 $i 筆記錄，".$person->name."帳號資訊已經更新！";
+						else
+							$messages[] = "第 $i 筆記錄，".$person->name."帳號資訊無法更新！".$openldap->error();
 					} else {
-						$openldap->createEntry($account);
-						$messages[] = "第 $i 筆記錄，".$person->name."帳號資訊已經建立！";
+						$result = $openldap->createEntry($account);
+						if ($result)
+							$messages[] = "第 $i 筆記錄，".$person->name."帳號資訊已經建立！";
+						else
+							$messages[] = "第 $i 筆記錄，".$person->name."帳號資訊無法建立！".$openldap->error();
 					}
 				}
 			}
@@ -885,7 +900,7 @@ class SchoolController extends Controller
     			$info["employeeType"] = "教師";
 				$info['info'] = $educloud;
     			$info['tpTeachClass'] = $assign;
-		    	if (isset($person->character)) {
+				if (isset($person->character)) {
 		    	    if (empty($person->character))
 	    			    $info['tpCharacter'] = [];
 		    	    else
@@ -973,6 +988,9 @@ class SchoolController extends Controller
 					else
 						$messages[] = "第 $i 筆記錄，".$person->name."教師資訊無法更新！".$openldap->error();
 				} else {
+					foreach ($info as $key => $value) {
+						if (empty($value)) unset($info[$key]);
+					}
 					$info['dn'] = $user_dn;
 					$result = $openldap->createEntry($info);
 					if ($result)
@@ -1124,7 +1142,7 @@ class SchoolController extends Controller
 	    $info["userPassword"] = $account["userPassword"];
 		$info['gender'] = (int) $request->get('gender');
 		$info['birthDate'] = str_replace('-', '', $request->get('birth')).'000000Z';
-		if ($request->has('tclass')) {
+		if (!empty($request->get('tclass'))) {
 			$classes = $request->get('tclass');
 			$subjects = $request->get('subj');
 			$assign = array();
@@ -1943,7 +1961,7 @@ class SchoolController extends Controller
 					if (count($a) == 2 && ($a[0] != $dc || $a[1] != $ou)) $units[] = $ou_pair; 
 					if (count($a) == 1 && $a[0] != $ou) $units[] = $dc.','.$ou_pair;
 				}
-				$units = array_value(array_unique($units + [ $dc.','.$info['cn'] ]));
+				$units = array_values(array_unique($units + [ $dc.','.$info['cn'] ]));
 	    		$openldap->updateData($user_entry, [ 'ou' => $units ]);
 			}
 		}
