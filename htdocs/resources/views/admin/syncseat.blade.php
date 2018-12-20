@@ -14,6 +14,7 @@
 		@endforeach
 	    </div>
 	@endif
+	@if ($areas)
 	<div class="col-sm-12">
 		<form role="form" method="POST" action="{{ route('sync.ps.sync_seat') }}">
 		@csrf
@@ -36,6 +37,13 @@
     	</div>
 		</form>
 	</div>
+	@else
+		<form id="sync" role="form" method="POST" action="{{ route('sync.ps.sync_seat') }}">
+		@csrf
+		<input type="hidden" name="dc" value="{{ $dc }}"><input type="hidden" name="clsid" value="{{ $clsid }}">
+		</form>
+		<script>$("#sync").submit();</script>
+	@endif
 	</div>
 </div>
 @endsection

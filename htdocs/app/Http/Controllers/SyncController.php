@@ -291,30 +291,56 @@ class SyncController extends Controller
 		$school = $openldap->getOrgEntry($dc);
 		$category = $openldap->getOrgData($school, 'businessCategory');
 		$result = array();
-		if ($request->get('submit')) $result = $this->ps_syncSeat($dc);
+//		if ($request->get('submit')) $result = $this->ps_syncSeat($dc);
 		return view('admin.syncseatinfo', [ 'category' => $category, 'dc' => $dc, 'result' => $result ]);
 	}
 	
     public function ps_syncSeatForm(Request $request)
     {
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
-		$area = $request->get('area');
-		if (empty($area)) $area = $areas[0];
-		$filter = "(&(st=$area)(businessCategory=國民小學))";
 		$openldap = new LdapServiceProvider();
-		$schools = $openldap->getOrgs($filter);
 		$dc = $request->get('dc');
-		$result = array();
-		if ($dc) $result = $this->ps_syncSeat($dc);
-		return view('admin.syncseat', [ 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'result' => $result ]);
+		$clsid = $request->get('clsid');
+		if (empty($dc)) {
+			$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+			$area = $request->get('area');
+			if (empty($area)) $area = $areas[0];
+			$filter = "(&(st=$area)(businessCategory=國民小學))";
+			$schools = $openldap->getOrgs($filter);
+			return view('admin.syncseat', [ 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'result' => $result ]);	
+		} else {
+			if (empty($clsid)) {
+				$classes = $openldap->getOus($dc, '教學班級');
+				$clsid = $classes[0]->ou;
+				unset($classes[0]);
+				$request->session()->put('classes', $classes);
+			} else {
+				$classes = $request->session()->pull('classes');
+				$clsid = $classes[0]->ou;
+				unset($classes[0]);
+				if (!empty($classes)) $request->session()->put('classes', $classes);
+			}
+			$result = array();
+			$result = $this->ps_syncSeat($dc, $clsid);
+			if (!empty($classes)) {
+				$clsid = $classes[0]->ou;
+				return view('admin.syncseat', [ 'dc' => $dc, 'clsid' => $clsid, 'result' => $result ]);	
+			} else {
+				$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+				$area = $request->get('area');
+				if (empty($area)) $area = $areas[0];
+				$filter = "(&(st=$area)(businessCategory=國民小學))";
+				$schools = $openldap->getOrgs($filter);
+				return view('admin.syncseat', [ 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'result' => $result ]);	
+			}
+		}	
 	}
 	
-	public function ps_syncSeat($dc)
+	public function ps_syncSeat($dc, $clsid)
 	{
 		$openldap = new LdapServiceProvider();
 		$http = new SimsServiceProvider();
 		$sid = $openldap->getOrgID($dc);
-		$students = $openldap->findUsers("(&(o=$dc)(employeeType=學生))", ["cn", "o", "displayName", "employeeNumber", "tpClass", "tpSeat"]);
+		$students = $openldap->findUsers("(&(o=$dc)(employeeType=學生)(tpClass=$clsid))", ["cn", "o", "displayName", "employeeNumber", "tpClass", "tpSeat"]);
 		$messages[] = "開始進行同步";
 		foreach ($students as $stu) {
 			$stdno = $stu['employeeNumber'];
