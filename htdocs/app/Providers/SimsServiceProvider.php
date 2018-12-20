@@ -90,7 +90,7 @@ class SimsServiceProvider extends ServiceProvider
         $subjects = array();
         $classes = $this->getClasses($sid);
 		foreach ($classes as $class) {
-			$data = $http->ps_call('subject_for_class', [ 'sid' => $sid, 'clsid' => $class->clsid ]);
+			$data = $this->ps_call('subject_for_class', [ 'sid' => $sid, 'clsid' => $class->clsid ]);
 			if (isset($data[0]->subjects)) {
 				$class_subjects = $data[0]->subjects;
 				foreach ($class_subjects as $subj) {
