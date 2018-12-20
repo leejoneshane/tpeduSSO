@@ -123,7 +123,7 @@ class SyncController extends Controller
 		$http = new SimsServiceProvider();
 		$sid = $openldap->getOrgID($dc);
 		$org_classes = $openldap->getOus($dc, '教學班級');
-		$classes = $http->ps_call('classes_info', [ 'sid' => $sid ]);
+		$classes = $http->getClasses($sid);
 		$messages[] = "開始進行同步";
 		if ($classes) {
 			foreach ($classes as $class) {
@@ -198,21 +198,9 @@ class SyncController extends Controller
 		$openldap = new LdapServiceProvider();
 		$http = new SimsServiceProvider();
 		$sid = $openldap->getOrgID($dc);
-		$classes = $openldap->getOus($dc, '教學班級');
 		$messages[] = "開始進行同步";
-		$subjects = array();
-		foreach ($classes as $class) {
-			$data = $http->ps_call('subject_for_class', [ 'sid' => $sid, 'clsid' => $class->ou ]);
-			if (isset($data[0]->subjects)) {
-				$class_subjects = $data[0]->subjects;
-				foreach ($class_subjects as $subj) {
-					$subj_name = array_keys((array)$subj)[0];
-					if (!in_array($subj_name, $subjects)) $subjects[] = $subj_name;
-				}
-			} else {
-				$messages[] = "ou=". $class->ou ." 無法取得班級配課資訊：". $http->ps_error();
-			}
-		}
+		$subjects = $http->getSubjects($sid);
+		if (!$subjects) return ["無法從校務行政系統取得所有科目，請稍後再同步！"];
 		$org_subjects = $openldap->getSubjects($dc);
 		for ($i=0;$i<count($org_subjects);$i++) {
 			if (!in_array($org_subjects[$i]['description'], $subjects)) {

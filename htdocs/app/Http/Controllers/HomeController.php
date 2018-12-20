@@ -95,7 +95,8 @@ class HomeController extends Controller
 			'new-account' => 'required|string|min:6|confirmed',
 		]);
 		if (!$openldap->accountAvailable($user->idno, $request->get('new-account')))
-	    	return back()->withInput()->with("error","您輸入的帳號已經被別人使用，請您重新輸入一次！");
+			return back()->withInput()->with("error","您輸入的帳號已經被別人使用，請您重新輸入一次！");
+		$entry = $openldap->getUserEntry($user->idno);
 		if (empty($accounts)) {
 			$openldap->addAccount($entry, $request->get('new-account'), "自建帳號");
 			return back()->withInput()->with("success","帳號建立成功！");
