@@ -306,7 +306,7 @@ class SyncController extends Controller
 			if (empty($area)) $area = $areas[0];
 			$filter = "(&(st=$area)(businessCategory=國民小學))";
 			$schools = $openldap->getOrgs($filter);
-			return view('admin.syncseat', [ 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'result' => $result ]);	
+			return view('admin.syncseat', [ 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc ]);	
 		} else {
 			if (empty($clsid)) {
 				$classes = $openldap->getOus($dc, '教學班級');
