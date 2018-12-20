@@ -993,6 +993,24 @@ class LdapServiceProvider extends ServiceProvider
 		return $value;
     }
 
+    public function findAccounts($filter, $attr = '')
+    {
+		$accountinfo = array();
+		$this->administrator();
+		$base_dn = Config::get('ldap.authdn');
+		$resource = @ldap_search(self::$ldap_read, $base_dn, $filter);
+		if ($resource) {
+			$entry = ldap_first_entry(self::$ldap_read, $resource);
+			if ($entry) {
+				do {
+	    			$accountinfo[] = $this->getAccountData($entry, $attr);
+				} while ($entry=ldap_next_entry(self::$ldap_read, $entry));
+			}
+			return $accountinfo;
+		}
+		return false;
+    }
+
     public function getAccountEntry($identifier)
     {
 		$this->administrator();
@@ -1005,30 +1023,71 @@ class LdapServiceProvider extends ServiceProvider
 		}
 		return false;
     }
-    
+
+    public function getAccountData($entry, $attr = '')
+    {
+		$fields = array();
+		if ($attr == '') {
+	    	$fields[] = 'cn';
+	    	$fields[] = 'uid';
+	    	$fields[] = 'userPassword';
+	    	$fields[] = 'description';
+		} elseif (is_array($attr)) {
+	    	$fields = $attr;
+		} else {
+	    	$fields[] = $attr;
+		}
+
+		$info = array();
+        foreach ($fields as $field) {
+	    	$value = @ldap_get_values(self::$ldap_read, $entry, $field);
+	    	if ($value) {
+				if ($value['count'] == 1) {
+		    		$info[$field] = $value[0];
+				} else {
+		    		unset($value['count']);
+		    		$info[$field] = $value;
+				}
+	    	}
+		}
+		return $info;
+	}
+
     public function updateAccounts($entry, $accounts)
     {
-		if (!$entry || empty($accounts)) return;
+		if (!$entry) return false;
 		$this->administrator();
-		$data = $this->getUserData($entry, 'uid');
+		$data = $this->getUserData($entry, ['cn', 'uid']);
 		if (!isset($data['uid']) || empty($data['uid'])) {
-			foreach ($accounts as $account) {
-				$this->addAccount($entry, $account, '自建帳號');
-			}
+			if (!empty($accounts))
+				foreach ($accounts as $account) {
+					$this->addAccount($entry, $account, '自建帳號');
+				}
 		} else {
 			$uids = array();
 			if (is_array($data['uid'])) {
 				$uids = $data['uid'];
 			} else {
-				$uids[] = $data['uid'];
+				if (!empty($data['uid'])) $uids[] = $data['uid'];
 			}
 			foreach ($uids as $uid) {
 				if (!in_array($uid, $accounts)) $this->deleteAccount($entry, $uid);
 			}
-			foreach ($accounts as $account) {
-				if (!in_array($account, $uids)) $this->addAccount($entry, $account, '自建帳號');
+			if (!empty($accounts)) {
+				foreach ($accounts as $account) {
+					if (!in_array($account, $uids)) $this->addAccount($entry, $account, '自建帳號');
+				}
 			}
 		}
+
+		$idno = $data['cn'];
+		$acc_data = $this->findAccounts("cn=$idno", "uid");
+		if (!empty($acc_data)) {
+			foreach ($acc_data as $acc) {
+				if (!in_array($acc['uid'], $accounts))  $this->deleteAccount($entry, $acc['uid']);
+			}
+		}
+		return true;
     }
 
     public function addAccount($entry, $account, $memo)
