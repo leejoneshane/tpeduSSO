@@ -51,7 +51,7 @@ class HomeController extends Controller
 	    	if (!$openldap->emailAvailable($idno, $email))
 				return back()->withInput()->with("error","您輸入的電子郵件已經被別人使用，請您重新輸入一次！");
 	    	$userinfo['mail'] = $email;
-	    	$user->email = $mail;
+	    	$user->email = $email;
 		}
 		if ($mobile != $user->mobile) {
 	    	$validatedData = $request->validate([

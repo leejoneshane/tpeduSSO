@@ -734,7 +734,7 @@ class BureauController extends Controller
 			$info['wWWHomePage'] = [];
 		else
 			$info['wWWHomePage'] = $request->get('www');
-		if (is_null($request->get('character'))) {
+		if (empty($request->get('character'))) {
 			$info['tpCharacter'] = [];
 		} else {
 			$data = array();
@@ -745,7 +745,7 @@ class BureauController extends Controller
 			}
 			$info['tpCharacter'] = array_values(array_filter($data));
 		}
-		if (is_null($request->get('mail'))) {
+		if (empty($request->get('mail'))) {
 			$info['mail'] = [];
 		} else {
 			$data = array();
@@ -756,7 +756,7 @@ class BureauController extends Controller
 			}
 			$info['mail'] = array_values(array_filter($data));
 		}
-		if (is_null($request->get('mobile'))) {
+		if (empty($request->get('mobile'))) {
 			$info['mobile'] = [];
 		} else {
 			$data = array();
@@ -767,7 +767,7 @@ class BureauController extends Controller
 			}
 			$info['mobile'] = array_values(array_filter($data));
 		}
-		if (is_null($request->get('fax'))) {
+		if (empty($request->get('fax'))) {
 			$info['facsimileTelephoneNumber'] = [];
 		} else {
 			$data = array();
@@ -778,7 +778,7 @@ class BureauController extends Controller
 			}
 			$info['facsimileTelephoneNumber'] = array_values(array_filter($data));
 		}
-		if (is_null($request->get('otel'))) {
+		if (empty($request->get('otel'))) {
 			$info['telephoneNumber'] = [];
 		} else {
 			$data = array();
@@ -789,7 +789,7 @@ class BureauController extends Controller
 			}
 			$info['telephoneNumber'] = array_values(array_filter($data));
 		}
-		if (is_null($request->get('htel'))) {
+		if (empty($request->get('htel'))) {
 			$info['homePhone'] = [];
 		} else {
 			$data = array();

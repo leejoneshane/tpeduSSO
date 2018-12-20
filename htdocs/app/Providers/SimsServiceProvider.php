@@ -78,6 +78,22 @@ class SimsServiceProvider extends ServiceProvider
         }
     }
 
+    public function getTeachers($sid)
+    {
+        if (empty($sid)) return false;
+        $teachers = $this->ps_call("teachers_info", ["sid" => $sid]);
+        return $teachers;
+    }
+
+    public function getStudents($sid)
+    {
+        if (empty($sid)) return false;
+        $classes = $this->ps_call("classes_info", ["sid" => $sid]);
+        
+        $teachers = $this->ps_call("teachers_info", ["sid" => $sid]);
+        return $teachers;
+    }
+
     private function seme() {
         if (date('m') > 7) {
           $year = date('Y') - 1911;

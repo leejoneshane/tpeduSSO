@@ -380,7 +380,7 @@ class SchoolController extends Controller
 				if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
 			}
 		}
-    	if (!is_null($uuid)) {//edit
+    	if (!empty($uuid)) {//edit
     		$entry = $openldap->getUserEntry($uuid);
     		$user = $openldap->getUserData($entry);
 			return view('admin.schoolstudentedit', [ 'category' => $category, 'dc' => $dc, 'my_field' => $my_field, 'keywords' => $keywords, 'ous' => $ous, 'user' => $user ]);
@@ -547,7 +547,7 @@ class SchoolController extends Controller
 			$info['wWWHomePage'] = [];
 		else
 			$info['wWWHomePage'] = $request->get('www');
-		if (is_null($request->get('character'))) {
+		if (empty($request->get('character'))) {
 			$info['tpCharacter'] = [];
 		} else {
 			$data = array();
@@ -558,7 +558,7 @@ class SchoolController extends Controller
 			}
 			$info['tpCharacter'] = array_values(array_filter($data));
 		}
-		if (is_null($request->get('mail'))) {
+		if (empty($request->get('mail'))) {
 			$info['mail'] = [];
 		} else {
 			$data = array();
@@ -569,7 +569,7 @@ class SchoolController extends Controller
 			}
 			$info['mail'] = array_values(array_filter($data));
 		}
-		if (is_null($request->get('mobile'))) {
+		if (empty($request->get('mobile'))) {
 			$info['mobile'] = [];
 		} else {
 			$data = array();
@@ -580,7 +580,7 @@ class SchoolController extends Controller
 			}
 			$info['mobile'] = array_values(array_filter($data));
 		}
-		if (is_null($request->get('fax'))) {
+		if (empty($request->get('fax'))) {
 			$info['facsimileTelephoneNumber'] = [];
 		} else {
 			$data = array();
@@ -591,7 +591,7 @@ class SchoolController extends Controller
 			}
 			$info['facsimileTelephoneNumber'] = array_values(array_filter($data));
 		}
-		if (is_null($request->get('otel'))) {
+		if (empty($request->get('otel'))) {
 			$info['telephoneNumber'] = [];
 		} else {
 			$data = array();
@@ -602,7 +602,7 @@ class SchoolController extends Controller
 			}
 			$info['telephoneNumber'] = array_values(array_filter($data));
 		}
-		if (is_null($request->get('htel'))) {
+		if (empty($request->get('htel'))) {
 			$info['homePhone'] = [];
 		} else {
 			$data = array();
@@ -1053,7 +1053,7 @@ class SchoolController extends Controller
 				if (!array_key_exists($role->cn, $roles)) $roles[$role->cn] = $role->description;
 			}
 		}
-    	if (!is_null($uuid)) {//edit
+    	if (!empty($uuid)) {//edit
     		$entry = $openldap->getUserEntry($uuid);
     		$user = $openldap->getUserData($entry);
     		$assign = array();
@@ -1311,7 +1311,7 @@ class SchoolController extends Controller
 				if (count($a) == 3 && $a[0] != $dc) $assign[] = $pair;
 			}
 		}
-		if (!is_null($request->get('tclass'))) {
+		if (!empty($request->get('tclass'))) {
 			$classes = $request->get('tclass');
 			$subjects = $request->get('subj');
 			for ($i=0;$i<count($classes);$i++) {
@@ -1321,7 +1321,7 @@ class SchoolController extends Controller
 			}
 		}
 		$info['tpTeachClass'] = $assign;
-		if (is_null($request->get('character'))) {
+		if (empty($request->get('character'))) {
 			$info['tpCharacter'] = [];
 		} else {
 			$data = array();
@@ -1332,7 +1332,7 @@ class SchoolController extends Controller
 			}
 			$info['tpCharacter'] = array_values(array_filter($data));
 		}
-		if (is_null($request->get('mail'))) {
+		if (empty($request->get('mail'))) {
 			$info['mail'] = [];
 		} else {
 			$data = array();
@@ -1343,7 +1343,7 @@ class SchoolController extends Controller
 			}
 			$info['mail'] = array_values(array_filter($data));
 		}
-		if (is_null($request->get('mobile'))) {
+		if (empty($request->get('mobile'))) {
 			$info['mobile'] = [];
 		} else {
 			$data = array();
@@ -1354,7 +1354,7 @@ class SchoolController extends Controller
 			}
 			$info['mobile'] = array_values(array_filter($data));
 		}
-		if (is_null($request->get('fax'))) {
+		if (empty($request->get('fax'))) {
 			$info['facsimileTelephoneNumber'] = [];
 		} else {
 			$data = array();
@@ -1365,7 +1365,7 @@ class SchoolController extends Controller
 			}
 			$info['facsimileTelephoneNumber'] = array_values(array_filter($data));
 		}
-		if (is_null($request->get('otel'))) {
+		if (empty($request->get('otel'))) {
 			$info['telephoneNumber'] = [];
 		} else {
 			$data = array();
@@ -1376,7 +1376,7 @@ class SchoolController extends Controller
 			}
 			$info['telephoneNumber'] = array_values(array_filter($data));
 		}
-		if (is_null($request->get('htel'))) {
+		if (empty($request->get('htel'))) {
 			$info['homePhone'] = [];
 		} else {
 			$data = array();
