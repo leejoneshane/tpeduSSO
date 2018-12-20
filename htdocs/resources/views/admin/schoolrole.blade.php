@@ -14,7 +14,7 @@
 	@endif
 	@if (empty($ous))
 		<div class="alert alert-danger">
-		尚未建立行政部門紀錄，拰已無法新增任何職稱！
+		尚未建立行政部門紀錄，所以無法新增任何職稱！
 	    </div>
 	@endif
 	@if (session('success'))
