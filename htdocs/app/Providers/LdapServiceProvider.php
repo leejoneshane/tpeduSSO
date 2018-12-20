@@ -1068,7 +1068,7 @@ class LdapServiceProvider extends ServiceProvider
 			if (is_array($data['uid'])) {
 				$uids = $data['uid'];
 			} else {
-				if (!empty($data['uid'])) $uids[] = $data['uid'];
+				$uids[] = $data['uid'];
 			}
 			foreach ($uids as $uid) {
 				if (!in_array($uid, $accounts)) $this->deleteAccount($entry, $uid);
