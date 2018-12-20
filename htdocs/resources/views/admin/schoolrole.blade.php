@@ -12,6 +12,11 @@
 		{{ session('error') }}
 	    </div>
 	@endif
+	@if (empty($ous))
+		<div class="alert alert-danger">
+		尚未建立行政部門紀錄，拰已無法新增任何職稱！
+	    </div>
+	@endif
 	@if (session('success'))
 	    <div class="alert alert-success">
 		{{ session('success') }}
@@ -67,7 +72,7 @@
     <form id="remove-form" action="" method="POST" style="display: none;">
     @csrf
     </form>
-
+	@if (!empty($ous))
 	<div class="col-sm-6">
 		<div class="panel panel-default">
 		<div class="panel-heading">
@@ -101,6 +106,7 @@
 		</div>
 		</div>
 	</div>
+	@endif
 	</div>
 </div>
 @endsection
