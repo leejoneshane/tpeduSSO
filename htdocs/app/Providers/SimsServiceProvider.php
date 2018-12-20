@@ -101,7 +101,7 @@ class SimsServiceProvider extends ServiceProvider
                 return false;
             }
         }
-        return $subjects();
+        return $subjects;
     }
 
     public function getTeachers($sid)
