@@ -22,6 +22,6 @@ else
   php artisan horizon:install
 fi
 
-exec php artisan horizon
+php artisan horizon ＆
 rm -f /run/apache2/httpd.pid
 exec httpd -DFOREGROUND
