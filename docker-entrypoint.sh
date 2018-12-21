@@ -16,9 +16,12 @@ php artisan route:cache
 if mysqlshow --host=${DB_HOST} --user=${DB_USERNAME} --password=${DB_PASSWORD} ${DB_DATABASE} users; then
   echo "database ready!"
 else
-  php artisan migrate:refresh
   php artisan passport:install
+  php artisan telescope:install
+  php artisan horizon:install
+  php artisan migrate:refresh
 fi
 
 rm -f /run/apache2/httpd.pid
-exec httpd -DFOREGROUND
+exec httpd -DFOREGROUND &
+exec php artisan horizon &
