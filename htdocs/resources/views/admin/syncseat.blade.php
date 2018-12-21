@@ -7,14 +7,14 @@
 @section('section')
 <div class="container">
 	<div class="row">
-	@if ($result)
+	@if (isset($result))
 	    <div class="alert alert-info">
 	    @foreach ($result as $line)
 		{{ $line }}<br>
 		@endforeach
 	    </div>
 	@endif
-	@if ($areas)
+	@if (isset($areas))
 	<div class="col-sm-12">
 		<form role="form" method="POST" action="{{ route('sync.ps.sync_seat') }}">
 		@csrf
