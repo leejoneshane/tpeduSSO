@@ -55,10 +55,10 @@ return [
             'visibility' => 'public',
         ],
 
-	    'saml' => [
-	        'driver' => 'local',
-	        'root' => storage_path('saml'),
-	    ],
+	'saml' => [
+	    'driver' => 'local',
+	    'root' => storage_path('saml'),
+	],
 	
         's3' => [
             'driver' => 's3',

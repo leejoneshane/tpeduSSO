@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Log;
 use Config;
 use Validator;
 use Auth;
@@ -300,6 +301,7 @@ class SyncController extends Controller
 		$openldap = new LdapServiceProvider();
 		$dc = $request->get('dc');
 		$clsid = $request->get('clsid');
+		Log::info($dc);
 		if (empty($dc)) {
 			$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 			$area = $request->get('area');
