@@ -68,6 +68,9 @@ RUN chmod 755 /usr/local/bin/*.sh \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
 ADD htdocs /var/www/localhost/htdocs
+RUN chown -R apache:apache /var/www \
+    && compose update
+    
 VOLUME ["/var/www/localhost/htdocs"]
 EXPOSE 80 443 
 CMD ["docker-entrypoint.sh"]

@@ -11,7 +11,6 @@
         "guzzlehttp/guzzle": "^6.3",
         "kingstarter/laravel-saml": "dev-master",
         "laravel/framework": "5.7.*",
-        "laravel/horizon": "^2.0",
         "laravel/passport": "^7.0",
         "laravel/socialite": "^3.1",
         "laravel/telescope": "^1.0",

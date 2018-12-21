@@ -2,7 +2,11 @@
 set -euo pipefail
 if ! [ -d /var/www/localhost/htdocs/vendor ]; then
   composer update
+  composer required laravel/horizon
+else
+  composer required laravel/horizon
 fi
+
 if ! [ -d /var/www/localhost/htdocs/storage/framework/views ]; then
   mkdir -p /var/www/localhost/htdocs/storage/framework/views
 fi
