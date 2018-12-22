@@ -1653,14 +1653,17 @@ class SchoolController extends Controller
 				if ($class->grade == $my_grade) $classes[] = $class;
 			}
 		}
+		$teachers = array();
 		$ous = $openldap->getOus($dc, '行政部門');
-		if (empty($my_ou) && !empty($ous)) $my_ou = $ous[0]->ou;
-		foreach ($ous as $ou) {
-			if (strpos($ou->description, '級任') || strpos($ou->description, '導師')) {
-				$my_ou = $ou->ou;
+		if (!empty($ous)) {
+			if (empty($my_ou)) $my_ou = $ous[0]->ou;
+			foreach ($ous as $ou) {
+				if (strpos($ou->description, '級任') || strpos($ou->description, '導師')) {
+					$my_ou = $ou->ou;
+				}
 			}
+			$teachers = $openldap->findUsers("(&(o=$dc)(ou=*$my_ou))");
 		}
-		$teachers = $openldap->findUsers("(&(o=$dc)(ou=*$my_ou))");
 		return view('admin.schoolclass', [ 'category' => $category, 'dc' => $dc, 'my_grade' => $my_grade, 'grades' => $grades, 'classes' => $classes, 'my_ou' => $my_ou, 'ous' => $ous, 'teachers' => $teachers ]);
     }
 
