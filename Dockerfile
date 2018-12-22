@@ -69,7 +69,7 @@ RUN chmod 755 /usr/local/bin/*.sh \
 
 ADD htdocs /var/www/localhost/htdocs
 RUN chown -R apache:apache /var/www \
-    && compose update
+    && composer update
     
 VOLUME ["/var/www/localhost/htdocs"]
 EXPOSE 80 443 
