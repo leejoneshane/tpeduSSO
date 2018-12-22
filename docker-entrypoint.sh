@@ -2,9 +2,7 @@
 set -euo pipefail
 if ! [ -d /var/www/localhost/htdocs/vendor ]; then
   composer update
-  composer required laravel/horizon
-else
-  composer required laravel/horizon
+  composer required laravel/telescope
 fi
 
 if ! [ -d /var/www/localhost/htdocs/storage/framework/views ]; then
@@ -23,7 +21,6 @@ else
   php artisan migrate:refresh
   php artisan passport:install
   php artisan telescope:install
-  php artisan horizon:install
 fi
 
 rm -f /run/apache2/httpd.pid
