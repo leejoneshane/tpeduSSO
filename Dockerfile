@@ -25,6 +25,7 @@ ENV MAIL_PASSWORD password
 ENV MAIL_ENCRYPTION tls
 
 ADD docker-entrypoint.sh /usr/local/bin/
+ADD htdocs /root/htdocs
 WORKDIR /var/www/localhost/htdocs
 
 RUN chmod 755 /usr/local/bin/*.sh \
@@ -65,9 +66,9 @@ RUN chmod 755 /usr/local/bin/*.sh \
            "/etc/php7/php.ini" \
        \
     && rm -f index.html \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer \
+    && cp -rdp /root/htdocs /var/www/localhost/htdocs
 
-ADD htdocs /var/www/localhost/htdocs    
 VOLUME ["/var/www/localhost/htdocs"]
 EXPOSE 80 443 
 CMD ["docker-entrypoint.sh"]
