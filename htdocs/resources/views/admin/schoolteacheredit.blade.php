@@ -7,6 +7,11 @@
 @section('section')
 <div class="container">
 	<div class="row">
+	@if (empty($roles))
+		<div class="alert alert-danger">
+		因為尚未設定行政部門與職稱，因此您無法新增或修改教師資訊！
+		</div>
+	@endif
 	@if (session('error'))
 	    <div class="alert alert-danger">
 		{{ session('error') }}
@@ -22,6 +27,7 @@
 		<div class="panel-heading">
 			<h4>{{ isset($user) ? '編輯' : '新增' }}教師資訊</h4>
 		</div>
+		@if (!empty($roles))
 		<div class="panel-body">
 			<form role="form" method="POST" action="{{ isset($user) ? route('school.updateTeacher', [ 'dc' => $dc, 'uuid' => $user['entryUUID'] ]) : route('school.createTeacher', [ 'dc' => $dc ]) }}">
 		    	@csrf
@@ -312,6 +318,7 @@
 				};
 			</script>
 		</div>
+		@endif
 	</div>
 	</div>
 </div>
