@@ -33,7 +33,7 @@
 		    <div class="form-group{{ $errors->has('businessCategory') ? ' has-error' : '' }}">
 			<label>學校類別</label>
 			<select id="businessCategory" class="form-control" name="businessCategory">
-			@foreach ($category as $type)
+			@foreach ($categorys as $type)
 			    <option value="{{ $type }}"{{ array_key_exists('businessCategory', $data) && $data['businessCategory'] == $type ? ' selected' : '' }}>{{ $type }}</option>
 			@endforeach
 			</select>

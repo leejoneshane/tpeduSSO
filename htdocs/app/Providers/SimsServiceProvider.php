@@ -111,17 +111,30 @@ class SimsServiceProvider extends ServiceProvider
         return $teachers;
     }
 
-    public function getStudents($sid)
+    public function getStudents($sid, $class = '')
     {
         if (empty($sid)) return false;
         $students = array();
-        $classes = $this->getClasses($sid);
-        foreach ($classes as $class) {
-            $stu = $this->ps_call('students_in_class', ["sid" => $sid, "clsid" => $class->clsid]);
+        if (empty($class)) {
+            $classes = $this->getClasses($sid);
+            $classes = array_map(function($c) { return $c->clsid; }, $classes);
+        } else {
+            $classes[] = $class;
+        }
+        foreach ($classes as $c) {
+            $stu = $this->ps_call('students_in_class', ["sid" => $sid, "clsid" => $c]);
             usleep(100);
             $students = array_merge($students, $stu->students);
         }
         return $students;
+    }
+
+    public function getStudent($sid, $stdno)
+    {
+        if (empty($sid) || empty($stdno)) return false;
+        $data1 = $this->ps_call('student_info', [ 'sid' => $sid, 'stdno' => $stdno ]);
+        $data2 = $this->ps_call('student_detail', [ 'sid' => $sid, 'stdno' => $stdno ]);
+        return arrar_merge((array)$data1[0], (array)$data2[0]);
     }
 
     private function seme() {

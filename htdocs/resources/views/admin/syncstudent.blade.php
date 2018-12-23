@@ -1,22 +1,22 @@
 @extends('layouts.syncboard')
 
 @section('page_heading')
-同步班級座號（國小學程）
+同步學生（國小學程）
 @endsection
 
 @section('section')
 <div class="container">
 	<div class="row">
-	@if (isset($result))
+	@if ($result)
 	    <div class="alert alert-info">
 	    @foreach ($result as $line)
 		{{ $line }}<br>
 		@endforeach
 	    </div>
 	@endif
-	@if (isset($areas))
+	@if ($areas)
 	<div class="col-sm-12">
-		<form role="form" method="POST" action="{{ route('sync.ps.sync_seat') }}">
+		<form role="form" method="POST" action="{{ route('sync.ps.sync_student') }}">
 		@csrf
     	<div class="input-group custom-search-form">
 			<select id="area" class="form-control" style="width: auto" onchange="location='{{ url()->current() }}?area=' + $(this).val();">
@@ -38,11 +38,17 @@
 		</form>
 	</div>
 	@else
-		<form id="sync" role="form" method="POST" action="{{ route('sync.ps.sync_seat') }}">
+		<form id="sync" role="form" method="POST" action="{{ route('sync.ps.sync_student') }}">
 		@csrf
-		<input type="hidden" name="dc" value="{{ $dc }}"><input type="hidden" name="clsid" value="{{ $clsid }}">
-		</form>
-		<script>$("#sync").submit();</script>
+		<input type="hidden" name="dc" value="{{ $dc }}">
+		<input type="hidden" name="clsid" value="{{ $clsid }}">
+		<span class="input-group-btn" style="width: auto">
+			<button class="btn btn-default" type="submit">
+				繼續同步下一個班級：{{ $clsid }}
+			</button>
+		</span>
+	</form>
+		<script>setTimeout("$('#sync').submit()", 60000);</script>
 	@endif
 	</div>
 </div>

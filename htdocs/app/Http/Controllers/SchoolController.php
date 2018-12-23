@@ -34,7 +34,7 @@ class SchoolController extends Controller
 		$openldap = new LdapServiceProvider();
 		$school = $openldap->getOrgEntry($dc);
 		$category = $openldap->getOrgData($school, 'businessCategory');
-        return view('school', [ 'dc' => $dc, 'category' => $category ]);
+        return view('school', [ 'dc' => $dc, 'category' => $category['businessCategory'] ]);
     }
     
     public function schoolStudentSearchForm(Request $request, $dc)
@@ -80,7 +80,7 @@ class SchoolController extends Controller
 			$students = $openldap->findUsers($filter, ["cn", "displayName", "o", "tpClass", "tpSeat", "entryUUID", "uid", "inetUserStatus"]);
 			usort($students, function ($a, $b) { return $a['tpSeat'] <=> $b['tpSeat']; });
 		}
-		return view('admin.schoolstudent', [ 'category' => $category, 'dc' => $dc, 'my_field' => $my_field, 'keywords' => $keywords, 'classes' => $ous, 'students' => $students ]);
+		return view('admin.schoolstudent', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'my_field' => $my_field, 'keywords' => $keywords, 'classes' => $ous, 'students' => $students ]);
 	}
 
     public function schoolStudentJSONForm(Request $request, $dc)
@@ -116,7 +116,7 @@ class SchoolController extends Controller
 		$user2->gn = '小小';
 		$user2->gender = 2;
 		$user2->birthdate = '20101105';
-		return view('admin.schoolstudentjson', [ 'category' => $category, 'dc' => $dc, 'sample1' => $user, 'sample2' => $user2 ]);
+		return view('admin.schoolstudentjson', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'sample1' => $user, 'sample2' => $user2 ]);
 	}
 
     public function importSchoolStudent(Request $request, $dc)
@@ -383,9 +383,9 @@ class SchoolController extends Controller
     	if (!empty($uuid)) {//edit
     		$entry = $openldap->getUserEntry($uuid);
     		$user = $openldap->getUserData($entry);
-			return view('admin.schoolstudentedit', [ 'category' => $category, 'dc' => $dc, 'my_field' => $my_field, 'keywords' => $keywords, 'ous' => $ous, 'user' => $user ]);
+			return view('admin.schoolstudentedit', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'my_field' => $my_field, 'keywords' => $keywords, 'ous' => $ous, 'user' => $user ]);
 		} else { //add
-			return view('admin.schoolstudentedit', [ 'category' => $category, 'dc' => $dc, 'my_field' => $my_field, 'keywords' => $keywords, 'ous' => $ous ]);
+			return view('admin.schoolstudentedit', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'my_field' => $my_field, 'keywords' => $keywords, 'ous' => $ous ]);
 		}
 	}
 	
@@ -679,7 +679,7 @@ class SchoolController extends Controller
 		if (!empty($filter)) {
 			$teachers = $openldap->findUsers($filter, ["cn","displayName","o","ou","title","entryUUID","uid","inetUserStatus"]);
 		}
-		return view('admin.schoolteacher', [ 'category' => $category, 'dc' => $dc, 'my_field' => $my_field, 'keywords' => $keywords, 'ous' => $ous, 'teachers' => $teachers ]);
+		return view('admin.schoolteacher', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'my_field' => $my_field, 'keywords' => $keywords, 'ous' => $ous, 'teachers' => $teachers ]);
     }
 
     public function schoolTeacherJSONForm(Request $request, $dc)
@@ -712,7 +712,7 @@ class SchoolController extends Controller
 		$user2->gn = '小明';
 		$user2->gender = 1;
 		$user2->birthdate = '20011105';
-		return view('admin.schoolteacherjson', [ 'category' => $category, 'dc' => $dc, 'sample1' => $user, 'sample2' => $user2 ]);
+		return view('admin.schoolteacherjson', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'sample1' => $user, 'sample2' => $user2 ]);
 	}
 	
     public function importSchoolTeacher(Request $request, $dc)
@@ -1078,9 +1078,9 @@ class SchoolController extends Controller
 					}
     			}
 			}
-			return view('admin.schoolteacheredit', [ 'category' => $category, 'my_field' => $my_field, 'keywords' => $keywords, 'dc' => $dc, 'types' => $types, 'subjects' => $subjects, 'classes' => $classes, 'roles' => $roles, 'assign' => $assign, 'user' => $user ]);
+			return view('admin.schoolteacheredit', [ 'category' => $category['businessCategory'], 'my_field' => $my_field, 'keywords' => $keywords, 'dc' => $dc, 'types' => $types, 'subjects' => $subjects, 'classes' => $classes, 'roles' => $roles, 'assign' => $assign, 'user' => $user ]);
 		} else { //add
-			return view('admin.schoolteacheredit', [ 'category' => $category, 'my_field' => $my_field, 'keywords' => $keywords, 'dc' => $dc, 'types' => $types, 'subjects' => $subjects, 'classes' => $classes, 'roles' => $roles ]);
+			return view('admin.schoolteacheredit', [ 'category' => $category['businessCategory'], 'my_field' => $my_field, 'keywords' => $keywords, 'dc' => $dc, 'types' => $types, 'subjects' => $subjects, 'classes' => $classes, 'roles' => $roles ]);
 		}
 	}
 	
@@ -1520,7 +1520,7 @@ class SchoolController extends Controller
 			}
 			if ($my_ou) $roles = $openldap->getRoles($dc, $my_ou);
 		}
-		return view('admin.schoolrole', [ 'category' => $category, 'dc' => $dc, 'my_ou' => $my_ou, 'ous' => $ous, 'roles' => $roles ]);
+		return view('admin.schoolrole', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'my_ou' => $my_ou, 'ous' => $ous, 'roles' => $roles ]);
     }
 
     public function createSchoolRole(Request $request, $dc, $ou)
@@ -1664,7 +1664,7 @@ class SchoolController extends Controller
 			}
 			$teachers = $openldap->findUsers("(&(o=$dc)(ou=*$my_ou))");
 		}
-		return view('admin.schoolclass', [ 'category' => $category, 'dc' => $dc, 'my_grade' => $my_grade, 'grades' => $grades, 'classes' => $classes, 'my_ou' => $my_ou, 'ous' => $ous, 'teachers' => $teachers ]);
+		return view('admin.schoolclass', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'my_grade' => $my_grade, 'grades' => $grades, 'classes' => $classes, 'my_ou' => $my_ou, 'ous' => $ous, 'teachers' => $teachers ]);
     }
 
     public function schoolClassAssignForm(Request $request, $dc)
@@ -1689,7 +1689,7 @@ class SchoolController extends Controller
 		$ous = $openldap->getOus($dc, '行政部門');
 		if (empty($my_ou) && !empty($ous)) $my_ou = $ous[0]->ou;
 		$teachers = $openldap->findUsers("(&(o=$dc)(ou=*$my_ou))");
-		return view('admin.schoolclassassign', [ 'category' => $category, 'dc' => $dc, 'my_grade' => $my_grade, 'subjects' => $subjects, 'grades' => $grades, 'classes' => $classes, 'my_ou' => $my_ou, 'ous' => $ous, 'teachers' => $teachers ]);
+		return view('admin.schoolclassassign', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'my_grade' => $my_grade, 'subjects' => $subjects, 'grades' => $grades, 'classes' => $classes, 'my_ou' => $my_ou, 'ous' => $ous, 'teachers' => $teachers ]);
     }
 
 	public function assignSchoolClass(Request $request, $dc)
@@ -1845,7 +1845,7 @@ class SchoolController extends Controller
 		$school = $openldap->getOrgEntry($dc);
 		$category = $openldap->getOrgData($school, 'businessCategory');
 		$data = $openldap->getSubjects($dc);
-		return view('admin.schoolsubject', [ 'category' => $category, 'dc' => $dc, 'domains' => $domains, 'subjs' => $data ]);
+		return view('admin.schoolsubject', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'domains' => $domains, 'subjs' => $data ]);
     }
 
     public function createSchoolSubject(Request $request, $dc)
@@ -1910,7 +1910,7 @@ class SchoolController extends Controller
 		$school = $openldap->getOrgEntry($dc);
 		$category = $openldap->getOrgData($school, 'businessCategory');
 		$data = $openldap->getOus($dc, '行政部門');
-		return view('admin.schoolunit', [ 'category' => $category, 'dc' => $dc, 'ous' => $data ]);
+		return view('admin.schoolunit', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'ous' => $data ]);
     }
 
     public function createSchoolUnit(Request $request, $dc)
@@ -2001,13 +2001,13 @@ class SchoolController extends Controller
 
     public function schoolProfileForm(Request $request, $dc)
     {
-		$category = [ '幼兒園', '國民小學', '國民中學', '高中', '高職', '大專院校', '特殊教育', '主管機關' ];
+		$categorys = [ '幼兒園', '國民小學', '國民中學', '高中', '高職', '大專院校', '特殊教育', '主管機關' ];
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 		$openldap = new LdapServiceProvider();
 		$school = $openldap->getOrgEntry($dc);
 		$category = $openldap->getOrgData($school, 'businessCategory');
 		$data = $openldap->getOrgData($school);
-		return view('admin.schoolprofile', [ 'category' => $category, 'dc' => $dc, 'data' => $data, 'areas' => $areas, 'category' => $category ]);
+		return view('admin.schoolprofile', [ 'categorys' => $categorys, 'category' => $category['businessCategory'], 'dc' => $dc, 'data' => $data, 'areas' => $areas ]);
     }
 
     public function updateSchoolProfile(Request $request, $dc)
@@ -2074,7 +2074,7 @@ class SchoolController extends Controller
 				$admins[] = $admin;
 			}
 		}
-		return view('admin.schooladminwithsidebar', [ 'category' => $category, 'admins' => $admins, 'dc' => $dc ]);
+		return view('admin.schooladminwithsidebar', [ 'category' => $category['businessCategory'], 'admins' => $admins, 'dc' => $dc ]);
     }
 
     public function showSchoolAdminSettingForm(Request $request)
