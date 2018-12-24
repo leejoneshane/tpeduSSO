@@ -387,15 +387,15 @@ class SyncController extends Controller
 						$info['employeeType'] = '學生';
 						$info['inetUserStatus'] = 'active';
 						$info['employeeNumber'] = $stdno;
-						$info['tpClass'] = $data['class'];
-						$info['tpSeat'] = $data['seat'];
+						$info['tpClass'] = (int) $data['class'];
+						$info['tpSeat'] = (int) $data['seat'];
 						$name = $this->guess_name($data['name']);
 						$info['sn'] = $name[0];
 						$info['givenName'] = $name[1];
 						$info['displayName'] = $data['name'];
 						$info['gender'] = (int) $data['gender'];
 						$info['birthDate'] = $data['birthdate'].'000000Z';
-						if (!empty($data['address'])) $info['registeredAddress'] = $data['address'];
+						if (!empty($data['address'])) $info['registeredAddress'] = mb_substr($data['address'], 3, null, "UTF-8");
 						if (!empty($data['mail'])) $info['mail'] = $data['email'];
 						if (!empty($data['tel'])) $info['mobile'] = $data['tel'];
 						$result = $openldap->updateData($user_entry, $info);
@@ -429,15 +429,15 @@ class SyncController extends Controller
 					$info['inetUserStatus'] = 'active';
 					$info['info'] = json_encode(array("sid" => $sid, "role" => "學生"), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 					$info['employeeNumber'] = $stdno;
-					$info['tpClass'] = $data['class'];
-					$info['tpSeat'] = $data['seat'];
+					$info['tpClass'] = (int) $data['class'];
+					$info['tpSeat'] = (int) $data['seat'];
 					$name = $this->guess_name($data['name']);
 					$info['sn'] = $name[0];
 					$info['givenName'] = $name[1];
 					$info['displayName'] = $data['name'];
 					$info['gender'] = (int) $data['gender'];
 					$info['birthDate'] = $data['birthdate'].'000000Z';
-					if (!empty($data['address'])) $info['registeredAddress'] = $data['address'];
+					if (!empty($data['address'])) $info['registeredAddress'] = mb_substr($data['address'], 3, null, "UTF-8");
 					if (!empty($data['mail'])) $info['mail'] = $data['email'];
 					if (!empty($data['tel'])) $info['mobile'] = $data['tel'];
 					$result = $openldap->createEntry($info);
@@ -458,9 +458,9 @@ class SyncController extends Controller
 	function guess_name($myname) {
 		$len = mb_strlen($myname, "UTF-8");
 		if ($len > 3) {
-			return array(mb_substr($myname, 0, 2, "UTF-8"), mb_substr($myname, 2, NULL, "UTF-8"));
+			return array(mb_substr($myname, 0, 2, "UTF-8"), mb_substr($myname, 2, null, "UTF-8"));
 		} else {
-			return array(mb_substr($myname, 0, 1, "UTF-8"), mb_substr($myname, 1, NULL, "UTF-8"));
+			return array(mb_substr($myname, 0, 1, "UTF-8"), mb_substr($myname, 1, null, "UTF-8"));
 		}
 	}	
 
