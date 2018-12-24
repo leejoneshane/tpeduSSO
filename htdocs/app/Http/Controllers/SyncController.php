@@ -310,7 +310,7 @@ class SyncController extends Controller
 				unset($classes[0]);
 				if (!empty($classes)) $request->session()->put('classes', $classes);
 			}
-			$result = $this->ps_syncSeat($dc, $sid, $clsid);
+			$result = $this->ps_syncStudent($dc, $sid, $clsid);
 			if (!empty($classes)) {
 				$clsid = $classes[0]->clsid;
 				return view('admin.syncstudentinfo', [ 'category' => $category, 'dc' => $dc, 'clsid' => $clsid, 'result' => $result ]);	
@@ -348,7 +348,7 @@ class SyncController extends Controller
 				unset($classes[0]);
 				if (!empty($classes)) $request->session()->put('classes', $classes);
 			}
-			$result = $this->ps_syncSeat($dc, $sid, $clsid);
+			$result = $this->ps_syncStudent($dc, $sid, $clsid);
 			if (!empty($classes)) {
 				$clsid = $classes[0]->ou;
 				return view('admin.syncstudent', [ 'dc' => $dc, 'clsid' => $clsid, 'result' => $result ]);	
@@ -358,7 +358,7 @@ class SyncController extends Controller
 		}	
 	}
 	
-	public function ps_syncSeat($dc, $sid, $clsid)
+	public function ps_syncStudent($dc, $sid, $clsid)
 	{
 		$openldap = new LdapServiceProvider();
 		$http = new SimsServiceProvider();
