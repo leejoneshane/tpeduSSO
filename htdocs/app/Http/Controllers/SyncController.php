@@ -374,7 +374,7 @@ class SyncController extends Controller
 		$students = $http->getStudents($sid, $clsid);
 		foreach ($students as $stdno) {
 			$data = $http->getStudent($sid, $stdno);
-			if ($data) {
+			if (isset($data['idno'])) {
 				$user_entry = $openldap->getUserEntry($data['idno']);
 				if ($user_entry) {
 					if (substr($data['class'], 0, 1) == 'Z') {
@@ -456,7 +456,7 @@ class SyncController extends Controller
 					}
 				}
 			} else {
-				$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] ." 無法同步：". $http->ps_error();
+				$messages[] = "cn=無,stdno=". $stdno .",name=". $data['name'] ." 查無身份證號無法同步：". $http->ps_error();
 			}
 		}
 		$messages[] = "同步完成！";
