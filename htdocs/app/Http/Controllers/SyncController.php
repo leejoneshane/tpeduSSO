@@ -399,7 +399,7 @@ class SyncController extends Controller
 						$info['displayName'] = $data['name'];
 						$info['gender'] = (int) $data['gender'];
 						$info['birthDate'] = $data['birthdate'].'000000Z';
-						if (!empty($data['address'])) $info['registeredAddress'] = mb_substr($data['address'], 3, null, "UTF-8");
+						if (!empty($data['address'])) $info['registeredAddress'] = $data['address'];
 						if (!empty($data['mail'])) $info['mail'] = $data['email'];
 						if (!empty($data['tel'])) $info['mobile'] = $data['tel'];
 						$result = $openldap->updateData($user_entry, $info);
@@ -441,7 +441,7 @@ class SyncController extends Controller
 					$info['displayName'] = $data['name'];
 					$info['gender'] = (int) $data['gender'];
 					$info['birthDate'] = $data['birthdate'].'000000Z';
-					if (!empty($data['address'])) $info['registeredAddress'] = mb_substr($data['address'], 3, null, "UTF-8");
+					if (!empty($data['address'])) $info['registeredAddress'] = $data['address'];
 					if (!empty($data['mail'])) $info['mail'] = $data['email'];
 					if (!empty($data['tel'])) $info['mobile'] = $data['tel'];
 					$result = $openldap->createEntry($info);
