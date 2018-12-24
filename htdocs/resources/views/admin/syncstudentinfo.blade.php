@@ -7,13 +7,13 @@
 @section('section')
 <div class="container">
 	<div class="row">
-	@if ($result)
+	@if (isset($result))
 		<div class="alert alert-info">
 			@foreach ($result as $line)
 				{{ $line }}<br>
 			@endforeach
 		</div>
-	@elseif ($clsid)
+	@elseif (isset($clsid))
 		<form id="sync" role="form" method="POST" action="{{ route('school.ps.sync_student'), [ 'dc' => $dc ] }}">
 			@csrf
 			<input type="hidden" name="clsid" value="{{ $clsid }}">
