@@ -124,7 +124,7 @@ class SimsServiceProvider extends ServiceProvider
         foreach ($classes as $c) {
             $stu = $this->ps_call('students_in_class', ["sid" => $sid, "clsid" => $c]);
             usleep(100);
-            $students = array_merge($students, $stu->students);
+            $students = array_merge($students, $stu[0]->students);
         }
         return $students;
     }
