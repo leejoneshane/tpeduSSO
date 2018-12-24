@@ -331,11 +331,9 @@ class SyncController extends Controller
 		$http = new SimsServiceProvider();
 		$filter = "(&(st=$area)(businessCategory=國民小學))";
 		$schools = $openldap->getOrgs($filter);
-		$dc = $request->get('dc');
-		$clsid = $request->get('clsid');
-		if (empty($dc)) {
-			return view('admin.syncstudent', [ 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => '' ]);	
-		} else {
+		if ($request->isMethod('post')) {
+			$dc = $request->get('dc');
+			$clsid = $request->get('clsid');
 			$sid = $openldap->getOrgID($dc);
 			if (empty($clsid)) {
 				$classes = $http->getClasses($sid);
@@ -355,6 +353,8 @@ class SyncController extends Controller
 			} else {
 				return view('admin.syncstudent', [ 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'result' => $result ]);	
 			}
+		} else {
+			return view('admin.syncstudent', [ 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => '' ]);	
 		}	
 	}
 	
