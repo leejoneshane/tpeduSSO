@@ -384,7 +384,7 @@ class SyncController extends Controller
 						$account["cn"] = $data['idno'];
 						$account["description"] = '從校務行政系統同步';
 						$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
-						$result = $openldap->updateAccounts($entry, $accounts);
+						$result = $openldap->updateAccounts($user_entry, $accounts);
 						if (!$result) {
 							$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] . "因為帳號無法更新，學生同步失敗！".$openldap->error();
 							continue;
