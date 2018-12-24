@@ -134,7 +134,15 @@ class SimsServiceProvider extends ServiceProvider
         if (empty($sid) || empty($stdno)) return false;
         $data1 = $this->ps_call('student_info', [ 'sid' => $sid, 'stdno' => $stdno ]);
         $data2 = $this->ps_call('student_detail', [ 'sid' => $sid, 'stdno' => $stdno ]);
-        return array_merge((array)$data1[0], (array)$data2[0]);
+        if (isset($data1[0]))
+            $data1 = (array)$data1[0];
+        else 
+            $data1 = array();
+        if (isset($data2[0]))
+            $data2 = (array)$data2[0];
+        else
+            $data2 = array();
+        return array_merge($data1, $data2);
     }
 
     private function seme() {
