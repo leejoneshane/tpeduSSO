@@ -351,9 +351,9 @@ class SyncController extends Controller
 			$result = $this->ps_syncSeat($dc, $sid, $clsid);
 			if (!empty($classes)) {
 				$clsid = $classes[0]->ou;
-				return view('admin.syncseat', [ 'dc' => $dc, 'clsid' => $clsid, 'result' => $result ]);	
+				return view('admin.syncstudent', [ 'dc' => $dc, 'clsid' => $clsid, 'result' => $result ]);	
 			} else {
-				return view('admin.syncseat', [ 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'result' => $result ]);	
+				return view('admin.syncstudent', [ 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'result' => $result ]);	
 			}
 		}	
 	}
