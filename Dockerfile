@@ -25,7 +25,7 @@ ENV MAIL_PASSWORD password
 ENV MAIL_ENCRYPTION tls
 
 ADD docker-entrypoint.sh /usr/local/bin/
-ADD restore /usr/local/bin/
+ADD restore.sh /usr/local/bin/restore
 ADD htdocs /root/htdocs
 WORKDIR /var/www/localhost/htdocs
 
