@@ -15,7 +15,7 @@
 		</div>
 	@endif
 	@if (isset($clsid))
-		<form id="sync" role="form" method="POST" action="{{ route('school.ps.sync_student'), [ 'dc' => $dc ] }}">
+		<form id="sync" role="form" method="POST" action="{{ route('school.ps.sync_student', [ 'dc' => $dc ]) }}">
 			@csrf
 			<input type="hidden" name="clsid" value="{{ $clsid }}">
 			<span class="input-group-btn" style="width: auto">
