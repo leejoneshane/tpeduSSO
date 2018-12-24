@@ -67,7 +67,7 @@ RUN chmod 755 /usr/local/bin/*.sh \
        \
     && rm -f index.html \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer \
-    && cp -rdp /root/htdocs /var/www/localhost/htdocs
+    && cp -rdp /root/htdocs /var/www/localhost
 
 VOLUME ["/var/www/localhost/htdocs"]
 EXPOSE 80 443 

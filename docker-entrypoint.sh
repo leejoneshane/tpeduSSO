@@ -4,7 +4,7 @@ if ! [ -d /var/www/localhost/htdocs/vendor ]; then
   composer update
   composer required laravel/telescope
 else
-  cp -rdp /root/htdocs /var/www/localhost/htdocs
+  cp -rdp /root/htdocs /var/www/localhost
 fi
 
 if ! [ -d /var/www/localhost/htdocs/storage/framework/views ]; then
