@@ -337,18 +337,18 @@ class SyncController extends Controller
 			$sid = $openldap->getOrgID($dc);
 			if (empty($clsid)) {
 				$classes = $http->getClasses($sid);
-				$clsid = $classes[0]->ou;
+				$clsid = $classes[0]->clsid;
 				unset($classes[0]);
 				$request->session()->put('classes', $classes);
 			} else {
 				$classes = $request->session()->pull('classes');
-				$clsid = $classes[0]->ou;
+				$clsid = $classes[0]->clsid;
 				unset($classes[0]);
 				if (!empty($classes)) $request->session()->put('classes', $classes);
 			}
 			$result = $this->ps_syncStudent($dc, $sid, $clsid);
 			if (!empty($classes)) {
-				$clsid = $classes[0]->ou;
+				$clsid = $classes[0]->clsid;
 				return view('admin.syncstudent', [ 'dc' => $dc, 'clsid' => $clsid, 'result' => $result ]);	
 			} else {
 				return view('admin.syncstudent', [ 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'result' => $result ]);	
