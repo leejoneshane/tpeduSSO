@@ -18,7 +18,7 @@
                                     <a href="{{ route('sync.ps.sync_subject') }}">同步教學科目</a>
                                 </li>
                                 <li {{ (Request::is('sync/ps/sync_seat') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('sync.ps.sync_seat') }}">同步學生座號</a>
+                                    <a href="{{ route('sync.ps.sync_student') }}">同步學生</a>
                                 </li>
                             </ul>
                         </li>

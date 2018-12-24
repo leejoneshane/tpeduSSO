@@ -301,7 +301,7 @@ class SyncController extends Controller
 			$clsid = $request->get('clsid');
 			if (empty($clsid)) {
 				$classes = $http->getClasses($sid);
-				$clsid = $classes[0]->ou;
+				$clsid = $classes[0]->clsid;
 				unset($classes[0]);
 				$request->session()->put('classes', $classes);
 			} else {
