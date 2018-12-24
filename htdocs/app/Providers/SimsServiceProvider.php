@@ -81,9 +81,7 @@ class SimsServiceProvider extends ServiceProvider
     public function getClasses($sid)
     {
         if (empty($sid)) return false;
-        function cmp($a, $b) { return ($a->clsid < $b->clsid) ? -1 : 1; }
         $classes = $this->ps_call('classes_info', ["sid" => $sid]);
-        $classes = usort($classes, 'cmp' );
         return $classes;
     }
 
