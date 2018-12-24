@@ -306,13 +306,13 @@ class SyncController extends Controller
 				$request->session()->put('classes', $classes);
 			} else {
 				$classes = $request->session()->pull('classes');
-				$clsid = $classes[0]->ou;
+				$clsid = $classes[0]->clsid;
 				unset($classes[0]);
 				if (!empty($classes)) $request->session()->put('classes', $classes);
 			}
 			$result = $this->ps_syncSeat($dc, $sid, $clsid);
 			if (!empty($classes)) {
-				$clsid = $classes[0]->ou;
+				$clsid = $classes[0]->clsid;
 				return view('admin.syncstudentinfo', [ 'category' => $category, 'dc' => $dc, 'clsid' => $clsid, 'result' => $result ]);	
 			} else {
 				return view('admin.syncstudentinfo', [ 'category' => $category, 'dc' => $dc, 'result' => $result ]);	
