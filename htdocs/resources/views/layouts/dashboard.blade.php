@@ -63,6 +63,11 @@
                         <li {{ (Request::is('school/student') ? 'class="active"' : '') }}>
                             <a href="#"><i class="fa fa-child fa-fw"></i> 學生管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
+                                @if ($category == '國民小學')
+                                <li {{ (Request::is('ps/sync_student') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('school.ps.sync_student', [ 'dc' => $dc ]) }}">同步學生</a>
+                                </li>
+                                @endif
                                 <li {{ (Request::is('school/student') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.student', [ 'dc' => $dc ]) }}">瀏覽及搜尋</a>
                                 </li>
@@ -72,11 +77,6 @@
                                 <li {{ (Request::is('school/student/json') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.jsonStudent', [ 'dc' => $dc ]) }}">匯入JSON</a>
                                 </li>
-                                @if ($category == '國民小學')
-                                <li {{ (Request::is('ps/sync_seat') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.ps.sync_seat', [ 'dc' => $dc ]) }}">同步年班座號</a>
-                                </li>
-                                @endif
                             </ul>
                         </li>
                     </ul>
