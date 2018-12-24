@@ -25,10 +25,11 @@ ENV MAIL_PASSWORD password
 ENV MAIL_ENCRYPTION tls
 
 ADD docker-entrypoint.sh /usr/local/bin/
+ADD restore /usr/local/bin/
 ADD htdocs /root/htdocs
 WORKDIR /var/www/localhost/htdocs
 
-RUN chmod 755 /usr/local/bin/*.sh \
+RUN chmod 755 /usr/local/bin/* \
     && apk update \
     && apk add --no-cache bash sudo git zip mc curl certbot acme-client openssl ca-certificates findutils openldap-clients \
                           mysql-client nodejs apache2 apache2-ssl python php7-pdo php7-bcmath php7-apache2 php7-ldap php7-xmlwriter \
