@@ -383,8 +383,6 @@ class SyncController extends Controller
 							continue;
 						}
 						$info = array();
-						$info["uid"] = $account["uid"];
-						$info["userPassword"] = $account["userPassword"];
 						$info['o'] = $dc;
 						$info['employeeType'] = '學生';
 						$info['inetUserStatus'] = 'active';
