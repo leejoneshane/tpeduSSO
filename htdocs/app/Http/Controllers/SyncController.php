@@ -303,11 +303,13 @@ class SyncController extends Controller
 				$classes = $http->getClasses($sid);
 				$clsid = $classes[0]->clsid;
 				unset($classes[0]);
+				$classes = array_values($classes);
 				$request->session()->put('classes', $classes);
 			} else {
 				$classes = $request->session()->pull('classes');
 				$clsid = $classes[0]->clsid;
 				unset($classes[0]);
+				$classes = array_values($classes);
 				if (!empty($classes)) $request->session()->put('classes', $classes);
 			}
 			$result = $this->ps_syncStudent($dc, $sid, $clsid);
@@ -339,11 +341,13 @@ class SyncController extends Controller
 				$classes = $http->getClasses($sid);
 				$clsid = $classes[0]->clsid;
 				unset($classes[0]);
+				$classes = array_values($classes);
 				$request->session()->put('classes', $classes);
 			} else {
 				$classes = $request->session()->pull('classes');
 				$clsid = $classes[0]->clsid;
 				unset($classes[0]);
+				$classes = array_values($classes);
 				if (!empty($classes)) $request->session()->put('classes', $classes);
 			}
 			$result = $this->ps_syncStudent($dc, $sid, $clsid);
