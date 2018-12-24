@@ -334,7 +334,7 @@ class SyncController extends Controller
 		$dc = $request->get('dc');
 		$clsid = $request->get('clsid');
 		if (empty($dc)) {
-			return view('admin.syncseat', [ 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => '' ]);	
+			return view('admin.syncstudent', [ 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => '' ]);	
 		} else {
 			$sid = $openldap->getOrgID($dc);
 			if (empty($clsid)) {
