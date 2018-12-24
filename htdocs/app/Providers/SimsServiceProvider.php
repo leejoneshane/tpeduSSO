@@ -82,7 +82,8 @@ class SimsServiceProvider extends ServiceProvider
     {
         if (empty($sid)) return false;
         $classes = $this->ps_call('classes_info', ["sid" => $sid]);
-        return uasort($classes, function ($a, $b) { return ($a->clsid < $b->clsid) ? -1 : 1;} );
+//        $classes = uasort($classes, function ($a, $b) { return ($a->clsid < $b->clsid) ? -1 : 1;} );
+        return $classes;
     }
 
     public function getSubjects($sid)
