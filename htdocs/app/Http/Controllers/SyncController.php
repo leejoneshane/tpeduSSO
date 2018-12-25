@@ -303,9 +303,12 @@ class SyncController extends Controller
 				$classes = $http->getClasses($sid);
 				$temp = array();
 				foreach ($classes as $c) {
-					$temp[$c->clsid] = $c->clsname;
+					$k = $c->clsid;
+					$v = $c->clsname;
+					$temp[$k] = $v;
 				}
-				$classes = ksort($temp);
+				ksort($temp;)
+				$classes = $temp;
 				$clsid = key($classes);
 				$clsname = $classes[$clsid];
 				$classes = array_shift($classes);
@@ -346,9 +349,12 @@ class SyncController extends Controller
 				$classes = $http->getClasses($sid);
 				$temp = array();
 				foreach ($classes as $c) {
-					$temp[$c->clsid] = $c->clsname;
+					$k = $c->clsid;
+					$v = $c->clsname;
+					$temp[$k] = $v;
 				}
-				$classes = ksort($temp);
+				ksort($temp;)
+				$classes = $temp;
 				$clsid = key($classes);
 				$clsname = $classes[$clsid];
 				$classes = array_shift($classes);
