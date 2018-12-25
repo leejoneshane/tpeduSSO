@@ -17,19 +17,6 @@
                         <li {{ (Request::is('school/role') ? 'class="active"' : '') }}>
                             <a href="{{ route('school.role', [ 'dc' => $dc, 'ou' => 'null' ]) }}"><i class="fa fa-suitcase fa-fw"></i> 職稱管理</a>
                         </li>
-                        <li {{ (Request::is('school/subject') ? 'class="active"' : '') }}>
-                            <a href="#"><i class="fa fa-flask fa-fw"></i> 教學科目管理<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                @if ($category == '國民小學')
-                                <li {{ (Request::is('ps/sync_subject') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.ps.sync_subject', [ 'dc' => $dc ]) }}">同步教學科目</a>
-                                </li>
-                                @endif
-                                <li {{ (Request::is('school/subject') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.subject', [ 'dc' => $dc ]) }}">編輯科目資訊</a>
-                                </li>
-                            </ul>
-                        </li>
                         <li {{ (Request::is('school/class') ? 'class="active"' : '') }}>
                             <a href="#"><i class="fa fa-graduation-cap fa-fw"></i> 班級管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
@@ -43,6 +30,19 @@
                                 </li>
                                 <li {{ (Request::is('school/class/assign') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.assignClass', [ 'dc' => $dc ]) }}">管理班級配課</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li {{ (Request::is('school/subject') ? 'class="active"' : '') }}>
+                            <a href="#"><i class="fa fa-flask fa-fw"></i> 教學科目管理<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                @if ($category == '國民小學')
+                                <li {{ (Request::is('ps/sync_subject') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('school.ps.sync_subject', [ 'dc' => $dc ]) }}">同步教學科目</a>
+                                </li>
+                                @endif
+                                <li {{ (Request::is('school/subject') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('school.subject', [ 'dc' => $dc ]) }}">編輯科目資訊</a>
                                 </li>
                             </ul>
                         </li>
