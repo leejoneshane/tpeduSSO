@@ -301,22 +301,22 @@ class SyncController extends Controller
 			$clsid = $request->get('clsid');
 			if (empty($clsid)) {
 				$classes = $http->getClasses($sid);
-				$classes = array_map(function($c) { return $c->clsid; }, $classes);
-				$classes = asort($classes);
-				$clsid = $classes[0];
-				unset($classes[0]);
-				$classes = array_values($classes);
+				$classes = array_map(function($c) { return [ $c->clsid => $c->clsname ]; }, $classes);
+				$classes = ksort($classes);
+				$clsid = array_key_first($classes);
+				$clsname = $classes[$clsid];
+				unset($classes[$clsid]);
 				$request->session()->put('classes', $classes);
 			} else {
 				$classes = $request->session()->pull('classes');
-				$clsid = $classes[0];
-				unset($classes[0]);
-				$classes = array_values($classes);
+				$clsid = array_key_first($classes);
+				$clsname = $classes[$clsid];
+				unset($classes[$clsid]);
 				if (!empty($classes)) $request->session()->put('classes', $classes);
 			}
-			$result = $this->ps_syncStudent($dc, $sid, $clsid);
+			$result = $this->ps_syncStudent($dc, $sid, $clsid, $clsname);
 			if (!empty($classes)) {
-				$clsid = $classes[0];
+				$clsid = array_key_first($classes);
 				return view('admin.syncstudentinfo', [ 'category' => $category, 'dc' => $dc, 'clsid' => $clsid, 'result' => $result ]);	
 			} else {
 				return view('admin.syncstudentinfo', [ 'category' => $category, 'dc' => $dc, 'result' => $result ]);	
@@ -341,22 +341,22 @@ class SyncController extends Controller
 			$sid = $openldap->getOrgID($dc);
 			if (empty($clsid)) {
 				$classes = $http->getClasses($sid);
-				$classes = array_map(function($c) { return $c->clsid; }, $classes);
-				$classes = asort($classes);
-				$clsid = $classes[0];
-				unset($classes[0]);
-				$classes = array_values($classes);
+				$classes = array_map(function($c) { return [ $c->clsid => $c->clsname ]; }, $classes);
+				$classes = ksort($classes);
+				$clsid = array_key_first($classes);
+				$clsname = $classes[$clsid];
+				unset($classes[$clsid]);
 				$request->session()->put('classes', $classes);
 			} else {
 				$classes = $request->session()->pull('classes');
-				$clsid = $classes[0];
-				unset($classes[0]);
-				$classes = array_values($classes);
+				$clsid = array_key_first($classes);
+				$clsname = $classes[$clsid];
+				unset($classes[$clsid]);
 				if (!empty($classes)) $request->session()->put('classes', $classes);
 			}
-			$result = $this->ps_syncStudent($dc, $sid, $clsid);
+			$result = $this->ps_syncStudent($dc, $sid, $clsid, $clsname);
 			if (!empty($classes)) {
-				$clsid = $classes[0];
+				$clsid = array_key_first($classes);
 				return view('admin.syncstudent', [ 'dc' => $dc, 'clsid' => $clsid, 'result' => $result ]);	
 			} else {
 				return view('admin.syncstudent', [ 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'result' => $result ]);	
@@ -366,36 +366,83 @@ class SyncController extends Controller
 		}	
 	}
 	
-	public function ps_syncStudent($dc, $sid, $clsid)
+	public function ps_syncStudent($dc, $sid, $clsid, $clsname)
 	{
 		$openldap = new LdapServiceProvider();
 		$http = new SimsServiceProvider();
 		$messages[] = "開始進行同步";
 		$students = $http->getStudents($sid, $clsid);
-		foreach ($students as $stdno) {
-			$data = $http->getStudent($sid, $stdno);
-			if (isset($data['idno'])) {
-				$user_entry = $openldap->getUserEntry($data['idno']);
-				if ($user_entry) {
-					if (substr($data['class'], 0, 1) == 'Z') {
-						$result = $openldap->updateData($user_entry, [ 'inetUserStatus' => 'deleted' ]);
-						if ($result) {
-							$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] ." 已畢業，標註為刪除！";
+		if (empty($students)) {
+			$messages[] = "班級：$clsname 沒有學生，因此無法同步！";
+		} else {
+			foreach ($students as $stdno) {
+				$data = $http->getStudent($sid, $stdno);
+				if (isset($data['idno'])) {
+					$user_entry = $openldap->getUserEntry($data['idno']);
+					if ($user_entry) {
+						if (substr($data['class'], 0, 1) == 'Z') {
+							$result = $openldap->updateData($user_entry, [ 'inetUserStatus' => 'deleted' ]);
+							if ($result) {
+								$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] ." 已畢業，標註為刪除！";
+							} else {
+								$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] ." 無法標註畢業學生：". $openldap->error();
+							}
 						} else {
-							$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] ." 無法標註畢業學生：". $openldap->error();
+							$result = $openldap->updateAccounts($user_entry, [ $dc.$stdno ]);
+							if (!$result) {
+								$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] . "因為帳號無法更新，學生同步失敗！".$openldap->error();
+								continue;
+							}
+							$info = array();
+							$info['o'] = $dc;
+							$info['employeeType'] = '學生';
+							$info['inetUserStatus'] = 'active';
+							$info['employeeNumber'] = $stdno;
+							$info['tpClass'] = $clsid;
+							$info['tpClassTitle'] = $clsname;
+							$info['tpSeat'] = (int) $data['seat'];
+							$name = $this->guess_name($data['name']);
+							$info['sn'] = $name[0];
+							$info['givenName'] = $name[1];
+							$info['displayName'] = $data['name'];
+							$info['gender'] = (int) $data['gender'];
+							$info['birthDate'] = $data['birthdate'].'000000Z';
+							if (!empty($data['address'])) $info['registeredAddress'] = $data['address'];
+							if (!empty($data['mail'])) $info['mail'] = $data['email'];
+							if (!empty($data['tel'])) $info['mobile'] = $data['tel'];
+							$result = $openldap->updateData($user_entry, $info);
+							if ($result) {
+								$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] ." 資料及帳號更新完成！";
+							} else {
+								$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] ." 無法更新學生資料：". $openldap->error();
+							}
 						}
 					} else {
-						$result = $openldap->updateAccounts($user_entry, [ $dc.$stdno ]);
+						$account = array();
+						$account["uid"] = $dc.$stdno;
+						$account["userPassword"] = $openldap->make_ssha_password(substr($data['idno'], -6));
+						$account["objectClass"] = "radiusObjectProfile";
+						$account["cn"] = $data['idno'];
+						$account["description"] = '從校務行政系統同步';
+						$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+						$result = $openldap->createEntry($account);
 						if (!$result) {
-							$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] . "因為帳號無法更新，學生同步失敗！".$openldap->error();
+							$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] . "因為預設帳號無法建立，學生新增失敗！".$openldap->error();
 							continue;
 						}
 						$info = array();
+						$info['dn'] = Config::get('ldap.userattr').'='.$data['idno'].','.Config::get('ldap.userdn');
+						$info['objectClass'] = array('tpeduPerson', 'inetUser');
+						$info['cn'] = $data['idno'];
+						$info["uid"] = $account["uid"];
+						$info["userPassword"] = $account["userPassword"];
 						$info['o'] = $dc;
 						$info['employeeType'] = '學生';
 						$info['inetUserStatus'] = 'active';
+						$info['info'] = json_encode(array("sid" => $sid, "role" => "學生"), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 						$info['employeeNumber'] = $stdno;
-						$info['tpClass'] = (int) $data['class'];
+						$info['tpClass'] = $clsid;
+						$info['tpClassTitle'] = $clsname;
 						$info['tpSeat'] = (int) $data['seat'];
 						$name = $this->guess_name($data['name']);
 						$info['sn'] = $name[0];
@@ -406,57 +453,16 @@ class SyncController extends Controller
 						if (!empty($data['address'])) $info['registeredAddress'] = $data['address'];
 						if (!empty($data['mail'])) $info['mail'] = $data['email'];
 						if (!empty($data['tel'])) $info['mobile'] = $data['tel'];
-						$result = $openldap->updateData($user_entry, $info);
+						$result = $openldap->createEntry($info);
 						if ($result) {
-							$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] ." 資料及帳號更新完成！";
+							$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] . "已經為您建立學生資料！";
 						} else {
-							$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] ." 無法更新學生資料：". $openldap->error();
+							$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] . "學生新增失敗！".$openldap->error();
 						}
 					}
 				} else {
-					$account = array();
-					$account["uid"] = $dc.$stdno;
-					$account["userPassword"] = $openldap->make_ssha_password(substr($data['idno'], -6));
-					$account["objectClass"] = "radiusObjectProfile";
-					$account["cn"] = $data['idno'];
-					$account["description"] = '從校務行政系統同步';
-					$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
-					$result = $openldap->createEntry($account);
-					if (!$result) {
-						$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] . "因為預設帳號無法建立，學生新增失敗！".$openldap->error();
-						continue;
-					}
-					$info = array();
-					$info['dn'] = Config::get('ldap.userattr').'='.$data['idno'].','.Config::get('ldap.userdn');
-					$info['objectClass'] = array('tpeduPerson', 'inetUser');
-					$info['cn'] = $data['idno'];
-					$info["uid"] = $account["uid"];
-					$info["userPassword"] = $account["userPassword"];
-					$info['o'] = $dc;
-					$info['employeeType'] = '學生';
-					$info['inetUserStatus'] = 'active';
-					$info['info'] = json_encode(array("sid" => $sid, "role" => "學生"), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
-					$info['employeeNumber'] = $stdno;
-					$info['tpClass'] = (int) $data['class'];
-					$info['tpSeat'] = (int) $data['seat'];
-					$name = $this->guess_name($data['name']);
-					$info['sn'] = $name[0];
-					$info['givenName'] = $name[1];
-					$info['displayName'] = $data['name'];
-					$info['gender'] = (int) $data['gender'];
-					$info['birthDate'] = $data['birthdate'].'000000Z';
-					if (!empty($data['address'])) $info['registeredAddress'] = $data['address'];
-					if (!empty($data['mail'])) $info['mail'] = $data['email'];
-					if (!empty($data['tel'])) $info['mobile'] = $data['tel'];
-					$result = $openldap->createEntry($info);
-					if ($result) {
-						$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] . "已經為您建立學生資料！";
-					} else {
-						$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] . "學生新增失敗！".$openldap->error();
-					}
+					$messages[] = "cn=無,stdno=". $stdno .",name=". $data['name'] ." 查無身份證號無法同步：". $http->ps_error();
 				}
-			} else {
-				$messages[] = "cn=無,stdno=". $stdno .",name=". $data['name'] ." 查無身份證號無法同步：". $http->ps_error();
 			}
 		}
 		$messages[] = "同步完成！";
