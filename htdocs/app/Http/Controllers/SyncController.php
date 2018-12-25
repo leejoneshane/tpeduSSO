@@ -303,20 +303,20 @@ class SyncController extends Controller
 				$classes = $http->getClasses($sid);
 				$classes = array_map(function($c) { return [ $c->clsid => $c->clsname ]; }, $classes);
 				$classes = ksort($classes);
-				$clsid = array_key_first($classes);
+				$clsid = key($classes);
 				$clsname = $classes[$clsid];
-				unset($classes[$clsid]);
+				$classes = array_shift($classes);
 				$request->session()->put('classes', $classes);
 			} else {
 				$classes = $request->session()->pull('classes');
-				$clsid = array_key_first($classes);
+				$clsid = key($classes);
 				$clsname = $classes[$clsid];
-				unset($classes[$clsid]);
+				$classes = array_shift($classes);
 				if (!empty($classes)) $request->session()->put('classes', $classes);
 			}
 			$result = $this->ps_syncStudent($dc, $sid, $clsid, $clsname);
 			if (!empty($classes)) {
-				$clsid = array_key_first($classes);
+				$clsid = key($classes);
 				return view('admin.syncstudentinfo', [ 'category' => $category, 'dc' => $dc, 'clsid' => $clsid, 'result' => $result ]);	
 			} else {
 				return view('admin.syncstudentinfo', [ 'category' => $category, 'dc' => $dc, 'result' => $result ]);	
@@ -343,20 +343,20 @@ class SyncController extends Controller
 				$classes = $http->getClasses($sid);
 				$classes = array_map(function($c) { return [ $c->clsid => $c->clsname ]; }, $classes);
 				$classes = ksort($classes);
-				$clsid = array_key_first($classes);
+				$clsid = key($classes);
 				$clsname = $classes[$clsid];
-				unset($classes[$clsid]);
+				$classes = array_shift($classes);
 				$request->session()->put('classes', $classes);
 			} else {
 				$classes = $request->session()->pull('classes');
-				$clsid = array_key_first($classes);
+				$clsid = key($classes);
 				$clsname = $classes[$clsid];
-				unset($classes[$clsid]);
+				$classes = array_shift($classes);
 				if (!empty($classes)) $request->session()->put('classes', $classes);
 			}
 			$result = $this->ps_syncStudent($dc, $sid, $clsid, $clsname);
 			if (!empty($classes)) {
-				$clsid = array_key_first($classes);
+				$clsid = key($classes);
 				return view('admin.syncstudent', [ 'dc' => $dc, 'clsid' => $clsid, 'result' => $result ]);	
 			} else {
 				return view('admin.syncstudent', [ 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'result' => $result ]);	
