@@ -301,7 +301,7 @@ class SyncController extends Controller
 			$clsid = $request->get('clsid');
 			if (empty($clsid)) {
 				$classes = $http->getClasses($sid);
-				$classes = array_map(function($c) { return [ $c->clsid => $c->clsname ]; }, $classes);
+				$classes = array_reduce($classes, function($r, $i) { $r[$i->clsid] = $i->clsname; return $r; });
 				$classes = ksort($classes);
 				$clsid = key($classes);
 				$clsname = $classes[$clsid];
@@ -341,7 +341,7 @@ class SyncController extends Controller
 			$sid = $openldap->getOrgID($dc);
 			if (empty($clsid)) {
 				$classes = $http->getClasses($sid);
-				$classes = array_map(function($c) { return [ $c->clsid => $c->clsname ]; }, $classes);
+				$classes = array_reduce($classes, function($r, $i) { $r[$i->clsid] = $i->clsname; return $r; });
 				$classes = ksort($classes);
 				$clsid = key($classes);
 				$clsname = $classes[$clsid];
