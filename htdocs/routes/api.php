@@ -17,9 +17,9 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('me', 'Api\profileController@me')->middleware('scope:me');
     Route::get('email', 'Api\profileController@email')->middleware('scope:email');
     Route::get('user', 'Api\profileController@user')->middleware('scope:user');
-    Route::patch('user', 'Api\profileController@updateUser')->middleware('scope:user');
     Route::get('idno', 'Api\profileController@idno')->middleware('scope:idno');
     Route::get('profile', 'Api\profileController@profile')->middleware('scope:profile');
+    Route::patch('user', 'Api\profileController@updateUser')->middleware('scope:account');
     Route::patch('account', 'Api\profileController@updateAccount')->middleware('scope:account');
     Route::patch('school/{dc}', 'Api\schoolController@updateSchool')->middleware('scope:schoolAdmin');
     Route::post('school/{dc}/people', 'Api\schoolController@peopleAdd')->middleware('scope:schoolAdmin');
@@ -63,9 +63,9 @@ Route::group(['prefix' => 'v2'], function () {
         Route::get('me', 'Api_V2\v2_profileController@me')->middleware('scope:me');
         Route::get('email', 'Api_V2\v2_profileController@email')->middleware('scope:email');
         Route::get('user', 'Api_V2\v2_profileController@user')->middleware('scope:user');
-        Route::patch('user', 'Api_V2\v2_profileController@updateUser')->middleware('scope:user');
         Route::get('idno', 'Api_V2\v2_profileController@idno')->middleware('scope:idno');
         Route::get('profile', 'Api_V2\v2_profileController@profile')->middleware('scope:profile');
+        Route::patch('user', 'Api_V2\v2_profileController@updateUser')->middleware('scope:account');
         Route::patch('account', 'Api_V2\v2_profileController@updateAccount')->middleware('scope:account');
         Route::patch('school/{dc}', 'Api_V2\v2_schoolController@updateSchool')->middleware('scope:schoolAdmin');
         Route::post('school/{dc}/people', 'Api_V2\v2_schoolController@peopleAdd')->middleware('scope:schoolAdmin');
