@@ -58,8 +58,19 @@
 					<option value="library_books" {{ $my_field == 'library_books' ? 'selected' : '' }}>圖書統計</option>
 					<option value="book_info" {{ $my_field == 'book_info' ? 'selected' : '' }}>圖書基本資料</option>
 				</select>
-				<label>學校統一編號：</label>
-				<input type="text" class="form-control" id="sid" name="sid" value="{{ $sid }}" required>
+				<label>學校：</label>
+				<div class="input-group custom-search-form">
+					<select name="area" class="form-control" style="width: auto" onchange="location='{{ url()->current() }}?area=' + $(this).val();">
+						@foreach ($areas as $st)
+							<option value="{{ $st }}"{{ $area == $st ? ' selected' : '' }}>{{ $st }}</option>
+						@endforeach
+					</select>
+					<select name="dc" class="form-control" style="width: auto">
+						@foreach ($schools as $sch)
+							<option value="{{ $sch->o }}"{{ $dc == $sch->o ? ' selected' : '' }}>{{ $sch->description }}</option>
+						@endforeach
+					</select>
+				</div>
 				<label>年級：</label>
 				<input type="text" class="form-control" id="grade" name="grade" value="{{ $grade }}">
 				<label>科目代號：</label>

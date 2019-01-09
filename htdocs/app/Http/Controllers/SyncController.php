@@ -36,8 +36,15 @@ class SyncController extends Controller
     
 	public function ps_testForm(Request $request)
 	{
+		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$area = $request->get('area');
+		if (empty($area)) $area = $areas[0];
+		$filter = "(&(st=$area)(businessCategory=國民小學))";
+		$openldap = new LdapServiceProvider();
+		$schools = $openldap->getOrgs($filter);
+		$dc = $request->get('dc');
+		$sid = $openldap->getOrgID($dc);
 		$my_field = $request->get('field');
-		$sid = $request->get('sid');
 		$grade = $request->get('grade');
 		$subjid = $request->get('subjid');
 		$clsid = $request->get('clsid');
@@ -91,7 +98,7 @@ class SyncController extends Controller
 				$result = $http->ps_call($my_field, [ 'sid' => $sid, 'isbn' => $isbn ]);
 				break;
 		}
-		return view('admin.synctest', [ 'my_field' => $my_field, 'sid' => $sid, 'grade' => $grade, 'subjid' => $subjid, 'clsid' => $clsid, 'teaid' => $teaid, 'stdno' => $stdno, 'isbn' => $isbn, 'result' => $result ]);
+		return view('admin.synctest', [ 'my_field' => $my_field, 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'grade' => $grade, 'subjid' => $subjid, 'clsid' => $clsid, 'teaid' => $teaid, 'stdno' => $stdno, 'isbn' => $isbn, 'result' => $result ]);
 	}
 	
     public function ps_syncClassHelp(Request $request, $dc)
