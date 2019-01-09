@@ -253,9 +253,7 @@ class BureauController extends Controller
 				}
 				$educloud = array();
 				foreach ($orgs as $o) {
-					$entry = $openldap->getOrgEntry($o);
-					$data = $openldap->getOrgData($entry, 'tpUniformNumbers');
-					$sid = $data['tpUniformNumbers'];
+					$sid = $openldap->getOrgId($o);
 					$educloud[] = json_encode([ "sid" => $sid, "role" => $person->type ], JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 				}
 				$idno = strtoupper($person->id);
@@ -439,9 +437,7 @@ class BureauController extends Controller
 			return redirect('bureau/people?area='.$area.'&dc='.$orgs[0].'&field='.$my_field.'&keywords='.$keywords)->with("error", "人員已經存在，所以無法新增！");
 		$educloud = array();
 		foreach ($orgs as $o) {
-			$entry = $openldap->getOrgEntry($o);
-			$data = $openldap->getOrgData($entry, 'tpUniformNumbers');
-			$sid = $data['tpUniformNumbers'];
+			$sid = $openldap->getOrgId($o);
 			$educloud[] = json_encode([ "sid" => $sid, "role" => $request->get('type') ], JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 		}
 		$account = array();
@@ -572,9 +568,7 @@ class BureauController extends Controller
 		$orgs = $request->get('o');
 		$educloud = array();
 		foreach ($orgs as $o) {
-			$entry = $openldap->getOrgEntry($o);
-			$data = $openldap->getOrgData($entry, 'tpUniformNumbers');
-			$sid = $data['tpUniformNumbers'];
+			$sid = $openldap->getOrgId($o);
 			$educloud[] = json_encode([ "sid" => $sid, "role" => $request->get('type') ], JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 		}
 		$info = array();

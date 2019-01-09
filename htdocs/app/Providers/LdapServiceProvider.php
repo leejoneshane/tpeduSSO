@@ -504,7 +504,7 @@ class LdapServiceProvider extends ServiceProvider
 		}
 	
 		$info = array();
-        	foreach ($fields as $field) {
+        foreach ($fields as $field) {
 	    	$value = @ldap_get_values(self::$ldap_read, $entry, $field);
 	    	if ($value) {
 				if ($value['count'] == 1) {
@@ -556,26 +556,18 @@ class LdapServiceProvider extends ServiceProvider
     {
 		$roles = array();
 		$this->administrator();
-		$base_dn = Config::get('ldap.rdn');
-		$sch_rdn = Config::get('ldap.schattr')."=".$dc;
-		$sch_dn = "$sch_rdn,$base_dn";
-		$filter = "businessCategory=行政部門";
-		$resource = @ldap_search(self::$ldap_read, $sch_dn, $filter, ["ou", "description"]);
-		if ($resource) {
-			$entry = @ldap_first_entry(self::$ldap_read, $resource);
-			if ($entry) {
-				do {
-					$unit = $this->getOuData($entry);
-					$ou = $unit['ou'];
-					$uname = $unit['description'];
-					$info = $this->getRoles($dc, $ou);
-					foreach ($info as $role_obj) {
-						$role = new \stdClass();
-						$role->cn = "$ou,".$role_obj->cn;
-						$role->description = "$uname".$role_obj->description;
-						$roles[] = $role;
-					}
-				} while ($entry=ldap_next_entry(self::$ldap_read, $entry));
+		$ous = $this->getOus($dc, '行政部門');
+		if (!empty($ous)) {
+			foreach ($ous as $ou) {
+				$ou_id = $ou->ou;
+				$uname = $ou->description;
+				$info = $this->getRoles($dc, $ou_id);
+				foreach ($info as $role_obj) {
+					$role = new \stdClass();
+					$role->cn = "$ou_id,".$role_obj->cn;
+					$role->description = $uname.$role_obj->description;
+					$roles[] = $role;
+				}
 			}
 		}
 		return $roles;

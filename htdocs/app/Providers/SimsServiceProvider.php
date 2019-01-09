@@ -108,7 +108,12 @@ class SimsServiceProvider extends ServiceProvider
     public function getTeachers($sid)
     {
         if (empty($sid)) return false;
-        $teachers = $this->ps_call('teachers_info', ["sid" => $sid]);
+        $data = $this->ps_call('teachers_info', ["sid" => $sid]);
+        $teachers = array();
+        if (!empty($data))
+            foreach ($data as $teacher) {
+                $teachers[] = $teacher->teaid;
+            }
         return $teachers;
     }
 
@@ -128,6 +133,35 @@ class SimsServiceProvider extends ServiceProvider
             if ($stu) $students = array_merge($students, $stu[0]->students);
         }
         return $students;
+    }
+
+    public function getTeacher($sid, $teaid)
+    {
+        if (empty($sid) || empty($teaid)) return false;
+        $data1 = $this->ps_call('teacher_info', [ 'sid' => $sid, 'teaid' => $teaid ]);
+        $data2 = $this->ps_call('teacher_detail', [ 'sid' => $sid, 'teaid' => $teaid ]);
+        $data3 = $this->ps_call('teacher_schedule', [ 'sid' => $sid, 'teaid' => $teaid ]);
+        if (isset($data1[0]))
+            $data1 = (array)$data1[0];
+        else 
+            $data1 = array();
+        if (isset($data2[0]))
+            $data2 = (array)$data2[0];
+        else
+            $data2 = array();
+        if (isset($data3[0])) {
+            $classes = $data3[0]->classes;
+            foreach ($classes as $c) {
+                $class = $c->id;
+                $subjects = $c->subjects;
+                foreach ($subjects as $k => $v) {
+                    $data[$class][] = $k;                    
+                }
+            }
+        } else {
+            $data = array();
+        }
+        return array_merge($data1, $data2, [ 'assign' => $data ]);
     }
 
     public function getStudent($sid, $stdno)

@@ -212,9 +212,7 @@ class SchoolController extends Controller
 				$orgs[] = $dc;
 				$educloud = array();
 				foreach ($orgs as $o) {
-					$entry = $openldap->getOrgEntry($o);
-					$data = $openldap->getOrgData($entry, 'tpUniformNumbers');
-					$sid = $data['tpUniformNumbers'];
+					$sid = $openldap->getOrgId($o);
 					$educloud[] = json_encode(array("sid" => $sid, "role" => "學生"), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 				}
 				$entry = array();
@@ -393,9 +391,7 @@ class SchoolController extends Controller
 	{
 		$my_field = 'ou='.$request->get('tclass');
 		$openldap = new LdapServiceProvider();
-		$entry = $openldap->getOrgEntry($dc);
-		$sid = $openldap->getOrgData($entry, 'tpUniformNumbers');
-		$sid = $sid['tpUniformNumbers'];
+		$sid = $openldap->getOrgId($dc);
 		$validatedData = $request->validate([
 			'idno' => new idno,
 			'sn' => 'required|string',
@@ -846,9 +842,7 @@ class SchoolController extends Controller
 				$orgs[] = $dc;
 				$educloud = array();
 				foreach ($orgs as $o) {
-					$entry = $openldap->getOrgEntry($o);
-					$data = $openldap->getOrgData($entry, 'tpUniformNumbers');
-					$sid = $data['tpUniformNumbers'];
+					$sid = $openldap->getOrgId($o);
 					$educloud[] = json_encode(array("sid" => $sid, "role" => "教師"), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 				}
 				$ous = array();
@@ -1088,9 +1082,7 @@ class SchoolController extends Controller
     {
 		$my_field = 'ou='.$request->get('ou');
 		$openldap = new LdapServiceProvider();
-		$entry = $openldap->getOrgEntry($dc);
-		$sid = $openldap->getOrgData($entry, 'tpUniformNumbers');
-		$sid = $sid['tpUniformNumbers'];
+		$sid = $openldap->getOrgId($dc);
 		$validatedData = $request->validate([
 			'idno' => new idno,
 			'sn' => 'required|string',
