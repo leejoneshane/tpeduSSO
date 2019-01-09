@@ -70,7 +70,8 @@ class SimsServiceProvider extends ServiceProvider
         $res = $this->ps_send($url);
         $json = json_decode((string) $res->getBody());
         if (isset($json->status) && $json->status == 'ok') {
-            return $json->list;
+            if (isset($json->list)) return $json->list;
+            return false;
         } else {
             if (isset($json->error)) self::$error = $json->error;
             if (Config::get('sims.ps.debug')) Log::debug('Oauth call:'.$url.' failed! Server response:'.$res->getBody());

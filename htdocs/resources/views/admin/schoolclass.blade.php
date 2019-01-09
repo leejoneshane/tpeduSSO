@@ -107,6 +107,9 @@
 						</p>
 					@endif
 				</div>
+				@if (empty($ous))
+					因為尚未設定教師職稱，無法編排導師，因此您無法新增班級！
+				@else
 			    <div class="form-group{{ $errors->has('new-desc') ? ' has-error' : '' }}">
 					<label>導師</label>
 					<select class="form-control" id="new-ou" name="new-ou" onchange="refresh_teachers('new-ou','new-teacher');">
@@ -126,6 +129,7 @@
 				<div class="form-group">
 					<button type="submit" class="btn btn-success">新增</button>
 				</div>
+				@endif
 			</form>
 		</div>
 		</div>

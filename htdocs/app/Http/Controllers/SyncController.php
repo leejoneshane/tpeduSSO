@@ -346,15 +346,17 @@ class SyncController extends Controller
 			if (empty($clsid)) {
 				$classes = $http->getClasses($sid);
 				$temp = array();
-				foreach ($classes as $c) {
-					$temp[$c->clsid] = $c->clsname;
+				if ($classes) {
+					foreach ($classes as $c) {
+						$temp[$c->clsid] = $c->clsname;
+					}
+					ksort($temp);
+					$classes = $temp;
+					$clsid = key($classes);
+					$clsname = $classes[$clsid];
+					unset($classes[$clsid]);
+					$request->session()->put('classes', $classes);	
 				}
-				ksort($temp);
-				$classes = $temp;
-				$clsid = key($classes);
-				$clsname = $classes[$clsid];
-				unset($classes[$clsid]);
-				$request->session()->put('classes', $classes);
 			} else {
 				$classes = $request->session()->pull('classes');
 				$clsid = key($classes);
@@ -362,7 +364,11 @@ class SyncController extends Controller
 				unset($classes[$clsid]);
 				if (!empty($classes)) $request->session()->put('classes', $classes);
 			}
-			$result = $this->ps_syncStudent($dc, $sid, $clsid, $clsname);
+			if ($clsid && $clasname) {
+				$result = $this->ps_syncStudent($dc, $sid, $clsid, $clsname);
+			} else {
+				$result[] = '查無班級，因此無法取得學生清單！';
+			}
 			if (!empty($classes)) {
 				$nextid = key($classes);
 				return view('admin.syncstudent', [ 'dc' => $dc, 'clsid' => $nextid, 'result' => $result ]);	
