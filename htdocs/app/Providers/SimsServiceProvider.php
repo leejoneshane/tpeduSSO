@@ -46,9 +46,9 @@ class SimsServiceProvider extends ServiceProvider
         return $response;
     }
 
-    public function js_call($info, array $replacement)
+    public function js_call($info, array $replacement = null)
     {
-        if (empty($info) || !is_array($replacement)) return false;
+        if (empty($info)) return false;
         if (!empty($replacement)) {
             $search = array();
             $values = array();
