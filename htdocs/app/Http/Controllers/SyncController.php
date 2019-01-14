@@ -517,10 +517,9 @@ class SyncController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$http = new SimsServiceProvider();
+		$sid = $openldap->getOrgID($dc);
 		$school = $openldap->getOrgEntry($dc);
-		$data = $openldap->getOrgData($school, ['tpUniformNumbers', 'businessCategory']);
-		$sid = $data['tpUniformNumbers'];
-		$category = $data['businessCategory'];
+		$category = $openldap->getOrgData($school, 'businessCategory');
 		if ($request->isMethod('post')) {
 			$clsid = $request->get('clsid');
 			if (empty($clsid)) {
@@ -545,12 +544,12 @@ class SyncController extends Controller
 			$result = $this->ps_syncStudent($dc, $sid, $clsid, $clsname);
 			if (!empty($classes)) {
 				$nextid = key($classes);
-				return view('admin.syncstudentinfo', [ 'category' => $category, 'dc' => $dc, 'clsid' => $nextid, 'result' => $result ]);	
+				return view('admin.syncstudentinfo', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'clsid' => $nextid, 'result' => $result ]);	
 			} else {
-				return view('admin.syncstudentinfo', [ 'category' => $category, 'dc' => $dc, 'result' => $result ]);	
+				return view('admin.syncstudentinfo', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'result' => $result ]);	
 			}
 		} else {
-			return view('admin.syncstudentinfo', [ 'category' => $category, 'dc' => $dc ]);	
+			return view('admin.syncstudentinfo', [ 'category' => $category['businessCategory'], 'dc' => $dc ]);	
 		}
 	}
 	
