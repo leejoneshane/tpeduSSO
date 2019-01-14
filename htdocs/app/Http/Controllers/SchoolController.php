@@ -1815,7 +1815,7 @@ class SchoolController extends Controller
 		if (!empty($users)) {
 			return back()->with("error", "尚有人員隸屬於該班級，因此無法刪除！");
 		}
-		$teacher = $this->findUsers("(&(o=$dc)(tpTutorClass=$class))", 'cn');
+		$teacher = $openldap->findUsers("(&(o=$dc)(tpTutorClass=$class))", 'cn');
 		if ($teacher) {
 			$idno = $teacher[0]['cn'];
 			$teacher_entry = $openldap->getUserEntry($idno);
