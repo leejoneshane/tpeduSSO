@@ -20,7 +20,54 @@ class SimsServiceProvider extends ServiceProvider
                 'verify' => false,
                 'base_uri' => Config::get('sims.ps.base_uri'),
             ]);
+        if (is_null(self::$oauth_js))
+            self::$oauth_js = new \GuzzleHttp\Client([
+                'verify' => false,
+                'base_uri' => Config::get('sims.js.base_uri'),
+            ]);
         self::$seme = $this->seme();
+    }
+
+    public function js_send($url)
+    {
+        //SHA1
+        $t = md5(time());
+        $e = sha1( Config::get('sims.js.oauth_id') . 'time' . $t . Config::get('sims.js.oauth_secret'));
+
+        $response = self::$oauth_ps->request('POST', $url, [
+            'json' => [
+                'appkey' => Config::get('sims.js.oauth_id'),
+                'sign' => $e,
+                'time' => $t,
+            ],
+            'headers' => [ 'Accept' => 'application/json' ],
+            'http_errors' => false,
+        ]);
+        return $response;
+    }
+
+    public function js_call($info, array $replacement)
+    {
+        if (empty($info) || !is_array($replacement)) return false;
+        if (!empty($replacement)) {
+            $search = array();
+            $values = array();
+            foreach ($replacement as $key => $data) {
+                $search[] = '{'.$key.'}';
+                $values[] = $data;
+            }
+            $url = str_replace($search, $values, Config::get("sims.js.$info"));
+        }
+        $res = $this->js_send($url);
+        $json = json_decode((string) $res->getBody());
+        if (isset($json->statusMsg) && $json->statusCode != 'success') {
+            self::$error = $json->statusMsg;
+            if (Config::get('sims.js.debug')) Log::debug('Oauth call:'.$url.' failed! Server response:'.$res->getBody());
+            return false;
+        } else {
+            if (isset($json->DATA_MAP)) return $json->DATA_MAP;
+            return false;
+        }
     }
 
     public function ps_send($url)
@@ -50,7 +97,7 @@ class SimsServiceProvider extends ServiceProvider
         return $response;
     }
 
-    public function ps_error()
+    public function error()
     {
         return self::$error;
     }

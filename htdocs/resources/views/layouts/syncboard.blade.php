@@ -17,7 +17,10 @@
                                 <li {{ (Request::is('sync/ps/sync_subject') ? 'class="active"' : '') }}>
                                     <a href="{{ route('sync.ps.sync_subject') }}">同步教學科目</a>
                                 </li>
-                                <li {{ (Request::is('sync/ps/sync_seat') ? 'class="active"' : '') }}>
+                                <li {{ (Request::is('sync/ps/sync_teacher') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('sync.ps.sync_teacher') }}">同步教師</a>
+                                </li>
+                                <li {{ (Request::is('sync/ps/sync_student') ? 'class="active"' : '') }}>
                                     <a href="{{ route('sync.ps.sync_student') }}">同步學生</a>
                                 </li>
                             </ul>
@@ -25,6 +28,9 @@
                         <li {{ (Request::is('bureau/organization') ? 'class="active"' : '') }}>
                             <a href="#"><i class="fa fa-sitemap fa-fw"></i>國中學程介接</a>
                             <ul class="nav nav-second-level">
+                                <li {{ (Request::is('sync/js/runtime_test') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('sync.js.runtime_test') }}">連線測試</a>
+                                </li>
                             </ul>
                         </li>
                     </ul>

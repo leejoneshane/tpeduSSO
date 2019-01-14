@@ -59,6 +59,8 @@ Route::group(['prefix' => 'sync', 'middleware' => 'auth.admin'], function () {
     Route::post('ps/sync_teacher', 'SyncController@ps_syncTeacherForm')->name('sync.ps.sync_teacher');
     Route::get('ps/sync_student', 'SyncController@ps_syncStudentForm');
     Route::post('ps/sync_student', 'SyncController@ps_syncStudentForm')->name('sync.ps.sync_student');
+    Route::get('js/runtime_test', 'SyncController@js_testForm');
+    Route::post('js/runtime_test', 'SyncController@js_testForm')->name('sync.js.runtime_test');
 });
 
 Route::group(['prefix' => 'bureau', 'middleware' => 'auth.admin'], function () {

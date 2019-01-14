@@ -98,7 +98,7 @@ class SyncController extends Controller
 				$result = $http->ps_call($my_field, [ 'sid' => $sid, 'isbn' => $isbn ]);
 				break;
 		}
-		return view('admin.synctest', [ 'my_field' => $my_field, 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'grade' => $grade, 'subjid' => $subjid, 'clsid' => $clsid, 'teaid' => $teaid, 'stdno' => $stdno, 'isbn' => $isbn, 'result' => $result ]);
+		return view('admin.ps_synctest', [ 'my_field' => $my_field, 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'grade' => $grade, 'subjid' => $subjid, 'clsid' => $clsid, 'teaid' => $teaid, 'stdno' => $stdno, 'isbn' => $isbn, 'result' => $result ]);
 	}
 	
     public function ps_syncClassHelp(Request $request, $dc)
@@ -173,7 +173,7 @@ class SyncController extends Controller
 			}
 			$messages[] = "同步完成！";
 		} else {
-			$messages[] = "無法同步班級資訊：". $http->ps_error();
+			$messages[] = "無法同步班級資訊：". $http->error();
 		}
 		return $messages;
 	}
@@ -220,7 +220,7 @@ class SyncController extends Controller
 					array_splice($org_subjects, $i, 1);
 					$messages[] = "subject=". $org_subjects[$i]['tpSubject'] ." 已經刪除！";
 				} else {
-					$messages[] = "subject=". $org_subjects[$i]['tpSubject'] ." 已經不再使用，但無法刪除：". $http->ps_error();
+					$messages[] = "subject=". $org_subjects[$i]['tpSubject'] ." 已經不再使用，但無法刪除：". $http->error();
 				}
 			}
 		}
@@ -505,7 +505,7 @@ class SyncController extends Controller
 						}
 					}
 				} else {
-					$messages[] = "cn=無,teaid=". $teaid .",name=". $data['name'] ." 查無身份證號無法同步：". $http->ps_error();
+					$messages[] = "cn=無,teaid=". $teaid .",name=". $data['name'] ." 查無身份證號無法同步：". $http->error();
 				}
 			}
 		}
@@ -699,7 +699,7 @@ class SyncController extends Controller
 						}
 					}
 				} else {
-					$messages[] = "cn=無,stdno=". $stdno .",name=". $data['name'] ." 查無身份證號無法同步：". $http->ps_error();
+					$messages[] = "cn=無,stdno=". $stdno .",name=". $data['name'] ." 查無身份證號無法同步：". $http->error();
 				}
 			}
 		}
@@ -707,6 +707,50 @@ class SyncController extends Controller
 		return $messages;
 	}
 
+	public function js_testForm(Request $request)
+	{
+		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$area = $request->get('area');
+		if (empty($area)) $area = $areas[0];
+		$filter = "(&(st=$area)(!(businessCategory=國民小學)))";
+		$openldap = new LdapServiceProvider();
+		$schools = $openldap->getOrgs($filter);
+		$dc = $request->get('dc');
+		$sid = $openldap->getOrgID($dc);
+		$my_field = $request->get('field');
+		$ou = $request->get('ou');
+		$clsid = $request->get('clsid');
+		$idno = $request->get('idno');
+		$ym = $request->get('ym');
+		$http = new SimsServiceProvider();
+		$result = array();
+		switch($my_field) {
+			case 'schools_info':
+				$result = $http->js_call($my_field);
+				break;
+			case 'school_info':
+			case 'units_info':
+			case 'classes_info':
+			case 'subjects_info':
+				$result = $http->js_call($my_field, [ 'sid' => $sid ]);
+				break;
+			case 'roles_info':
+				$result = $http->js_call($my_field, [ 'sid' => $sid, 'ou' => $ou ]);
+				break;
+			case 'teachers_in_class':
+			case 'students_in_class':
+				$result = $http->js_call($my_field, [ 'sid' => $sid, 'clsid' => $clsid ]);
+				break;
+			case 'person_info':
+				$result = $http->js_call($my_field, [ 'sid' => $sid, 'idno' => $idno ]);
+				break;
+			case 'person_change':
+				$result = $http->js_call($my_field, [ 'sid' => $sid, 'year-month' => $ym ]);
+				break;
+		}
+		return view('admin.js_synctest', [ 'my_field' => $my_field, 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'ou' => $ou, 'clsid' => $clsid, 'idno' => $idno, 'ym' => $ym, 'result' => $result ]);
+	}
+	
 	function guess_name($myname) {
 		$len = mb_strlen($myname, "UTF-8");
 		if ($len > 3) {
