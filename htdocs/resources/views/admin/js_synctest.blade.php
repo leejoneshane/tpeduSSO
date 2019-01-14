@@ -70,34 +70,26 @@
       			function check_all() {
 					field = $('#field').val();
 					switch(field) {
-						case 'school_info':
-						case 'units_info':
-						case 'classes_info':
-						case 'subjects_info':
-							fields = ["sid"];
-							break;
 						case 'roles_info':
-							fields = ["sid", "ou"];
+							fields = "ou";
 							break;
 						case 'students_in_class':
 						case 'teachers_in_class':
-							fields = ["sid", "clsid"];
+							fields = "clsid";
 							break;
 						case 'person_info':
-							fields = ["sid", "idno"];
+							fields = "idno";
 							break;
 						case 'person_change':
-							fields = ["sid", "ym"];
+							fields = "ym";
 							break;
 					}
 					msg = [];
-					for(i=0;i<fields.length;i++) {
-						if (fields[i] == 'sid' && !$('#' + fields[i]).val()) msg.push('學校');
-						if (fields[i] == 'ou' && !$('#' + fields[i]).val()) msg.push('部門代號');
-						if (fields[i] == 'clsid' && !$('#' + fields[i]).val()) msg.push('班級代號');
-						if (fields[i] == 'idno' && !$('#' + fields[i]).val()) msg.push('身份證字號');
-						if (fields[i] == 'ym' && !$('#' + fields[i]).val()) msg.push('年月');
-					}
+					if (fields == 'sid' && !$('#' + fields).val()) msg.push('學校');
+					if (fields == 'ou' && !$('#' + fields).val()) msg.push('部門代號');
+					if (fields == 'clsid' && !$('#' + fields).val()) msg.push('班級代號');
+					if (fields == 'idno' && !$('#' + fields).val()) msg.push('身份證字號');
+					if (fields == 'ym' && !$('#' + fields).val()) msg.push('年月');
 					if (msg.length > 0) {
 						alert('請務必輸入' + msg.join('、') + '!');
 						return false;

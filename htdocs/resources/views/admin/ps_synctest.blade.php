@@ -93,20 +93,11 @@
       			function check_all() {
 					field = $('#field').val();
 					switch(field) {
-						case 'school_info':
-						case 'department_info':
-						case 'classes_info':
-						case 'special_info':
-						case 'calendar_info':
-						case 'library_books':
-						case 'teachers_info':
-							fields = ["sid"];
-							break;
 						case 'classses_by_grade':
-							fields = ["sid", "grade"];
+							fields = "grade";
 							break;
 						case 'subject_info':
-							fields = ["sid", "subjid"];
+							fields = "subjid";
 							break;
 						case 'classs_info':
 						case 'classs_schedule':
@@ -115,14 +106,14 @@
 						case 'teachers_in_class':
 						case 'subject_for_class':
 						case 'class_lend_record':
-							fields = ["sid", "clsid"];
+							fields = "clsid";
 							break;
 						case 'teacher_info':
 						case 'teacher_detail':
 						case 'teacher_schedule':
 						case 'teacher_tutor_students':
 						case 'subject_assign_to_teacher':
-							fields = ["sid", "teaid"];
+							fields = "teaid";
 							break;
 						case 'student_info':
 						case 'student_detail':
@@ -131,22 +122,19 @@
 						case 'student_attendance_record':
 						case 'student_health_record':
 						case 'student_parents_info':
-							fields = ["sid", "stdno"];
+							fields = "stdno";
 							break;
 						case 'book_info':
-							fields = ["sid", "isbn"];
+							fields = "isbn";
 							break;
 					}
 					msg = [];
-					for(i=0;i<fields.length;i++) {
-						if (fields[i] == 'sid' && !$('#' + fields[i]).val()) msg.push('學校');
-						if (fields[i] == 'grade' && !$('#' + fields[i]).val()) msg.push('年級');
-						if (fields[i] == 'subjid' && !$('#' + fields[i]).val()) msg.push('科目代號');
-						if (fields[i] == 'clsid' && !$('#' + fields[i]).val()) msg.push('班級代號');
-						if (fields[i] == 'teaid' && !$('#' + fields[i]).val()) msg.push('教師代號');
-						if (fields[i] == 'stdno' && !$('#' + fields[i]).val()) msg.push('學生學號');
-						if (fields[i] == 'isbn' && !$('#' + fields[i]).val()) msg.push('書號(ISBN)');
-					}
+					if (fields == 'grade' && !$('#' + fields).val()) msg.push('年級');
+					if (fields == 'subjid' && !$('#' + fields).val()) msg.push('科目代號');
+					if (fields == 'clsid' && !$('#' + fields).val()) msg.push('班級代號');
+					if (fields == 'teaid' && !$('#' + fields).val()) msg.push('教師代號');
+					if (fields == 'stdno' && !$('#' + fields).val()) msg.push('學生學號');
+					if (fields == 'isbn' && !$('#' + fields).val()) msg.push('書號(ISBN)');
 					if (msg.length > 0) {
 						alert('請務必輸入' + msg.join('、') + '!');
 						return false;
