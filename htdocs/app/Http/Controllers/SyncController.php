@@ -600,6 +600,7 @@ class SyncController extends Controller
 			if ($clsid && $clasname) {
 				$result = $this->ps_syncStudent($dc, $sid, $clsid, $clsname);
 			} else {
+				Log::debug($classes);
 				$result[] = '查無班級，因此無法取得學生清單！';
 			}
 			if (!empty($classes)) {

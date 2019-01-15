@@ -19,12 +19,12 @@
 		<form role="form" method="POST" action="{{ route('sync.ps.sync_student') }}">
 		@csrf
     	<div class="input-group custom-search-form">
-			<select id="area" class="form-control" style="width: auto" onchange="location='{{ url()->current() }}?area=' + $(this).val();">
+			<select name='area' class="form-control" style="width: auto" onchange="location='{{ url()->current() }}?area=' + $(this).val();">
 				@foreach ($areas as $st)
 			    	<option value="{{ $st }}"{{ $area == $st ? ' selected' : '' }}>{{ $st }}</option>
 			    @endforeach
 			</select>
-			<select id="dc" class="form-control" style="width: auto">
+			<select name='dc' class="form-control" style="width: auto">
 				@foreach ($schools as $sch)
 			    	<option value="{{ $sch->o }}"{{ $dc == $sch->o ? ' selected' : '' }}>{{ $sch->description }}</option>
 			    @endforeach
@@ -47,7 +47,7 @@
 				繼續同步下一個班級：{{ $clsid }}
 			</button>
 		</span>
-	</form>
+		</form>
 		<script>setTimeout("$('#sync').submit()", 60000);</script>
 	@endif
 	</div>
