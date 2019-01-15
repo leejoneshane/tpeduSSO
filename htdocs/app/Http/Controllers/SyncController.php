@@ -444,10 +444,20 @@ class SyncController extends Controller
 						$account["cn"] = $data['idno'];
 						$account["description"] = '從校務行政系統同步';
 						$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
-						$result = $openldap->createEntry($account);
-						if (!$result) {
-							$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] . "因為預設帳號無法建立，教師新增失敗！".$openldap->error();
-							continue;
+						$result = $openldap->getAccountEntry($account["uid"]);
+						if ($result) {
+							unset($account['dn']);
+							$result = $openldap->UpdateData($account);
+							if (!$result) {
+								$messages[] = "cn=". $data['idno'] .",teaid=". $teaid .",name=". $data['name'] . "因為預設帳號無法更新，教師新增失敗！".$openldap->error();
+								continue;
+							}
+						} else {
+							$result = $openldap->createEntry($account);
+							if (!$result) {
+								$messages[] = "cn=". $data['idno'] .",teaid=". $teaid .",name=". $data['name'] . "因為預設帳號無法建立，教師新增失敗！".$openldap->error();
+								continue;
+							}
 						}
 						if (isset($data['job_title'])) {
 							foreach ($data['job_title'] as $job) {
@@ -662,10 +672,20 @@ class SyncController extends Controller
 						$account["cn"] = $data['idno'];
 						$account["description"] = '從校務行政系統同步';
 						$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
-						$result = $openldap->createEntry($account);
-						if (!$result) {
-							$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] . "因為預設帳號無法建立，學生新增失敗！".$openldap->error();
-							continue;
+						$result = $openldap->getAccountEntry($account["uid"]);
+						if ($result) {
+							unset($account['dn']);
+							$result = $openldap->UpdateData($account);
+							if (!$result) {
+								$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] . "因為預設帳號無法更新，學生新增失敗！".$openldap->error();
+								continue;
+							}
+						} else {
+							$result = $openldap->createEntry($account);
+							if (!$result) {
+								$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] . "因為預設帳號無法建立，學生新增失敗！".$openldap->error();
+								continue;
+							}
 						}
 						$info = array();
 						$info['dn'] = Config::get('ldap.userattr').'='.$data['idno'].','.Config::get('ldap.userdn');

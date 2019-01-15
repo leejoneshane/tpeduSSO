@@ -57,6 +57,8 @@ class SimsServiceProvider extends ServiceProvider
                 $values[] = $data;
             }
             $url = str_replace($search, $values, Config::get("sims.js.$info"));
+        } else {
+            $url = Config::get("sims.js.$info");
         }
         $res = $this->js_send($url);
         $json = json_decode((string) $res->getBody());
