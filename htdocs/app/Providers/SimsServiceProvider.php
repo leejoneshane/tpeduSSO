@@ -203,8 +203,9 @@ class SimsServiceProvider extends ServiceProvider
             foreach ($classes as $c) {
                 $class = $c->id;
                 $subjects = $c->subjects;
-                foreach ($subjects as $k => $v) {
-                    $data[$class][] = $k;                    
+                foreach ($subjects as $s) {
+                    $s = (array)$s;
+                    $data[$class][] = key($s);                    
                 }
             }
         } else {
