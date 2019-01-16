@@ -521,6 +521,14 @@ class SyncController extends Controller
 					$messages[] = "cn=無,teaid=". $teaid .",name=". $data['name'] ." 查無身份證號無法同步：". $http->error();
 				}
 			}
+			$filter = "(&(dc=$dc)(!(employeeType=學生)))";
+			$org_teachers = $openldap->findUsers($filter, [ 'cn', 'employeeNumber' ]);
+			foreach ($org_teachers as $tea) {
+				if (!in_array($tea['employeeNumber'], $teachers)) {
+					$user_entry = $openldap->getUserEntry($tea['cn']);
+					$openldap->UpdateData($user_entry, [ 'inetUserStatus' => 'deleted' ]);
+				}
+			}
 		}
 		$messages[] = "同步完成！";
 		return $messages;
@@ -722,6 +730,14 @@ class SyncController extends Controller
 					}
 				} else {
 					$messages[] = "cn=無,stdno=". $stdno ." 查無身份證號無法同步：". $http->error();
+				}
+			}
+			$filter = "(&(dc=$dc)(tpClass=$clsid)(employeeType=學生))";
+			$org_students = $openldap->findUsers($filter, [ 'cn', 'employeeNumber' ]);
+			foreach ($org_students as $stu) {
+				if (!in_array($stu['employeeNumber'], $students)) {
+					$user_entry = $openldap->getUserEntry($stu['cn']);
+					$openldap->UpdateData($user_entry, [ 'inetUserStatus' => 'deleted' ]);
 				}
 			}
 		}
