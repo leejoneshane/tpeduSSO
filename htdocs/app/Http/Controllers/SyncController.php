@@ -299,7 +299,7 @@ class SyncController extends Controller
 				$info = $openldap->getRoles($dc, $ou_id);
 				if (!empty($info)) {
 					foreach ($info as $i) {
-						$k = base64($i->description);
+						$k = base64_encode($i->description);
 						$allroles[$k]['ou'] = $ou_id;
 						$allroles[$k]['title'] = "$ou_id,$i->cn";
 					}
@@ -309,7 +309,7 @@ class SyncController extends Controller
 		$allsubject = array();
 		$subjects = $openldap->getSubjects($dc);
 		foreach ($subjects as $s) {
-			$k = base64($s['description']);
+			$k = base64_encode($s['description']);
 			$allsubject[$k] = $s['tpSubject'];
 		}
 		$teachers = $http->getTeachers($sid);
@@ -395,7 +395,7 @@ class SyncController extends Controller
 								if (strpos($job, '員')) $role = '職工';
 								if (strpos($job, '心')) $role = '職工';
 								if (strpos($job, '護')) $role = '職工';
-								$k = base64($job);
+								$k = base64_encode($job);
 								if (isset($allroles[$k])) {
 									$units[] = "$dc," . $allroles[$k]['ou'];
 									$roles[] = "$dc," . $allroles[$k]['title'];
@@ -407,7 +407,7 @@ class SyncController extends Controller
 							$classes = $data['assign'];
 							foreach ($classes as $class => $subjects) {
 								foreach ($subjects as $s) {
-									$k = base64($s);
+									$k = base64_encode($s);
 									if (isset($allsubject[$k])) {
 										$assign[] = "$dc,$class," . $allsubject[$k];
 									}
