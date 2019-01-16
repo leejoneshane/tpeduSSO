@@ -199,19 +199,20 @@ class SimsServiceProvider extends ServiceProvider
         else
             $data2 = array();
         if (isset($data3[0])) {
+            $assign = array();
             $classes = $data3[0]->classes;
             foreach ($classes as $c) {
                 $class = $c->id;
                 $subjects = $c->subjects;
                 foreach ($subjects as $s) {
                     $s = (array)$s;
-                    $data[$class][] = key($s);                    
+                    $assign[$class][] = key($s);                    
                 }
             }
+            return array_merge($data1, $data2, [ 'assign' => $assign ]);
         } else {
-            $data = array();
+            return array_merge($data1, $data2);
         }
-        return array_merge($data1, $data2, [ 'assign' => $data ]);
     }
 
     public function getStudent($sid, $stdno)
