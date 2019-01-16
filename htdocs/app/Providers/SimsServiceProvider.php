@@ -31,10 +31,10 @@ class SimsServiceProvider extends ServiceProvider
     public function js_send($url)
     {
         //SHA1
-        $t = md5(time());
+        $t = time();
         $e = sha1( Config::get('sims.js.oauth_id') . 'time' . $t . Config::get('sims.js.oauth_secret'));
 
-        $response = self::$oauth_ps->request('POST', $url, [
+        $response = self::$oauth_js->request('POST', $url, [
             'json' => [
                 'appkey' => Config::get('sims.js.oauth_id'),
                 'sign' => $e,
@@ -62,7 +62,7 @@ class SimsServiceProvider extends ServiceProvider
         }
         $res = $this->js_send($url);
         $json = json_decode((string) $res->getBody());
-        if (isset($json->statusMsg) && $json->statusCode != '00') {
+        if ($json->statusCode != '00') {
             self::$error = $json->statusMsg;
             if (Config::get('sims.js.debug')) Log::debug('Oauth call:'.$url.' failed! Server response:'.$res->getBody());
             return false;

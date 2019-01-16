@@ -718,7 +718,7 @@ class SyncController extends Controller
 						}
 					}
 				} else {
-					$messages[] = "cn=無,stdno=". $stdno .",name=". $data['name'] ." 查無身份證號無法同步：". $http->error();
+					$messages[] = "cn=無,stdno=". $stdno ." 查無身份證號無法同步：". $http->error();
 				}
 			}
 		}

@@ -946,7 +946,7 @@ class LdapServiceProvider extends ServiceProvider
     {
 		$dn = @ldap_get_dn(self::$ldap_read, $entry);
 		$value = @ldap_mod_add(self::$ldap_write, $dn, $fields);
-		if (!$value) Log::error("Data can't add into $dn:\n".$this->error().print_r($fields, true)."\n");
+		if (!$value && Config::get('ldap.debug')) Log::debug("Data can't add into $dn:\n".$this->error()."\n".print_r($fields, true)."\n");
 		return $value;
     }
 
@@ -954,7 +954,7 @@ class LdapServiceProvider extends ServiceProvider
     {
 		$dn = @ldap_get_dn(self::$ldap_read, $entry);
 		$value = @ldap_mod_replace(self::$ldap_write, $dn, $fields);
-		if (!$value) Log::error("Data can't update to $dn:\n".$this->error().print_r($fields, true)."\n");
+		if (!$value && Config::get('ldap.debug')) Log::debug("Data can't update to $dn:\n".$this->error()."\n".print_r($fields, true)."\n");
 		return $value;
     }
 
@@ -962,7 +962,7 @@ class LdapServiceProvider extends ServiceProvider
     {
 		$dn = @ldap_get_dn(self::$ldap_read, $entry);
 		$value = @ldap_mod_del(self::$ldap_write, $dn, $fields);
-//		if (!$value) Log::error("Data can't remove from $dn:\n".$this->error().print_r($fields, true)."\n");
+		if (!$value && Config::get('ldap.debug')) Log::debug("Data can't remove from $dn:\n".$this->error()."\n".print_r($fields, true)."\n");
 		return $value;
     }
 
@@ -972,7 +972,7 @@ class LdapServiceProvider extends ServiceProvider
 		$dn = $info['dn'];
 		unset($info['dn']);
 		$value = @ldap_add(self::$ldap_write, $dn, $info);
-		if (!$value) Log::error("Entry can't create for $dn:\n".$this->error().print_r($info, true)."\n");
+		if (!$value && Config::get('ldap.debug')) Log::debug("Entry can't create for $dn:\n".$this->error()."\n".print_r($info, true)."\n");
 		return $value;
     }
 
@@ -981,7 +981,7 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$dn = @ldap_get_dn(self::$ldap_read, $entry);
 		$value = @ldap_delete(self::$ldap_write, $dn);
-//		if (!$value) Log::error("Entry can't delete for $dn:\n".$this->error());
+		if (!$value && Config::get('ldap.debug')) Log::debug("Entry can't delete for $dn:\n".$this->error());
 		return $value;
     }
 
