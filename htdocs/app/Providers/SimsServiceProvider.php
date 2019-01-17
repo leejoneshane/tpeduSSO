@@ -32,7 +32,7 @@ class SimsServiceProvider extends ServiceProvider
     {
         //SHA1
         $t = time();
-        $e = sha1( Config::get('sims.js.oauth_id') . 'time' . $t . Config::get('sims.js.oauth_secret'));
+        $e = strtoupper(sha1( Config::get('sims.js.oauth_id') . 'time' . $t . Config::get('sims.js.oauth_secret')));
 
         $response = self::$oauth_js->request('POST', $url, [
             'json' => [
