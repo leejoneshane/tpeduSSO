@@ -447,10 +447,10 @@ class SyncController extends Controller
 						$account["cn"] = $data['idno'];
 						$account["description"] = '從校務行政系統同步';
 						$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
-						$result = $openldap->getAccountEntry($account["uid"]);
-						if ($result) {
+						$acc_entry = $openldap->getAccountEntry($account["uid"]);
+						if ($acc_entry) {
 							unset($account['dn']);
-							$result = $openldap->UpdateData($account);
+							$result = $openldap->UpdateData($acc_entry, $account);
 							if (!$result) {
 								$messages[] = "cn=". $data['idno'] .",teaid=". $teaid .",name=". $data['name'] . "因為預設帳號無法更新，教師新增失敗！".$openldap->error();
 								continue;
@@ -685,10 +685,10 @@ class SyncController extends Controller
 						$account["cn"] = $data['idno'];
 						$account["description"] = '從校務行政系統同步';
 						$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
-						$result = $openldap->getAccountEntry($account["uid"]);
-						if ($result) {
+						$acc_entry = $openldap->getAccountEntry($account["uid"]);
+						if ($acc_entry) {
 							unset($account['dn']);
-							$result = $openldap->UpdateData($account);
+							$result = $openldap->UpdateData($acc_entry, $account);
 							if (!$result) {
 								$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] . "因為預設帳號無法更新，學生新增失敗！".$openldap->error();
 								continue;
