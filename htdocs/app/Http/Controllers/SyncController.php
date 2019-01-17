@@ -384,7 +384,7 @@ class SyncController extends Controller
 							}
 							foreach ($educloud as $k => $c) {
 								$i = json_decode($c, true);
-								if ($i['sid'] == $sid) unset($educloud[$k]);
+								if ($i->sid == $sid) unset($educloud[$k]);
 							}
 						}
 						if (isset($data['job_title'])) {
@@ -415,14 +415,14 @@ class SyncController extends Controller
 							}
 						}
 						$info = array();
-						$info['o'] = $orgs;
-						$info['employeeType'] = $role;
-						$info['ou'] = $units;
-						$info['title'] = $roles;
-						$info['info'] = $educloud;
-						$info['tpTeachClass'] = $assign;
+						$info['o'] = array_value(array_unique($orgs));
+						$info['ou'] = array_value(array_unique($units));
+						$info['title'] = array_value(array_unique($roles));
+						$info['info'] = array_value(array_unique($educloud));
+						$info['tpTeachClass'] = array_value(array_unique($assign));
 						if (!empty($data['class'])) $info['tpTutorClass'] = $data['class'];
 						$info['inetUserStatus'] = 'active';
+						$info['employeeType'] = $role;
 						$info['employeeNumber'] = $teaid;
 						$name = $this->guess_name($data['name']);
 						$info['sn'] = $name[0];
@@ -495,13 +495,13 @@ class SyncController extends Controller
 						$info["uid"] = $account["uid"];
 						$info["userPassword"] = $account["userPassword"];
 						$info['o'] = $dc;
-						$info['employeeType'] = $role;
-						$info['ou'] = $units;
-						$info['title'] = $roles;
+						$info['ou'] = array_value(array_unique($units));
+						$info['title'] = array_value(array_unique($roles));
 						$info['info'] = json_encode(array("sid" => $sid, "role" => $role), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
-						$info['tpTeachClass'] = $assign;
+						$info['tpTeachClass'] = array_value(array_unique($assign));
 						if (!empty($data['class'])) $info['tpTutorClass'] = $data['class'];
 						$info['inetUserStatus'] = 'active';
+						$info['employeeType'] = $role;
 						$info['employeeNumber'] = $teaid;
 						$name = $this->guess_name($data['name']);
 						$info['sn'] = $name[0];
