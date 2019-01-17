@@ -48,7 +48,7 @@
 			</button>
 		</span>
 		</form>
-		<script>setTimeout("$('#sync').submit()", 60000);</script>
+		<script>setTimeout("$('#sync').submit()", 10000);</script>
 	@endif
 	</div>
 </div>
