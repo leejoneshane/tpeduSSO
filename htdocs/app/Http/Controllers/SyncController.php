@@ -640,42 +640,33 @@ class SyncController extends Controller
 				if (isset($data['idno'])) {
 					$user_entry = $openldap->getUserEntry($data['idno']);
 					if ($user_entry) {
-						if (substr($data['class'], 0, 1) == 'Z') {
-							$result = $openldap->updateData($user_entry, [ 'inetUserStatus' => 'deleted' ]);
-							if ($result) {
-								$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] ." 已畢業，標註為刪除！";
-							} else {
-								$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] ." 無法標註畢業學生：". $openldap->error();
-							}
+						$result = $openldap->updateAccounts($user_entry, [ $dc.$stdno ]);
+						if (!$result) {
+							$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] . "因為帳號無法更新，學生同步失敗！".$openldap->error();
+							continue;
+						}
+						$info = array();
+						$info['o'] = $dc;
+						$info['employeeType'] = '學生';
+						$info['inetUserStatus'] = 'active';
+						$info['employeeNumber'] = $stdno;
+						$info['tpClass'] = $clsid;
+						$info['tpClassTitle'] = $clsname;
+						$info['tpSeat'] = (int) $data['seat'];
+						$name = $this->guess_name($data['name']);
+						$info['sn'] = $name[0];
+						$info['givenName'] = $name[1];
+						$info['displayName'] = $data['name'];
+						$info['gender'] = (int) $data['gender'];
+						$info['birthDate'] = $data['birthdate'].'000000Z';
+						if (!empty($data['address'])) $info['registeredAddress'] = $data['address'];
+						if (!empty($data['mail'])) $info['mail'] = $data['email'];
+						if (!empty($data['tel'])) $info['mobile'] = $data['tel'];
+						$result = $openldap->updateData($user_entry, $info);
+						if ($result) {
+							$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] ." 資料及帳號更新完成！";
 						} else {
-							$result = $openldap->updateAccounts($user_entry, [ $dc.$stdno ]);
-							if (!$result) {
-								$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] . "因為帳號無法更新，學生同步失敗！".$openldap->error();
-								continue;
-							}
-							$info = array();
-							$info['o'] = $dc;
-							$info['employeeType'] = '學生';
-							$info['inetUserStatus'] = 'active';
-							$info['employeeNumber'] = $stdno;
-							$info['tpClass'] = $clsid;
-							$info['tpClassTitle'] = $clsname;
-							$info['tpSeat'] = (int) $data['seat'];
-							$name = $this->guess_name($data['name']);
-							$info['sn'] = $name[0];
-							$info['givenName'] = $name[1];
-							$info['displayName'] = $data['name'];
-							$info['gender'] = (int) $data['gender'];
-							$info['birthDate'] = $data['birthdate'].'000000Z';
-							if (!empty($data['address'])) $info['registeredAddress'] = $data['address'];
-							if (!empty($data['mail'])) $info['mail'] = $data['email'];
-							if (!empty($data['tel'])) $info['mobile'] = $data['tel'];
-							$result = $openldap->updateData($user_entry, $info);
-							if ($result) {
-								$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] ." 資料及帳號更新完成！";
-							} else {
-								$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] ." 無法更新學生資料：". $openldap->error();
-							}
+							$messages[] = "cn=". $data['idno'] .",stdno=". $stdno .",name=". $data['name'] ." 無法更新學生資料：". $openldap->error();
 						}
 					} else {
 						$account = array();
