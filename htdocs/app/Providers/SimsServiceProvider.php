@@ -36,7 +36,7 @@ class SimsServiceProvider extends ServiceProvider
 
         $response = self::$oauth_js->request('POST', $url, [
             'json' => [
-                'appkey' => Config::get('sims.js.oauth_id'),
+                'appKey' => Config::get('sims.js.oauth_id'),
                 'sign' => $e,
                 'time' => $t,
             ],
