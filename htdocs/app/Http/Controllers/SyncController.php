@@ -470,9 +470,10 @@ class SyncController extends Controller
 								if (strpos($job, '員')) $role = '職工';
 								if (strpos($job, '心')) $role = '職工';
 								if (strpos($job, '護')) $role = '職工';
-								if (isset($allroles[$jod])) {
-									$units[] = "$dc," . $allroles[$job]['ou'];
-									$roles[] = "$dc," . $allroles[$job]['title'];
+								$k = base64_encode($job);
+								if (isset($allroles[$k])) {
+									$units[] = "$dc," . $allroles[$k]['ou'];
+									$roles[] = "$dc," . $allroles[$k]['title'];
 								}
 							}
 						}
@@ -480,8 +481,9 @@ class SyncController extends Controller
 							$classes = $data['assign'];
 							foreach ($classes as $class => $subjects) {
 								foreach ($subjects as $s) {
-									if (isset($allsubject[$s])) {
-										$assign[] = "$dc,$class," . $allsubject[$s];
+									$k = base64_encode($s);
+									if (isset($allsubject[$k])) {
+										$assign[] = "$dc,$class," . $allsubject[$k];
 									}
 								}
 							}
