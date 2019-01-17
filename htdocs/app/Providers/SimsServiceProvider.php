@@ -68,6 +68,7 @@ class SimsServiceProvider extends ServiceProvider
             return false;
         } else {
             if (isset($json->DATA_LIST)) return $json->DATA_LIST;
+            if (isset($json->DATA_MAP)) return $json->DATA_MAP;
             return false;
         }
     }
