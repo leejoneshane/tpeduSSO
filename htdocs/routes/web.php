@@ -133,6 +133,8 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
 	Route::post('{dc}/teacher/new', 'SchoolController@createSchoolTeacher')->name('school.createTeacher');
 	Route::get('{dc}/teacher/json', 'SchoolController@schoolTeacherJSONForm');
 	Route::post('{dc}/teacher/json', 'SchoolController@importSchoolTeacher')->name('school.jsonTeacher');
+    Route::get('{dc}/ps/sync_teacher', 'SyncController@ps_syncTeacherHelp');
+    Route::post('{dc}/ps/sync_teacher', 'SyncController@ps_syncTeacherHelp')->name('school.ps.sync_teacher');
 	Route::get('{dc}/student', 'SchoolController@schoolStudentSearchForm')->name('school.student');
 	Route::get('{dc}/student/{uuid}/update', 'SchoolController@schoolStudentEditForm');
 	Route::post('{dc}/student/{uuid}/update', 'SchoolController@updateSchoolStudent')->name('school.updateStudent');

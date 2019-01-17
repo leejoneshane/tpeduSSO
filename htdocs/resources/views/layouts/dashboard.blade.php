@@ -49,6 +49,11 @@
                         <li {{ (Request::is('school/teacher') ? 'class="active"' : '') }}>
                             <a href="#"><i class="fa fa-female fa-fw"></i> 教師管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
+                                @if ($category == '國民小學')
+                                <li {{ (Request::is('ps/sync_teacher') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('school.ps.sync_teacher', [ 'dc' => $dc ]) }}">同步教師</a>
+                                </li>
+                                @endif
                                 <li {{ (Request::is('school/teacher') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.teacher', [ 'dc' => $dc ]) }}">瀏覽及搜尋</a>
                                 </li>
