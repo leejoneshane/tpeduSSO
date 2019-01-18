@@ -531,10 +531,10 @@ class SyncController extends Controller
 					$messages[] = "cn=無,teaid=". $teaid .",name=". $data['name'] ." 查無身份證號無法同步：". $http->error();
 				}
 			}
-			$filter = "(&(dc=$dc)(!(employeeType=學生)))";
+			$filter = "(&(o=$dc)(!(employeeType=學生)))";
 			$org_teachers = $openldap->findUsers($filter, [ 'cn', 'employeeNumber' ]);
 			foreach ($org_teachers as $tea) {
-				if (!in_array($tea['employeeNumber'], $teachers)) {
+				if (!isset($tea['employeeNumber']) || empty($tea['employeeNumber']) || !in_array($tea['employeeNumber'], $teachers)) {
 					$user_entry = $openldap->getUserEntry($tea['cn']);
 					$openldap->UpdateData($user_entry, [ 'inetUserStatus' => 'deleted' ]);
 				}
@@ -714,9 +714,9 @@ class SyncController extends Controller
 						$info["uid"] = $account["uid"];
 						$info["userPassword"] = $account["userPassword"];
 						$info['o'] = $dc;
-						$info['employeeType'] = '學生';
 						$info['inetUserStatus'] = 'active';
 						$info['info'] = json_encode(array("sid" => $sid, "role" => "學生"), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
+						$info['employeeType'] = '學生';
 						$info['employeeNumber'] = $stdno;
 						$info['tpClass'] = $clsid;
 						$info['tpClassTitle'] = $clsname;
@@ -741,10 +741,10 @@ class SyncController extends Controller
 					$messages[] = "cn=無,stdno=". $stdno ." 查無身份證號無法同步：". $http->error();
 				}
 			}
-			$filter = "(&(dc=$dc)(tpClass=$clsid)(employeeType=學生))";
+			$filter = "(&(o=$dc)(tpClass=$clsid))";
 			$org_students = $openldap->findUsers($filter, [ 'cn', 'employeeNumber' ]);
 			foreach ($org_students as $stu) {
-				if (!in_array($stu['employeeNumber'], $students)) {
+				if (!isset($stu['employeeNumber']) || empty($stu['employeeNumber']) || !in_array($stu['employeeNumber'], $students)) {
 					$user_entry = $openldap->getUserEntry($stu['cn']);
 					$openldap->UpdateData($user_entry, [ 'inetUserStatus' => 'deleted' ]);
 				}
