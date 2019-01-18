@@ -391,8 +391,8 @@ class SyncController extends Controller
 								$educloud[] = $original['info'];
 							}
 							foreach ($educloud as $k => $c) {
-								$i = json_decode($c, true);
-								if ($i->sid == $sid) unset($educloud[$k]);
+								$i = (array) json_decode($c, true);
+								if ($i['sid'] == $sid) unset($educloud[$k]);
 							}
 						}
 						if (isset($data['job_title'])) {
