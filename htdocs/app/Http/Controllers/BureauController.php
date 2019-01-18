@@ -869,7 +869,8 @@ class BureauController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getUserEntry($uuid);
-		$data = $openldap->getUserData($entry, array('cn', 'uid', 'mail', 'mobile', 'employeeType', 'employeeNumber'));
+		$data = $openldap->getUserData($entry, array('o', 'cn', 'uid', 'mail', 'mobile', 'employeeType', 'employeeNumber'));
+		$dc = $data['o'];
 		$idno = $data['cn'];
 		$info = array();
 		$info['userPassword'] = $openldap->make_ssha_password(substr($idno,-6));
