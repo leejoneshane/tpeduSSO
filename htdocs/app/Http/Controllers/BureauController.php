@@ -870,48 +870,45 @@ class BureauController extends Controller
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getUserEntry($uuid);
 		$data = $openldap->getUserData($entry, array('cn', 'uid', 'mail', 'mobile'));
-		if (array_key_exists('cn', $data)) {
-			$idno = $data['cn'];
-			$info = array();
-			$info['userPassword'] = $openldap->make_ssha_password(substr($idno,-6));
+		$idno = $data['cn'];
+		$info = array();
+		$info['userPassword'] = $openldap->make_ssha_password(substr($idno,-6));
 		
-			if (array_key_exists('uid', $data) && !empty($data['uid'])) {
-				if (is_array($data['uid'])) {
-					foreach ($data['uid'] as $account) {
-						$account_entry = $openldap->getAccountEntry($account);
-						$openldap->updateData($account_entry, $info);
-					}
-				} else {
-					$account_entry = $openldap->getAccountEntry($data['uid']);
+		if (array_key_exists('uid', $data) && !empty($data['uid'])) {
+			if (is_array($data['uid'])) {
+				foreach ($data['uid'] as $account) {
+					$account_entry = $openldap->getAccountEntry($account);
 					$openldap->updateData($account_entry, $info);
 				}
 			} else {
-				$account = array();
-				if ($data['employeeType'] != '學生') {
-					$account["uid"] = $dc.substr($idno, -9);
-				} else {
-					$account["uid"] = $dc.$data['employeeNumber'];
-				}
-				$account["userPassword"] = $openldap->make_ssha_password(substr($idno, -6));
-				$account["objectClass"] = "radiusObjectProfile";
-				$account["cn"] = $idno;
-				$account["description"] = '管理員新增';
-				$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
-				$openldap->createEntry($account);
-				$info["uid"] = $account["uid"];
+				$account_entry = $openldap->getAccountEntry($data['uid']);
+				$openldap->updateData($account_entry, $info);
 			}
-		
-			$result = $openldap->updateData($entry, $info);
-			if ($result) {
-				$user = User::where('idno', $idno)->first();
-				if ($user) {
-					$user->password = \Hash::make(substr($idno,-6));
-					$user->save();
-				}
-				return back()->with("success", "已經將人員密碼重設為身分證字號後六碼！");
+		} else {
+			$account = array();
+			if ($data['employeeType'] != '學生') {
+				$account["uid"] = $dc.substr($idno, -9);
 			} else {
-				return back()->with("error", "無法變更人員密碼！".$openldap->error());
+				$account["uid"] = $dc.$data['employeeNumber'];
 			}
+			$account["userPassword"] = $openldap->make_ssha_password(substr($idno, -6));
+			$account["objectClass"] = "radiusObjectProfile";
+			$account["cn"] = $idno;
+			$account["description"] = '管理員新增';
+			$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+			$openldap->createEntry($account);
+			$info["uid"] = $account["uid"];
+		}	
+		$result = $openldap->updateData($entry, $info);
+		if ($result) {
+			$user = User::where('idno', $idno)->first();
+			if ($user) {
+				$user->password = \Hash::make(substr($idno,-6));
+				$user->save();
+			}
+			return back()->with("success", "已經將人員密碼重設為身分證字號後六碼！");
+		} else {
+			return back()->with("error", "無法變更人員密碼！".$openldap->error());
 		}
 	}
 

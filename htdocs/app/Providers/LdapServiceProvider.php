@@ -944,6 +944,7 @@ class LdapServiceProvider extends ServiceProvider
 
     public function addData($entry, array $fields)
     {
+		$fields = array_filter($fields);
 		$dn = @ldap_get_dn(self::$ldap_read, $entry);
 		$value = @ldap_mod_add(self::$ldap_write, $dn, $fields);
 		if (!$value && Config::get('ldap.debug')) Log::debug("Data can't add into $dn:\n".$this->error()."\n".print_r($fields, true)."\n");
@@ -971,6 +972,7 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$dn = $info['dn'];
 		unset($info['dn']);
+		$info = array_filter($info);
 		$value = @ldap_add(self::$ldap_write, $dn, $info);
 		if (!$value && Config::get('ldap.debug')) Log::debug("Entry can't create for $dn:\n".$this->error()."\n".print_r($info, true)."\n");
 		return $value;
