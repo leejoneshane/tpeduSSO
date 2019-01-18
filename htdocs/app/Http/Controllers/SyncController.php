@@ -132,7 +132,7 @@ class SyncController extends Controller
 		$openldap = new LdapServiceProvider();
 		$http = new SimsServiceProvider();
 		$org_classes = $openldap->getOus($dc, '教學班級');
-		$classes = $http->getClasses($sid);
+		$classes = $http->ps_getClasses($sid);
 		$messages[] = "開始進行同步";
 		if ($classes) {
 			foreach ($classes as $class) {
@@ -209,7 +209,7 @@ class SyncController extends Controller
 		$openldap = new LdapServiceProvider();
 		$http = new SimsServiceProvider();
 		$messages[] = "開始進行同步";
-		$subjects = $http->getSubjects($sid);
+		$subjects = $http->ps_getSubjects($sid);
 		if (!$subjects) return ["無法從校務行政系統取得所有科目，請稍後再同步！"];
 		$org_subjects = $openldap->getSubjects($dc);
 		for ($i=0;$i<count($org_subjects);$i++) {
@@ -312,12 +312,12 @@ class SyncController extends Controller
 			$k = base64_encode($s['description']);
 			$allsubject[$k] = $s['tpSubject'];
 		}
-		$teachers = $http->getTeachers($sid);
+		$teachers = $http->ps_getTeachers($sid);
 		if (empty($teachers)) {
 			$messages[] = "查無教師清單，因此無法同步！";
 		} else {
 			foreach ($teachers as $teaid) {
-				$data = $http->getTeacher($sid, $teaid);
+				$data = $http->ps_getTeacher($sid, $teaid);
 				if (isset($data['idno'])) {
 					$idno = strtoupper($data['idno']);
 					$validator = Validator::make(
@@ -554,7 +554,7 @@ class SyncController extends Controller
 		if ($request->isMethod('post')) {
 			$clsid = $request->get('clsid');
 			if (empty($clsid)) {
-				$classes = $http->getClasses($sid);
+				$classes = $http->ps_getClasses($sid);
 				$temp = array();
 				foreach ($classes as $c) {
 					$temp[$c->clsid] = $c->clsname;
@@ -598,7 +598,7 @@ class SyncController extends Controller
 			$clsid = $request->get('clsid');
 			$sid = $openldap->getOrgID($dc);
 			if (empty($clsid)) {
-				$classes = $http->getClasses($sid);
+				$classes = $http->ps_getClasses($sid);
 				$temp = array();
 				if ($classes) {
 					foreach ($classes as $c) {
@@ -639,12 +639,12 @@ class SyncController extends Controller
 		$openldap = new LdapServiceProvider();
 		$http = new SimsServiceProvider();
 		$messages[] = "開始進行同步";
-		$students = $http->getStudents($sid, $clsid);
+		$students = $http->ps_getStudents($sid, $clsid);
 		if (empty($students)) {
 			$messages[] = "班級：$clsname 沒有學生，因此無法同步！";
 		} else {
 			foreach ($students as $stdno) {
-				$data = $http->getStudent($sid, $stdno);
+				$data = $http->ps_getStudent($sid, $stdno);
 				if (isset($data['idno'])) {
 					$idno = strtoupper($data['idno']);
 					$validator = Validator::make(

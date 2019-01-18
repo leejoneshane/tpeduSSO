@@ -129,17 +129,71 @@ class SimsServiceProvider extends ServiceProvider
         }
     }
 
-    public function getClasses($sid)
+    public function js_getUnits($sid)
+    {
+        if (empty($sid)) return false;
+        $units = $this->js_call('units_info', ["sid" => $sid]);
+		return $units;
+    }
+
+    public function js_getRoles($sid, $unit = '')
+    {
+        if (empty($sid)) return false;
+        $roles = array();
+        if (empty($unit)) {
+            $units = $this->js_getUnits($sid);
+        } else {
+            $units[] = $unit;
+        }
+        foreach ($units as $u) {
+            $data = $this->js_call('roles_info', [ "sid" => $sid, "ou" => $u ]);
+            usleep(100);
+            if ($data) $roles = array_merge($roles, [ $u => $data ]);
+        }
+		if (!empty($roles)) return $roles;
+		else return false;
+    }
+
+    public function js_getClasses($sid)
+    {
+        if (empty($sid)) return false;
+        $classes = array();
+        $data = $this->js_call('classes_info', ["sid" => $sid]);
+		if ($data) {
+			foreach ($data as $cls) {
+				$classes[$cls->ou] = $cls->name;
+			}
+            return $classes;
+		} else {
+            return false;
+        }
+    }
+
+    public function ps_getClasses($sid)
     {
         if (empty($sid)) return false;
         $classes = $this->ps_call('classes_info', ["sid" => $sid]);
         return $classes;
     }
 
-    public function getSubjects($sid)
+    public function js_getSubjects($sid)
     {
         $subjects = array();
-        $classes = $this->getClasses($sid);
+		$data = $this->js_call('subjects_info', ['sid' => $sid]);
+		if ($data) {
+			foreach ($data as $subj) {
+				$subjects['subj'.$subj->subject] = $subj->name;
+			}
+            return $subjects;
+		} else {
+            return false;
+        }
+    }
+
+    public function ps_getSubjects($sid)
+    {
+        $subjects = array();
+        $classes = $this->ps_getClasses($sid);
 		foreach ($classes as $class) {
 			$data = $this->ps_call('subject_for_class', [ 'sid' => $sid, 'clsid' => $class->clsid ]);
 			if (isset($data[0]->subjects)) {
@@ -155,7 +209,26 @@ class SimsServiceProvider extends ServiceProvider
         return $subjects;
     }
 
-    public function getTeachers($sid)
+    public function js_getTeachers($sid, $class = '')
+    {
+        if (empty($sid)) return false;
+        $teachers = array();
+        if (empty($class)) {
+            $classes = $this->js_getClasses($sid);
+        } else {
+            $classes[$class] = $class;
+        }
+		foreach ($classes as $clsid => $cls_name) {
+			$data = $this->js_call('teachers_in_class', ['sid' => $sid, 'clsid' => $clsid ]);
+            usleep(100);
+            if ($data) $teachers = array_merge($teachers, $data);
+        }
+        $teachers = array_values(array_unique($teachers));
+        if (!empty($teachers)) return $teachers;
+        else return false;
+    }
+
+    public function ps_getTeachers($sid)
     {
         if (empty($sid)) return false;
         $data = $this->ps_call('teachers_info', ["sid" => $sid]);
@@ -167,12 +240,31 @@ class SimsServiceProvider extends ServiceProvider
         return $teachers;
     }
 
-    public function getStudents($sid, $class = '')
+    public function js_getStudents($sid, $class = '')
     {
         if (empty($sid)) return false;
         $students = array();
         if (empty($class)) {
-            $classes = $this->getClasses($sid);
+            $classes = $this->js_getClasses($sid);
+        } else {
+            $classes[$class] = $class;
+        }
+        foreach ($classes as $clsid => $cls_name) {
+            $data = $this->js_call('students_in_class', ["sid" => $sid, "clsid" => $clsid]);
+            usleep(100);
+            if ($data) $students = array_merge($students, $data);
+        }
+        $students = array_values(array_unique($students));
+        if (!empty($students)) return $students;
+        else return false;
+    }
+
+    public function ps_getStudents($sid, $class = '')
+    {
+        if (empty($sid)) return false;
+        $students = array();
+        if (empty($class)) {
+            $classes = $this->ps_getClasses($sid);
             $classes = array_map(function($c) { return $c->clsid; }, $classes);
         } else {
             $classes[] = $class;
@@ -185,7 +277,15 @@ class SimsServiceProvider extends ServiceProvider
         return $students;
     }
 
-    public function getTeacher($sid, $teaid)
+    public function js_getPerson($sid, $idno)
+    {
+        if (empty($sid) || empty($idno)) return false;
+        $data = $this->js_call('person_info', [ 'sid' => $sid, 'idno' => $idno ]);
+        if ($data) return (array)$data;
+        else return false;
+    }
+
+    public function ps_getTeacher($sid, $teaid)
     {
         if (empty($sid) || empty($teaid)) return false;
         $data1 = $this->ps_call('teacher_info', [ 'sid' => $sid, 'teaid' => $teaid ]);
@@ -216,7 +316,7 @@ class SimsServiceProvider extends ServiceProvider
         }
     }
 
-    public function getStudent($sid, $stdno)
+    public function ps_getStudent($sid, $stdno)
     {
         if (empty($sid) || empty($stdno)) return false;
         $data1 = $this->ps_call('student_info', [ 'sid' => $sid, 'stdno' => $stdno ]);
