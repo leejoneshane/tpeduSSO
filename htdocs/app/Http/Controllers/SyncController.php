@@ -191,16 +191,16 @@ class SyncController extends Controller
 			foreach ($schools as $sch) {
 				$sid = $sch->tpUniformNumbers;
 				$data = $http->ps_call('school_info', [ 'sid' => $sid ]);
-				if (isset($data[0]['name'])) {
+				if (isset($data[0]->name)) {
 					$entry = $openldap->getOrgEntry($sch->o);
 					$info = array();
 					$info['tpSims'] = 'alle';
-					$info['description'] = $data[0]['name'];
-					if (isset($data[0]['address'])) $info['street'] = $data[0]['address'];
-					if (isset($data[0]['telephone'])) $info['telephoneNumber'] = '(' . str_replace('-', ')', $data[0]['telephone']);
+					$info['description'] = $data[0]->name;
+					if (isset($data[0]->address)) $info['street'] = $data[0]->address;
+					if (isset($data[0]->telephone)) $info['telephoneNumber'] = '(' . str_replace('-', ')', $data[0]->telephone);
 					$result = $openldap->updateData($entry, $info);
 					if ($result) {
-						$messages[] = "dc=" . $sch->o . ",name=" . $data[0]['name'] . " 資料更新完成！";
+						$messages[] = "dc=" . $sch->o . ",name=" . $data[0]->name . " 資料更新完成！";
 					} else {
 						$messages[] = "dc=" . $sch->o . ",name=" . $sch->description . " 無法更新資料：". $openldap->error();
 					}
