@@ -1545,6 +1545,64 @@ class SyncController extends Controller
 		return $messages;
 	}
 
+	public function removeFake() {
+		$openldap = new LdapServiceProvider();
+		$filter = '(cn=*123456789)';
+		$fake = $openldap->findUsers($filter);
+		$messages = array(); 
+		if (!empty($fake)) {
+			foreach ($fake as $user) {
+				$idno = $user['cn'];
+				$name = $user['displayName'];
+				if (isset($user['uid'])) {
+					$uids = array();
+					if (is_array($user['uid'])) 
+						$uids = $user['uid'];
+					else
+						$uids[] = $user['uid'];
+					foreach ($uids as $uid) {
+						$acc_entry = $openldap->getAccountEntry($uid);
+						$openldap->deleteEntry($acc_entry);
+						$messages[] = "移除假身份人員$name($idno)之帳號：$uid";
+					}
+				}
+				$user_entry = $openldap->getUserEntry($idno);
+				$openldap->deleteEntry($user_entry);
+				$messages[] = "移除假身份人員紀錄：$name($idno)";
+			}
+		}
+		return view('admin.syncremovefake', [ 'result' => $messages ]);
+	}
+
+	public function removeDeleted() {
+		$openldap = new LdapServiceProvider();
+		$filter = '(inetUserStatus=deleted)';
+		$deleted = $openldap->findUsers($filter);
+		$messages = array(); 
+		if (!empty($deleted)) {
+			foreach ($deleted as $user) {
+				$idno = $user['cn'];
+				$name = $user['displayName'];
+				if (isset($user['uid'])) {
+					$uids = array();
+					if (is_array($user['uid'])) 
+						$uids = $user['uid'];
+					else
+						$uids[] = $user['uid'];
+					foreach ($uids as $uid) {
+						$acc_entry = $openldap->getAccountEntry($uid);
+						$openldap->deleteEntry($acc_entry);
+						$messages[] = "移除標記為已刪除人員$name($idno)之帳號：$uid";
+					}
+				}
+				$user_entry = $openldap->getUserEntry($idno);
+				$openldap->deleteEntry($user_entry);
+				$messages[] = "移除標記為已刪除人員紀錄：$name($idno)";
+			}
+		}
+		return view('admin.syncremovedeleted', [ 'result' => $messages ]);
+	}
+
 	function guess_name($myname) {
 		$len = mb_strlen($myname, "UTF-8");
 		if ($len > 3) {

@@ -6,7 +6,7 @@
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
                         <li {{ (Request::is('sync/ps') ? 'class="active"' : '') }}>
-                            <a href="#"><i class="fa fa-sitemap fa-fw"></i>國小學程介接</a>
+                            <a href="#"><i class="fa fa-sitemap fa-fw"></i>全誼校務行政系統介接</a>
                             <ul class="nav nav-second-level">
                                 <li {{ (Request::is('sync/ps/runtime_test') ? 'class="active"' : '') }}>
                                     <a href="{{ route('sync.ps.runtime_test') }}">連線測試</a>
@@ -29,7 +29,7 @@
                             </ul>
                         </li>
                         <li {{ (Request::is('sync/js') ? 'class="active"' : '') }}>
-                            <a href="#"><i class="fa fa-sitemap fa-fw"></i>國中學程介接</a>
+                            <a href="#"><i class="fa fa-sitemap fa-fw"></i>巨耀校務行政系統介接</a>
                             <ul class="nav nav-second-level">
                                 <li {{ (Request::is('sync/js/runtime_test') ? 'class="active"' : '') }}>
                                     <a href="{{ route('sync.js.runtime_test') }}">連線測試</a>
@@ -48,6 +48,17 @@
                                 </li>
                                 <li {{ (Request::is('sync/js/sync_student') ? 'class="active"' : '') }}>
                                     <a href="{{ route('sync.js.sync_student') }}">同步學生</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li {{ (Request::is('sync/fix') ? 'class="active"' : '') }}>
+                            <a href="#"><i class="fa fa-sitemap fa-fw"></i>資料維護</a>
+                            <ul class="nav nav-second-level">
+                                <li {{ (Request::is('sync/fix/remove_fake') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('sync.remove_fake') }}">移除假身份人員</a>
+                                </li>
+                                <li {{ (Request::is('sync/fix/remove_deleted') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('sync.remove_deleted') }}">移除標記為已刪除人員</a>
                                 </li>
                             </ul>
                         </li>

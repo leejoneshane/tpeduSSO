@@ -71,6 +71,8 @@ Route::group(['prefix' => 'sync', 'middleware' => 'auth.admin'], function () {
     Route::post('js/sync_teacher', 'SyncController@js_syncTeacherForm')->name('sync.js.sync_teacher');
     Route::get('js/sync_student', 'SyncController@js_syncStudentForm');
     Route::post('js/sync_student', 'SyncController@js_syncStudentForm')->name('sync.js.sync_student');
+    Route::get('fix/remove_fake', 'SyncController@removeFake')->name('sync.remove_fake');
+    Route::get('fix/remove_deleted', 'SyncController@removeDeleted')->name('sync.remove_deleted');
 });
 
 Route::group(['prefix' => 'bureau', 'middleware' => 'auth.admin'], function () {

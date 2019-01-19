@@ -42,8 +42,9 @@
                                     <i class="fa fa-user fa-fw"></i>{{ Auth::user()->name }} 
                                 </a>
                                 <ul  style="min-width:50px; left: -40px; top:120%" class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a href="{{ url('/') }}"><i class="fa fa-home fa-fw"></i>回首頁</a></li>
                             	    @if (Auth::user()->is_admin || Auth::user()->id == 1)
-                                    <li><a class="dropdown-item" href="{{ route('sync') }}"><i class="fa fa-gears fa-fw"></i>同步作業</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('sync') }}"><i class="fa fa-gears fa-fw"></i>資料維護</a></li>
                             	    <li><a class="dropdown-item" href="{{ route('bureau') }}"><i class="fa fa-eye fa-fw"></i>局端管理</a></li>
                             	    @endif
                                     @if (Auth::user()->ldap['adminSchools'])
