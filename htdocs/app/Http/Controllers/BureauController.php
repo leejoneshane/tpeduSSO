@@ -1110,7 +1110,8 @@ class BureauController extends Controller
 		if (!empty($request->get('postOfficeBox'))) $info['postOfficeBox'] = $request->get('postOfficeBox');
 		$info['wWWHomePage'] = [];
         if (!empty($request->get('wWWHomePage'))) $info['wWWHomePage'] = $request->get('wWWHomePage');
-		$info['tpSims'] = $request->get('tpSims');
+		$info['tpSims'] = [];
+		if (!empty($request->get('tpSims'))) $info['tpSims'] = $request->get('tpSims');
 		$info['tpUniformNumbers'] = strtoupper($request->get('tpUniformNumbers'));
 		$info['tpIpv4'] = [];
 		if (!empty($request->get('tpIpv4'))) $info['tpIpv4'] = $request->get('tpIpv4');

@@ -116,6 +116,7 @@
 		    <div class="form-group{{ $errors->has('tpSims') ? ' has-error' : '' }}">
 			<label>校務行政系統</label>
 			<select id="tpSims" class="form-control" name="tpSims">
+				<option value="">無</option>
 			@foreach ($sims as $sys_id => $sys_name)
 				<option value="{{ $sys_id }}"{{ isset($data['tpSims']) && $data['tpSims'] == $sys_id ? ' selected' : '' }}>{{ $sys_name }}</option>
 			@endforeach
