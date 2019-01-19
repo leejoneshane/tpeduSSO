@@ -191,7 +191,7 @@ class SyncController extends Controller
 			foreach ($schools as $sch) {
 				$sid = $sch->tpUniformNumbers;
 				$data = $http->ps_call('school_info', [ 'sid' => $sid ]);
-				if (isset($data['name'])) {
+				if (isset($data[0]['name'])) {
 					$entry = $openldap->getOrgEntry($sch->o);
 					$info = array();
 					$info['tpSims'] = 'alle';
