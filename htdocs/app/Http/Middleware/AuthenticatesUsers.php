@@ -117,9 +117,14 @@ trait AuthenticatesUsers
      */
     protected function authenticated(Request $request, $user)
     {
-        if(Auth::check() && isset($request['SAMLRequest'])) {
+        if (Auth::check() && isset($request['SAMLRequest'])) {
             $this->handleSamlLoginRequest($request);
         }
+//        if ($user->ldap['inetUserStatus'] == 'inactive' || $user->ldap['inetUserStatus'] == 'deleted') {
+//            throw ValidationException::withMessages([
+//                $this->username() => [ '很抱歉，您已經被管理員刪除或停權！' ],
+//            ]);
+//        } 
     }
 
     /**
