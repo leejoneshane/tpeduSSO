@@ -1,4 +1,4 @@
-@extends('layouts.dashboard', [ 'category' => $category ])
+@extends('layouts.dashboard')
 
 @section('page_heading')
 歡迎使用學校管理介面
