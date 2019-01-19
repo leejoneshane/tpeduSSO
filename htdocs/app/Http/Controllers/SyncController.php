@@ -1302,7 +1302,6 @@ class SyncController extends Controller
 					$info['gender'] = (int) $data['gender'];
 					$info['birthDate'] = $data['birthdate'];
 					if (isset($data['register']) && !empty($data['register'])) $info['registeredAddress'] = $data['register'];
-					if (isset($data['mail']) && !empty($data['mail'])) $info['mail'] = $data['mail'];
 					$result = $openldap->updateData($user_entry, $info);
 					if ($result) {
 						$messages[] = "cn=". $idno .",stdno=". $data['stdno'] .",name=". $data['name'] ." 資料及帳號更新完成！";
@@ -1353,7 +1352,6 @@ class SyncController extends Controller
 					$info['gender'] = (int) $data['gender'];
 					$info['birthDate'] = $data['birthdate'];
 					if (isset($data['register']) && !empty($data['register'])) $info['registeredAddress'] = $data['register'];
-					if (isset($data['mail']) && !empty($data['mail'])) $info['mail'] = $data['mail'];
 					$result = $openldap->createEntry($info);
 					if ($result) {
 						$messages[] = "cn=". $idno .",stdno=". $data['stdno'] .",name=". $data['name'] . "已經為您建立學生資料！";
