@@ -39,7 +39,7 @@ class SyncController extends Controller
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
-		$filter = "(&(st=$area)(|(businessCategory=國民中學)(businessCategory=高中)))";
+		$filter = "(&(st=$area)(tpSims=oneplus)))";
 		$openldap = new LdapServiceProvider();
 		$schools = $openldap->getOrgs($filter);
 		$dc = $request->get('dc');
@@ -83,7 +83,7 @@ class SyncController extends Controller
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
-		$filter = "(&(st=$area)(|(businessCategory=國民小學)(businessCategory=幼兒園)))";
+		$filter = "(&(st=$area)(tpSims=alle))";
 		$openldap = new LdapServiceProvider();
 		$schools = $openldap->getOrgs($filter);
 		$dc = $request->get('dc');
@@ -212,15 +212,20 @@ class SyncController extends Controller
 		return view('admin.syncorg', [ 'result' => $messages ]);
 	}
 
-    public function js_syncClassHelp(Request $request, $dc)
+    public function syncClassHelp(Request $request, $dc)
     {
 		$openldap = new LdapServiceProvider();
 		$sid = $openldap->getOrgID($dc);
 		$school = $openldap->getOrgEntry($dc);
-		$category = $openldap->getOrgData($school, 'businessCategory');
+		$sims = $openldap->getOrgData($school, 'tpSims');
+		if (isset($sims['tpSims'])) $sys = $sims['tpSims'];
+		else $sys = '';
 		$result = array();
-		if ($request->get('submit')) $result = $this->js_syncClass($dc, $sid);
-		return view('admin.syncclassinfo', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'result' => $result ]);
+		if ($request->get('submit')) {
+			if ($sys == 'oneplus') $result = $this->js_syncClass($dc, $sid);
+			if ($sys == 'alle') $result = $this->ps_syncClass($dc, $sid);
+		}
+		return view('admin.syncclassinfo', [ 'sims' => $sys, 'dc' => $dc, 'result' => $result ]);
 	}
 	
 	public function js_syncClassForm(Request $request)
@@ -228,7 +233,7 @@ class SyncController extends Controller
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
-		$filter = "(&(st=$area)(|(businessCategory=國民中學)(businessCategory=高中)))";
+		$filter = "(&(st=$area)(tpSims=oneplus))";
 		$openldap = new LdapServiceProvider();
 		$schools = $openldap->getOrgs($filter);
 		$dc = $request->get('dc');
@@ -289,23 +294,12 @@ class SyncController extends Controller
 		return $messages;
 	}
 
-    public function ps_syncClassHelp(Request $request, $dc)
-    {
-		$openldap = new LdapServiceProvider();
-		$sid = $openldap->getOrgID($dc);
-		$school = $openldap->getOrgEntry($dc);
-		$category = $openldap->getOrgData($school, 'businessCategory');
-		$result = array();
-		if ($request->get('submit')) $result = $this->ps_syncClass($dc, $sid);
-		return view('admin.syncclassinfo', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'result' => $result ]);
-	}
-	
 	public function ps_syncClassForm(Request $request)
 	{
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
-		$filter = "(&(st=$area)(|(businessCategory=國民小學)(businessCategory=幼兒園)))";
+		$filter = "(&(st=$area)(tpSmis=alle))";
 		$openldap = new LdapServiceProvider();
 		$schools = $openldap->getOrgs($filter);
 		$dc = $request->get('dc');
@@ -366,15 +360,20 @@ class SyncController extends Controller
 		return $messages;
 	}
 
-	public function js_syncSubjectHelp(Request $request, $dc)
+	public function syncSubjectHelp(Request $request, $dc)
     {
 		$openldap = new LdapServiceProvider();
 		$sid = $openldap->getOrgID($dc);
 		$school = $openldap->getOrgEntry($dc);
-		$category = $openldap->getOrgData($school, 'businessCategory');
+		$sims = $openldap->getOrgData($school, 'tpSims');
+		if (isset($sims['tpSims'])) $sys = $sims['tpSims'];
+		else $sys = '';
 		$result = array();
-		if ($request->get('submit')) $result = $this->js_syncSubject($dc, $sid);
-		return view('admin.syncsubjectinfo', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'result' => $result ]);
+		if ($request->get('submit')) {
+			if ($sys == 'oneplus') $result = $this->js_syncSubject($dc, $sid);
+			if ($sys == 'alle') $result = $this->ps_syncSubject($dc, $sid);
+		}
+		return view('admin.syncsubjectinfo', [ 'sims' => $sys, 'dc' => $dc, 'result' => $result ]);
 	}
 	
     public function js_syncSubjectForm(Request $request)
@@ -382,7 +381,7 @@ class SyncController extends Controller
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
-		$filter = "(&(st=$area)(|(businessCategory=國民中學)(businessCategory=高中)))";
+		$filter = "(&(st=$area)(tpSims=oneplus))";
 		$openldap = new LdapServiceProvider();
 		$schools = $openldap->getOrgs($filter);
 		$dc = $request->get('dc');
@@ -441,23 +440,12 @@ class SyncController extends Controller
 		return $messages;
 	}
 	
-	public function ps_syncSubjectHelp(Request $request, $dc)
-    {
-		$openldap = new LdapServiceProvider();
-		$sid = $openldap->getOrgID($dc);
-		$school = $openldap->getOrgEntry($dc);
-		$category = $openldap->getOrgData($school, 'businessCategory');
-		$result = array();
-		if ($request->get('submit')) $result = $this->ps_syncSubject($dc, $sid);
-		return view('admin.syncsubjectinfo', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'result' => $result ]);
-	}
-	
     public function ps_syncSubjectForm(Request $request)
     {
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
-		$filter = "(&(st=$area)(|(businessCategory=國民小學)(businessCategory=幼兒園)))";
+		$filter = "(&(st=$area)(tpSims=alle))";
 		$openldap = new LdapServiceProvider();
 		$schools = $openldap->getOrgs($filter);
 		$dc = $request->get('dc');
@@ -522,15 +510,21 @@ class SyncController extends Controller
 		return $messages;
 	}
 
-	public function js_syncTeacherHelp(Request $request, $dc)
+	public function syncTeacherHelp(Request $request, $dc)
     {
 		$openldap = new LdapServiceProvider();
 		$sid = $openldap->getOrgID($dc);
 		$school = $openldap->getOrgEntry($dc);
-		$category = $openldap->getOrgData($school, 'businessCategory');
+		$sims = $openldap->getOrgData($school, 'tpSims');
+		if (isset($sims['tpSims'])) $sys = $sims['tpSims'];
+		else $sys = '';
 		$result = array();
-		if ($request->get('submit')) $result = $this->js_syncTeacher($dc, $sid);
-		return view('admin.syncteacherinfo', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'result' => $result ]);
+		if ($request->get('submit')) {
+			if ($sys == 'oneplus') $result = $this->js_syncTeacher($dc, $sid);
+			if ($sys == 'alle') $result = $this->ps_syncTeacher($dc, $sid);
+		}
+		$result = array();
+		return view('admin.syncteacherinfo', [ 'sims' => $sys, 'dc' => $dc, 'result' => $result ]);
 	}
 	
     public function js_syncTeacherForm(Request $request)
@@ -538,7 +532,7 @@ class SyncController extends Controller
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
-		$filter = "(&(st=$area)(|(businessCategory=國民中學)(businessCategory=高中)))";
+		$filter = "(&(st=$area)(tpSims=oneplus))";
 		$openldap = new LdapServiceProvider();
 		$schools = $openldap->getOrgs($filter);
 		$dc = $request->get('dc');
@@ -815,23 +809,12 @@ class SyncController extends Controller
 		return $messages;
 	}
 
-	public function ps_syncTeacherHelp(Request $request, $dc)
-    {
-		$openldap = new LdapServiceProvider();
-		$sid = $openldap->getOrgID($dc);
-		$school = $openldap->getOrgEntry($dc);
-		$category = $openldap->getOrgData($school, 'businessCategory');
-		$result = array();
-		if ($request->get('submit')) $result = $this->ps_syncTeacher($dc, $sid);
-		return view('admin.syncteacherinfo', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'result' => $result ]);
-	}
-	
     public function ps_syncTeacherForm(Request $request)
     {
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
-		$filter = "(&(st=$area)(|(businessCategory=國民小學)(businessCategory=幼兒園)))";
+		$filter = "(&(st=$area)(tpSims=alle))";
 		$openldap = new LdapServiceProvider();
 		$schools = $openldap->getOrgs($filter);
 		$dc = $request->get('dc');
@@ -1170,40 +1153,66 @@ class SyncController extends Controller
 		return $messages;
 	}
 
-	public function js_syncStudentHelp(Request $request, $dc)
+	public function syncStudentHelp(Request $request, $dc)
     {
 		$openldap = new LdapServiceProvider();
 		$http = new SimsServiceProvider();
 		$sid = $openldap->getOrgID($dc);
 		$school = $openldap->getOrgEntry($dc);
-		$category = $openldap->getOrgData($school, 'businessCategory');
+		$sims = $openldap->getOrgData($school, 'tpSims');
+		if (isset($sims['tpSims'])) $sys = $sims['tpSims'];
+		else $sys = '';
 		if ($request->isMethod('post')) {
 			$clsid = $request->get('clsid');
-			if (empty($clsid)) {
-				$classes = $http->js_getClasses($sid);
-				if ($classes) {
-					ksort($classes);
+			if ($sys == 'oneplus') {
+				if (empty($clsid)) {
+					$classes = $http->js_getClasses($sid);
+					if ($classes) {
+						ksort($classes);
+						$clsid = key($classes);
+						$clsname = $classes[$clsid];
+						unset($classes[$clsid]);
+						$request->session()->put('classes', $classes);
+					}
+				} else {
+					$classes = $request->session()->pull('classes');
+					$clsid = key($classes);
+					$clsname = $classes[$clsid];
+					unset($classes[$clsid]);
+					if (!empty($classes)) $request->session()->put('classes', $classes);
+				}
+				$result = $this->js_syncStudent($dc, $sid, $clsid, $clsname);
+			}
+			if ($sys == 'alle') {
+				if (empty($clsid)) {
+					$classes = $http->ps_getClasses($sid);
+					$temp = array();
+					foreach ($classes as $c) {
+						$temp[$c->clsid] = $c->clsname;
+					}
+					ksort($temp);
+					$classes = $temp;
 					$clsid = key($classes);
 					$clsname = $classes[$clsid];
 					unset($classes[$clsid]);
 					$request->session()->put('classes', $classes);
+				} else {
+					$classes = $request->session()->pull('classes');
+					$clsid = key($classes);
+					$clsname = $classes[$clsid];
+					unset($classes[$clsid]);
+					if (!empty($classes)) $request->session()->put('classes', $classes);
 				}
-			} else {
-				$classes = $request->session()->pull('classes');
-				$clsid = key($classes);
-				$clsname = $classes[$clsid];
-				unset($classes[$clsid]);
-				if (!empty($classes)) $request->session()->put('classes', $classes);
+				$result = $this->ps_syncStudent($dc, $sid, $clsid, $clsname);
 			}
-			$result = $this->js_syncStudent($dc, $sid, $clsid, $clsname);
 			if (!empty($classes)) {
 				$nextid = key($classes);
-				return view('admin.syncstudentinfo', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'clsid' => $nextid, 'result' => $result ]);	
+				return view('admin.syncstudentinfo', [ 'sims' => $sys, 'dc' => $dc, 'clsid' => $nextid, 'result' => $result ]);	
 			} else {
-				return view('admin.syncstudentinfo', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'result' => $result ]);	
+				return view('admin.syncstudentinfo', [ 'sims' => $sys, 'dc' => $dc, 'result' => $result ]);	
 			}
 		} else {
-			return view('admin.syncstudentinfo', [ 'category' => $category['businessCategory'], 'dc' => $dc ]);	
+			return view('admin.syncstudentinfo', [ 'sims' => $sys, 'dc' => $dc ]);	
 		}
 	}
 	
@@ -1214,7 +1223,7 @@ class SyncController extends Controller
 		if (empty($area)) $area = $areas[0];
 		$openldap = new LdapServiceProvider();
 		$http = new SimsServiceProvider();
-		$filter = "(&(st=$area)(|(businessCategory=國民中學)(businessCategory=高中)))";
+		$filter = "(&(st=$area)(tpSims=oneplus))";
 		$schools = $openldap->getOrgs($filter);
 		if ($request->isMethod('post')) {
 			$dc = $request->get('dc');
@@ -1367,46 +1376,6 @@ class SyncController extends Controller
 		return $messages;
 	}
 
-	public function ps_syncStudentHelp(Request $request, $dc)
-    {
-		$openldap = new LdapServiceProvider();
-		$http = new SimsServiceProvider();
-		$sid = $openldap->getOrgID($dc);
-		$school = $openldap->getOrgEntry($dc);
-		$category = $openldap->getOrgData($school, 'businessCategory');
-		if ($request->isMethod('post')) {
-			$clsid = $request->get('clsid');
-			if (empty($clsid)) {
-				$classes = $http->ps_getClasses($sid);
-				$temp = array();
-				foreach ($classes as $c) {
-					$temp[$c->clsid] = $c->clsname;
-				}
-				ksort($temp);
-				$classes = $temp;
-				$clsid = key($classes);
-				$clsname = $classes[$clsid];
-				unset($classes[$clsid]);
-				$request->session()->put('classes', $classes);
-			} else {
-				$classes = $request->session()->pull('classes');
-				$clsid = key($classes);
-				$clsname = $classes[$clsid];
-				unset($classes[$clsid]);
-				if (!empty($classes)) $request->session()->put('classes', $classes);
-			}
-			$result = $this->ps_syncStudent($dc, $sid, $clsid, $clsname);
-			if (!empty($classes)) {
-				$nextid = key($classes);
-				return view('admin.syncstudentinfo', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'clsid' => $nextid, 'result' => $result ]);	
-			} else {
-				return view('admin.syncstudentinfo', [ 'category' => $category['businessCategory'], 'dc' => $dc, 'result' => $result ]);	
-			}
-		} else {
-			return view('admin.syncstudentinfo', [ 'category' => $category['businessCategory'], 'dc' => $dc ]);	
-		}
-	}
-	
     public function ps_syncStudentForm(Request $request)
     {
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
@@ -1414,7 +1383,7 @@ class SyncController extends Controller
 		if (empty($area)) $area = $areas[0];
 		$openldap = new LdapServiceProvider();
 		$http = new SimsServiceProvider();
-		$filter = "(&(st=$area)(|(businessCategory=國民小學)(businessCategory=幼兒園)))";
+		$filter = "(&(st=$area)(tpSims=alle))";
 		$schools = $openldap->getOrgs($filter);
 		if ($request->isMethod('post')) {
 			$dc = $request->get('dc');

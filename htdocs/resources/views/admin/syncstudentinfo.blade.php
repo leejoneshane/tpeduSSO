@@ -1,4 +1,4 @@
-@extends('layouts.dashboard', [ 'category' => $category, 'dc' => $dc ])
+@extends('layouts.dashboard')
 
 @section('page_heading')
 同步學生
@@ -15,10 +15,10 @@
 		</div>
 	@endif
 	@if (isset($clsid))
-		@if ($category == '國民小學' || $category == '幼兒園')
+		@if ($sims == 'alle')
 		<form role="form" method="POST" action="{{ route('school.ps.sync_student', [ 'dc' => $dc ]) }}">
 		@endif
-		@if ($category == '國民中學' || $category == '高中')
+		@if ($sims == 'oneplus')
 		<form role="form" method="POST" action="{{ route('school.js.sync_student', [ 'dc' => $dc ]) }}">
 		@endif
 			@csrf
@@ -35,10 +35,10 @@
 		<p>此同步會自動更新學生個人資料，包含：姓名、性別、生日、學號、地址、電話、電子郵件、手機號碼和就讀年班、座號。</p>
 		<p>如果學號相同，則保留原有帳號密碼。若學號不相同，則會將舊帳號刪除，重新建立預設帳號與密碼！</p>
 		<p>每次僅同步一個班級，若顯示結果後管理員未回應網頁訊息，60秒後自動同步下一個班級。同步過程需要時間，直到全部同步完畢為止，請勿關閉瀏覽器或離開此網頁，以避免同步程序被關閉。</p>			
-		@if ($category == '國民小學' || $category == '幼兒園')
+		@if ($sims == 'alle')
 		<form role="form" method="POST" action="{{ route('school.ps.sync_student', [ 'dc' => $dc ]) }}">
 		@endif
-		@if ($category == '國民中學' || $category == '高中')
+		@if ($sims == 'oneplus')
 		<form role="form" method="POST" action="{{ route('school.js.sync_student', [ 'dc' => $dc ]) }}">
 		@endif
 			@csrf
