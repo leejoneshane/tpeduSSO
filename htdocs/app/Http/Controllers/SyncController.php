@@ -161,7 +161,6 @@ class SyncController extends Controller
 					$info = array();
 					$info['tpSims'] = 'oneplus';
 					$info['description'] = $data->name;
-					if (isset($data->type) && !empty($data->type)) $info['businessCategory'] = $data->type;
 					if (isset($data->portal) && !empty($data->portal)) $info['postalCode'] = $data->postal;
 					if (isset($data->address) && !empty($data->address)) $info['street'] = $data->address;
 					$result = $openldap->updateData($entry, $info);
