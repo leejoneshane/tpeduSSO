@@ -39,7 +39,7 @@ class SyncController extends Controller
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
-		$filter = "(&(st=$area)(tpSims=oneplus)))";
+		$filter = "(&(st=$area)(tpSims=oneplus))";
 		$openldap = new LdapServiceProvider();
 		$schools = $openldap->getOrgs($filter);
 		$dc = $request->get('dc');
@@ -1282,7 +1282,7 @@ class SyncController extends Controller
 				$data = $http->js_getPerson($sid, $idno);
 				$user_entry = $openldap->getUserEntry($idno);
 				if ($user_entry) {
-					$result = $openldap->updateAccounts($user_entry, [ $dc.$stdno ]);
+					$result = $openldap->updateAccounts($user_entry, [ $dc.$data['stdno'] ]);
 					if (!$result) {
 						$messages[] = "cn=". $idno .",stdno=". $data['stdno'] .",name=". $data['name'] . "因為帳號無法更新，學生同步失敗！".$openldap->error();
 						continue;
