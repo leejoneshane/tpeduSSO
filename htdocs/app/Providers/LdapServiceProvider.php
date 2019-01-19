@@ -246,6 +246,7 @@ class LdapServiceProvider extends ServiceProvider
 	    	$fields[] = 'postOfficeBox';
 	    	$fields[] = 'wWWHomePage';
 	    	$fields[] = 'tpUniformNumbers';
+	    	$fields[] = 'tpSims';
 	    	$fields[] = 'tpIpv4';
 	    	$fields[] = 'tpIpv6';
 	    	$fields[] = 'tpAdministrator';
