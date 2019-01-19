@@ -1063,6 +1063,7 @@ class BureauController extends Controller
 		if (!empty($request->get('postOfficeBox'))) $info['postOfficeBox'] = $request->get('postOfficeBox');
         if (!empty($request->get('wWWHomePage'))) $info['wWWHomePage'] = $request->get('wWWHomePage');
 		$info['tpUniformNumbers'] = strtoupper($request->get('tpUniformNumbers'));
+		$info['tpSims'] = $request->get('tpSims');
 		if (!empty($request->get('tpIpv4'))) $info['tpIpv4'] = $request->get('tpIpv4');
 		if (!empty($request->get('tpIpv6'))) $info['tpIpv6'] = $request->get('tpIpv6');
 		$info['dn'] = Config::get('ldap.schattr')."=".$request->get('dc').",".Config::get('ldap.rdn');
@@ -1109,6 +1110,7 @@ class BureauController extends Controller
 		if (!empty($request->get('postOfficeBox'))) $info['postOfficeBox'] = $request->get('postOfficeBox');
 		$info['wWWHomePage'] = [];
         if (!empty($request->get('wWWHomePage'))) $info['wWWHomePage'] = $request->get('wWWHomePage');
+		$info['tpSims'] = $request->get('tpSims');
 		$info['tpUniformNumbers'] = strtoupper($request->get('tpUniformNumbers'));
 		$info['tpIpv4'] = [];
 		if (!empty($request->get('tpIpv4'))) $info['tpIpv4'] = $request->get('tpIpv4');
