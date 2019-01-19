@@ -1,7 +1,7 @@
 @extends('layouts.syncboard')
 
 @section('page_heading')
-同步學生（國小學程）
+同步學生
 @endsection
 
 @section('section')

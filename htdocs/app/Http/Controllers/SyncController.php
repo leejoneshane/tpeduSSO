@@ -145,6 +145,74 @@ class SyncController extends Controller
 		return view('admin.ps_synctest', [ 'my_field' => $my_field, 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'grade' => $grade, 'subjid' => $subjid, 'clsid' => $clsid, 'teaid' => $teaid, 'stdno' => $stdno, 'isbn' => $isbn, 'result' => $result ]);
 	}
 	
+	public function js_syncOrg()
+	{
+		$openldap = new LdapServiceProvider();
+		$http = new SimsServiceProvider();
+		$filter = "(|(businessCategory=國民中學)(businessCategory=高中))";
+		$schools = $openldap->getOrgs($filter);
+		$messages[] = "開始進行同步";
+		if ($schools) {
+			foreach ($schools as $sch) {
+				$sid = $sch->tpUniformNumbers;
+				$data = $http->js_call('school_info', $sid);
+				if ($data) {
+					$entry = $openldap->getOrgEntry($sch->o);
+					$info = array();
+					$info['tpSims'] = 'oneplus';
+					$info['businessCategory'] = $data['type'];
+					$info['description'] = $data['name'];
+					$info['telephoneNumber'] = $data['tel'];
+					$info['postalCode'] = $data['postal'];
+					$info['street'] = $data['address'];
+					$result = $openldap->updateData($entry, $info);
+					if ($result) {
+						$messages[] = "dc=" . $sch->o . ",name=" . $data['name'] . " 資料更新完成！";
+					} else {
+						$messages[] = "dc=" . $sch->o . ",name=" . $sch->description . " 無法更新資料：". $openldap->error();
+					}
+				}
+			}
+			$messages[] = "同步完成！";
+		} else {
+			$messages[] = "在 LDAP 中找不到符合條件的組織，因此無法同步！";
+		}
+		return view('admin.syncorg', [ 'result' => $messages ]);
+	}
+
+	public function ps_syncOrg()
+	{
+		$openldap = new LdapServiceProvider();
+		$http = new SimsServiceProvider();
+		$filter = "(|(businessCategory=國民小學)(businessCategory=幼兒園))";
+		$schools = $openldap->getOrgs($filter);
+		$messages[] = "開始進行同步";
+		if ($schools) {
+			foreach ($schools as $sch) {
+				$sid = $sch->tpUniformNumbers;
+				$data = $http->ps_call('school_info', $sid);
+				if ($data) {
+					$entry = $openldap->getOrgEntry($sch->o);
+					$info = array();
+					$info['tpSims'] = 'alle';
+					$info['description'] = $data['name'];
+					$info['street'] = $data['address'];
+					$info['telephoneNumber'] = '(' . str_replace('-', ')', $data['telephone']);
+					$result = $openldap->updateData($entry, $info);
+					if ($result) {
+						$messages[] = "dc=" . $sch->o . ",name=" . $data['name'] . " 資料更新完成！";
+					} else {
+						$messages[] = "dc=" . $sch->o . ",name=" . $sch->description . " 無法更新資料：". $openldap->error();
+					}
+				}
+			}
+			$messages[] = "同步完成！";
+		} else {
+			$messages[] = "在 LDAP 中找不到符合條件的組織，因此無法同步！";
+		}
+		return view('admin.syncorg', [ 'result' => $messages ]);
+	}
+
     public function js_syncClassHelp(Request $request, $dc)
     {
 		$openldap = new LdapServiceProvider();

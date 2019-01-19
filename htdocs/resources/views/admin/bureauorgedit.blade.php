@@ -27,7 +27,7 @@
 		    @csrf
 		    <div class="form-group{{ $errors->has('dc') ? ' has-error' : '' }}">
 			<label>系統代號</label>
-			<input id="dc" type="text" class="form-control" name="dc" value="{{ isset($data) && array_key_exists('o', $data) ? $data['o'] : old('dc') }}" required>
+			<input id="dc" type="text" class="form-control" name="dc" value="{{ $data['o'] }}" required>
 			@if ($errors->has('dc'))
 				<p class="help-block">
 					<strong>{{ $errors->first('dc') }}</strong>
@@ -36,7 +36,7 @@
 		    </div>
 		    <div class="form-group{{ $errors->has('description') ? ' has-error' : '' }}">
 			<label>機構全銜</label>
-			<input id="description" type="text" class="form-control" name="description" value="{{ isset($data) && array_key_exists('description', $data) ? $data['description'] : old('description') }}" required>
+			<input id="description" type="text" class="form-control" name="description" value="{{ isset($data['description']) ? $data['description'] : old('description') }}" required>
 			@if ($errors->has('description'))
 				<p class="help-block">
 					<strong>{{ $errors->first('description') }}</strong>
@@ -61,7 +61,7 @@
 		    </div>
 		    <div class="form-group{{ $errors->has('fax') ? ' has-error' : '' }}">
 			<label>傳真號碼</label>
-			<input id="fax" type="text" pattern="\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" name="fax" value="{{ isset($data) && array_key_exists('facsimileTelephoneNumber', $data) ? $data['facsimileTelephoneNumber'] : old('fax') }}" placeholder="格式如右：(02)23456789">
+			<input id="fax" type="text" pattern="\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" name="fax" value="{{ isset($data['facsimileTelephoneNumber']) ? $data['facsimileTelephoneNumber'] : old('fax') }}" placeholder="格式如右：(02)23456789">
 			@if ($errors->has('fax'))
 				<p class="help-block">
 					<strong>{{ $errors->first('fax') }}</strong>
@@ -70,7 +70,7 @@
 		    </div>
 		    <div class="form-group{{ $errors->has('telephoneNumber') ? ' has-error' : '' }}">
 			<label>電話代表號</label>
-			<input id="telephoneNumber" type="text" pattern="\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" name="telephoneNumber" value="{{ isset($data) && array_key_exists('telephoneNumber', $data) ? $data['telephoneNumber'] : old('telephoneNumber') }}" placeholder="格式如右：(02)23456789">
+			<input id="telephoneNumber" type="text" pattern="\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" name="telephoneNumber" value="{{ isset($data['telephoneNumber']) ? $data['telephoneNumber'] : old('telephoneNumber') }}" placeholder="格式如右：(02)23456789">
 			@if ($errors->has('telephoneNumber'))
 				<p class="help-block">
 					<strong>{{ $errors->first('telephoneNumber') }}</strong>
@@ -79,7 +79,7 @@
 		    </div>
 		    <div class="form-group{{ $errors->has('postalCode') ? ' has-error' : '' }}">
 			<label>郵遞區號</label>
-			<input id="postalCode" type="text" class="form-control" name="postalCode" value="{{ isset($data) && array_key_exists('postalCode', $data) ? $data['postalCode'] : old('postalCode') }}">
+			<input id="postalCode" type="text" class="form-control" name="postalCode" value="{{ isset($data['postalCode']) ? $data['postalCode'] : old('postalCode') }}">
 			@if ($errors->has('postalCode'))
 				<p class="help-block">
 					<strong>{{ $errors->first('postalCode') }}</strong>
@@ -88,7 +88,7 @@
 		    </div>
 		    <div class="form-group{{ $errors->has('street') ? ' has-error' : '' }}">
 			<label>地址</label>
-			<input id="street" type="text" class="form-control" name="street" value="{{ isset($data) && array_key_exists('street', $data) ? $data['street'] : old('street') }}">
+			<input id="street" type="text" class="form-control" name="street" value="{{ isset($data['street']) ? $data['street'] : old('street') }}">
 			@if ($errors->has('street'))
 				<p class="help-block">
 					<strong>{{ $errors->first('street') }}</strong>
@@ -97,7 +97,7 @@
 		    </div>
 		    <div class="form-group{{ $errors->has('postOfficeBox') ? ' has-error' : '' }}">
 			<label>聯絡箱</label>
-			<input id="postOfficeBox" type="text" class="form-control" name="postOfficeBox" value="{{ isset($data) && array_key_exists('postOfficeBox', $data) ? $data['postOfficeBox'] : old('postOfficeBox') }}" placeholder="請輸入教育局聯絡箱編號">
+			<input id="postOfficeBox" type="text" class="form-control" name="postOfficeBox" value="{{ isset($data['postOfficeBox']) ? $data['postOfficeBox'] : old('postOfficeBox') }}" placeholder="請輸入教育局聯絡箱編號">
 			@if ($errors->has('postOfficeBox'))
 				<p class="help-block">
 					<strong>{{ $errors->first('postOfficeBox') }}</strong>
@@ -106,16 +106,24 @@
 		    </div>
 		    <div class="form-group{{ $errors->has('wWWHomePage') ? ' has-error' : '' }}">
 			<label>官方網址</label>
-			<input id="wWWHomePage" type="text" class="form-control" name="wWWHomePage" value="{{ isset($data) && array_key_exists('wWWHomePage', $data) ? $data['wWWHomePage'] : old('wWWHomePage') }}">
+			<input id="wWWHomePage" type="text" class="form-control" name="wWWHomePage" value="{{ isset($data['wWWHomePage']) ? $data['wWWHomePage'] : old('wWWHomePage') }}">
 			@if ($errors->has('wWWHomePage'))
 				<p class="help-block">
 					<strong>{{ $errors->first('wWWHomePage') }}</strong>
 				</p>
 			@endif
 		    </div>
+		    <div class="form-group{{ $errors->has('tpSims') ? ' has-error' : '' }}">
+			<label>校務行政系統</label>
+			<select id="tpSims" class="form-control" name="tpSims">
+			@foreach ($sims as $sys_id => $sys_name)
+				<option value="{{ $sys_id }}"{{ isset($data['tpSims']) && $data['tpSims'] == $sys_id ? ' selected' : '' }}>{{ $sys_name }}</option>
+			@endforeach
+		    </select>
+			</div>
 		    <div class="form-group{{ $errors->has('tpUniformNumbers') ? ' has-error' : '' }}">
 			<label>機構統一編號</label>
-			<input id="tpUniformNumbers" type="text" class="form-control" name="tpUniformNumbers" value="{{ isset($data) && array_key_exists('tpUniformNumbers', $data) ? $data['tpUniformNumbers'] : old('tpUniformNumbers') }}" placeholder="請輸入學校會計統一編號" required>
+			<input id="tpUniformNumbers" type="text" class="form-control" name="tpUniformNumbers" value="{{ isset($data['tpUniformNumbers']) ? $data['tpUniformNumbers'] : old('tpUniformNumbers') }}" placeholder="請輸入學校會計統一編號" required>
 			@if ($errors->has('tpUniformNumbers'))
 				<p class="help-block">
 					<strong>{{ $errors->first('tpUniformNumbers') }}</strong>
@@ -124,7 +132,7 @@
 		    </div>
 		    <div class="form-group{{ $errors->has('tpIpv4') ? ' has-error' : '' }}">
 			<label>IPv4 網段</label>
-			<input id="tpIpv4" type="text" class="form-control" name="tpIpv4" value="{{ isset($data) && array_key_exists('tpIpv4', $data) ? $data['tpIpv4'] : old('tpIpv4') }}" placeholder="請輸入網路編號及子網路遮罩，例如：163.21.249.0/24">
+			<input id="tpIpv4" type="text" class="form-control" name="tpIpv4" value="{{ isset($data['tpIpv4']) ? $data['tpIpv4'] : old('tpIpv4') }}" placeholder="請輸入網路編號及子網路遮罩，例如：163.21.249.0/24">
 			@if ($errors->has('tpIpv4'))
 				<p class="help-block">
 					<strong>{{ $errors->first('tpIpv4') }}</strong>
@@ -133,7 +141,7 @@
 		    </div>
 		    <div class="form-group{{ $errors->has('tpIpv6') ? ' has-error' : '' }}">
 			<label>IPv6 網段</label>
-			<input id="tpIpv6" type="text" class="form-control" name="tpIpv6" value="{{ isset($data) && array_key_exists('tpIpv6', $data) ? $data['tpIpv6'] : old('tpIpv6') }}" placeholder="請輸入網路編號及子網路遮罩，例如：2001:288:1200::/48">
+			<input id="tpIpv6" type="text" class="form-control" name="tpIpv6" value="{{ isset($data['tpIpv6']) ? $data['tpIpv6'] : old('tpIpv6') }}" placeholder="請輸入網路編號及子網路遮罩，例如：2001:288:1200::/48">
 			@if ($errors->has('tpIpv6'))
 				<p class="help-block">
 					<strong>{{ $errors->first('tpIpv6') }}</strong>

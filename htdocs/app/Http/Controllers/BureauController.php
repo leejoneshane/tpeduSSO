@@ -994,15 +994,16 @@ class BureauController extends Controller
 
     public function bureauOrgEditForm(Request $request, $dc = '')
     {
+		$sims = [ 'alle' => '全誼', 'oneplus' => '巨耀' ];
 		$category = [ '幼兒園', '國民小學', '國民中學', '高中', '高職', '大專院校', '特殊教育', '主管機關' ];
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 		$openldap = new LdapServiceProvider();
 		if (!empty($dc)) {
 			$entry = $openldap->getOrgEntry($dc);
 			$data = $openldap->getOrgData($entry);
-			return view('admin.bureauorgedit', [ 'data' => $data, 'areas' => $areas, 'category' => $category ]);
+			return view('admin.bureauorgedit', [ 'data' => $data, 'areas' => $areas, 'category' => $category, 'sims' => $sims ]);
 		} else {
-			return view('admin.bureauorgedit', [ 'areas' => $areas, 'category' => $category ]);
+			return view('admin.bureauorgedit', [ 'areas' => $areas, 'category' => $category, 'sims' => $sims ]);
 		}
     }
 

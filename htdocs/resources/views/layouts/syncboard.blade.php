@@ -11,6 +11,9 @@
                                 <li {{ (Request::is('sync/ps/runtime_test') ? 'class="active"' : '') }}>
                                     <a href="{{ route('sync.ps.runtime_test') }}">連線測試</a>
                                 </li>
+                                <li {{ (Request::is('sync/ps/sync_school') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('sync.ps.sync_school') }}">同步學校</a>
+                                </li>
                                 <li {{ (Request::is('sync/ps/sync_class') ? 'class="active"' : '') }}>
                                     <a href="{{ route('sync.ps.sync_class') }}">同步班級</a>
                                 </li>
@@ -30,6 +33,9 @@
                             <ul class="nav nav-second-level">
                                 <li {{ (Request::is('sync/js/runtime_test') ? 'class="active"' : '') }}>
                                     <a href="{{ route('sync.js.runtime_test') }}">連線測試</a>
+                                </li>
+                                <li {{ (Request::is('sync/js/sync_school') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('sync.js.sync_school') }}">同步學校</a>
                                 </li>
                                 <li {{ (Request::is('sync/js/sync_class') ? 'class="active"' : '') }}>
                                     <a href="{{ route('sync.js.sync_class') }}">同步班級</a>
