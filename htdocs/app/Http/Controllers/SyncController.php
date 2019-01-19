@@ -672,7 +672,75 @@ class SyncController extends Controller
 			foreach ($org_teachers as $tea) {
 				if (!in_array($tea['cn'], $teachers)) {
 					$user_entry = $openldap->getUserEntry($tea['cn']);
-					$openldap->UpdateData($user_entry, [ 'inetUserStatus' => 'deleted' ]);
+					$original = $openldap->getUserData($user_entry);
+					$os = $orgs = array();
+					if (isset($original['o'])) {
+						if (is_array($original['o'])) {
+							$os = $original['o'];
+						} else {
+							$os[] = $original['o'];
+						}
+						foreach ($os as $o) {
+							if ($o != $dc) $orgs[] = $o;
+						}
+					}
+					$ous = $units = array();
+					if (isset($original['ou'])) {
+						if (is_array($original['ou'])) {
+							$ous = $original['ou'];
+						} else {
+							$ous[] = $original['ou'];
+						}
+						foreach ($ous as $ou_pair) {
+							$a = explode(',', $ou_pair);
+							if (count($a) == 2 && $a[0] != $dc) $units[] = $ou_pair;
+						}
+					}
+					$titles = $roles = array();
+					if (isset($original['title'])) {
+						if (is_array($original['title'])) {
+							$titles = $original['title'];
+						} else {
+							$titles[] = $original['title'];
+						}
+						foreach ($titles as $title_pair) {
+							$a = explode(',', $title_pair);
+							if (count($a) == 3 && $a[0] != $dc) $roles[] = $title_pair;
+						}
+					}
+					$tclass = $assign = array();
+					if (isset($original['tpTeachClass'])) {
+						if (is_array($original['tpTeachClass'])) {
+							$tclass = $original['tpTeachClass'];
+						} else {
+							$tclass[] = $original['tpTeachClass'];
+						}
+						foreach ($tclass as $pair) {
+							$a = explode(',', $pair);
+							if (count($a) == 3 && $a[0] != $dc) $assign[] = $pair;
+						}
+					}
+					$educloud = array();
+					if (isset($original['info'])) {
+						if (is_array($original['info'])) {
+							$educloud = $original['info'];
+						} else {
+							$educloud[] = $original['info'];
+						}
+						foreach ($educloud as $k => $c) {
+							$i = (array) json_decode($c, true);
+							if ($i['sid'] == $sid) unset($educloud[$k]);
+						}
+					}
+					$info = array();
+					$info['o'] = $orgs;
+					$info['ou'] = $units;
+					$info['title'] = $roles;
+					$info['tpTeachClass'] = $assign;
+					$info['info'] = $educloud;
+					$info['tpTutorClass'] = [];
+					if (empty($orgs)) $info['inetUserStatus'] = 'deleted';
+					$openldap->UpdateData($user_entry, $info);
 				}
 			}
 		}
@@ -959,7 +1027,75 @@ class SyncController extends Controller
 			foreach ($org_teachers as $tea) {
 				if (!isset($tea['employeeNumber']) || empty($tea['employeeNumber']) || !in_array($tea['employeeNumber'], $teachers)) {
 					$user_entry = $openldap->getUserEntry($tea['cn']);
-					$openldap->UpdateData($user_entry, [ 'inetUserStatus' => 'deleted' ]);
+					$original = $openldap->getUserData($user_entry);
+					$os = $orgs = array();
+					if (isset($original['o'])) {
+						if (is_array($original['o'])) {
+							$os = $original['o'];
+						} else {
+							$os[] = $original['o'];
+						}
+						foreach ($os as $o) {
+							if ($o != $dc) $orgs[] = $o;
+						}
+					}
+					$ous = $units = array();
+					if (isset($original['ou'])) {
+						if (is_array($original['ou'])) {
+							$ous = $original['ou'];
+						} else {
+							$ous[] = $original['ou'];
+						}
+						foreach ($ous as $ou_pair) {
+							$a = explode(',', $ou_pair);
+							if (count($a) == 2 && $a[0] != $dc) $units[] = $ou_pair;
+						}
+					}
+					$titles = $roles = array();
+					if (isset($original['title'])) {
+						if (is_array($original['title'])) {
+							$titles = $original['title'];
+						} else {
+							$titles[] = $original['title'];
+						}
+						foreach ($titles as $title_pair) {
+							$a = explode(',', $title_pair);
+							if (count($a) == 3 && $a[0] != $dc) $roles[] = $title_pair;
+						}
+					}
+					$tclass = $assign = array();
+					if (isset($original['tpTeachClass'])) {
+						if (is_array($original['tpTeachClass'])) {
+							$tclass = $original['tpTeachClass'];
+						} else {
+							$tclass[] = $original['tpTeachClass'];
+						}
+						foreach ($tclass as $pair) {
+							$a = explode(',', $pair);
+							if (count($a) == 3 && $a[0] != $dc) $assign[] = $pair;
+						}
+					}
+					$educloud = array();
+					if (isset($original['info'])) {
+						if (is_array($original['info'])) {
+							$educloud = $original['info'];
+						} else {
+							$educloud[] = $original['info'];
+						}
+						foreach ($educloud as $k => $c) {
+							$i = (array) json_decode($c, true);
+							if ($i['sid'] == $sid) unset($educloud[$k]);
+						}
+					}
+					$info = array();
+					$info['o'] = $orgs;
+					$info['ou'] = $units;
+					$info['title'] = $roles;
+					$info['tpTeachClass'] = $assign;
+					$info['info'] = $educloud;
+					$info['tpTutorClass'] = [];
+					if (empty($orgs)) $info['inetUserStatus'] = 'deleted';
+					$openldap->UpdateData($user_entry, $info);
 				}
 			}
 		}
