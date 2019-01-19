@@ -43,7 +43,12 @@
 		</form>
 	</div>
 	@else
-		<form id="sync" role="form" method="POST" action="{{ route('sync.ps.sync_student') }}">
+	@if ($sims == 'alle')
+	<form role="form" method="POST" action="{{ route('sync.ps.sync_student') }}">
+	@endif
+	@if ($sims == 'oneplus')
+	<form role="form" method="POST" action="{{ route('sync.js.sync_student') }}">
+	@endif
 		@csrf
 		<input type="hidden" name="dc" value="{{ $dc }}">
 		<input type="hidden" name="clsid" value="{{ $clsid }}">
