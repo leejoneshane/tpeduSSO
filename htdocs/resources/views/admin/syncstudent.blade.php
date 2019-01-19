@@ -44,10 +44,10 @@
 	</div>
 	@else
 	@if ($sims == 'alle')
-	<form role="form" method="POST" action="{{ route('sync.ps.sync_student') }}">
+	<form id="sync" role="form" method="POST" action="{{ route('sync.ps.sync_student') }}">
 	@endif
 	@if ($sims == 'oneplus')
-	<form role="form" method="POST" action="{{ route('sync.js.sync_student') }}">
+	<form id="sync" role="form" method="POST" action="{{ route('sync.js.sync_student') }}">
 	@endif
 		@csrf
 		<input type="hidden" name="dc" value="{{ $dc }}">
