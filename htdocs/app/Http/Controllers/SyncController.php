@@ -155,16 +155,16 @@ class SyncController extends Controller
 		if ($schools) {
 			foreach ($schools as $sch) {
 				$sid = $sch->tpUniformNumbers;
-				$data = $http->js_call('school_info', $sid);
-				if ($data) {
+				$data = $http->js_call('school_info', [ 'sid' => $sid ]);
+				if (isset($data['name'])) {
 					$entry = $openldap->getOrgEntry($sch->o);
 					$info = array();
 					$info['tpSims'] = 'oneplus';
-					$info['businessCategory'] = $data['type'];
 					$info['description'] = $data['name'];
-					$info['telephoneNumber'] = $data['tel'];
-					$info['postalCode'] = $data['postal'];
-					$info['street'] = $data['address'];
+					if (isset($data['type'])) $info['businessCategory'] = $data['type'];
+					if (isset($data['tel']))$info['telephoneNumber'] = $data['tel'];
+					if (isset($data['portal'])) $info['postalCode'] = $data['postal'];
+					if (isset($data['address'])) $info['street'] = $data['address'];
 					$result = $openldap->updateData($entry, $info);
 					if ($result) {
 						$messages[] = "dc=" . $sch->o . ",name=" . $data['name'] . " 資料更新完成！";
@@ -190,14 +190,14 @@ class SyncController extends Controller
 		if ($schools) {
 			foreach ($schools as $sch) {
 				$sid = $sch->tpUniformNumbers;
-				$data = $http->ps_call('school_info', $sid);
-				if ($data) {
+				$data = $http->ps_call('school_info', [ 'sid' => $sid ]);
+				if (isset($data['name'])) {
 					$entry = $openldap->getOrgEntry($sch->o);
 					$info = array();
 					$info['tpSims'] = 'alle';
 					$info['description'] = $data['name'];
-					$info['street'] = $data['address'];
-					$info['telephoneNumber'] = '(' . str_replace('-', ')', $data['telephone']);
+					if (isset($data['address'])) $info['street'] = $data['address'];
+					if (isset($data['telephone'])) $info['telephoneNumber'] = '(' . str_replace('-', ')', $data['telephone']);
 					$result = $openldap->updateData($entry, $info);
 					if ($result) {
 						$messages[] = "dc=" . $sch->o . ",name=" . $data['name'] . " 資料更新完成！";
