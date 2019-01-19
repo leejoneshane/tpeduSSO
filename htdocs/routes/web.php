@@ -61,6 +61,14 @@ Route::group(['prefix' => 'sync', 'middleware' => 'auth.admin'], function () {
     Route::post('ps/sync_student', 'SyncController@ps_syncStudentForm')->name('sync.ps.sync_student');
     Route::get('js/runtime_test', 'SyncController@js_testForm');
     Route::post('js/runtime_test', 'SyncController@js_testForm')->name('sync.js.runtime_test');
+    Route::get('js/sync_class', 'SyncController@js_syncClassForm');
+    Route::post('js/sync_class', 'SyncController@js_syncClassForm')->name('sync.js.sync_class');
+    Route::get('js/sync_subject', 'SyncController@js_syncSubjectForm');
+    Route::post('js/sync_subject', 'SyncController@js_syncSubjectForm')->name('sync.js.sync_subject');
+	Route::get('js/sync_teacher', 'SyncController@js_syncTeacherForm');
+    Route::post('js/sync_teacher', 'SyncController@js_syncTeacherForm')->name('sync.js.sync_teacher');
+    Route::get('js/sync_student', 'SyncController@js_syncStudentForm');
+    Route::post('js/sync_student', 'SyncController@js_syncStudentForm')->name('sync.js.sync_student');
 });
 
 Route::group(['prefix' => 'bureau', 'middleware' => 'auth.admin'], function () {
@@ -118,6 +126,8 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
 	Route::post('{dc}/subject/{subject}/remove', 'SchoolController@removeSchoolSubject')->name('school.removeSubject');
     Route::get('{dc}/ps/sync_subject', 'SyncController@ps_syncSubjectHelp');
     Route::post('{dc}/ps/sync_subject', 'SyncController@ps_syncSubjectHelp')->name('school.ps.sync_subject');
+//    Route::get('{dc}/js/sync_subject', 'SyncController@js_syncSubjectHelp');
+//    Route::post('{dc}/js/sync_subject', 'SyncController@js_syncSubjectHelp')->name('school.js.sync_subject');
 	Route::get('{dc}/class', 'SchoolController@schoolClassForm')->name('school.class');
 	Route::post('{dc}/class', 'SchoolController@createSchoolClass')->name('school.createClass');
 	Route::post('{dc}/class/{ou}/update', 'SchoolController@updateSchoolClass')->name('school.updateClass');
@@ -126,6 +136,8 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
 	Route::post('{dc}/class/assign', 'SchoolController@assignSchoolClass')->name('school.assignClass');
     Route::get('{dc}/ps/sync_class', 'SyncController@ps_syncClassHelp');
     Route::post('{dc}/ps/sync_class', 'SyncController@ps_syncClassHelp')->name('school.ps.sync_class');
+//    Route::get('{dc}/js/sync_class', 'SyncController@js_syncClassHelp');
+//    Route::post('{dc}/js/sync_class', 'SyncController@js_syncClassHelp')->name('school.js.sync_class');
 	Route::get('{dc}/teacher', 'SchoolController@schoolTeacherSearchForm')->name('school.teacher');
 	Route::get('{dc}/teacher/{uuid}/update', 'SchoolController@schoolTeacherEditForm');
 	Route::post('{dc}/teacher/{uuid}/update', 'SchoolController@updateSchoolTeacher')->name('school.updateTeacher');
@@ -135,6 +147,8 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
 	Route::post('{dc}/teacher/json', 'SchoolController@importSchoolTeacher')->name('school.jsonTeacher');
     Route::get('{dc}/ps/sync_teacher', 'SyncController@ps_syncTeacherHelp');
     Route::post('{dc}/ps/sync_teacher', 'SyncController@ps_syncTeacherHelp')->name('school.ps.sync_teacher');
+//    Route::get('{dc}/js/sync_teacher', 'SyncController@js_syncTeacherHelp');
+//    Route::post('{dc}/js/sync_teacher', 'SyncController@js_syncTeacherHelp')->name('school.js.sync_teacher');
 	Route::get('{dc}/student', 'SchoolController@schoolStudentSearchForm')->name('school.student');
 	Route::get('{dc}/student/{uuid}/update', 'SchoolController@schoolStudentEditForm');
 	Route::post('{dc}/student/{uuid}/update', 'SchoolController@updateSchoolStudent')->name('school.updateStudent');
@@ -144,6 +158,8 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
 	Route::post('{dc}/student/json', 'SchoolController@importSchoolStudent')->name('school.jsonStudent');
     Route::get('{dc}/ps/sync_student', 'SyncController@ps_syncStudentHelp');
     Route::post('{dc}/ps/sync_student', 'SyncController@ps_syncStudentHelp')->name('school.ps.sync_student');
+//    Route::get('{dc}/js/sync_student', 'SyncController@js_syncStudentHelp');
+//    Route::post('{dc}/js/sync_student', 'SyncController@js_syncStudentHelp')->name('school.js.sync_student');
 	Route::get('{dc}/roles/{ou_id}', 'Api\schoolController@allRole');
 	Route::get('{dc}/classes/{grade}', 'Api\schoolController@listClasses');
 	Route::get('{dc}/teachers/{ou}', 'Api\schoolController@listTeachers');

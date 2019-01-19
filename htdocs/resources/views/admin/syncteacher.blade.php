@@ -15,7 +15,12 @@
 	    </div>
 	@endif
 	<div class="col-sm-12">
+		@if ($sims == 'alle')
 		<form role="form" method="POST" action="{{ route('sync.ps.sync_teacher') }}">
+		@endif
+		@if ($sims == 'oneplus')
+		<form role="form" method="POST" action="{{ route('sync.js.sync_teacher') }}">
+		@endif
 		@csrf
     	<div class="input-group custom-search-form">
 			<select name="area" class="form-control" style="width: auto" onchange="location='{{ url()->current() }}?area=' + $(this).val();">

@@ -16,7 +16,12 @@
 	@else
 		<p>將從校務行政系統將班級資料同步到 openldap，同步過程中會自動移除已經不存在的班級，並更新班級名稱，同時也會視狀況為您新增班級。</p>
 		<p>同步過程需要時間，直到結果出現為止，請勿關閉瀏覽器或離開此網頁，以避免同步程序被關閉。</p>
+		@if ($category == '國民小學' || $category == '幼兒園')
 		<form role="form" method="POST" action="{{ route('school.ps.sync_class', [ 'dc' => $dc ]) }}">
+		@endif
+		@if ($category == '國民中學' || $category == '高中')
+		<form role="form" method="POST" action="{{ route('school.js.sync_class', [ 'dc' => $dc ]) }}">
+		@endif
 			@csrf
 			<div class="form-group">
 				<button class="btn btn-default" type="submit" name="submit" value="true">

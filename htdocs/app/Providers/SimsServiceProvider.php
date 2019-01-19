@@ -132,8 +132,16 @@ class SimsServiceProvider extends ServiceProvider
     public function js_getUnits($sid)
     {
         if (empty($sid)) return false;
-        $units = $this->js_call('units_info', ["sid" => $sid]);
-		return $units;
+        $units = array();
+        $data = $this->js_call('units_info', ["sid" => $sid]);
+		if ($data) {
+			foreach ($data as $unit) {
+				$units[$unit->ou] = $unit->name;
+			}
+            return $units;
+		} else {
+            return false;
+        }
     }
 
     public function js_getRoles($sid, $unit = '')
@@ -143,12 +151,12 @@ class SimsServiceProvider extends ServiceProvider
         if (empty($unit)) {
             $units = $this->js_getUnits($sid);
         } else {
-            $units[] = $unit;
+            $units[$unit] = $unit;
         }
-        foreach ($units as $u) {
-            $data = $this->js_call('roles_info', [ "sid" => $sid, "ou" => $u ]);
+        foreach ($units as $ou => $name) {
+            $data = $this->js_call('roles_info', [ "sid" => $sid, "ou" => $ou ]);
             usleep(100);
-            if ($data) $roles = array_merge($roles, [ $u => $data ]);
+            if ($data) $roles = array_merge($roles, [ $ou => $data ]);
         }
 		if (!empty($roles)) return $roles;
 		else return false;
