@@ -652,8 +652,8 @@ class SyncController extends Controller
 						$info['sn'] = $name[0];
 						$info['givenName'] = $name[1];
 						$info['displayName'] = $data['name'];
-						$info['gender'] = (int) $data['gender'];
-						$info['birthDate'] = $data['birthdate'];
+						if (isset($data['gender']) && !empty($data['gender'])) $info['gender'] = (int) $data['gender'];
+						if (isset($data['birthdate']) && !empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'];
 						if (isset($data['register']) && !empty($data['register'])) $info['registeredAddress'] = $data['register'];
 						if (isset($data['mail']) && !empty($data['mail'])) $info['mail'] = $data['mail'];
 						$result = $openldap->updateData($user_entry, $info);
@@ -712,8 +712,8 @@ class SyncController extends Controller
 						$info['sn'] = $name[0];
 						$info['givenName'] = $name[1];
 						$info['displayName'] = $data['name'];
-						$info['gender'] = (int) $data['gender'];
-						$info['birthDate'] = $data['birthdate'];
+						if (isset($data['gender']) && !empty($data['gender'])) $info['gender'] = (int) $data['gender'];
+						if (isset($data['birthdate']) && !empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'];
 						if (isset($data['register']) && !empty($data['register'])) $info['registeredAddress'] = $data['register'];
 						if (isset($data['mail']) && !empty($data['mail'])) $info['mail'] = $data['mail'];
 						$result = $openldap->createEntry($info);
@@ -793,11 +793,11 @@ class SyncController extends Controller
 						}
 					}
 					$info = array();
-					$info['o'] = $orgs;
-					$info['ou'] = $units;
-					$info['title'] = $roles;
-					$info['tpTeachClass'] = $assign;
-					$info['info'] = $educloud;
+					$info['o'] = array_values($orgs);
+					$info['ou'] = array_values($units);
+					$info['title'] = array_values($roles);
+					$info['tpTeachClass'] = array_values($assign);
+					$info['info'] = array_values($educloud);;
 					$info['tpTutorClass'] = [];
 					if (empty($orgs)) $info['inetUserStatus'] = 'deleted';
 					$openldap->UpdateData($user_entry, $info);
@@ -1137,11 +1137,11 @@ class SyncController extends Controller
 						}
 					}
 					$info = array();
-					$info['o'] = $orgs;
-					$info['ou'] = $units;
-					$info['title'] = $roles;
-					$info['tpTeachClass'] = $assign;
-					$info['info'] = $educloud;
+					$info['o'] = array_values($orgs);
+					$info['ou'] = array_values($units);
+					$info['title'] = array_values($roles);
+					$info['tpTeachClass'] = array_values($assign);
+					$info['info'] = array_values($educloud);;
 					$info['tpTutorClass'] = [];
 					if (empty($orgs)) $info['inetUserStatus'] = 'deleted';
 					$openldap->UpdateData($user_entry, $info);
