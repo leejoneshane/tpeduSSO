@@ -662,7 +662,7 @@ class LdapServiceProvider extends ServiceProvider
 		$userinfo = array();
 		$this->administrator();
 		$base_dn = Config::get('ldap.userdn');
-		$resource = @ldap_search(self::$ldap_read, $base_dn, $filter, array("*","entryUUID"));
+		$resource = @ldap_search(self::$ldap_read, $base_dn, $filter, array("*","entryUUID","modifyTimestamp"));
 		if ($resource) {
 			$entry = ldap_first_entry(self::$ldap_read, $resource);
 			if ($entry) {
@@ -684,7 +684,7 @@ class LdapServiceProvider extends ServiceProvider
 		} else { //uuid
 	    	$filter = "entryUUID=".$identifier;
 		}
-		$resource = @ldap_search(self::$ldap_read, $base_dn, $filter, array("*","entryUUID"));
+		$resource = @ldap_search(self::$ldap_read, $base_dn, $filter, array("*","entryUUID","modifyTimestamp"));
 		if ($resource) {
 			$entry = ldap_first_entry(self::$ldap_read, $resource);
 			return $entry;
@@ -696,7 +696,8 @@ class LdapServiceProvider extends ServiceProvider
     {
 		$fields = array();
 		if ($attr == '') {
-	    	$fields[] = 'entryUUID';
+			$fields[] = 'entryUUID';
+			$fields[] = 'modifyTimestamp';
 	    	$fields[] = 'cn';
 	    	$fields[] = 'o';
 	    	$fields[] = 'ou';

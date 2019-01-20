@@ -1543,7 +1543,7 @@ class SyncController extends Controller
 
 	public function removeFake() {
 		$openldap = new LdapServiceProvider();
-		$filter = '(cn=*123456789)';
+		$filter = '(|(cn=*123456789)(displayName=*測試*))';
 		$fake = $openldap->findUsers($filter);
 		$messages = array(); 
 		if (!empty($fake)) {
