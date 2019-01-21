@@ -30,7 +30,7 @@
 		    	@endif
 			    <div class="form-group{{ $errors->has('idno') ? ' has-error' : '' }}">
 					<label>身分證字號</label>
-					<input id="idno" type="text" class="form-control" name="idno" value="{{ isset($user) ? $user['cn'] : '' }}" required>
+					<input id="idno" type="text" class="form-control" name="idno" value="{{ isset($user) ? $user['cn'] : '' }}" required readonly>
 					@if ($errors->has('idno'))
 						<p class="help-block">
 							<strong>{{ $errors->first('idno') }}</strong>
