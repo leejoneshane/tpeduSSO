@@ -298,7 +298,7 @@ class SyncController extends Controller
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
-		$filter = "(&(st=$area)(tpSmis=alle))";
+		$filter = "(&(st=$area)(tpSims=alle))";
 		$openldap = new LdapServiceProvider();
 		$schools = $openldap->getOrgs($filter);
 		$dc = $request->get('dc');
