@@ -51,15 +51,15 @@
                                 <li {{ (Request::is('school/teacher') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.teacher', [ 'dc' => $dc ]) }}">瀏覽及搜尋</a>
                                 </li>
-                                <!--li {{ (Request::is('school/teacher/new') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.createTeacher', [ 'dc' => $dc ]) }}">新增教師</a>
-                                </li>
-                                <li-- {{ (Request::is('school/teacher/json') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.jsonTeacher', [ 'dc' => $dc ]) }}">匯入JSON</a>
-                                </li-->
+                                <!--li {{ (Request::is('school/teacher/new') ? 'class="active"' : '') }}-->
+                                    <!--a href="{{ route('school.createTeacher', [ 'dc' => $dc ]) }}">新增教師</a-->
+                                <!--/li-->
+                                <!--li {{ (Request::is('school/teacher/json') ? 'class="active"' : '') }}-->
+                                    <!--a href="{{ route('school.jsonTeacher', [ 'dc' => $dc ]) }}">匯入JSON</a-->
+                                <!--/li-->
                             </ul>
                         </li>
-                        <li {{ (Request::is('school/student') ? 'class="active"' : '') }}>
+                        <li-- {{ (Request::is('school/student') ? 'class="active"' : '') }}>
                             <a href="#"><i class="fa fa-child fa-fw"></i> 學生管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li {{ (Request::is('sync_student') ? 'class="active"' : '') }}>
@@ -68,12 +68,12 @@
                                 <li {{ (Request::is('school/student') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.student', [ 'dc' => $dc ]) }}">瀏覽及搜尋</a>
                                 </li>
-                                <!--li {{ (Request::is('school/student/new') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.createStudent', [ 'dc' => $dc ]) }}">新增學生</a>
-                                </li>
-                                <li-- {{ (Request::is('school/student/json') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.jsonStudent', [ 'dc' => $dc ]) }}">匯入JSON</a>
-                                </li-->
+                                <!--li {{ (Request::is('school/student/new') ? 'class="active"' : '') }}-->
+                                    <!--a href="{{ route('school.createStudent', [ 'dc' => $dc ]) }}">新增學生</a-->
+                                <!--/li-->
+                                <!--li {{ (Request::is('school/student/json') ? 'class="active"' : '') }}-->
+                                    <!--a href="{{ route('school.jsonStudent', [ 'dc' => $dc ]) }}">匯入JSON</a-->
+                                <!--/li-->
                             </ul>
                         </li>
                     </ul>
