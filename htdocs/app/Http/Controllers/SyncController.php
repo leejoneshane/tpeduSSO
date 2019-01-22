@@ -973,8 +973,8 @@ class SyncController extends Controller
 						$info['sn'] = $name[0];
 						$info['givenName'] = $name[1];
 						$info['displayName'] = $data['name'];
-						$info['gender'] = (int) $data['gender'];
-						$info['birthDate'] = $data['birthdate'].'000000Z';
+						if (!empty($data['gender'])) $info['gender'] = (int) $data['gender'];
+						if (!empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'].'000000Z';
 						if (!empty($data['address'])) $info['registeredAddress'] = $data['address'];
 						if (!empty($data['mail'])) $info['mail'] = $data['mail'];
 						if (!empty($data['tel'])) $info['mobile'] = $data['tel'];
@@ -1053,8 +1053,8 @@ class SyncController extends Controller
 						$info['sn'] = $name[0];
 						$info['givenName'] = $name[1];
 						$info['displayName'] = $data['name'];
-						$info['gender'] = (int) $data['gender'];
-						$info['birthDate'] = $data['birthdate'].'000000Z';
+						if (!empty($data['gender'])) $info['gender'] = (int) $data['gender'];
+						if (!empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'].'000000Z';
 						if (!empty($data['address'])) $info['registeredAddress'] = $data['address'];
 						if (!empty($data['mail'])) $info['mail'] = $data['mail'];
 						if (!empty($data['tel'])) $info['mobile'] = $data['tel'];
@@ -1297,8 +1297,8 @@ class SyncController extends Controller
 					$info['sn'] = $name[0];
 					$info['givenName'] = $name[1];
 					$info['displayName'] = $data['name'];
-					$info['gender'] = (int) $data['gender'];
-					$info['birthDate'] = $data['birthdate'];
+					if (isset($data['gender']) && !empty($data['gender'])) $info['gender'] = (int) $data['gender'];
+					if (isset($data['birthdate']) && !empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'];
 					if (isset($data['register']) && !empty($data['register'])) $info['registeredAddress'] = $data['register'];
 					$result = $openldap->updateData($user_entry, $info);
 					if ($result) {
@@ -1347,8 +1347,8 @@ class SyncController extends Controller
 					$info['sn'] = $name[0];
 					$info['givenName'] = $name[1];
 					$info['displayName'] = $data['name'];
-					$info['gender'] = (int) $data['gender'];
-					$info['birthDate'] = $data['birthdate'];
+					if (isset($data['gender']) && !empty($data['gender'])) $info['gender'] = (int) $data['gender'];
+					if (isset($data['birthdate']) && !empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'];
 					if (isset($data['register']) && !empty($data['register'])) $info['registeredAddress'] = $data['register'];
 					$result = $openldap->createEntry($info);
 					if ($result) {
@@ -1512,8 +1512,8 @@ class SyncController extends Controller
 						$info['sn'] = $name[0];
 						$info['givenName'] = $name[1];
 						$info['displayName'] = $data['name'];
-						$info['gender'] = (int) $data['gender'];
-						$info['birthDate'] = $data['birthdate'].'000000Z';
+						if (!empty($data['gender'])) $info['gender'] = (int) $data['gender'];
+						if (!empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'].'000000Z';
 						if (!empty($data['address'])) $info['registeredAddress'] = $data['address'];
 						if (!empty($data['mail'])) $info['mail'] = $data['mail'];
 						if (!empty($data['tel'])) $info['mobile'] = $data['tel'];
