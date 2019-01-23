@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\Http\Middleware\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use App\Providers\LdapServiceProvider;
 
@@ -62,7 +62,13 @@ class LoginController extends Controller
 				return redirect()->back()->with("error","學校管理密碼不正確！");
 	    	}
 		}
-	
+
+        $idno = $openldap->checkAccount($username);
+        if (!$idno) return redirect()->back()->with("error","查無此使用者帳號！");
+        $status = $openldap->checkStatus($idno);
+        if ($status == 'inactive') return redirect()->back()->with("error","很抱歉，您已經被管理員停權！");
+        if ($status == 'deleted') return redirect()->back()->with("error","很抱歉，您已經被管理員刪除！");
+
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
         // the IP address of the client making these requests into this application.

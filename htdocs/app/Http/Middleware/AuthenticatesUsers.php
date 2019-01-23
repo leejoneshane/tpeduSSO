@@ -4,12 +4,17 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\RedirectsUsers;
+use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Validation\ValidationException;
 use App\Http\Middleware\SamlAuth;
 
 trait AuthenticatesUsers
 {
     use RedirectsUsers, ThrottlesLogins, SamlAuth;
+
+    static protected $maxAttempts = 5;
+    static protected $decayMinutes = 60;
 
     /**
      * Show the application's login form.
@@ -120,11 +125,7 @@ trait AuthenticatesUsers
         if (Auth::check() && isset($request['SAMLRequest'])) {
             $this->handleSamlLoginRequest($request);
         }
-//        if ($user->ldap['inetUserStatus'] == 'inactive' || $user->ldap['inetUserStatus'] == 'deleted') {
-//            throw ValidationException::withMessages([
-//                $this->username() => [ '很抱歉，您已經被管理員刪除或停權！' ],
-//            ]);
-//        } 
+
     }
 
     /**

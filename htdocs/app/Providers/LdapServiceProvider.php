@@ -153,6 +153,20 @@ class LdapServiceProvider extends ServiceProvider
         return false;
     }
 
+    public function checkStatus($idno)
+    {
+        if (empty($idno)) return false;
+		$this->administrator();
+		$entry = $openldap->getUserEntry($idno);
+		$data = $openldap->getUserData($entry, 'inetUserStatus');
+		if ($data) {
+			if ($data['inetUserStatus'] == 'inactive') return 'inactive';
+			if ($data['inetUserStatus'] == 'deleted') return 'deleted';
+			return 'active';
+		}
+		return false;
+    }
+
     public function accountAvailable($idno, $account)
     {
         if (empty($idno) || empty($account)) return;

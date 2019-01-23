@@ -12,7 +12,7 @@ class RedirectIfNoEmail
         if (Auth::guard($guard)->check()) {
         	$user = Auth::guard($guard)->user();
             if (empty($user->email)) return redirect()->route('profile');
-            if (!isset($user->ldap['uid'])) return redirect()->route('changeAccount');
+            if (!isset($user->ldap['uid']) || substr($user->uname,-9) == $user->indo) return redirect()->route('changeAccount');
         }
         return $next($request);
     }

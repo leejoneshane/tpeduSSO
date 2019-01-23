@@ -126,7 +126,9 @@ class User extends Authenticatable
 				$entry = $openldap->getUserEntry($id);
 				$data = $openldap->getUserData($entry);
 		        $user = new \App\User();
-		        $user->idno = $id;
+				$user->idno = $id;
+				$accounts = $openldap->getUserAccounts($id);
+				$user->uname = $accounts[0];
 		        $user->name = $data['displayName'];
 				$user->uuid = $data['entryUUID'];
 		        if (isset($data['mail'])) {
