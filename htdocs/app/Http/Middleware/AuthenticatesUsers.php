@@ -13,8 +13,8 @@ trait AuthenticatesUsers
 {
     use RedirectsUsers, ThrottlesLogins, SamlAuth;
 
-    static protected $maxAttempts = 5;
-    static protected $decayMinutes = 60;
+    protected $maxAttempts = 5;
+    protected $decayMinutes = 60;
 
     /**
      * Show the application's login form.
