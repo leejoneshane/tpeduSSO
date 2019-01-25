@@ -220,18 +220,7 @@ class SimsServiceProvider extends ServiceProvider
     public function js_getTeachers($sid, $class = '')
     {
         if (empty($sid)) return false;
-        $teachers = array();
-        if (empty($class)) {
-            $classes = $this->js_getClasses($sid);
-        } else {
-            $classes[$class] = $class;
-        }
-		foreach ($classes as $clsid => $cls_name) {
-			$data = $this->js_call('teachers_in_class', ['sid' => $sid, 'clsid' => $clsid ]);
-            usleep(100);
-            if ($data) $teachers = array_merge($teachers, $data);
-        }
-        $teachers = array_values(array_unique($teachers));
+        $teachers = $this->js_call('teachers_info', ["sid" => $sid]);
         if (!empty($teachers)) return $teachers;
         else return false;
     }
