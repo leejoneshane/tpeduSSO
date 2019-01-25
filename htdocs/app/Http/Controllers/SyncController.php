@@ -6,6 +6,7 @@ use Log;
 use Config;
 use Validator;
 use Auth;
+use App\User;
 use Illuminate\Http\Request;
 use App\Providers\LdapServiceProvider;
 use App\Providers\SimsServiceProvider;
@@ -1589,6 +1590,8 @@ class SyncController extends Controller
 				$user_entry = $openldap->getUserEntry($idno);
 				$openldap->deleteEntry($user_entry);
 				$messages[] = "移除假身份人員紀錄：$name($idno)";
+				$user = User::where('idno', $idno)->first();
+				if ($user) $user->delete();
 			}
 		}
 		return view('admin.syncremovefake', [ 'result' => $messages ]);
@@ -1618,6 +1621,8 @@ class SyncController extends Controller
 				$user_entry = $openldap->getUserEntry($idno);
 				$openldap->deleteEntry($user_entry);
 				$messages[] = "移除標記為已刪除人員紀錄：$name($idno)";
+				$user = User::where('idno', $idno)->first();
+				if ($user) $user->delete();
 			}
 		}
 		return view('admin.syncremovedeleted', [ 'result' => $messages ]);

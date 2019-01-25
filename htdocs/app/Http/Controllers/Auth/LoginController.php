@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Middleware\AuthenticatesUsers;
+use App\Http\Controllers\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use App\Providers\LdapServiceProvider;
 
@@ -68,10 +68,11 @@ class LoginController extends Controller
         $status = $openldap->checkStatus($idno);
         if ($status == 'inactive') return redirect()->back()->with("error","很抱歉，您已經被管理員停權！");
         if ($status == 'deleted') return redirect()->back()->with("error","很抱歉，您已經被管理員刪除！");
-
+        
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
         // the IP address of the client making these requests into this application.
+        $request['idno'] = $idno;
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
             return $this->sendLockoutResponse($request);

@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace App\Http\Controllers\Auth;
 
+use Log;
 use Storage;
 use Illuminate\Http\Request;
 use LightSaml\Model\Protocol\Response as Response;
 use LightSaml\Credential\X509Certificate;
-
-// For debug purposes, include the Log facade
-use Illuminate\Support\Facades\Log;
 
 trait SamlAuth
 {

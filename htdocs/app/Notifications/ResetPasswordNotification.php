@@ -44,9 +44,9 @@ class ResetPasswordNotification extends Notification
      */
     public function toMail($notifiable)
     {
-	if (static::$toMailCallback) {
-	    return call_user_func(static::$toMailCallback, $notifiable, $this->token);
-	}
+	    if (static::$toMailCallback) {
+	        return call_user_func(static::$toMailCallback, $notifiable, $this->token);
+	    }
 
         return (new MailMessage)
                     ->line('因為系統接收到您重設密碼的要求，所以寄這封信件給您！')
@@ -57,6 +57,6 @@ class ResetPasswordNotification extends Notification
 
     public function toMailUsing($callback)
     {
-	static::$toMailCallback = $callback;
+	    static::$toMailCallback = $callback;
     }
 }
