@@ -59,12 +59,12 @@ class SyncController extends Controller
 			case 'units_info':
 			case 'classes_info':
 			case 'subjects_info':
+			case 'teachers_info':
 				$result = $http->js_call($my_field, [ 'sid' => $sid ]);
 				break;
 			case 'roles_info':
 				$result = $http->js_call($my_field, [ 'sid' => $sid, 'ou' => $ou ]);
 				break;
-			case 'teachers_in_class':
 			case 'students_in_class':
 				$result = $http->js_call($my_field, [ 'sid' => $sid, 'clsid' => $clsid ]);
 				break;
