@@ -1,7 +1,7 @@
 @extends('layouts.syncboard')
 
 @section('page_heading')
-國中學程資料連線測試中心
+巨耀校務行政系統資料連線測試中心
 @endsection
 
 @section('section')
