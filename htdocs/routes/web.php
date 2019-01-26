@@ -60,6 +60,8 @@ Route::group(['prefix' => 'sync', 'middleware' => 'auth.admin'], function () {
     Route::post('ps/sync_teacher', 'SyncController@ps_syncTeacherForm')->name('sync.ps.sync_teacher');
     Route::get('ps/sync_student', 'SyncController@ps_syncStudentForm');
     Route::post('ps/sync_student', 'SyncController@ps_syncStudentForm')->name('sync.ps.sync_student');
+    Route::get('ps/auto', 'SyncController@ps_autoSync');
+    Route::post('ps/auto', 'SyncController@ps_autoSync')->name('sync.ps.auto');
     Route::get('js/runtime_test', 'SyncController@js_testForm');
     Route::post('js/runtime_test', 'SyncController@js_testForm')->name('sync.js.runtime_test');
     Route::get('js/sync_school', 'SyncController@js_syncOrg')->name('sync.js.sync_school');
@@ -71,6 +73,8 @@ Route::group(['prefix' => 'sync', 'middleware' => 'auth.admin'], function () {
     Route::post('js/sync_teacher', 'SyncController@js_syncTeacherForm')->name('sync.js.sync_teacher');
     Route::get('js/sync_student', 'SyncController@js_syncStudentForm');
     Route::post('js/sync_student', 'SyncController@js_syncStudentForm')->name('sync.js.sync_student');
+    Route::get('js/auto', 'SyncController@js_autoSync');
+    Route::post('js/auto', 'SyncController@js_autoSync')->name('sync.js.auto');
     Route::get('fix/remove_fake', 'SyncController@removeFake')->name('sync.remove_fake');
     Route::get('fix/remove_deleted', 'SyncController@removeDeleted')->name('sync.remove_deleted');
 });

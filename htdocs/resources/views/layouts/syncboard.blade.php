@@ -26,6 +26,9 @@
                                 <li {{ (Request::is('sync/ps/sync_student') ? 'class="active"' : '') }}>
                                     <a href="{{ route('sync.ps.sync_student') }}">同步學生</a>
                                 </li>
+                                <li {{ (Request::is('sync/ps/auto') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('sync.ps.auto') }}">自動同步</a>
+                                </li>
                             </ul>
                         </li>
                         <li {{ (Request::is('sync/js') ? 'class="active"' : '') }}>
@@ -48,6 +51,9 @@
                                 </li>
                                 <li {{ (Request::is('sync/js/sync_student') ? 'class="active"' : '') }}>
                                     <a href="{{ route('sync.js.sync_student') }}">同步學生</a>
+                                </li>
+                                <li {{ (Request::is('sync/js/auto') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('sync.js.auto') }}">自動同步</a>
                                 </li>
                             </ul>
                         </li>

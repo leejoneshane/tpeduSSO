@@ -13,6 +13,8 @@ use App\Providers\SimsServiceProvider;
 use App\Rules\idno;
 use App\Rules\ipv4cidr;
 use App\Rules\ipv6cidr;
+use App\Jobs\SyncAlle;
+use App\Jobs\SyncOneplus;
 
 class SyncController extends Controller
 {
@@ -1566,6 +1568,22 @@ class SyncController extends Controller
 		return $messages;
 	}
 
+	public function js_autoSync(Request $request)
+    {
+		if ($request->get('submit')) {
+			dispatch(new SyncOneplus);
+		}
+		return view('admin.synconeplus', [ 'result' => '批次同步工作已經啟動！' ]);
+	}
+	
+	public function ps_autoSync(Request $request)
+    {
+		if ($request->get('submit')) {
+			dispatch(new SyncAlle);
+		}
+		return view('admin.syncalle', [ 'result' => '批次同步工作已經啟動！' ]);
+	}
+	
 	public function removeFake() {
 		$openldap = new LdapServiceProvider();
 		$filter = '(|(cn=*123456789)(displayName=*測試*))';
