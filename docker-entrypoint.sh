@@ -24,7 +24,7 @@ php artisan clear
 php artisan cache:clear
 php artisan view:cache
 php artisan route:cache
-php artisan queue:work
+exec php artisan queue:work &
 
 rm -f /run/apache2/httpd.pid
 exec httpd -DFOREGROUND
