@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Middleware\SamlAuth;
+use App\Http\Controllers\Auth\SamlAuth;
 
 class RedirectIfAuthenticated
 {
