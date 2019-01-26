@@ -21,15 +21,16 @@ class SyncOneplus implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $tries = 5;
+    private $dc = '';
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($dc = '')
     {
-        //
+        if (!empty($dc)) self::$dc = $dc;
     }
 
     /**
@@ -40,13 +41,15 @@ class SyncOneplus implements ShouldQueue
      */
     public function handle($dc = '')
     {
-		$filter = "(tpSims=oneplus)";
+        $filter = "(tpSims=oneplus)";
+        if (!empty(self::$dc)) $dc=self::$dc;
         if (empty($dc)) {
             $schools = $openldap->getOrgs($filter);
-            foreach ($schools as $school) {
-                $dc = $school['o'];
-                SyncOneplus::dispatch($dc);
-            }
+            if ($schools)
+                foreach ($schools as $school) {
+                    $dc = $school['o'];
+                    SyncOneplus::dispatch($dc);
+                }
         } else {
             $openldap = new LdapServiceProvider();
             $http = new SimsServiceProvider();
