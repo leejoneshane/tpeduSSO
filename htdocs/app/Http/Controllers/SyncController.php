@@ -1572,16 +1572,18 @@ class SyncController extends Controller
     {
 		if ($request->get('submit')) {
 			dispatch(new SyncOneplus);
+			return view('admin.synconeplus', [ 'result' => array('批次同步工作已經啟動！') ]);
 		}
-		return view('admin.synconeplus', [ 'result' => '批次同步工作已經啟動！' ]);
+		return view('admin.synconeplus');
 	}
 	
 	public function ps_autoSync(Request $request)
     {
 		if ($request->get('submit')) {
 			dispatch(new SyncAlle);
+			return view('admin.syncalle', [ 'result' => array('批次同步工作已經啟動！') ]);
 		}
-		return view('admin.syncalle', [ 'result' => '批次同步工作已經啟動！' ]);
+		return view('admin.syncalle');
 	}
 	
 	public function removeFake() {
