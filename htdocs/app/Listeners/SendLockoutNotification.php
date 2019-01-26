@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use Notification;
 use App\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Queue\InteractsWithQueue;

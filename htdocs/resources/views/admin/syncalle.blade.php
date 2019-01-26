@@ -7,7 +7,7 @@
 @section('section')
 <div class="container">
 	<div class="row">
-	@if ($result)
+	@if (isset($result))
 		<div class="alert alert-info">
 			@foreach ($result as $line)
 				{{ $line }}<br>
