@@ -681,7 +681,7 @@ class SyncController extends Controller
 						$acc_entry = $openldap->getAccountEntry($account["uid"]);
 						if ($acc_entry) {
 							unset($account['dn']);
-							$result = $openldap->UpdateData($acc_entry, $account);
+							$result = $openldap->updateData($acc_entry, $account);
 							if (!$result) {
 								$messages[] = "cn=". $idno .",name=". $data['name'] . "因為預設帳號無法更新，教師新增失敗！".$openldap->error();
 								continue;
@@ -812,8 +812,13 @@ class SyncController extends Controller
 					$info['tpTeachClass'] = array_values($assign);
 					$info['info'] = array_values($educloud);;
 					$info['tpTutorClass'] = [];
-					if (empty($orgs)) $info['inetUserStatus'] = 'deleted';
-					$openldap->UpdateData($user_entry, $info);
+					if (empty($orgs)) {
+						$openldap->deleteData($user_entry, $info);
+						$info['inetUserStatus'] = 'deleted';
+						$openldap->updateData($user_entry, $info);
+					} else {
+						$openldap->updateData($user_entry, $info);
+					}
 				}
 			}
 		}
@@ -1010,7 +1015,7 @@ class SyncController extends Controller
 						$acc_entry = $openldap->getAccountEntry($account["uid"]);
 						if ($acc_entry) {
 							unset($account['dn']);
-							$result = $openldap->UpdateData($acc_entry, $account);
+							$result = $openldap->updateData($acc_entry, $account);
 							if (!$result) {
 								$messages[] = "cn=". $idno .",teaid=". $teaid .",name=". $data['name'] . "因為預設帳號無法更新，教師新增失敗！".$openldap->error();
 								continue;
@@ -1156,8 +1161,13 @@ class SyncController extends Controller
 					$info['tpTeachClass'] = array_values($assign);
 					$info['info'] = array_values($educloud);;
 					$info['tpTutorClass'] = [];
-					if (empty($orgs)) $info['inetUserStatus'] = 'deleted';
-					$openldap->UpdateData($user_entry, $info);
+					if (empty($orgs)) {
+						$openldap->deleteData($user_entry, $info);
+						$info['inetUserStatus'] = 'deleted';
+						$openldap->updateData($user_entry, $info);
+					} else {
+						$openldap->updateData($user_entry, $info);
+					}
 				}
 			}
 		}
@@ -1338,7 +1348,7 @@ class SyncController extends Controller
 					$acc_entry = $openldap->getAccountEntry($account["uid"]);
 					if ($acc_entry) {
 						unset($account['dn']);
-						$result = $openldap->UpdateData($acc_entry, $account);
+						$result = $openldap->updateData($acc_entry, $account);
 						if (!$result) {
 							$messages[] = "cn=". $idno .",stdno=". $data['stdno'] .",name=". $data['name'] . "因為預設帳號無法更新，學生新增失敗！".$openldap->error();
 							continue;
@@ -1390,7 +1400,7 @@ class SyncController extends Controller
 			foreach ($org_students as $stu) {
 				if (!in_array($stu['cn'], $students)) {
 					$user_entry = $openldap->getUserEntry($stu['cn']);
-					$openldap->UpdateData($user_entry, [ 'inetUserStatus' => 'deleted' ]);
+					$openldap->updateData($user_entry, [ 'inetUserStatus' => 'deleted' ]);
 				}
 			}
 		}
@@ -1509,7 +1519,7 @@ class SyncController extends Controller
 						$acc_entry = $openldap->getAccountEntry($account["uid"]);
 						if ($acc_entry) {
 							unset($account['dn']);
-							$result = $openldap->UpdateData($acc_entry, $account);
+							$result = $openldap->updateData($acc_entry, $account);
 							if (!$result) {
 								$messages[] = "cn=". $idno .",stdno=". $stdno .",name=". $data['name'] . "因為預設帳號無法更新，學生新增失敗！".$openldap->error();
 								continue;
@@ -1560,7 +1570,7 @@ class SyncController extends Controller
 			foreach ($org_students as $stu) {
 				if (!isset($stu['employeeNumber']) || empty($stu['employeeNumber']) || !in_array($stu['employeeNumber'], $students)) {
 					$user_entry = $openldap->getUserEntry($stu['cn']);
-					$openldap->UpdateData($user_entry, [ 'inetUserStatus' => 'deleted' ]);
+					$openldap->updateData($user_entry, [ 'inetUserStatus' => 'deleted' ]);
 				}
 			}
 		}
