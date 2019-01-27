@@ -95,7 +95,7 @@
 							</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<span>{{ $user['employeeType'] }}</span>
+							<span>{{ array_key_exists('employeeType', $user) ? $user['employeeType'] : '' }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
 							<button type="button" class="btn btn-primary"
