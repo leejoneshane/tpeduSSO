@@ -7,6 +7,8 @@ use Config;
 use Illuminate\Http\Request;
 use App\Providers\LdapServiceProvider;
 use App\Rules\idno;
+use App\Notifications\AccountChangeNotification;
+use App\Notifications\PasswordChangeNotification;
 
 class HomeController extends Controller
 {
@@ -80,30 +82,34 @@ class HomeController extends Controller
     public function changeAccount(Request $request)
     {
 		$user = Auth::user();
+		$old = $request->get('current-account');
+		$new = $request->get('new-account');
 		$openldap = new LdapServiceProvider();
 		$accounts = $openldap->getUserAccounts($user->idno);
 		$match = false;
 		foreach ($accounts as $account) {
-    		if ($request->get('current-account') == $account) $match = true;
+    		if ($old == $account) $match = true;
 		}
 		if (empty($accounts)) $match = true;
 		if (!$match) return back()->withInput()->with("error","您輸入的帳號不正確，請您重新輸入一次！");
 
-		if(strcmp($request->get('current-account'), $request->get('new-account')) == 0)
+		if(strcmp($old, $new) == 0)
 	    	return back()->withInput()->with("error","新帳號不可以跟舊的帳號相同，請重新想一個新帳號再試一次！");
 		$validatedData = $request->validate([
 			'new-account' => 'required|string|min:6|confirmed',
 		]);
-		if (!$openldap->accountAvailable($user->idno, $request->get('new-account')))
+		if (!$openldap->accountAvailable($user->idno, $new))
 			return back()->withInput()->with("error","您輸入的帳號已經被別人使用，請您重新輸入一次！");
 		$entry = $openldap->getUserEntry($user->idno);
 		if (empty($accounts)) {
-			$openldap->addAccount($entry, $request->get('new-account'), "自建帳號");
+			$openldap->addAccount($entry, $new, "自建帳號");
 			Auth::logout();
+			$user->notify(new AccountChangeNotification($new));
 			return back()->withInput()->with("success","帳號建立成功！");
 		} else {
-			$openldap->renameAccount($entry, $request->get('current-account'), $request->get('new-account'));
+			$openldap->renameAccount($entry, $old, $new);
 			Auth::logout();
+			$user->notify(new AccountChangeNotification($new));
 			return back()->withInput()->with("success","帳號變更成功！");
 		}
     }
@@ -129,6 +135,7 @@ class HomeController extends Controller
 		$user->password = \Hash::make($pwd);
 		$user->save();
 		Auth::logout();
+		$user->notify(new PasswordChangeNotification($pwd));
 		return back()->withInput()->with("success","密碼變更成功！");
     }
 
