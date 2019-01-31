@@ -42,7 +42,7 @@ return [
         'debug' => true,
         'oauth_id' => env('JS_CLIENT_ID'),
         'oauth_secret' => env('JS_CLIENT_SECRET'),
-        'base_uri' => 'https://ap2.mwdb.tp.edu.tw/',
+        'base_uri' => env('JS_APISERVER'),
         'schools_info' => 'school/all',
         'school_info' => 'school/{sid}',
         'teachers_info' => 'school/{sid}/teachers',
