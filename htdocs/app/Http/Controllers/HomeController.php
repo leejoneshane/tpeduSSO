@@ -99,9 +99,11 @@ class HomeController extends Controller
 		$entry = $openldap->getUserEntry($user->idno);
 		if (empty($accounts)) {
 			$openldap->addAccount($entry, $request->get('new-account'), "自建帳號");
+			Auth::logout();
 			return back()->withInput()->with("success","帳號建立成功！");
 		} else {
 			$openldap->renameAccount($entry, $request->get('current-account'), $request->get('new-account'));
+			Auth::logout();
 			return back()->withInput()->with("success","帳號變更成功！");
 		}
     }
@@ -126,6 +128,7 @@ class HomeController extends Controller
 		$user->resetLdapPassword($pwd);
 		$user->password = \Hash::make($pwd);
 		$user->save();
+		Auth::logout();
 		return back()->withInput()->with("success","密碼變更成功！");
     }
 
