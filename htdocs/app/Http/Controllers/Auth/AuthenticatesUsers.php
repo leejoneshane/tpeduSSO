@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\Auth\SamlAuth;
+use App\Providers\LdapServiceProvider;
 
 trait AuthenticatesUsers
 {
@@ -38,24 +39,42 @@ trait AuthenticatesUsers
     {
         $this->validateLogin($request);
 
+        $openldap = new LdapServiceProvider();
+		$username = $request->get('username');
+		$password = $request->get('password');
+		if (substr($username,0,3) == 'dc=') {
+	    	if (!$openldap->checkSchoolAdmin($username))
+				return redirect()->back()->with("error","學校代號不存在！");
+	    	if ($openldap->schoolLogin($username, $password)) {
+				$dc = substr($username,3);
+				$request->session()->put('dc', $dc);
+				return redirect()->route('schoolAdmin');
+	    	} else {
+				return redirect()->back()->with("error","學校管理密碼不正確！");
+	    	}
+		}
+
+        $idno = $openldap->checkAccount($username);
+        if (!$idno) return redirect()->back()->with("error","查無此使用者帳號！");
+        $status = $openldap->checkStatus($idno);
+        if ($status == 'inactive') return redirect()->back()->with("error","很抱歉，您已經被管理員停權！");
+        if ($status == 'deleted') return redirect()->back()->with("error","很抱歉，您已經被管理員刪除！");
+        
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
         // the IP address of the client making these requests into this application.
+        $request['idno'] = $idno;
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
-
             return $this->sendLockoutResponse($request);
         }
-
         if ($this->attemptLogin($request)) {
             return $this->sendLoginResponse($request);
         }
-
         // If the login attempt was unsuccessful we will increment the number of attempts
         // to login and redirect the user back to the login form. Of course, when this
         // user surpasses their maximum number of attempts they will get locked out.
         $this->incrementLoginAttempts($request);
-
         return $this->sendFailedLoginResponse($request);
     }
 
@@ -106,7 +125,6 @@ trait AuthenticatesUsers
     protected function sendLoginResponse(Request $request)
     {
         $request->session()->regenerate();
-
         $this->clearLoginAttempts($request);
 
         return $this->authenticated($request, $this->guard()->user())
@@ -122,10 +140,20 @@ trait AuthenticatesUsers
      */
     protected function authenticated(Request $request, $user)
     {
+		$username = $request->get('username');
+		$password = $request->get('password');
+        $idno = $request->get('idno');
+        if (substr($username,-9) == substr($indo, -9)) return redirect()->route('changeAccount');
+        if (substr($password,-6) == substr($indo, -6)) return redirect()->route('changePassword');
+
+        $openldap = new LdapServiceProvider();
+        $entry = $openldap->getUserEntry($idno);
+        $data = $openldap->getUserData($entry, 'mail');
+        if (!isset($data['mail']) || empty($data['mail'])) return redirect()->route('profile');
+        
         if (Auth::check() && isset($request['SAMLRequest'])) {
             $this->handleSamlLoginRequest($request);
         }
-
     }
 
     /**
@@ -150,7 +178,7 @@ trait AuthenticatesUsers
      */
     public function username()
     {
-        return 'email';
+        return 'username';
     }
 
     /**
@@ -162,12 +190,19 @@ trait AuthenticatesUsers
     public function logout(Request $request)
     {
         $this->guard()->logout();
-
         $request->session()->invalidate();
-
-        return redirect('/');
+        return $this->loggedOut($request) ?: redirect('/');
     }
-
+    /**
+     * The user has logged out of the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return mixed
+     */
+    protected function loggedOut(Request $request)
+    {
+        //
+    }
     /**
      * Get the guard to be used during authentication.
      *
