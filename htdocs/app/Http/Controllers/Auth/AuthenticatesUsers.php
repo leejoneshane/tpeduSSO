@@ -143,8 +143,8 @@ trait AuthenticatesUsers
 		$username = $request->get('username');
 		$password = $request->get('password');
         $idno = $request->get('idno');
-        if (substr($username,-9) == substr($indo, -9)) return redirect()->route('changeAccount');
-        if (substr($password,-6) == substr($indo, -6)) return redirect()->route('changePassword');
+        if (substr($username,-9) == substr($idno, -9)) return redirect()->route('changeAccount');
+        if ($password == substr($idno, -6)) return redirect()->route('changePassword');
 
         $openldap = new LdapServiceProvider();
         $entry = $openldap->getUserEntry($idno);
