@@ -11,7 +11,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 class PasswordChangeNotification extends Notification implements ShouldQueue
 {
     use Queueable;
-    private $password;
+    private $password = '';
 
     /**
      * Create a new notification instance.

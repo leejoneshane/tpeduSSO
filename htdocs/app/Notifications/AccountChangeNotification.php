@@ -11,7 +11,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 class AccountChangeNotification extends Notification implements ShouldQueue
 {
     use Queueable;
-    private $account;
+    private $account = '';
 
     /**
      * Create a new notification instance.
