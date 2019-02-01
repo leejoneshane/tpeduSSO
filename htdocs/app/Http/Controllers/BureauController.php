@@ -257,7 +257,7 @@ class BureauController extends Controller
 					$educloud[] = json_encode([ "sid" => $sid, "role" => $person->type ], JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 				}
 				$idno = strtoupper($person->id);
-				$user_dn = Config::get('ldap.userattr')."=".$idno.",".Config::get('ldap.userdn');
+				$user_dn = "cn=$idno,".Config::get('ldap.userdn');
 				$entry = array();
 				$entry["objectClass"] = array("tpeduPerson","inetUser");
  				$entry["inetUserStatus"] = "active";
@@ -293,7 +293,7 @@ class BureauController extends Controller
 					$entry["uid"] = $account["uid"];
 					$password = $openldap->make_ssha_password(substr($idno, -6));
 					$account["userPassword"] = $password;
-					$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+					$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
 					$entry["userPassword"] = $password;
 				 }
 		    	if (isset($person->character)) {
@@ -442,7 +442,7 @@ class BureauController extends Controller
 		}
 		$account = array();
 		$info = array();
-		$info['dn'] = Config::get('ldap.userattr').'='.$idno.','.Config::get('ldap.userdn');
+		$info['dn'] = "cn=$idno,".Config::get('ldap.userdn');
 		$info['objectClass'] = array('tpeduPerson', 'inetUser');
 		$info['cn'] = $idno;
 		$info['o'] = $orgs;
@@ -466,7 +466,7 @@ class BureauController extends Controller
 		$account["objectClass"] = "radiusObjectProfile";
 		$account["cn"] = $idno;
 		$account["description"] = '管理員新增';
-		$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+		$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
 		$result = $openldap->createEntry($account);
 		if (!$result) {
 			return redirect('bureau/people?area='.$area.'&dc='.$orgs[0].'&field='.$my_field.'&keywords='.$keywords)->with("error", "因為預設帳號無法建立，人員新增失敗！".$openldap->error());
@@ -896,7 +896,7 @@ class BureauController extends Controller
 			$account["objectClass"] = "radiusObjectProfile";
 			$account["cn"] = $idno;
 			$account["description"] = '管理員新增';
-			$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+			$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
 			$openldap->createEntry($account);
 			$info["uid"] = $account["uid"];
 		}	
@@ -1066,7 +1066,7 @@ class BureauController extends Controller
 		$info['tpSims'] = $request->get('tpSims');
 		if (!empty($request->get('tpIpv4'))) $info['tpIpv4'] = $request->get('tpIpv4');
 		if (!empty($request->get('tpIpv6'))) $info['tpIpv6'] = $request->get('tpIpv6');
-		$info['dn'] = Config::get('ldap.schattr')."=".$request->get('dc').",".Config::get('ldap.rdn');
+		$info['dn'] = "dc=".$request->get('dc').",".Config::get('ldap.rdn');
 				
 		if ($openldap->createEntry($info)) {
 			return redirect('bureau/organization?area='.$request->get('st'))->with("success", "已經為您建立新的教育機構！");
@@ -1211,7 +1211,7 @@ class BureauController extends Controller
 					$messages[] = "第 $i 筆記錄，".$org->name."行政區資訊不正確，跳過不處理！";
 	    			continue;
 				}
-				$org_dn = Config::get('ldap.schattr')."=".$org->id.",".Config::get('ldap.rdn');
+				$org_dn = "dc=$org->id,".Config::get('ldap.rdn');
 				$entry = array();
 				$entry["objectClass"] = array("tpeduSchool");
    				$entry["o"] = $org->id;
@@ -1324,7 +1324,7 @@ class BureauController extends Controller
 	    	$validatedData = $request->validate([
 				'new-admin' => new idno,
 			]);
-			$idno = Config::get('ldap.userattr')."=".$request->get('new-admin');
+			$idno = "cn=".$request->get('new-admin');
 	    	$entry = $openldap->getUserEntry($request->get('new-admin'));
 			if (!$entry) {
 				return back()->withInput()->with("error","您輸入的身分證字號，不存在於系統！");

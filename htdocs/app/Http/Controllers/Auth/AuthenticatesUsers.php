@@ -59,6 +59,9 @@ trait AuthenticatesUsers
         $status = $openldap->checkStatus($idno);
         if ($status == 'inactive') return redirect()->back()->with("error","很抱歉，您已經被管理員停權！");
         if ($status == 'deleted') return redirect()->back()->with("error","很抱歉，您已經被管理員刪除！");
+        $request->session()->put('idno', $idno);
+        if (substr($username,-9) == substr($idno, -9)) return redirect()->route('changeAccount');
+        if ($password == substr($idno, -6)) return redirect()->route('changePassword');
         
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
@@ -140,12 +143,7 @@ trait AuthenticatesUsers
      */
     protected function authenticated(Request $request, $user)
     {
-		$username = $request->get('username');
-		$password = $request->get('password');
         $idno = $request->get('idno');
-        if (substr($username,-9) == substr($idno, -9)) return redirect()->route('changeAccount');
-        if ($password == substr($idno, -6)) return redirect()->route('changePassword');
-
         $openldap = new LdapServiceProvider();
         $entry = $openldap->getUserEntry($idno);
         $data = $openldap->getUserData($entry, 'mail');

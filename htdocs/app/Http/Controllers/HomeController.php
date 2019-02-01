@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Auth;
 use Config;
+use Notification;
 use Illuminate\Http\Request;
 use App\Providers\LdapServiceProvider;
 use App\Rules\idno;
@@ -81,11 +82,16 @@ class HomeController extends Controller
 
     public function changeAccount(Request $request)
     {
-		$user = Auth::user();
+		if (Auth::check()) {
+			$user = Auth::user();
+			$idno = $user->idno;
+		} else {
+		    $idno = $request->session()->pull('idno');
+		}
 		$old = $request->get('current-account');
 		$new = $request->get('new-account');
 		$openldap = new LdapServiceProvider();
-		$accounts = $openldap->getUserAccounts($user->idno);
+		$accounts = $openldap->getUserAccounts($idno);
 		$match = false;
 		foreach ($accounts as $account) {
     		if ($old == $account) $match = true;
@@ -98,18 +104,39 @@ class HomeController extends Controller
 		$validatedData = $request->validate([
 			'new-account' => 'required|string|min:6|confirmed',
 		]);
-		if (!$openldap->accountAvailable($user->idno, $new))
+		if (!$openldap->accountAvailable($idno, $new))
 			return back()->withInput()->with("error","您輸入的帳號已經被別人使用，請您重新輸入一次！");
-		$entry = $openldap->getUserEntry($user->idno);
+		$entry = $openldap->getUserEntry($idno);
+		$data = $openldap->getUserData($entry);
 		if (empty($accounts)) {
 			$openldap->addAccount($entry, $new, "自建帳號");
-			Auth::logout();
-			$user->notify(new AccountChangeNotification($new));
+			if (Auth::check()) {
+				$user->uname = $new;
+				$user->save();
+				$user->notify(new AccountChangeNotification($new));
+			} else {
+				$user = User::where('idno', $idno)->first();
+				if ($user) {
+					$user->uname = $new;
+					$user->save();
+				}
+				if (isset($data['mail'])) Notification::route('mail', $data['mail'])->notify(new AccountChangeNotification($new));
+			}
 			return back()->withInput()->with("success","帳號建立成功！");
 		} else {
 			$openldap->renameAccount($entry, $old, $new);
-			Auth::logout();
-			$user->notify(new AccountChangeNotification($new));
+			if (Auth::check()) {
+				$user->uname = $new;
+				$user->save();
+				$user->notify(new AccountChangeNotification($new));
+			} else {
+				$user = User::where('idno', $idno)->first();
+				if ($user) {
+					$user->uname = $new;
+					$user->save();
+				}
+				if (isset($data['mail'])) Notification::route('mail', $data['mail'])->notify(new AccountChangeNotification($new));
+			}
 			return back()->withInput()->with("success","帳號變更成功！");
 		}
     }
@@ -121,21 +148,39 @@ class HomeController extends Controller
 
     public function changePassword(Request $request)
     {
-		if (!(\Hash::check($request->get('current-password'), Auth::user()->password)))
+		if (Auth::check()) {
+			$user = Auth::user();
+			$idno = $user->idno;
+		} else {
+		    $idno = $request->session()->pull('idno');
+		}
+		$old = $request->get('current-password');
+		$new = $request->get('new-password');
+		$openldap = new LdapServiceProvider();
+		$entry = $openldap->getUserEntry($idno);
+		$data = $openldap->getUserData($entry);
+		if (!$openldap->userLogin("cn=$idno", $old))
 	    	return back()->withInput()->with("error","您輸入的原密碼不正確，請您重新輸入一次！");
-		if(strcmp($request->get('current-password'), $request->get('new-password')) == 0)
+		if($old == $new)
 	    	return back()->withInput()->with("error","新密碼不可以跟舊的密碼相同，請重新想一個新密碼再試一次！");
 		$validatedData = $request->validate([
 			'current-password' => 'required',
 			'new-password' => 'required|string|min:6|confirmed',
-			]);
-		$user = Auth::user();
-		$pwd = $request->get('new-password');
-		$user->resetLdapPassword($pwd);
-		$user->password = \Hash::make($pwd);
-		$user->save();
-		Auth::logout();
-		$user->notify(new PasswordChangeNotification($pwd));
+		]);
+		if (Auth::check()) {
+			$user->resetLdapPassword($new);
+			$user->password = \Hash::make($new);
+			$user->save();
+			$user->notify(new PasswordChangeNotification($new));
+		} else {
+			$openldap->resetPassword($entry, $new);
+			$user = User::where('idno', $idno)->first();
+			if ($user) {
+				$user->password = \Hash::make($new);
+				$user->save();
+			}
+			if (isset($data['mail'])) Notification::route('mail', $data['mail'])->notify(new AccountChangeNotification($new));
+		}
 		return back()->withInput()->with("success","密碼變更成功！");
     }
 

@@ -677,7 +677,7 @@ class SyncController extends Controller
 						$account["objectClass"] = "radiusObjectProfile";
 						$account["cn"] = $idno;
 						$account["description"] = '從校務行政系統同步';
-						$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+						$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
 						$acc_entry = $openldap->getAccountEntry($account["uid"]);
 						if ($acc_entry) {
 							unset($account['dn']);
@@ -704,7 +704,7 @@ class SyncController extends Controller
 							}
 						}
 						$info = array();
-						$info['dn'] = Config::get('ldap.userattr').'='.$idno.','.Config::get('ldap.userdn');
+						$info['dn'] = "cn=$idno,".Config::get('ldap.userdn');
 						$info['objectClass'] = array('tpeduPerson', 'inetUser');
 						$info['cn'] = $idno;
 						$info["uid"] = $account["uid"];
@@ -1011,7 +1011,7 @@ class SyncController extends Controller
 						$account["objectClass"] = "radiusObjectProfile";
 						$account["cn"] = $idno;
 						$account["description"] = '從校務行政系統同步';
-						$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+						$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
 						$acc_entry = $openldap->getAccountEntry($account["uid"]);
 						if ($acc_entry) {
 							unset($account['dn']);
@@ -1055,7 +1055,7 @@ class SyncController extends Controller
 							}
 						}
 						$info = array();
-						$info['dn'] = Config::get('ldap.userattr').'='.$idno.','.Config::get('ldap.userdn');
+						$info['dn'] = "cn=$idno,".Config::get('ldap.userdn');
 						$info['objectClass'] = array('tpeduPerson', 'inetUser');
 						$info['cn'] = $idno;
 						$info["uid"] = $account["uid"];
@@ -1344,7 +1344,7 @@ class SyncController extends Controller
 					$account["objectClass"] = "radiusObjectProfile";
 					$account["cn"] = $idno;
 					$account["description"] = '從校務行政系統同步';
-					$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+					$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
 					$acc_entry = $openldap->getAccountEntry($account["uid"]);
 					if ($acc_entry) {
 						unset($account['dn']);
@@ -1361,7 +1361,7 @@ class SyncController extends Controller
 						}
 					}
 					$info = array();
-					$info['dn'] = Config::get('ldap.userattr').'='.$idno.','.Config::get('ldap.userdn');
+					$info['dn'] = "cn=$idno,".Config::get('ldap.userdn');
 					$info['objectClass'] = array('tpeduPerson', 'inetUser');
 					$info['cn'] = $idno;
 					$info["uid"] = $account["uid"];
@@ -1515,7 +1515,7 @@ class SyncController extends Controller
 						$account["objectClass"] = "radiusObjectProfile";
 						$account["cn"] = $idno;
 						$account["description"] = '從校務行政系統同步';
-						$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+						$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
 						$acc_entry = $openldap->getAccountEntry($account["uid"]);
 						if ($acc_entry) {
 							unset($account['dn']);
@@ -1532,7 +1532,7 @@ class SyncController extends Controller
 							}
 						}
 						$info = array();
-						$info['dn'] = Config::get('ldap.userattr').'='.$idno.','.Config::get('ldap.userdn');
+						$info['dn'] = "cn=$idno,".Config::get('ldap.userdn');
 						$info['objectClass'] = array('tpeduPerson', 'inetUser');
 						$info['cn'] = $idno;
 						$info["uid"] = $account["uid"];

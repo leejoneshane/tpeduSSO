@@ -189,7 +189,7 @@ class SchoolController extends Controller
 					$messages[] = "第 $i 筆記錄，".$person->name."出生日期格式或內容不正確，跳過不處理！";
 		    		continue;
 				}
-				$user_dn = Config::get('ldap.userattr')."=".$idno.",".Config::get('ldap.userdn');
+				$user_dn = "cn=$idno,".Config::get('ldap.userdn');
 				$user_entry = $openldap->getUserEntry($idno);
 				$original = $openldap->getUserData($user_entry);
 				$orgs = array();
@@ -236,7 +236,7 @@ class SchoolController extends Controller
 					$entry["uid"] = $account["uid"];
 					$password = $openldap->make_ssha_password(substr($idno, -6));
 					$account["userPassword"] = $password;
-					$account['dn'] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+					$account['dn'] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
 					$entry["userPassword"] = $password;
 				 }				   
 		    	if (isset($person->character)) {
@@ -407,13 +407,13 @@ class SchoolController extends Controller
 		$account["objectClass"] = "radiusObjectProfile";
 		$account["cn"] = $idno;
 		$account["description"] = '管理員新增';
-		$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+		$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
 		$result = $openldap->createEntry($account);
 		if (!$result) {
 			return redirect('school/'.$dc.'/teacher?field='.$my_field)->with("error", "因為預設帳號無法建立，學生新增失敗！".$openldap->error());
 		}
 		$info = array();
-		$info['dn'] = Config::get('ldap.userattr').'='.$idno.','.Config::get('ldap.userdn');
+		$info['dn'] = "cn=$idno,".Config::get('ldap.userdn');
 		$info['objectClass'] = array('tpeduPerson', 'inetUser');
 		$info['cn'] = $idno;
 		$info["uid"] = $account["uid"];
@@ -766,7 +766,7 @@ class SchoolController extends Controller
 					$messages[] = "第 $i 筆記錄，".$person->name."出生日期格式或內容不正確，跳過不處理！";
 		    		continue;
 				}
-				$user_dn = Config::get('ldap.userattr')."=".$idno.",".Config::get('ldap.userdn');
+				$user_dn = "cn=$idno,".Config::get('ldap.userdn');
 				$user_entry = $openldap->getUserEntry($idno);
 				$original = $openldap->getUserData($user_entry);
 				$orgs = array();
@@ -830,7 +830,7 @@ class SchoolController extends Controller
 					$info["uid"] = $account["uid"];
 					$password = $openldap->make_ssha_password(substr($idno, -6));
 					$account["userPassword"] = $password;
-					$account['dn'] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+					$account['dn'] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
 					$info["userPassword"] = $password;
 				}
 				$orgs[] = $dc;
@@ -1095,7 +1095,7 @@ class SchoolController extends Controller
 		$account["objectClass"] = "radiusObjectProfile";
 		$account["cn"] = $idno;
 		$account["description"] = '管理員新增';
-		$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+		$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
 		$result = $openldap->createEntry($account);
 		if (!$result) {
 			return redirect('school/'.$dc.'/teacher?field='.$my_field)->with("error", "因為預設帳號無法建立，教師新增失敗！".$openldap->error());
@@ -1107,7 +1107,7 @@ class SchoolController extends Controller
 		$info['inetUserStatus'] = 'active';
 		$info['info'] = json_encode(array("sid" => $sid, "role" => $info['employeeType']), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 		$info['cn'] = $idno;
-		$info['dn'] = Config::get('ldap.userattr').'='.$idno.','.Config::get('ldap.userdn');
+		$info['dn'] = "cn=$idno,".Config::get('ldap.userdn');
 		$units = array();
 		$roles = array();
 		$titles = $request->get('roles');
@@ -1473,7 +1473,7 @@ class SchoolController extends Controller
 			$account["objectClass"] = "radiusObjectProfile";
 			$account["cn"] = $idno;
 			$account["description"] = '管理員新增';
-			$account["dn"] = Config::get('ldap.authattr')."=".$account['uid'].",".Config::get('ldap.authdn');
+			$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
 			$openldap->createEntry($account);
 			$info["uid"] = $account["uid"];
 		}
@@ -1624,7 +1624,7 @@ class SchoolController extends Controller
 						$info["ou"] = $class->ou;
 						$info["businessCategory"] = '教學班級';
 						$info["description"] = $class->description;
-						$info["dn"] = "ou=$class->ou,".Config::get('ldap.schattr')."=$dc,".Config::get('ldap.rdn');
+						$info["dn"] = "ou=$class->ou,dc=$dc,".Config::get('ldap.rdn');
 						$openldap->createEntry($info);
 					}
 				}
@@ -1760,7 +1760,7 @@ class SchoolController extends Controller
 		$info['businessCategory']='教學班級'; //右列選一:行政部門,教學領域,教師社群或社團,學生社團或營隊
 		$info['ou'] = $class;
 		$info['description'] = $request->get('new-desc');
-		$info['dn'] = "ou=".$class.",dc=$dc,".Config::get('ldap.rdn');
+		$info['dn'] = "ou=$class,dc=$dc,".Config::get('ldap.rdn');
 		$result = $openldap->createEntry($info);
 		if ($result) {
 			return back()->withInput()->with("success", "已經為您建立班級！");
@@ -2058,7 +2058,7 @@ class SchoolController extends Controller
     public function showSchoolAdminSettingForm(Request $request)
     {
 		if ($request->session()->has('dc')) {
-		    $dc = $request->session()->get('dc');
+		    $dc = $request->session()->pull('dc');
 		} else {
 		    return redirect('/');
 		}
