@@ -34,13 +34,13 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('passw
 Route::get('schoolAdmin', 'SchoolController@showSchoolAdminSettingForm');
 Route::post('schoolAdmin', 'SchoolController@addSchoolAdmin')->name('schoolAdmin');
 Route::post('schoolAdminRemove', 'SchoolController@delSchoolAdmin')->name('schoolAdminRemove');
+Route::get('changePassword', 'HomeController@showChangePasswordForm');
+Route::post('changePassword', 'HomeController@changePassword')->name('changePassword');
+Route::get('changeAccount', 'HomeController@showChangeAccountForm');
+Route::post('changeAccount', 'HomeController@changeAccount')->name('changeAccount');
 
 Route::group(['middleware' => 'auth'], function () {
 	Route::get('/', 'HomeController@index')->name('home');
-    Route::get('changePassword', 'HomeController@showChangePasswordForm');
-    Route::post('changePassword', 'HomeController@changePassword')->name('changePassword');
-    Route::get('changeAccount', 'HomeController@showChangeAccountForm');
-    Route::post('changeAccount', 'HomeController@changeAccount')->name('changeAccount');
     Route::get('profile', 'HomeController@showProfileForm');
     Route::post('profile', 'HomeController@changeProfile')->name('profile');
     Route::get('oauth', 'oauthController@index')->name('oauth');
