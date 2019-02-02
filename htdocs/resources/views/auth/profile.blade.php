@@ -18,7 +18,7 @@
 					{{ session('success') }}
 		    		</div>
 				@endif
-
+				<p>注意：電子郵件將作為傳送帳號鎖定通知、重設密碼...等系統訊息使用，請務必填寫！</p>
             	<form method="POST" action="{{ route('profile') }}">
             	@csrf
             	    <div class="row">
