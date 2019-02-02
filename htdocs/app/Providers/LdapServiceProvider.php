@@ -737,6 +737,7 @@ class LdapServiceProvider extends ServiceProvider
 	    	$fields[] = 'tpClassTitle';
 	    	$fields[] = 'tpSeat';
 	    	$fields[] = 'tpTeachClass';
+	    	$fields[] = 'tpTutorClass';
 	    	$fields[] = 'tpCharacter';
 	    	$fields[] = 'tpAdminSchools';
 	    	$fields[] = 'inetUserStatus';
@@ -978,6 +979,11 @@ class LdapServiceProvider extends ServiceProvider
     public function deleteData($entry, array $fields)
     {
 		$dn = @ldap_get_dn(self::$ldap_read, $entry);
+		$attrs = @ldap_get_attributes(self::$ldap_read, $entry);
+		foreach ($fields as $k => $field) {
+			if (!in_array($field, $attrs)) unset($fields[$k]);
+		}
+		$fields = array_values($fields);
 		$value = @ldap_mod_del(self::$ldap_write, $dn, $fields);
 		if (!$value && Config::get('ldap.debug')) Log::debug("Data can't remove from $dn:\n".$this->error()."\n".print_r($fields, true)."\n");
 		return $value;
