@@ -12,7 +12,7 @@
 
 請切換到專案的根目錄下，執行底下指令：
 ```
-docker-compose up
+docker-compose up -d
 ```
 稍待幾分鐘，系統將為您啟動 openldap server、freeradius server、phpLDAPadmin web server、mysql server 和 redis server，然後您就可以開始撰寫或修改程式碼。
 
