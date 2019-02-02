@@ -63,7 +63,7 @@
             		<div class="col-md-6 offset-md-4">
             		    <div class="checkbox">
             			<label>
-            			    <input type="checkbox" name="login-by-email" {{ $user->ldap['email_login'] ? 'checked' : '' }}>允許使用電子郵件代替自訂帳號進行登入
+            			    <input type="checkbox" name="login-by-email" value="yes"{{ $user->ldap['email_login'] ? ' checked' : '' }}>允許使用電子郵件代替自訂帳號進行登入
             			</label>
             		    </div>
             		</div>
@@ -83,7 +83,7 @@
             		<div class="col-md-6 offset-md-4">
             		    <div class="checkbox">
             			<label>
-            			    <input type="checkbox" name="login-by-mobile" {{ $user->ldap['mobile_login'] ? 'checked' : '' }}>允許使用手機號碼代替自訂帳號進行登入
+            			    <input type="checkbox" name="login-by-mobile" value="yes"{{ $user->ldap['mobile_login'] ? ' checked' : '' }}>允許使用手機號碼代替自訂帳號進行登入
             			</label>
             		    </div>
             		</div>
