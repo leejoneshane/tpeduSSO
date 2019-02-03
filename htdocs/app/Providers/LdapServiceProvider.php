@@ -777,7 +777,7 @@ class LdapServiceProvider extends ServiceProvider
 				$this->updateData($entry, [ "tpClassTitle" => $classname ]);
 			}
 		}
-		if (!isset($fields['inetUserStatus'])) {
+		if (!isset($userinfo['inetUserStatus'])) {
 			$userinfo['inetUserStatus'] = 'active';
 			$this->addData($entry, [ "inetUserStatus" => "active" ]);
 		}
