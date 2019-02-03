@@ -64,7 +64,7 @@
 					@foreach ($teachers as $teacher)
 					<tr title="{{ $teacher['entryUUID'] }}">
 						<td style="vertical-align: inherit;">
-							<span>{{ empty($teacher['inetUserStatus']) || $teacher['inetUserStatus'] == 'active' ? '啟用' : '' }}{{ $teacher['inetUserStatus'] == 'inactive' ? '停用' : '' }}{{ $teacher['inetUserStatus'] == 'deleted' ? '已刪除' : '' }}</span>
+							<span>{{ $teacher['inetUserStatus'] == 'active' ? '啟用' : '' }}{{ $teacher['inetUserStatus'] == 'inactive' ? '停用' : '' }}{{ $teacher['inetUserStatus'] == 'deleted' ? '已刪除' : '' }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
 						@if (array_key_exists('uid', $teacher))

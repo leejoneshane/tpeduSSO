@@ -73,7 +73,7 @@
 					@foreach ($people as $user)
 					<tr title="{{ $user['entryUUID'] }}">
 						<td style="vertical-align: inherit;">
-							<span>{{ empty($user['inetUserStatus']) || $user['inetUserStatus'] == 'active' ? '啟用' : '' }}{{ $user['inetUserStatus'] == 'inactive' ? '停用' : '' }}{{ $user['inetUserStatus'] == 'deleted' ? '已刪除' : '' }}</span>
+							<span>{{ $user['inetUserStatus'] == 'active' ? '啟用' : '' }}{{ $user['inetUserStatus'] == 'inactive' ? '停用' : '' }}{{ $user['inetUserStatus'] == 'deleted' ? '已刪除' : '' }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
 						@if (array_key_exists('uid', $user))
