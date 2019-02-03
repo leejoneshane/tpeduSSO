@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use App\User;
 use Config;
 use Notification;
 use Illuminate\Http\Request;
