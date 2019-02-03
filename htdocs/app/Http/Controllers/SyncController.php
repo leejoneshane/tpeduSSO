@@ -812,13 +812,8 @@ class SyncController extends Controller
 					$info['tpTeachClass'] = array_values($assign);
 					$info['info'] = array_values($educloud);;
 					$info['tpTutorClass'] = [];
-					if (empty($orgs)) {
-						$openldap->deleteData($user_entry, $info);
-						$info['inetUserStatus'] = 'deleted';
-						$openldap->updateData($user_entry, $info);
-					} else {
-						$openldap->updateData($user_entry, $info);
-					}
+					$info['inetUserStatus'] = 'deleted';
+					$openldap->updateData($user_entry, $info);
 				}
 			}
 		}
@@ -1161,13 +1156,8 @@ class SyncController extends Controller
 					$info['tpTeachClass'] = array_values($assign);
 					$info['info'] = array_values($educloud);;
 					$info['tpTutorClass'] = [];
-					if (empty($orgs)) {
-						$openldap->deleteData($user_entry, $info);
-						$info['inetUserStatus'] = 'deleted';
-						$openldap->updateData($user_entry, $info);
-					} else {
-						$openldap->updateData($user_entry, $info);
-					}
+					$info['inetUserStatus'] = 'deleted';
+					$openldap->updateData($user_entry, $info);
 				}
 			}
 		}

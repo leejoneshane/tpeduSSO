@@ -920,6 +920,7 @@ class LdapServiceProvider extends ServiceProvider
 
 	public function getUserAccounts($identifier)
     {
+		$this->administrator();
 		$entry = $this->getUserEntry($identifier);
 		$data = $this->getUserData($entry, ['uid', 'mail', 'mobile']);
 		$accounts = array();
@@ -939,7 +940,7 @@ class LdapServiceProvider extends ServiceProvider
 				continue;
 			}
 		}
-		return $accounts;
+		return array_values($accounts);
     }
 
     public function renameUser($old_idno, $new_idno)
@@ -961,6 +962,7 @@ class LdapServiceProvider extends ServiceProvider
 
     public function addData($entry, array $fields)
     {
+		$this->administrator();
 		$fields = array_filter($fields);
 		$dn = @ldap_get_dn(self::$ldap_read, $entry);
 		$value = @ldap_mod_add(self::$ldap_write, $dn, $fields);
@@ -970,6 +972,7 @@ class LdapServiceProvider extends ServiceProvider
 
     public function updateData($entry, array $fields)
     {
+		$this->administrator();
 		$dn = @ldap_get_dn(self::$ldap_read, $entry);
 		$value = @ldap_mod_replace(self::$ldap_write, $dn, $fields);
 		if (!$value && Config::get('ldap.debug')) Log::debug("Data can't update to $dn:\n".$this->error()."\n".print_r($fields, true)."\n");
@@ -978,6 +981,7 @@ class LdapServiceProvider extends ServiceProvider
 
     public function deleteData($entry, array $fields)
     {
+		$this->administrator();
 		$dn = @ldap_get_dn(self::$ldap_read, $entry);
 		$attrs = @ldap_get_attributes(self::$ldap_read, $entry);
 		foreach ($fields as $k => $field) {
