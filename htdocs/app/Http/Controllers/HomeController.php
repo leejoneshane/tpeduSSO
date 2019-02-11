@@ -116,7 +116,7 @@ class HomeController extends Controller
 			if (Auth::check()) {
 				$user->uname = $new;
 				$user->save();
-				$user->notify(new AccountChangeNotification($new));
+				if (!empty($user->email)) $user->notify(new PasswordChangeNotification($new));
 			} else {
 				$user = User::where('idno', $idno)->first();
 				if ($user) {
@@ -131,7 +131,7 @@ class HomeController extends Controller
 			if (Auth::check()) {
 				$user->uname = $new;
 				$user->save();
-				$user->notify(new AccountChangeNotification($new));
+				if (!empty($user->email)) $user->notify(new PasswordChangeNotification($new));
 			} else {
 				$user = User::where('idno', $idno)->first();
 				if ($user) {
@@ -174,7 +174,7 @@ class HomeController extends Controller
 			$user->resetLdapPassword($new);
 			$user->password = \Hash::make($new);
 			$user->save();
-			$user->notify(new PasswordChangeNotification($new));
+			if (!empty($user->email)) $user->notify(new PasswordChangeNotification($new));
 		} else {
 			$openldap->resetPassword($entry, $new);
 			$user = User::where('idno', $idno)->first();
