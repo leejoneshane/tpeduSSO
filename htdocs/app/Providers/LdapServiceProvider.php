@@ -1129,8 +1129,8 @@ class LdapServiceProvider extends ServiceProvider
 				$accounts[] = $data['uid'];
 			}
 			foreach ($accounts as $account) {
-				$acc_entry = $openldap->getAccountEntry($account);
-				if ($acc_entry) $openldap->updateData($acc_entry,$new_passwd);
+				$acc_entry = $this->getAccountEntry($account);
+				if ($acc_entry) $this->updateData($acc_entry,$new_passwd);
 			}
 		}
 		$this->updateData($entry,$new_passwd);
