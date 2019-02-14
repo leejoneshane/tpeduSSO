@@ -869,7 +869,7 @@ class SyncController extends Controller
 		} else {
 			foreach ($teachers as $teaid) {
 				$data = $http->ps_getTeacher($sid, $teaid);
-				if (isset($data['idno'])) {
+				if (isset($data['idno']) && isset($data['name'])) {
 					$idno = strtoupper($data['idno']);
 					$validator = Validator::make(
 						[ 'idno' => $idno ], [ 'idno' => new idno ]
