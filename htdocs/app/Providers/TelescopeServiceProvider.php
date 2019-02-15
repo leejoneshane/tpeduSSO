@@ -22,13 +22,6 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 
         Telescope::filter(function (IncomingEntry $entry) {
             return true;
-//            if ($this->app->isLocal()) {
-//                return true;
-//           }
-//          return $entry->isReportableException() ||
-//                 $entry->isFailedJob() ||
-//                 $entry->isScheduledTask() ||
-//                 $entry->hasMonitoredTag();
         });
     }
 
@@ -39,10 +32,6 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
      */
     protected function hideSensitiveRequestDetails()
     {
-//        if ($this->app->isLocal()) {
-//            return;
-//        }
-
         Telescope::hideRequestParameters(['_token']);
 
         Telescope::hideRequestHeaders([
@@ -50,6 +39,19 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
             'x-csrf-token',
             'x-xsrf-token',
         ]);
+    }
+
+    /**
+     * Configure the Telescope authorization services.
+     *
+     * @return void
+     */
+    protected function authorization()
+    {
+        $this->gate();
+        Telescope::auth(function ($request) {
+            return Gate::check('viewTelescope', [$request->user()]);
+        });
     }
 
     /**
