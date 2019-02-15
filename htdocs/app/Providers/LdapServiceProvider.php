@@ -1128,11 +1128,19 @@ class LdapServiceProvider extends ServiceProvider
     public function addAccount($entry, $account, $memo)
     {
 				$this->administrator();
-				$data = $this->getUserData($entry, ['cn', 'userPassword']);
+				$data = $this->getUserData($entry, ['cn', 'uid', 'userPassword']);
 				$idno = $data['cn'];
 				$password = $data['userPassword'];
-				$this->addData($entry, array( "uid" => $account));
-
+				$accounts = array();
+				if (isset($data['uid'])) {
+						if (is_array($uid))
+								$accounts = $data['uid'];
+						else
+								$accounts[] = $data['uid'];
+				}
+				if (!in_array($account, $accounts)) $this->addData($entry, array( "uid" => $account));
+				$acc = $this->getAccountEntry($account);
+				if ($acc) return;
 				$account_info = array();
 				$account_info['dn'] = "uid=$account,".Config::get('ldap.authdn');
 	    	$account_info['objectClass'] = "radiusObjectProfile";

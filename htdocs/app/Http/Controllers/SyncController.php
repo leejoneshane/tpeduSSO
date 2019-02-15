@@ -1081,7 +1081,7 @@ class SyncController extends Controller
 						}
 					}
 				} else {
-					$messages[] = "cn=無,teaid=". $teaid .",name=". $data['name'] ." 查無身份證號無法同步：". $http->error();
+					$messages[] = "cn=無,teaid=". $teaid .",name=". (isset($data['name']) ? $data['name'] : '無') ." 查無身份證號無法同步：". $http->error();
 				}
 			}
 			$filter = "(&(o=$dc)(!(employeeType=學生)))";
