@@ -194,16 +194,35 @@ class SyncController extends Controller
 				$data = $http->ps_call('school_info', [ 'sid' => $sid ]);
 				if (isset($data[0]->name)) {
 					$entry = $openldap->getOrgEntry($sch->o);
-					$info = array();
-					$info['tpSims'] = 'alle';
-					$info['description'] = $data[0]->name;
-					if (isset($data[0]->address) && !empty($data[0]->address)) $info['street'] = $data[0]->address;
-					if (isset($data[0]->telephone) && !empty($data[0]->telephone)) $info['telephoneNumber'] = '(' . str_replace('-', ')', $data[0]->telephone);
-					$result = $openldap->updateData($entry, $info);
-					if ($result) {
-						$messages[] = "dc=" . $sch->o . ",name=" . $data[0]->name . " 資料更新完成！";
+					if ($entry) {
+						$info = array();
+						$info['tpSims'] = 'alle';
+						$info['description'] = $data[0]->name;
+						if (isset($data[0]->address) && !empty($data[0]->address)) $info['street'] = $data[0]->address;
+						if (isset($data[0]->telephone) && !empty($data[0]->telephone)) $info['telephoneNumber'] = '(' . str_replace('-', ')', $data[0]->telephone);
+						$result = $openldap->updateData($entry, $info);
+						if ($result) {
+							$messages[] = "dc=" . $sch->o . ",name=" . $data[0]->name . " 資料更新完成！";
+						} else {
+							$messages[] = "dc=" . $sch->o . ",name=" . $sch->description . " 無法更新資料：". $openldap->error();
+						}
 					} else {
-						$messages[] = "dc=" . $sch->o . ",name=" . $sch->description . " 無法更新資料：". $openldap->error();
+						$info = array();
+						$info['dn'] = 'dc='.$sch->o.','.Config::get('ldap.rdn');
+						$info['objectClass'] = array('top', 'tpeduSchool');
+						$info['dc'] = $sch->o;
+						$info['o'] = $sch->o;
+						$info['tpUniformNumbers'] = $sid;
+						$info['tpSims'] = 'alle';
+						$info['description'] = $data[0]->name;
+						if (isset($data[0]->address) && !empty($data[0]->address)) $info['street'] = $data[0]->address;
+						if (isset($data[0]->telephone) && !empty($data[0]->telephone)) $info['telephoneNumber'] = '(' . str_replace('-', ')', $data[0]->telephone);
+						$result = $openldap->createEntry($info);
+						if ($result) {
+							$messages[] = "dc=" . $sch->o . ",name=" . $data[0]->name . " 教育機構新增完成！";
+						} else {
+							$messages[] = "dc=" . $sch->o . ",name=" . $sch->description . " 無法新增教育機構：". $openldap->error();
+						}
 					}
 				}
 			}
@@ -320,9 +339,11 @@ class SyncController extends Controller
 		$messages[] = "開始進行同步";
 		if ($classes) {
 			foreach ($classes as $class) {
-				for ($i=0;$i<count($org_classes);$i++) {
-					if ($class->clsid == $org_classes[$i]->ou) array_splice($org_classes, $i, 1);
-				}
+				if (!strpos($class->name, '年') && !strpos($class->name, '班')) continue;
+				if (!empty($org_classes))
+					for ($i=0;$i<count($org_classes);$i++) {
+						if ($class->clsid == $org_classes[$i]->ou) array_splice($org_classes, $i, 1);
+					}
 				$class_entry = $openldap->getOuEntry($dc, $class->clsid);
 				if ($class_entry) {
 					$result = $openldap->updateData($class_entry, [ 'description' => $class->clsname ]);
@@ -346,15 +367,16 @@ class SyncController extends Controller
 					}
 				}
 			}
-			foreach ($org_classes as $org_class) {
-				$class_entry = $openldap->getOuEntry($dc, $org_class->ou);
-				$result = $openldap->deleteEntry($class_entry);
-				if ($result) {
-					$messages[] = "ou=". $org_class->ou ." 已經為您刪除班級，班級名稱為：". $org_class->description;
-				} else {
-					$messages[] = "ou=". $org_class->ou ." 班級刪除失敗：". $openldap->error();
+			if (!empty($org_classes))
+				foreach ($org_classes as $org_class) {
+					$class_entry = $openldap->getOuEntry($dc, $org_class->ou);
+					$result = $openldap->deleteEntry($class_entry);
+					if ($result) {
+						$messages[] = "ou=". $org_class->ou ." 已經為您刪除班級，班級名稱為：". $org_class->description;
+					} else {
+						$messages[] = "ou=". $org_class->ou ." 班級刪除失敗：". $openldap->error();
+					}
 				}
-			}
 			$messages[] = "同步完成！";
 		} else {
 			$messages[] = "無法同步班級資訊：". $http->error();
@@ -1588,7 +1610,7 @@ class SyncController extends Controller
 	
 	public function removeFake() {
 		$openldap = new LdapServiceProvider();
-		$filter = '(|(cn=*123456789)(displayName=*測試*))';
+		$filter = '(|(cn=*123456789)(displayName=*測試*)(!(employeeType=*)))';
 		$fake = $openldap->findUsers($filter);
 		$messages = array(); 
 		if (!empty($fake)) {

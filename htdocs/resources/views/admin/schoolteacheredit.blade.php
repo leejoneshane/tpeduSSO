@@ -36,7 +36,7 @@
 		    	@endif
 			    <div class="form-group{{ $errors->has('idno') ? ' has-error' : '' }}">
 					<label>身分證字號</label>
-					<input id="idno" type="text" class="form-control" name="idno" value="{{ isset($user) ? $user['cn'] : '' }}" required readonly>
+					<input id="idno" type="text" class="form-control" name="idno" value="{{ !empty($user['cn']) ? $user['cn'] : '' }}" required readonly>
 					@if ($errors->has('idno'))
 						<p class="help-block">
 							<strong>{{ $errors->first('idno') }}</strong>
@@ -45,7 +45,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('sn') ? ' has-error' : '' }}">
 					<label>姓氏</label>
-					<input id="sn" type="text" class="form-control" name="sn" value="{{ isset($user) ? $user['sn'] : '' }}" required>
+					<input id="sn" type="text" class="form-control" name="sn" value="{{ !empty($user['sn']) ? $user['sn'] : '' }}" required>
 					@if ($errors->has('sn'))
 						<p class="help-block">
 							<strong>{{ $errors->first('sn') }}</strong>
@@ -54,7 +54,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('gn') ? ' has-error' : '' }}">
 					<label>名字</label>
-					<input id="gn" type="text" class="form-control" name="gn" value="{{ isset($user) ? $user['givenName'] : '' }}" required>
+					<input id="gn" type="text" class="form-control" name="gn" value="{{ !empty($user['givenName']) ? $user['givenName'] : '' }}" required>
 					@if ($errors->has('gn'))
 						<p class="help-block">
 							<strong>{{ $errors->first('gn') }}</strong>
@@ -71,7 +71,7 @@
 				</div>
 			    <div class="form-group">
 					<label style="display:block">單位職稱</label>
-					@if (isset($user['title']))
+					@if (!empty($user['title']))
 						@foreach ($user['title'] as $title)
 						<div></div>
 						<select id="role" class="form-control" style="width:50%;display:inline" name="roles[]">
@@ -85,7 +85,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('tclass') ? ' has-error' : '' }}">
 					<label style="display:block">配課資訊</label>
-					@if (isset($assign))
+					@if (!empty($assign))
 						@foreach ($assign as $pair)
 						<div></div>
 						<select class="form-control" style="width:25%;display:inline" name="tclass[]">
@@ -103,7 +103,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('character') ? ' has-error' : '' }}">
 					<label style="display:block">特殊身份註記</label>
-					@if (isset($user) && array_key_exists('tpCharacter', $user))
+					@if (!empty($user['tpCharacter']))
 						@if (is_array($user['tpCharacter']))
 							@foreach ($user['tpCharacter'] as $character)
 							<input type="text" class="form-control" style="width:50%;display:inline" name="character[]" value="{{ $character }}" placeholder="請用中文描述，例如：巡迴教師、均一平台管理員...，無則省略。" required><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
@@ -122,15 +122,15 @@
 			    <div class="form-group">
 					<label>性別</label>
 					<select id="gender" class="form-control" name="gender">
-						<option value="0"{{ isset($user) && $user['gender'] == 0 ? ' selected' : '' }}>未知</option>
-						<option value="1"{{ isset($user) && $user['gender'] == 1 ? ' selected' : '' }}>男</option>
-						<option value="2"{{ isset($user) && $user['gender'] == 2 ? ' selected' : '' }}>女</option>
-						<option value="9"{{ isset($user) && $user['gender'] == 9 ? ' selected' : '' }}>其它</option>
+						<option value="0"{{ empty($user['gender']) && $user['gender'] == 0 ? ' selected' : '' }}>未知</option>
+						<option value="1"{{ !empty($user['gender']) && $user['gender'] == 1 ? ' selected' : '' }}>男</option>
+						<option value="2"{{ !empty($user['gender']) && $user['gender'] == 2 ? ' selected' : '' }}>女</option>
+						<option value="9"{{ !empty($user['gender']) && $user['gender'] == 9 ? ' selected' : '' }}>其它</option>
 					</select>
 				</div>
 			    <div class="form-group{{ $errors->has('birth') ? ' has-error' : '' }}">
 					<label>出生日期</label>
-					<input id="birth" type="date" class="form-control" name="birth" value="{{ isset($user) && array_key_exists('birthDate', $user) ? substr($user['birthDate'],0,4).'-'.substr($user['birthDate'],4,2).'-'.substr($user['birthDate'],6,2) : '' }}">
+					<input id="birth" type="date" class="form-control" name="birth" value="{{ !empty($user['birthDate']) ? substr($user['birthDate'],0,4).'-'.substr($user['birthDate'],4,2).'-'.substr($user['birthDate'],6,2) : '' }}">
 					@if ($errors->has('birth'))
 						<p class="help-block">
 							<strong>{{ $errors->first('birth') }}</strong>
@@ -139,7 +139,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('mail') ? ' has-error' : '' }}">
 					<label style="display:block">電子郵件（只有主要電子郵件可用於登入和重設密碼）</label>
-					@if (isset($user) && array_key_exists('mail', $user))
+					@if (!empty($user['mail']))
 						@if (is_array($user['mail']))
 							@foreach ($user['mail'] as $mail)
 							<input type="text" class="form-control" style="width:50%;display:inline" name="mail[]" value="{{ $mail }}" placeholder="用來傳送密碼重設連結，請務必填寫" required><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
@@ -157,7 +157,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('mobile') ? ' has-error' : '' }}">
 					<label style="display:block">手機號碼（只有主要手機號碼可用於登入和重設密碼）</label>
-					@if (isset($user) && array_key_exists('mobile', $user))
+					@if (!empty($user['mobile']))
 						@if (is_array($user['mobile']))
 							@foreach ($user['mobile'] as $mobile)
 							<input type="text" pattern="09[0-9]{8}" class="form-control" style="width:50%;display:inline" name="mobile[]" value="{{ $mobile }}" placeholder="格式如右：0921000111"><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
@@ -175,7 +175,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('fax') ? ' has-error' : '' }}">
 					<label style="display:block">傳真號碼</label>
-					@if (isset($user) && array_key_exists('fax', $user))
+					@if (!empty($user['fax']))
 						@if (is_array($user['fax']))
 							@foreach ($user['fax'] as $fax)
 							<input type="text" pattern="\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" style="width:50%;display:inline" name="fax[]" value="{{ $fax }}" placeholder="格式如右：(02)23456789"><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
@@ -193,7 +193,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('otel') ? ' has-error' : '' }}">
 					<label style="display:block">辦公電話</label>
-					@if (isset($user) && array_key_exists('otel', $user))
+					@if (!empty($user['otel']))
 						@if (is_array($user['otel']))
 							@foreach ($user['otel'] as $otel)
 							<input type="text" pattern="\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" style="width:50%;display:inline" name="otel[]" value="{{ $otel }}" placeholder="格式如右：(02)23456789"><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
@@ -211,7 +211,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('htel') ? ' has-error' : '' }}">
 					<label style="display:block">住家電話</label>
-					@if (isset($user) && array_key_exists('htel', $user))
+					@if (!empty($user['htel']))
 						@if (is_array($user['htel']))
 							@foreach ($user['htel'] as $htel)
 							<input type="text" pattern="\(0[0-9]{1,2}\)[0-9]{7,8}" class="form-control" style="width:50%;display:inline" name="htel[]" value="{{ $htel }}" placeholder="格式如右：(02)23456789"><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
@@ -229,7 +229,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('raddress') ? ' has-error' : '' }}">
 					<label style="display:block">戶籍地址</label>
-					<input id="raddress" type="text" class="form-control" name="raddress" value="{{ isset($user) && array_key_exists('registeredAddress', $user) ? $user['registeredAddress'] : '' }}"
+					<input id="raddress" type="text" class="form-control" name="raddress" value="{{ !empty($user['registeredAddress') ? $user['registeredAddress'] : '' }}"
 					 placeholder="請包含里鄰資訊...">
 					@if ($errors->has('raddress'))
 						<p class="help-block">
@@ -239,7 +239,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('address') ? ' has-error' : '' }}">
 					<label style="display:block">郵寄地址</label>
-					<input id="address" type="text" class="form-control" name="address" value="{{ isset($user) && array_key_exists('homePostalAddress', $user) ? $user['homePostalAddress'] : '' }}">
+					<input id="address" type="text" class="form-control" name="address" value="{{ !empty($user['homePostalAddress') ? $user['homePostalAddress'] : '' }}">
 					@if ($errors->has('address'))
 						<p class="help-block">
 							<strong>{{ $errors->first('address') }}</strong>
@@ -248,7 +248,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('www') ? ' has-error' : '' }}">
 					<label>個人首頁</label>
-					<input id="www" type="text" class="form-control" name="www" value="{{ isset($user) && array_key_exists('wWWHomePage', $user) ? $user['wWWHomePage'] : '' }}">
+					<input id="www" type="text" class="form-control" name="www" value="{{ !empty($user['wWWHomePage') ? $user['wWWHomePage'] : '' }}">
 					@if ($errors->has('www'))
 						<p class="help-block">
 							<strong>{{ $errors->first('www') }}</strong>

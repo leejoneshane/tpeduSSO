@@ -23,7 +23,7 @@
             	@csrf
             	    <div class="row">
             		<div class="col-md-4 text-md-right">身份別</div>
-            		<div class="col-md-6 text-md-left">{{ isset($user->ldap['employeeType']) ? $user->ldap['employeeType'] : '' }}</div>
+            		<div class="col-md-6 text-md-left">{{ !empty($user->ldap['employeeType']) ? $user->ldap['employeeType'] : '' }}</div>
                     </div>
             	    <div class="row">
             		<div class="col-md-4 text-md-right">姓名</div>
@@ -31,22 +31,22 @@
                     </div>
             	    <div class="row">
             		<div class="col-md-4 text-md-right">性別</div>
-            		@if (array_key_exists('gender', $user->ldap) && $user->ldap['gender'] == 0)
+            		@if (empty($user->ldap['gender']) || $user->ldap['gender'] == 0)
             		<div class="col-md-6">未填寫</div>
             		@endif
-            		@if (array_key_exists('gender', $user->ldap) && $user->ldap['gender'] == 1)
+            		@if (!empty($user->ldap['gender']) && $user->ldap['gender'] == 1)
             		<div class="col-md-6">男</div>
             		@endif
-            		@if (array_key_exists('gender', $user->ldap) && $user->ldap['gender'] == 2)
+            		@if (!empty($user->ldap['gender']) && $user->ldap['gender'] == 2)
             		<div class="col-md-6">女</div>
             		@endif
-            		@if (array_key_exists('gender', $user->ldap) && $user->ldap['gender'] == 9)
+            		@if (!empty($user->ldap['gender']) && $user->ldap['gender'] == 9)
             		<div class="col-md-6">其它</div>
             		@endif
                     </div>
             	    <div class="row">
             		<div class="col-md-4 text-md-right">出生日期</div>
-            		<div class="col-md-6">{{ isset($user->ldap['birthDate']) ? $user->ldap['birthDate'] : '' }}</div>
+            		<div class="col-md-6">{{ !empty($user->ldap['birthDate']) ? $user->ldap['birthDate'] : '' }}</div>
                     </div>
             	    <div class="form-group row">
             		<label for="email" class="col-md-4 col-form-label text-md-right">電子郵件</label>
@@ -88,14 +88,14 @@
             		    </div>
             		</div>
                     </div>
-                    @if ($user->ldap['employeeType'] == '教師')
+                    @if (!empty($user->ldap['employeeType']) && $user->ldap['employeeType'] == '教師')
                 		@if (isset($user->ldap['school']))
 							@foreach ($user->ldap['school'] as $o => $sch)
             	    			<div class="row">
             					<div class="col-md-4 text-md-right">學校</div>
             					<div class="col-md-6">{{ $sch }}</div>
                     			</div>
-                				@if (isset($user->ldap['department'][$o]))
+                				@if (!empty($user->ldap['department'][$o]))
 								@foreach ($user->ldap['department'][$o] as $ou)
             					<div class="row">
             		    		<div class="col-md-4 text-md-right">單位</div>
@@ -103,7 +103,7 @@
                 				</div>
 								@endforeach
                 				@endif
-                				@if (isset($user->ldap['titleName'][$o]))
+                				@if (!empty($user->ldap['titleName'][$o]))
 								@foreach ($user->ldap['titleName'][$o] as $role)
             					<div class="row">
             		    		<div class="col-md-4 text-md-right">職稱</div>
@@ -111,7 +111,7 @@
                 				</div>
 								@endforeach
                 				@endif
-                				@if (isset($user->ldap['teachClass'][$o]))
+                				@if (!empty($user->ldap['teachClass'][$o]))
 								@foreach ($user->ldap['teachClass'][$o] as $class)
             					<div class="row">
             		    		<div class="col-md-4 text-md-right">任教班級</div>
@@ -122,7 +122,7 @@
 							@endforeach
                         @endif
                     @endif
-                    @if ($user->ldap['employeeType'] == '學生')
+                    @if (!empty($user->ldap['employeeType']) && $user->ldap['employeeType'] == '學生')
             	    	<div class="row">
             			<div class="col-md-4 text-md-right">就讀班級</div>
             			<div class="col-md-6">{{ $user->ldap['tpClassTitle'] }}</div>
