@@ -60,12 +60,20 @@ trait AuthenticatesUsers
         if ($status == 'inactive') return redirect()->back()->with("error","很抱歉，您已經被管理員停權！");
         if ($status == 'deleted') return redirect()->back()->with("error","很抱歉，您已經被管理員刪除！");
         if (substr($username,-9) == substr($idno, -9)) {
-            $request->session()->put('idno', $idno);
-            return redirect()->route('changeAccount');
+            if ($openldap->authenticate($username,$password)) {
+                $request->session()->put('idno', $idno);
+                return redirect()->route('changeAccount');
+            } else {
+                return redirect()->route('login');
+            }
         }
         if ($password == substr($idno, -6)) {
-            $request->session()->put('idno', $idno);
-            return redirect()->route('changePassword');
+            if ($openldap->authenticate($username,$password)) {
+                $request->session()->put('idno', $idno);
+                return redirect()->route('changePassword');
+            } else {
+                return redirect()->route('login');
+            }
         }
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and

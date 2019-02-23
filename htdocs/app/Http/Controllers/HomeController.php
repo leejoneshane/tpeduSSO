@@ -182,7 +182,7 @@ class HomeController extends Controller
 				$user->password = \Hash::make($new);
 				$user->save();
 			}
-			if (isset($data['mail'])) Notification::route('mail', $data['mail'])->notify(new AccountChangeNotification($new));
+			if (isset($data['mail'])) Notification::route('mail', $data['mail'])->notify(new PasswordChangeNotification($new));
 		}
 		return back()->withInput()->with("success","密碼變更成功！");
     }
