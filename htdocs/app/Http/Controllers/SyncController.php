@@ -1310,7 +1310,7 @@ class SyncController extends Controller
 					[ 'idno' => $idno ], [ 'idno' => new idno ]
 				);
 				if ($validator->fails()) {
-					$messages[] = "cn=". $idno .",stdno=". $data['stdno'] .",name=". $data['name'] ." 身分證字號格式或內容不正確，跳過不處理！";
+					$messages[] = "cn=$idno 身分證字號格式或內容不正確，跳過不處理！";
 					unset($students[$k]);
 					continue;
 				}

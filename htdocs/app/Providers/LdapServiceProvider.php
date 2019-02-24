@@ -1134,7 +1134,7 @@ class LdapServiceProvider extends ServiceProvider
 				$password = $data['userPassword'];
 				$accounts = array();
 				if (isset($data['uid'])) {
-						if (is_array($uid))
+						if (is_array($data['uid']))
 								$accounts = $data['uid'];
 						else
 								$accounts[] = $data['uid'];
