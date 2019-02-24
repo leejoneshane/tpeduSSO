@@ -678,7 +678,8 @@ class LdapServiceProvider extends ServiceProvider
 						$entry = ldap_first_entry(self::$ldap_read, $resource);
 						if ($entry) {
 								do {
-					    			$userinfo[] = $this->getUserData($entry, $attr);
+										$data = $this->getUserData($entry, $attr);
+										if (!empty($data)) $userinfo[] = $data;
 								} while ($entry=ldap_next_entry(self::$ldap_read, $entry));
 						}
 						return $userinfo;
@@ -768,7 +769,7 @@ class LdapServiceProvider extends ServiceProvider
 						if (!empty($classname) && (!isset($userinfo['tpClassTitle']) || $userinfo['tpClassTitle'] != $classname))
 								$this->updateData($entry, [ "tpClassTitle" => $classname ]);
 				}
-				if (in_array('inetUserStatus', $fields) && !isset($userinfo['inetUserStatus'])) {
+				if (in_array('inetUserStatus', $fields) && empty($userinfo['inetUserStatus'])) {
 						$userinfo['inetUserStatus'] = 'active';
 						$this->addData($entry, [ "inetUserStatus" => "active" ]);
 				}
@@ -835,7 +836,7 @@ class LdapServiceProvider extends ServiceProvider
 				}
 				$units = array();
 				$ous = array();
-				if (isset($userinfo['ou'])) {
+				if (!empty($orgs) && !empty($userinfo['ou'])) {
 						if (is_array($userinfo['ou'])) {
 								$units = $userinfo['ou'];
 						} else {
@@ -878,7 +879,7 @@ class LdapServiceProvider extends ServiceProvider
 								$userinfo['title'] = $titles;
 						}
 				}
-				if (isset($userinfo['tpTeachClass'])) {
+				if (!empty($orgs) && !empty($userinfo['tpTeachClass'])) {
 						if (is_array($userinfo['tpTeachClass'])) {
 								$classes = $userinfo['tpTeachClass'];
 						} else {
