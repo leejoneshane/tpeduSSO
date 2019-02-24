@@ -1657,7 +1657,6 @@ class SchoolController extends Controller
 		if ($request->session()->has('grade')) $my_grade = $request->session()->get('grade');
 		if ($request->session()->has('ou')) $my_ou = $request->session()->get('ou');
 		$openldap = new LdapServiceProvider();
-		$school = $openldap->getOrgEntry($dc);
 		$subjects = $openldap->getSubjects($dc);
 		$grades = array();
 		$classes = array();

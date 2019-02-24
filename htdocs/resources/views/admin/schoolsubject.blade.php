@@ -33,7 +33,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					@if ($subjs)
+					@if (!empty($subjs))
 					@foreach ($subjs as $subj)
 					<tr>
 						<form role="form" method="POST" action="{{ route('school.updateSubject', [ 'dc' => $dc, 'subject' => $subj['tpSubject'] ]) }}">

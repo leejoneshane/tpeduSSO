@@ -37,7 +37,7 @@
 				</select>
 			</div>
 			<div id="classes" class="form-group">
-				@if ($classes)
+				@if (!empty($classes))
 				@foreach ($classes as $class)
 					<label class="checkbox-inline">
 						<input type="checkbox" name="classes[]" value="{{ $class->ou }}">{{ $class->description }}
@@ -56,7 +56,7 @@
 		</div>
 		<div class="panel-body">
 			<div class="form-group">
-				@if ($subjects)
+				@if (!empty($subjects))
 				@foreach ($subjects as $subj)
 					<label class="checkbox-inline">
 						<input type="checkbox" name="subjects[]" value="{{ $subj['tpSubject'] }}">{{ $subj['description'] }}
@@ -76,7 +76,7 @@
 		<div class="panel-body">
 			<div class="form-group">
 				<select class="form-control" id="ou" name="ou" onchange="refresh_teachers();">
-				@if ($ous)
+				@if (!empty($ous))
 				@foreach ($ous as $ou)
 			    	<option value="{{ $ou->ou }}" {{ $my_ou == $ou->ou ? 'selected' : '' }}>{{ $ou->description }}</option>
 				@endforeach
@@ -85,7 +85,7 @@
 			</div>
 			<div id="teachers" class="form-group">
 				<table><tbody><tr>
-				@if ($teachers)
+				@if (!empty($teachers))
 				@foreach ($teachers as $teacher)
 					<td> <!--label class="checkbox-inline"-->
 						<input type="checkbox" name="teachers[]" value="{{ $teacher['cn'] }}">{{ $teacher['displayName'] }}（{{ is_array($teacher['titleName'][$dc]) ? array_values($teacher['titleName'][$dc])[0] : $teacher['titleName'][$dc] }}）

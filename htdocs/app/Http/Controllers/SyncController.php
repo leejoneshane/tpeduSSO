@@ -339,6 +339,7 @@ class SyncController extends Controller
 		$messages[] = "開始進行同步";
 		if ($classes) {
 			foreach ($classes as $class) {
+				if (empty($class->name)) continue; 
 				if (!strpos($class->name, '年') && !strpos($class->name, '班')) continue;
 				if (!empty($org_classes))
 					for ($i=0;$i<count($org_classes);$i++) {
@@ -881,10 +882,11 @@ class SyncController extends Controller
 		}
 		$allsubject = array();
 		$subjects = $openldap->getSubjects($dc);
-		foreach ($subjects as $s) {
-			$k = base64_encode($s['description']);
-			$allsubject[$k] = $s['tpSubject'];
-		}
+		if (!empty($subjects))
+			foreach ($subjects as $s) {
+				$k = base64_encode($s['description']);
+				$allsubject[$k] = $s['tpSubject'];
+			}
 		$teachers = $http->ps_getTeachers($sid);
 		if (empty($teachers)) {
 			$messages[] = "查無教師清單，因此無法同步！";
@@ -1436,7 +1438,7 @@ class SyncController extends Controller
 			if (empty($clsid)) {
 				$classes = $http->ps_getClasses($sid);
 				$temp = array();
-				if ($classes) {
+				if (!empty($classes)) {
 					foreach ($classes as $c) {
 						$temp[$c->clsid] = $c->clsname;
 					}
@@ -1446,18 +1448,20 @@ class SyncController extends Controller
 					$clsname = $classes[$clsid];
 					unset($classes[$clsid]);
 					$request->session()->put('classes', $classes);	
+				} else {
+					$result[] = '查無班級，因此無法取得學生清單！';
 				}
 			} else {
 				$classes = $request->session()->pull('classes');
-				$clsid = key($classes);
-				$clsname = $classes[$clsid];
-				unset($classes[$clsid]);
-				if (!empty($classes)) $request->session()->put('classes', $classes);
+				if (!empty($classes)) {
+					$clsid = key($classes);
+					$clsname = $classes[$clsid];
+					unset($classes[$clsid]);
+					if (!empty($classes)) $request->session()->put('classes', $classes);
+				}
 			}
 			if ($clsid && $clsname) {
 				$result = $this->ps_syncStudent($dc, $sid, $clsid, $clsname);
-			} else {
-				$result[] = '查無班級，因此無法取得學生清單！';
 			}
 			if (!empty($classes)) {
 				$nextid = key($classes);
@@ -1610,7 +1614,7 @@ class SyncController extends Controller
 	
 	public function removeFake() {
 		$openldap = new LdapServiceProvider();
-		$filter = '(|(cn=*123456789)(displayName=*測試*)(!(employeeType=*)))';
+		$filter = '(&(objectClass=tpeduPerson)(|(cn=*123456789)(displayName=*測試*)(!(employeeType=*))))';
 		$fake = $openldap->findUsers($filter);
 		$messages = array(); 
 		if (!empty($fake)) {
