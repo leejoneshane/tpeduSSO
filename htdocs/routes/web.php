@@ -64,6 +64,8 @@ Route::group(['prefix' => 'sync', 'middleware' => 'auth.admin'], function () {
     Route::get('js/runtime_test', 'SyncController@js_testForm');
     Route::post('js/runtime_test', 'SyncController@js_testForm')->name('sync.js.runtime_test');
     Route::get('js/sync_school', 'SyncController@js_syncOrg')->name('sync.js.sync_school');
+    Route::get('js/sync_ou', 'SyncController@js_syncOuForm');
+    Route::post('js/sync_ou', 'SyncController@js_syncOuForm')->name('sync.js.sync_ou');
     Route::get('js/sync_class', 'SyncController@js_syncClassForm');
     Route::post('js/sync_class', 'SyncController@js_syncClassForm')->name('sync.js.sync_class');
     Route::get('js/sync_subject', 'SyncController@js_syncSubjectForm');
@@ -127,6 +129,8 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
 	Route::post('{dc}/unit/{ou}/role', 'SchoolController@createSchoolRole')->name('school.createRole');
 	Route::post('{dc}/unit/{ou}/role/{role}/update', 'SchoolController@updateSchoolRole')->name('school.updateRole');
 	Route::post('{dc}/unit/{ou}/role/{role}/remove', 'SchoolController@removeSchoolRole')->name('school.removeRole');
+    Route::get('{dc}/sync_unit', 'SyncController@syncOuHelp');
+    Route::post('{dc}/sync_unit', 'SyncController@syncOuHelp')->name('school.sync_ou');
 	Route::get('{dc}/subject', 'SchoolController@schoolSubjectForm')->name('school.subject');
 	Route::post('{dc}/subject', 'SchoolController@createSchoolSubject')->name('school.createSubject');
 	Route::post('{dc}/subject/{subject}/update', 'SchoolController@updateSchoolSubject')->name('school.updateSubject');

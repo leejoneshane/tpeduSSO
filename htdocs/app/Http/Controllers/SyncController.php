@@ -233,8 +233,90 @@ class SyncController extends Controller
 		return view('admin.syncorg', [ 'result' => $messages ]);
 	}
 
-    public function syncClassHelp(Request $request, $dc)
-    {
+	public function syncOuHelp(Request $request, $dc)
+	{
+		$openldap = new LdapServiceProvider();
+		$sid = $openldap->getOrgID($dc);
+		$school = $openldap->getOrgEntry($dc);
+		$sims = $openldap->getOrgData($school, 'tpSims');
+		if (isset($sims['tpSims'])) $sys = $sims['tpSims'];
+		else $sys = '';
+		$result = array();
+		if ($request->get('submit')) {
+			if ($sys == 'oneplus') $result = $this->js_syncOu($dc, $sid);
+//			if ($sys == 'alle') $result = $this->ps_syncOu($dc, $sid);
+		}
+		return view('admin.syncouinfo', [ 'sims' => $sys, 'dc' => $dc, 'result' => $result ]);
+	}
+
+	public function js_syncOuForm(Request $request)
+	{
+		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$area = $request->get('area');
+		if (empty($area)) $area = $areas[0];
+		$filter = "(&(st=$area)(tpSims=oneplus))";
+		$openldap = new LdapServiceProvider();
+		$schools = $openldap->getOrgs($filter);
+		$dc = $request->get('dc');
+		$sid = $openldap->getOrgID($dc);
+		$result = array();
+		if ($dc) $result = $this->js_syncOu($dc, $sid);
+		return view('admin.syncou', [ 'sims' => 'oneplus', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'result' => $result ]);
+	}
+
+	public function js_syncOu($dc, $sid)
+	{
+		$openldap = new LdapServiceProvider();
+		$http = new SimsServiceProvider();
+		$org_units = $openldap->getOus($dc, '行政部門');
+		$units = $http->js_getUnits($sid);
+		$messages[] = "開始進行同步";
+		if ($units) {
+			foreach ($units as $unit) {
+				for ($i=0;$i<count($org_units);$i++) {
+					if ($unit->ou == $org_units[$i]->ou) array_splice($org_units, $i, 1);
+				}
+				$unit_entry = $openldap->getOuEntry($dc, $unit->ou);
+				if ($unit_entry) {
+					$result = $openldap->updateData($unit_entry, [ 'description' => $unit->name ]);
+					if ($result) {
+						$messages[] = "ou=". $unit->ou ." 已將單位名稱變更為：". $unit->name;
+					} else {
+						$messages[] = "ou=". $unit->ou ." 無法變更單位名稱：". $openldap->error();
+					}
+				} else {
+					$info = array();
+					$info['objectClass'] = array('organizationalUnit','top');
+					$info['businessCategory']='行政部門';
+					$info['ou'] = $unit->ou;
+					$info['description'] = $unit->name;
+					$info['dn'] = "ou=".$info['ou'].",dc=$dc,".Config::get('ldap.rdn');
+					$result = $openldap->createEntry($info);
+					if ($result) {
+						$messages[] = "ou=". $unit->ou ." 已經為您建立行政部門，單位名稱為：". $unit->name;
+					} else {
+						$messages[] = "ou=". $unit->ou ." 行政部門建立失敗：". $openldap->error();
+					}
+				}
+			}
+			foreach ($org_units as $org_unit) {
+				$unit_entry = $openldap->getOuEntry($dc, $org_unit->ou);
+				$result = $openldap->deleteEntry($unit_entry);
+				if ($result) {
+					$messages[] = "ou=". $org_unit->ou ." 已經為您刪除行政部門，單位名稱為：". $org_unit->description;
+				} else {
+					$messages[] = "ou=". $org_unit->ou ." 行政部門刪除失敗：". $openldap->error();
+				}
+			}
+			$messages[] = "同步完成！";
+		} else {
+			$messages[] = "無法同步行政部門資訊：". $http->error();
+		}
+		return $messages;
+	}
+
+	public function syncClassHelp(Request $request, $dc)
+	{
 		$openldap = new LdapServiceProvider();
 		$sid = $openldap->getOrgID($dc);
 		$school = $openldap->getOrgEntry($dc);
@@ -273,8 +355,6 @@ class SyncController extends Controller
 		$messages[] = "開始進行同步";
 		if ($classes) {
 			foreach ($classes as $clsid => $clsname) {
-//				if (empty($clsname)) continue; 
-//				if (!strpos($clsname, '年') && !strpos($clsname, '班')) continue;
 				for ($i=0;$i<count($org_classes);$i++) {
 					if ($clsid == $org_classes[$i]->ou) array_splice($org_classes, $i, 1);
 				}
@@ -288,7 +368,7 @@ class SyncController extends Controller
 					}
 				} else {
 					$info = array();
-					$info['objectClass'] = 'organizationalUnit';
+					$info['objectClass'] = array('organizationalUnit','top');
 					$info['businessCategory']='教學班級';
 					$info['ou'] = $clsid;
 					$info['description'] = $clsname;
@@ -355,7 +435,7 @@ class SyncController extends Controller
 					}
 				} else {
 					$info = array();
-					$info['objectClass'] = 'organizationalUnit';
+					$info['objectClass'] = array('organizationalUnit','top');
 					$info['businessCategory']='教學班級';
 					$info['ou'] = $class->clsid;
 					$info['description'] = $class->clsname;

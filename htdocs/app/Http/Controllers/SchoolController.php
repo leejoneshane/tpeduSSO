@@ -1620,7 +1620,7 @@ class SchoolController extends Controller
 					$class_entry = $openldap->getOuEntry($dc, $class->ou);
 					if (!$class_entry) {
 						$info = array();
-						$info["objectClass"] = "organizationalUnit";
+						$info["objectClass"] = array("organizationalUnit", "top");
 						$info["ou"] = $class->ou;
 						$info["businessCategory"] = '教學班級';
 						$info["description"] = $class->description;
@@ -1755,7 +1755,7 @@ class SchoolController extends Controller
 			if ($teacher) $openldap->updateData($teacher, [ 'tpTutorClass' => $class ]);
 		}
 		$info = array();
-		$info['objectClass'] = 'organizationalUnit';
+		$info['objectClass'] = array('organizationalUnit', 'top');
 		$info['businessCategory']='教學班級'; //右列選一:行政部門,教學領域,教師社群或社團,學生社團或營隊
 		$info['ou'] = $class;
 		$info['description'] = $request->get('new-desc');
@@ -1899,7 +1899,7 @@ class SchoolController extends Controller
 			'new-desc' => 'required|string',
 		]);
 		$info = array();
-		$info['objectClass'] = 'organizationalUnit';
+		$info['objectClass'] = array('organizationalUnit', 'top');
 		$info['businessCategory']='行政部門'; //右列選一:行政部門,教學領域,教師社群或社團,學生社團或營隊
 		$info['ou'] = $request->get('new-ou');
 		$info['description'] = $request->get('new-desc');
