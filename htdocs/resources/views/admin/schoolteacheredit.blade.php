@@ -229,7 +229,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('raddress') ? ' has-error' : '' }}">
 					<label style="display:block">戶籍地址</label>
-					<input id="raddress" type="text" class="form-control" name="raddress" value="{{ !empty($user['registeredAddress'] ? $user['registeredAddress'] : '' }}"
+					<input id="raddress" type="text" class="form-control" name="raddress" value="{{ !empty($user['registeredAddress']) ? $user['registeredAddress'] : '' }}"
 					 placeholder="請包含里鄰資訊...">
 					@if ($errors->has('raddress'))
 						<p class="help-block">
