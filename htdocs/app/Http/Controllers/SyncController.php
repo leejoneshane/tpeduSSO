@@ -273,6 +273,8 @@ class SyncController extends Controller
 		$messages[] = "開始進行同步";
 		if ($classes) {
 			foreach ($classes as $clsid => $clsname) {
+//				if (empty($clsname)) continue; 
+//				if (!strpos($clsname, '年') && !strpos($clsname, '班')) continue;
 				for ($i=0;$i<count($org_classes);$i++) {
 					if ($clsid == $org_classes[$i]->ou) array_splice($org_classes, $i, 1);
 				}
@@ -339,8 +341,6 @@ class SyncController extends Controller
 		$messages[] = "開始進行同步";
 		if ($classes) {
 			foreach ($classes as $class) {
-				if (empty($class->name)) continue; 
-				if (!strpos($class->name, '年') && !strpos($class->name, '班')) continue;
 				if (!empty($org_classes))
 					for ($i=0;$i<count($org_classes);$i++) {
 						if ($class->clsid == $org_classes[$i]->ou) array_splice($org_classes, $i, 1);
