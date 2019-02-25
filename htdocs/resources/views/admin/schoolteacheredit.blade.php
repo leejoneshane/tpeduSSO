@@ -239,7 +239,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('address') ? ' has-error' : '' }}">
 					<label style="display:block">郵寄地址</label>
-					<input id="address" type="text" class="form-control" name="address" value="{{ !empty($user['homePostalAddress') ? $user['homePostalAddress'] : '' }}">
+					<input id="address" type="text" class="form-control" name="address" value="{{ !empty($user['homePostalAddress']) ? $user['homePostalAddress'] : '' }}">
 					@if ($errors->has('address'))
 						<p class="help-block">
 							<strong>{{ $errors->first('address') }}</strong>
@@ -248,7 +248,7 @@
 				</div>
 			    <div class="form-group{{ $errors->has('www') ? ' has-error' : '' }}">
 					<label>個人首頁</label>
-					<input id="www" type="text" class="form-control" name="www" value="{{ !empty($user['wWWHomePage') ? $user['wWWHomePage'] : '' }}">
+					<input id="www" type="text" class="form-control" name="www" value="{{ !empty($user['wWWHomePage']) ? $user['wWWHomePage'] : '' }}">
 					@if ($errors->has('www'))
 						<p class="help-block">
 							<strong>{{ $errors->first('www') }}</strong>
