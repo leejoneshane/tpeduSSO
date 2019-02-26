@@ -862,6 +862,7 @@ class LdapServiceProvider extends ServiceProvider
 								} else {
 										$roles[] = $userinfo['title'];
 								}
+								$titles = array();
 								foreach ($roles as $role_pair) {
 										$a = explode(',' , $role_pair);
 										if (count($a) == 3 ) {
