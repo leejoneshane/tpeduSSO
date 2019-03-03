@@ -125,7 +125,7 @@
                     @if (!empty($user->ldap['employeeType']) && $user->ldap['employeeType'] == '學生')
             	    	<div class="row">
             			<div class="col-md-4 text-md-right">就讀班級</div>
-            			<div class="col-md-6">{{ $user->ldap['tpClassTitle'] }}</div>
+            			<div class="col-md-6">{{ !empty($user->ldap['tpClassTitle']) ? $user->ldap['tpClassTitle'] : $user->ldap['tpClass'] }}</div>
                     	</div>
             	    	<div class="row">
             			<div class="col-md-4 text-md-right">座號</div>
