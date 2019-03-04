@@ -63,16 +63,12 @@ trait AuthenticatesUsers
             if ($openldap->authenticate($username,$password)) {
                 $request->session()->put('idno', $idno);
                 return redirect()->route('changeAccount');
-            } else {
-                return redirect()->route('login');
             }
         }
         if ($password == substr($idno, -6)) {
             if ($openldap->authenticate($username,$password)) {
                 $request->session()->put('idno', $idno);
                 return redirect()->route('changePassword');
-            } else {
-                return redirect()->route('login');
             }
         }
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
