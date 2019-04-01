@@ -63,7 +63,7 @@ class profileController extends Controller
 	$user = $request->user();
 	$json = new \stdClass();
 	$json->role = $user->ldap['employeeType'];
-	if (!empty($user->ldap['o'])) {
+	if (isset($user->ldap['o']) && !empty($user->ldap['o'])) {
 		if (is_array($user->ldap['o'])) {
 			$o = $user->ldap['o'][0];
 		} else {
@@ -71,21 +71,21 @@ class profileController extends Controller
 		}
 		$json->o = $o;
 	}
-	if (!empty($user->ldap['gender'])) $json->gender = $user->ldap['gender'];
-	if (!empty($user->ldap['birthDate'])) $json->birthDate = $user->ldap['birthDate'];
-	if (!empty($user->ldap['school'][$o])) $json->organization = $user->ldap['school'][$o];
+	if (isset($user->ldap['gender']) && !empty($user->ldap['gender'])) $json->gender = $user->ldap['gender'];
+	if (isset($user->ldap['birthDate']) && !empty($user->ldap['birthDate'])) $json->birthDate = $user->ldap['birthDate'];
+	if (isset($user->ldap['school'][$o]) && !empty($user->ldap['school'][$o])) $json->organization = $user->ldap['school'][$o];
 	if ($json->role == '學生') {
-	    if (!empty($user->ldap['employeeNumber'])) $json->studentId = $user->ldap['employeeNumber'];
-	    if (!empty($user->ldap['tpClass'])) $json->class = $user->ldap['tpClass'];
-	    if (!empty($user->ldap['tpClassTitle'])) $json->className = $user->ldap['tpClassTitle'];
-	    if (!empty($user->ldap['tpSeat'])) $json->seat = $user->ldap['tpSeat'];
+	    if (isset($user->ldap['employeeNumber']) && !empty($user->ldap['employeeNumber'])) $json->studentId = $user->ldap['employeeNumber'];
+	    if (isset($user->ldap['tpClass']) && !empty($user->ldap['tpClass'])) $json->class = $user->ldap['tpClass'];
+	    if (isset($user->ldap['tpClassTitle']) && !empty($user->ldap['tpClassTitle'])) $json->className = $user->ldap['tpClassTitle'];
+	    if (isset($user->ldap['tpSeat']) && !empty($user->ldap['tpSeat'])) $json->seat = $user->ldap['tpSeat'];
 	} else {
-	    if (!empty($user->ldap['department'][$o])) $json->unit = array_values($user->ldap['department'][$o])[0];
-	    if (!empty($user->ldap['titleName'][$o])) $json->title = array_values($user->ldap['titleName'][$o])[0];
-	    if (!empty($user->ldap['teachClass'][$o])) $json->teachClass = array_values($user->ldap['teachClass'][$o]);
-		if (!empty($user->ldap['tpTutorClass'])) $json->tutorClass = $user->ldap['tpTutorClass'];
+	    if (isset($user->ldap['department'][$o]) && !empty($user->ldap['department'][$o])) $json->unit = array_values($user->ldap['department'][$o])[0];
+	    if (isset($user->ldap['titleName'][$o]) && !empty($user->ldap['titleName'][$o])) $json->title = array_values($user->ldap['titleName'][$o])[0];
+	    if (isset($user->ldap['teachClass'][$o]) && !empty($user->ldap['teachClass'][$o])) $json->teachClass = array_values($user->ldap['teachClass'][$o]);
+		if (isset($user->ldap['tpTutorClass']) && !empty($user->ldap['tpTutorClass'])) $json->tutorClass = $user->ldap['tpTutorClass'];
 	}
-	if (!empty($user->ldap['tpCharacter'])) $json->character = $user->ldap['tpCharacter'];
+	if (isset($user->ldap['tpCharacter']) && !empty($user->ldap['tpCharacter'])) $json->character = $user->ldap['tpCharacter'];
     return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 

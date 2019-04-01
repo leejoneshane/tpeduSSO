@@ -545,9 +545,9 @@ class schoolController extends Controller
     
     public function people(Request $request, $dc, $uuid)
     {
+        $openldap = new LdapServiceProvider();
         if (Auth::check()) {
             $user = $request->user();
-            $openldap = new LdapServiceProvider();
             $entry = $openldap->getOrgEntry($dc);
             $data = $openldap->getOrgData($entry, 'tpAdministrator');
             if (is_array($data['tpAdministrator'])) {
