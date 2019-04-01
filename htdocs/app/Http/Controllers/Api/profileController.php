@@ -63,27 +63,29 @@ class profileController extends Controller
 	$user = $request->user();
 	$json = new \stdClass();
 	$json->role = $user->ldap['employeeType'];
-	if (is_array($user->ldap['o'])) {
-		$o = $user->ldap['o'][0];
-	} else {
-		$o = $user->ldap['o'];
+	if (!empty($user->ldap['o'])) {
+		if (is_array($user->ldap['o'])) {
+			$o = $user->ldap['o'][0];
+		} else {
+			$o = $user->ldap['o'];
+		}
+		$json->o = $o;
 	}
-	if (array_key_exists('gender', $user->ldap)) $json->gender = $user->ldap['gender'];
-	if (array_key_exists('birthDate', $user->ldap)) $json->birthDate = $user->ldap['birthDate'];
-	if (array_key_exists('o', $user->ldap)) $json->o = $o;
-	if (array_key_exists('school', $user->ldap)) $json->organization = $user->ldap['school'][$o];
+	if (!empty($user->ldap['gender'])) $json->gender = $user->ldap['gender'];
+	if (!empty($user->ldap['birthDate'])) $json->birthDate = $user->ldap['birthDate'];
+	if (!empty($user->ldap['school'][$o])) $json->organization = $user->ldap['school'][$o];
 	if ($json->role == '學生') {
-	    if (array_key_exists('employeeNumber', $user->ldap)) $json->studentId = $user->ldap['employeeNumber'];
-	    if (array_key_exists('tpClass', $user->ldap)) $json->class = $user->ldap['tpClass'];
-	    if (array_key_exists('tpClassTitle', $user->ldap)) $json->className = $user->ldap['tpClassTitle'];
-	    if (array_key_exists('tpSeat', $user->ldap)) $json->seat = $user->ldap['tpSeat'];
+	    if (!empty($user->ldap['employeeNumber'])) $json->studentId = $user->ldap['employeeNumber'];
+	    if (!empty($user->ldap['tpClass'])) $json->class = $user->ldap['tpClass'];
+	    if (!empty($user->ldap['tpClassTitle'])) $json->className = $user->ldap['tpClassTitle'];
+	    if (!empty($user->ldap['tpSeat'])) $json->seat = $user->ldap['tpSeat'];
 	} else {
-	    if (array_key_exists('department', $user->ldap)) $json->unit = array_values($user->ldap['department'][$o])[0];
-	    if (array_key_exists('titleName', $user->ldap)) $json->title = array_values($user->ldap['titleName'][$o])[0];
-	    if (array_key_exists('teachClass', $user->ldap)) $json->teachClass = array_values($user->ldap['teachClass'][$o]);
-		if (array_key_exists('tpTutorClass', $user->ldap)) $json->tutorClass = $user->ldap['tpTutorClass'];
+	    if (!empty($user->ldap['department'][$o])) $json->unit = array_values($user->ldap['department'][$o])[0];
+	    if (!empty($user->ldap['titleName'][$o])) $json->title = array_values($user->ldap['titleName'][$o])[0];
+	    if (!empty($user->ldap['teachClass'][$o])) $json->teachClass = array_values($user->ldap['teachClass'][$o]);
+		if (!empty($user->ldap['tpTutorClass'])) $json->tutorClass = $user->ldap['tpTutorClass'];
 	}
-	if (array_key_exists('tpCharacter', $user->ldap)) $json->character = $user->ldap['tpCharacter'];
+	if (!empty($user->ldap['tpCharacter'])) $json->character = $user->ldap['tpCharacter'];
     return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
