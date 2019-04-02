@@ -41,7 +41,9 @@ class SyncAlle implements ShouldQueue
      */
     public function handle($dc = '')
     {
-		$filter = "(tpSims=alle)";
+        $openldap = new LdapServiceProvider();
+        $http = new SimsServiceProvider();
+        $filter = "(tpSims=alle)";
         if (!empty(self::$dc)) $dc=self::$dc;
         if (empty($dc)) {
             $schools = $openldap->getOrgs($filter);
@@ -50,8 +52,6 @@ class SyncAlle implements ShouldQueue
                 SyncAlle::dispatch($dc);
             }
         } else {
-            $openldap = new LdapServiceProvider();
-            $http = new SimsServiceProvider();
             $sid = $openldap->getOrgID($dc);
             $org_classes = $openldap->getOus($dc, '教學班級');
             $classes = $http->ps_getClasses($sid);

@@ -41,6 +41,8 @@ class SyncOneplus implements ShouldQueue
      */
     public function handle($dc = '')
     {
+        $openldap = new LdapServiceProvider();
+        $http = new SimsServiceProvider();
         $filter = "(tpSims=oneplus)";
         if (!empty(self::$dc)) $dc=self::$dc;
         if (empty($dc)) {
@@ -51,8 +53,6 @@ class SyncOneplus implements ShouldQueue
                     SyncOneplus::dispatch($dc);
                 }
         } else {
-            $openldap = new LdapServiceProvider();
-            $http = new SimsServiceProvider();
             $org_classes = $openldap->getOus($dc, '教學班級');
             $classes = $http->js_getClasses($sid);
             if ($classes) {
