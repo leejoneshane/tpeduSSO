@@ -192,7 +192,7 @@ class SyncController extends Controller
 			foreach ($schools as $sch) {
 				$sid = $sch->tpUniformNumbers;
 				$data = $http->ps_call('school_info', [ 'sid' => $sid ]);
-				if (isset($data[0]->name)) {
+				if (isset($data[0]->name) && !empty($data[0]->name)) {
 					$entry = $openldap->getOrgEntry($sch->o);
 					if ($entry) {
 						$info = array();
@@ -321,7 +321,7 @@ class SyncController extends Controller
 		$sid = $openldap->getOrgID($dc);
 		$school = $openldap->getOrgEntry($dc);
 		$sims = $openldap->getOrgData($school, 'tpSims');
-		if (isset($sims['tpSims'])) $sys = $sims['tpSims'];
+		if (!empty($sims['tpSims'])) $sys = $sims['tpSims'];
 		else $sys = '';
 		$result = array();
 		if ($request->get('submit')) {
@@ -471,7 +471,7 @@ class SyncController extends Controller
 		$sid = $openldap->getOrgID($dc);
 		$school = $openldap->getOrgEntry($dc);
 		$sims = $openldap->getOrgData($school, 'tpSims');
-		if (isset($sims['tpSims'])) $sys = $sims['tpSims'];
+		if (!empty($sims['tpSims'])) $sys = $sims['tpSims'];
 		else $sys = '';
 		$result = array();
 		if ($request->get('submit')) {
@@ -677,7 +677,7 @@ class SyncController extends Controller
 					if ($user_entry) {
 						$original = $openldap->getUserData($user_entry);
 						$os = array();
-						if (isset($original['o'])) {
+						if (!empty($original['o'])) {
 							if (is_array($original['o'])) {
 								$os = $original['o'];
 							} else {
@@ -688,7 +688,7 @@ class SyncController extends Controller
 							}
 						}
 						$ous = array();
-						if (isset($original['ou'])) {
+						if (!empty($original['ou'])) {
 							if (is_array($original['ou'])) {
 								$ous = $original['ou'];
 							} else {
@@ -700,7 +700,7 @@ class SyncController extends Controller
 							}
 						}
 						$titles = array();
-						if (isset($original['title'])) {
+						if (!empty($original['title'])) {
 							if (is_array($original['title'])) {
 								$titles = $original['title'];
 							} else {
@@ -712,7 +712,7 @@ class SyncController extends Controller
 							}
 						}
 						$tclass = array();
-						if (isset($original['tpTeachClass'])) {
+						if (!empty($original['tpTeachClass'])) {
 							if (is_array($original['tpTeachClass'])) {
 								$tclass = $original['tpTeachClass'];
 							} else {
@@ -724,7 +724,7 @@ class SyncController extends Controller
 							}
 						}
 						$orgs[] = $dc;
-						if (isset($original['info'])) {
+						if (!empty($original['info'])) {
 							if (is_array($original['info'])) {
 								$educloud = $original['info'];
 							} else {
@@ -736,9 +736,9 @@ class SyncController extends Controller
 							}
 						}
 						$educloud[] = json_encode(array("sid" => $sid, "role" => $data['type']), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
-						if (isset($data['ou']) && !empty($data['ou'])) $units[] = "$dc," . $data['ou'];
-						if (isset($data['role']) && !empty($data['role'])) $roles[] = "$dc," . $data['ou'] . "," . $data['role'];
-						if (isset($data['tclass'])) {
+						if (!empty($data['ou'])) $units[] = "$dc," . $data['ou'];
+						if (!empty($data['role'])) $roles[] = "$dc," . $data['ou'] . "," . $data['role'];
+						if (!empty($data['tclass'])) {
 							$classes = $data['tclass'];
 							foreach ($classes as $class) {
 								list($clsid, $subjid) = explode(',', $class);
@@ -758,10 +758,10 @@ class SyncController extends Controller
 						$info['sn'] = $name[0];
 						$info['givenName'] = $name[1];
 						$info['displayName'] = $data['name'];
-						if (isset($data['gender']) && !empty($data['gender'])) $info['gender'] = (int) $data['gender'];
-						if (isset($data['birthdate']) && !empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'];
-						if (isset($data['register']) && !empty($data['register'])) $info['registeredAddress'] = $data['register'];
-						if (isset($data['mail']) && !empty($data['mail'])) {
+						if (!empty($data['gender'])) $info['gender'] = (int) $data['gender'];
+						if (!empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'];
+						if (!empty($data['register'])) $info['registeredAddress'] = $data['register'];
+						if (!empty($data['mail'])) {
 							$validator = Validator::make(
 								[ 'mail' => $data['mail'] ], [ 'mail' => 'email' ]
 							);
@@ -796,9 +796,9 @@ class SyncController extends Controller
 								continue;
 							}
 						}
-						if (isset($data['ou']) && !empty($data['ou'])) $units[] = "$dc," . $data['ou'];
-						if (isset($data['role']) && !empty($data['role'])) $roles[] = "$dc," . $data['ou'] . "," . $data['role'];
-						if (isset($data['tclass'])) {
+						if (!empty($data['ou'])) $units[] = "$dc," . $data['ou'];
+						if (!empty($data['role'])) $roles[] = "$dc," . $data['ou'] . "," . $data['role'];
+						if (!empty($data['tclass'])) {
 							$classes = $data['tclass'];
 							foreach ($classes as $class) {
 								list($clsid, $subjid) = explode(',', $class);
@@ -823,10 +823,10 @@ class SyncController extends Controller
 						$info['sn'] = $name[0];
 						$info['givenName'] = $name[1];
 						$info['displayName'] = $data['name'];
-						if (isset($data['gender']) && !empty($data['gender'])) $info['gender'] = (int) $data['gender'];
-						if (isset($data['birthdate']) && !empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'];
-						if (isset($data['register']) && !empty($data['register'])) $info['registeredAddress'] = $data['register'];
-						if (isset($data['mail']) && !empty($data['mail'])) {
+						if (!empty($data['gender'])) $info['gender'] = (int) $data['gender'];
+						if (!empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'];
+						if (!empty($data['register'])) $info['registeredAddress'] = $data['register'];
+						if (!empty($data['mail'])) {
 							$validator = Validator::make(
 								[ 'mail' => $data['mail'] ], [ 'mail' => 'email' ]
 							);
@@ -850,7 +850,7 @@ class SyncController extends Controller
 					$user_entry = $openldap->getUserEntry($tea['cn']);
 					$original = $openldap->getUserData($user_entry);
 					$os = $orgs = array();
-					if (isset($original['o'])) {
+					if (!empty($original['o'])) {
 						if (is_array($original['o'])) {
 							$os = $original['o'];
 						} else {
@@ -861,7 +861,7 @@ class SyncController extends Controller
 						}
 					}
 					$ous = $units = array();
-					if (isset($original['ou'])) {
+					if (!empty($original['ou'])) {
 						if (is_array($original['ou'])) {
 							$ous = $original['ou'];
 						} else {
@@ -873,7 +873,7 @@ class SyncController extends Controller
 						}
 					}
 					$titles = $roles = array();
-					if (isset($original['title'])) {
+					if (!empty($original['title'])) {
 						if (is_array($original['title'])) {
 							$titles = $original['title'];
 						} else {
@@ -885,7 +885,7 @@ class SyncController extends Controller
 						}
 					}
 					$tclass = $assign = array();
-					if (isset($original['tpTeachClass'])) {
+					if (!empty($original['tpTeachClass'])) {
 						if (is_array($original['tpTeachClass'])) {
 							$tclass = $original['tpTeachClass'];
 						} else {
@@ -897,7 +897,7 @@ class SyncController extends Controller
 						}
 					}
 					$educloud = array();
-					if (isset($original['info'])) {
+					if (!empty($original['info'])) {
 						if (is_array($original['info'])) {
 							$educloud = $original['info'];
 						} else {
@@ -973,7 +973,7 @@ class SyncController extends Controller
 		} else {
 			foreach ($teachers as $teaid) {
 				$data = $http->ps_getTeacher($sid, $teaid);
-				if (isset($data['idno']) && isset($data['name'])) {
+				if (!empty($data['idno']) && !empty($data['name'])) {
 					$idno = strtoupper($data['idno']);
 					$validator = Validator::make(
 						[ 'idno' => $idno ], [ 'idno' => new idno ]
@@ -992,7 +992,7 @@ class SyncController extends Controller
 					if ($user_entry) {
 						$original = $openldap->getUserData($user_entry);
 						$os = array();
-						if (isset($original['o'])) {
+						if (!empty($original['o'])) {
 							if (is_array($original['o'])) {
 								$os = $original['o'];
 							} else {
@@ -1003,7 +1003,7 @@ class SyncController extends Controller
 							}
 						}
 						$ous = array();
-						if (isset($original['ou'])) {
+						if (!empty($original['ou'])) {
 							if (is_array($original['ou'])) {
 								$ous = $original['ou'];
 							} else {
@@ -1015,7 +1015,7 @@ class SyncController extends Controller
 							}
 						}
 						$titles = array();
-						if (isset($original['title'])) {
+						if (!empty($original['title'])) {
 							if (is_array($original['title'])) {
 								$titles = $original['title'];
 							} else {
@@ -1027,7 +1027,7 @@ class SyncController extends Controller
 							}
 						}
 						$tclass = array();
-						if (isset($original['tpTeachClass'])) {
+						if (!empty($original['tpTeachClass'])) {
 							if (is_array($original['tpTeachClass'])) {
 								$tclass = $original['tpTeachClass'];
 							} else {
@@ -1039,7 +1039,7 @@ class SyncController extends Controller
 							}
 						}
 						$orgs[] = $dc;
-						if (isset($original['info'])) {
+						if (!empty($original['info'])) {
 							if (is_array($original['info'])) {
 								$educloud = $original['info'];
 							} else {
@@ -1050,7 +1050,7 @@ class SyncController extends Controller
 								if ($i['sid'] == $sid) unset($educloud[$k]);
 							}
 						}
-						if (isset($data['job_title'])) {
+						if (!empty($data['job_title'])) {
 							foreach ($data['job_title'] as $job) {
 								if (strpos($job, '校長')) $role = '校長';
 								if (strpos($job, '工友')) $role = '職工';
@@ -1060,19 +1060,19 @@ class SyncController extends Controller
 								if (strpos($job, '心')) $role = '職工';
 								if (strpos($job, '護')) $role = '職工';
 								$k = base64_encode($job);
-								if (isset($allroles[$k])) {
+								if (isset($allroles[$k]) && !empty($allroles[$k])) {
 									$units[] = "$dc," . $allroles[$k]['ou'];
 									$roles[] = "$dc," . $allroles[$k]['title'];
 								}
 							}
 						}
 						$educloud[] = json_encode(array("sid" => $sid, "role" => $role), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
-						if (isset($data['assign'])) {
+						if (!empty($data['assign'])) {
 							$classes = $data['assign'];
 							foreach ($classes as $class => $subjects) {
 								foreach ($subjects as $s) {
 									$k = base64_encode($s);
-									if (isset($allsubject[$k])) {
+									if (isset($allsubject[$k]) && !empty($allsubject[$k])) {
 										$assign[] = "$dc,$class," . $allsubject[$k];
 									}
 								}
@@ -1126,7 +1126,7 @@ class SyncController extends Controller
 								continue;
 							}
 						}
-						if (isset($data['job_title'])) {
+						if (!empty($data['job_title'])) {
 							foreach ($data['job_title'] as $job) {
 								if (strpos($job, '校長')) $role = '校長';
 								if (strpos($job, '工友')) $role = '職工';
@@ -1136,13 +1136,13 @@ class SyncController extends Controller
 								if (strpos($job, '心')) $role = '職工';
 								if (strpos($job, '護')) $role = '職工';
 								$k = base64_encode($job);
-								if (isset($allroles[$k])) {
+								if (isset($allroles[$k]) && !empty($allroles[$k])) {
 									$units[] = "$dc," . $allroles[$k]['ou'];
 									$roles[] = "$dc," . $allroles[$k]['title'];
 								}
 							}
 						}
-						if (isset($data['assign'])) {
+						if (!empty($data['assign'])) {
 							$classes = $data['assign'];
 							foreach ($classes as $class => $subjects) {
 								foreach ($subjects as $s) {
@@ -1191,7 +1191,7 @@ class SyncController extends Controller
 			$filter = "(&(o=$dc)(!(employeeType=學生)))";
 			$org_teachers = $openldap->findUsers($filter, [ 'cn', 'employeeNumber' ]);
 			foreach ($org_teachers as $tea) {
-				if (!isset($tea['employeeNumber']) || empty($tea['employeeNumber']) || !in_array($tea['employeeNumber'], $teachers)) {
+				if (empty($tea['employeeNumber']) || !in_array($tea['employeeNumber'], $teachers)) {
 					$user_entry = $openldap->getUserEntry($tea['cn']);
 					$original = $openldap->getUserData($user_entry);
 					$os = $orgs = array();
@@ -1206,7 +1206,7 @@ class SyncController extends Controller
 						}
 					}
 					$ous = $units = array();
-					if (isset($original['ou'])) {
+					if (!empty($original['ou'])) {
 						if (is_array($original['ou'])) {
 							$ous = $original['ou'];
 						} else {
@@ -1218,7 +1218,7 @@ class SyncController extends Controller
 						}
 					}
 					$titles = $roles = array();
-					if (isset($original['title'])) {
+					if (!empty($original['title'])) {
 						if (is_array($original['title'])) {
 							$titles = $original['title'];
 						} else {
@@ -1230,7 +1230,7 @@ class SyncController extends Controller
 						}
 					}
 					$tclass = $assign = array();
-					if (isset($original['tpTeachClass'])) {
+					if (!empty($original['tpTeachClass'])) {
 						if (is_array($original['tpTeachClass'])) {
 							$tclass = $original['tpTeachClass'];
 						} else {
@@ -1242,7 +1242,7 @@ class SyncController extends Controller
 						}
 					}
 					$educloud = array();
-					if (isset($original['info'])) {
+					if (!empty($original['info'])) {
 						if (is_array($original['info'])) {
 							$educloud = $original['info'];
 						} else {
@@ -1416,10 +1416,10 @@ class SyncController extends Controller
 					$info['sn'] = $name[0];
 					$info['givenName'] = $name[1];
 					$info['displayName'] = $data['name'];
-					if (isset($data['gender']) && !empty($data['gender'])) $info['gender'] = (int) $data['gender'];
-					if (isset($data['birthdate']) && !empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'];
-					if (isset($data['register']) && !empty($data['register'])) $info['registeredAddress'] = $data['register'];
-					if (isset($data['mail']) && !empty($data['mail'])) {
+					if (!empty($data['gender'])) $info['gender'] = (int) $data['gender'];
+					if (!empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'];
+					if (!empty($data['register'])) $info['registeredAddress'] = $data['register'];
+					if (!empty($data['mail'])) {
 						$validator = Validator::make(
 							[ 'mail' => $data['mail'] ], [ 'mail' => 'email' ]
 						);
@@ -1472,10 +1472,10 @@ class SyncController extends Controller
 					$info['sn'] = $name[0];
 					$info['givenName'] = $name[1];
 					$info['displayName'] = $data['name'];
-					if (isset($data['gender']) && !empty($data['gender'])) $info['gender'] = (int) $data['gender'];
-					if (isset($data['birthdate']) && !empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'];
-					if (isset($data['register']) && !empty($data['register'])) $info['registeredAddress'] = $data['register'];
-					if (isset($data['mail']) && !empty($data['mail'])) {
+					if (!empty($data['gender'])) $info['gender'] = (int) $data['gender'];
+					if (!empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'];
+					if (!empty($data['register'])) $info['registeredAddress'] = $data['register'];
+					if (!empty($data['mail'])) {
 						$validator = Validator::make(
 							[ 'mail' => $data['mail'] ], [ 'mail' => 'email' ]
 						);
@@ -1664,7 +1664,7 @@ class SyncController extends Controller
 			$filter = "(&(o=$dc)(tpClass=$clsid))";
 			$org_students = $openldap->findUsers($filter, [ 'cn', 'employeeNumber' ]);
 			foreach ($org_students as $stu) {
-				if (!isset($stu['employeeNumber']) || empty($stu['employeeNumber']) || !in_array($stu['employeeNumber'], $students)) {
+				if (empty($stu['employeeNumber']) || !in_array($stu['employeeNumber'], $students)) {
 					$user_entry = $openldap->getUserEntry($stu['cn']);
 					$openldap->updateData($user_entry, [ 'inetUserStatus' => 'deleted' ]);
 				}
@@ -1677,8 +1677,17 @@ class SyncController extends Controller
 	public function js_autoSync(Request $request)
     {
 		if ($request->get('submit')) {
-			dispatch(new SyncOneplus);
-			return view('admin.synconeplus', [ 'result' => array('批次同步工作已經啟動！') ]);
+			  $openldap = new LdapServiceProvider();
+			  $http = new SimsServiceProvider();
+			  $filter = "(tpSims=oneplus)";
+			  $schools = $openldap->getOrgs($filter);
+			  if ($schools)
+			  	foreach ($schools as $school) {
+						  $i += 7000;
+				    	$dc = $school->o;
+							dispatch(new SyncOneplus($dc))->delay($i);
+					}
+			  return view('admin.synconeplus', [ 'result' => array('批次同步工作已經啟動！') ]);
 		}
 		return view('admin.synconeplus');
 	}
@@ -1686,8 +1695,17 @@ class SyncController extends Controller
 	public function ps_autoSync(Request $request)
     {
 		if ($request->get('submit')) {
-			dispatch(new SyncAlle);
-			return view('admin.syncalle', [ 'result' => array('批次同步工作已經啟動！') ]);
+				$openldap = new LdapServiceProvider();
+				$http = new SimsServiceProvider();
+				$filter = "(tpSims=alle)";
+				$schools = $openldap->getOrgs($filter);
+				if ($schools)
+						foreach ($schools as $school) {
+						  	$i += 7000;
+								$dc = $school->o;
+								dispatch(new SyncAlle($dc))->delay($i);
+						}
+				return view('admin.syncalle', [ 'result' => array('批次同步工作已經啟動！') ]);
 		}
 		return view('admin.syncalle');
 	}
