@@ -1675,7 +1675,7 @@ class SyncController extends Controller
 	}
 
 	public function js_autoSync(Request $request)
-  {
+	{
 		$i = 0;
 		if ($request->get('submit')) {
 			  $openldap = new LdapServiceProvider();
@@ -1684,8 +1684,8 @@ class SyncController extends Controller
 			  $schools = $openldap->getOrgs($filter);
 			  if ($schools)
 			  	foreach ($schools as $school) {
-						  $i += 7000;
-				    	$dc = $school->o;
+							$i += 7000;
+							$dc = $school->o;
 							dispatch(new SyncOneplus($dc))->delay($i);
 					}
 			  return view('admin.synconeplus', [ 'result' => array('批次同步工作已經啟動！') ]);
@@ -1694,7 +1694,7 @@ class SyncController extends Controller
 	}
 	
 	public function ps_autoSync(Request $request)
-  {
+	{
 		$i = 0;
 		if ($request->get('submit')) {
 				$openldap = new LdapServiceProvider();
@@ -1703,9 +1703,9 @@ class SyncController extends Controller
 				$schools = $openldap->getOrgs($filter);
 				if ($schools)
 						foreach ($schools as $school) {
-						  	$i += 7000;
-								$dc = $school->o;
-								dispatch(new SyncAlle($dc))->delay($i);
+							$i += 7000;
+							$dc = $school->o;
+							dispatch(new SyncAlle($dc))->delay($i);
 						}
 				return view('admin.syncalle', [ 'result' => array('批次同步工作已經啟動！') ]);
 		}
