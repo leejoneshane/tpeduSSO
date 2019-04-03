@@ -49,7 +49,7 @@ class SyncOneplus implements ShouldQueue
             $schools = $openldap->getOrgs($filter);
             if ($schools)
                 foreach ($schools as $school) {
-                    $dc = $school['o'];
+                    $dc = $school->o;
                     SyncOneplus::dispatch($dc);
                 }
         } else {

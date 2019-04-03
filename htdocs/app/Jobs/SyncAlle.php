@@ -48,7 +48,7 @@ class SyncAlle implements ShouldQueue
         if (empty($dc)) {
             $schools = $openldap->getOrgs($filter);
             foreach ($schools as $school) {
-                $dc = $school['o'];
+                $dc = $school->o;
                 SyncAlle::dispatch($dc);
             }
         } else {
