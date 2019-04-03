@@ -1675,7 +1675,8 @@ class SyncController extends Controller
 	}
 
 	public function js_autoSync(Request $request)
-    {
+  {
+		$i = 0;
 		if ($request->get('submit')) {
 			  $openldap = new LdapServiceProvider();
 			  $http = new SimsServiceProvider();
@@ -1693,7 +1694,8 @@ class SyncController extends Controller
 	}
 	
 	public function ps_autoSync(Request $request)
-    {
+  {
+		$i = 0;
 		if ($request->get('submit')) {
 				$openldap = new LdapServiceProvider();
 				$http = new SimsServiceProvider();
