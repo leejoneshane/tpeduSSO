@@ -21,7 +21,7 @@ class SyncOneplus implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $tries = 5;
-    private $dc = '';
+    static private $dc = '';
 
     /**
      * Create a new job instance.
