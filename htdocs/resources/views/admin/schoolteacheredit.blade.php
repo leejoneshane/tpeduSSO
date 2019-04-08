@@ -122,7 +122,7 @@
 			    <div class="form-group">
 					<label>性別</label>
 					<select id="gender" class="form-control" name="gender">
-						<option value="0"{{ empty($user['gender']) && $user['gender'] == 0 ? ' selected' : '' }}>未知</option>
+						<option value="0"{{ !empty($user['gender']) && $user['gender'] == 0 ? ' selected' : '' }}>未知</option>
 						<option value="1"{{ !empty($user['gender']) && $user['gender'] == 1 ? ' selected' : '' }}>男</option>
 						<option value="2"{{ !empty($user['gender']) && $user['gender'] == 2 ? ' selected' : '' }}>女</option>
 						<option value="9"{{ !empty($user['gender']) && $user['gender'] == 9 ? ' selected' : '' }}>其它</option>
