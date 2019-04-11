@@ -486,7 +486,17 @@ class schoolController extends Controller
             if (!empty($request->get('class'))) $info['tpClass'] = $request->get('class');
             if (!empty($request->get('seat'))) $info['tpSeat'] = $request->get('seat');
         }
-		if (!empty($request->get('memo'))) $info['tpCharacter'] = $request->get('memo');
+		if (!empty($request->get('memo'))) {
+            $characters = array();
+            if (is_array($request->get('memo'))) {
+                foreach ($request->get('memo') as $character) {
+                    if ($character != '縣市管理者') $characters[] = $character;
+                }
+            } elseif ($request->get('memo') != '縣市管理者') {
+                $characters[] = $request->get('memo');
+            }
+            if (!empty($characters)) $info['tpCharacter'] = $characters;
+        }
 		if (!empty($request->get('gender'))) $info['gender'] = $request->get('gender');
 		if (!empty($request->get('birthdate'))) $info['birthDate'] = $request->get('birthdate')."000000Z";
 		if (!empty($request->get('email'))) $info['mail'] = $request->get('email');
