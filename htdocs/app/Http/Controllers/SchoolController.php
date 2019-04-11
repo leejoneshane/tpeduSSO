@@ -239,13 +239,18 @@ class SchoolController extends Controller
 					$account['dn'] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
 					$entry["userPassword"] = $password;
 				 }				   
-		    	if (isset($person->character)) {
-		    	    if (empty($person->character))
-	    			    $entry['tpCharacter'] = [];
-	    			else
-	    				$entry['tpCharacter'] = explode(' ', $person->character);
-	    		}
-		    	if (isset($person->mail)) {
+				 if (isset($person->character)) {
+					if (empty($person->character)) {
+						$info['tpCharacter'] = [];
+					} else {
+						$data = explode(' ', $person->character);
+						for ($i=0;$i<count($data);$i++) {
+							if ($data[$i] == '縣市管理者') unset($data[$i]);
+						}
+						$info['tpCharacter'] = $data;
+					}
+				}		  
+					if (isset($person->mail)) {
 		    		$data = array();
 		    		$mails = array();
 		    		if (is_array($person->mail)) {
@@ -436,9 +441,11 @@ class SchoolController extends Controller
 		if (!empty($request->get('character'))) {
 			$data = array();
 			if (is_array($request->get('character'))) {
-	    		$data = $request->get('character');
-			} else {
-	    		$data[] = $request->get('character');
+				foreach ($request->get('character') as $character) {
+					if ($character != '縣市管理者') $data[] = $character;
+			}
+		} elseif ($request->get('character') != '縣市管理者') {
+				$data[] = $request->get('character');
 			}
 			$data = array_values(array_filter($data));
 			if (!empty($data)) $info['tpCharacter'] = $data;
@@ -540,15 +547,18 @@ class SchoolController extends Controller
 		else
 			$info['wWWHomePage'] = $request->get('www');
 		if (empty($request->get('character'))) {
-			$info['tpCharacter'] = [];
+				$info['tpCharacter'] = [];
 		} else {
-			$data = array();
-			if (is_array($request->get('character'))) {
-	    		$data = $request->get('character');
-			} else {
-	    		$data[] = $request->get('character');
-			}
-			$info['tpCharacter'] = array_values(array_filter($data));
+				$data = array();
+				if (is_array($request->get('character'))) {
+					foreach ($request->get('character') as $character) {
+						if ($character != '縣市管理者') $data[] = $character;
+					}
+				} elseif ($request->get('character') != '縣市管理者') {
+					$data[] = $request->get('character');
+				}
+				$data = array_values(array_filter($data));
+				if (!empty($data)) $info['tpCharacter'] = $data;
 		}
 		if (empty($request->get('mail'))) {
 			$info['mail'] = [];
@@ -889,10 +899,15 @@ class SchoolController extends Controller
 				$info['info'] = $educloud;
     			$info['tpTeachClass'] = $assign;
 				if (isset($person->character)) {
-		    	    if (empty($person->character))
+		    	    if (empty($person->character)) {
 	    			    $info['tpCharacter'] = [];
-		    	    else
-	    			    $info['tpCharacter'] = explode(' ', $person->character);
+							} else {
+								$data = explode(' ', $person->character);
+								for ($i=0;$i<count($data);$i++) {
+									if ($data[$i] == '縣市管理者') unset($data[$i]);
+								}
+								$info['tpCharacter'] = $data;
+							}
 	    		}
 		    	if (isset($person->mail)) {
 		    		$data = array();
@@ -1144,9 +1159,11 @@ class SchoolController extends Controller
 		if (!empty($request->get('character'))) {
 			$data = array();
 			if (is_array($request->get('character'))) {
-	    		$data = $request->get('character');
-			} else {
-	    		$data[] = $request->get('character');
+				foreach ($request->get('character') as $character) {
+					if ($character != '縣市管理者') $data[] = $character;
+			}
+		} elseif ($request->get('character') != '縣市管理者') {
+				$data[] = $request->get('character');
 			}
 			$data = array_values(array_filter($data));
 			if (!empty($data)) $info['tpCharacter'] = $data;
@@ -1311,11 +1328,14 @@ class SchoolController extends Controller
 		} else {
 			$data = array();
 			if (is_array($request->get('character'))) {
-	    		$data = $request->get('character');
-			} else {
-	    		$data[] = $request->get('character');
+				foreach ($request->get('character') as $character) {
+					if ($character != '縣市管理者') $data[] = $character;
+				}
+			} elseif ($request->get('character') != '縣市管理者') {
+				$data[] = $request->get('character');
 			}
-			$info['tpCharacter'] = array_values(array_filter($data));
+			$data = array_values(array_filter($data));
+			if (!empty($data)) $info['tpCharacter'] = $data;
 		}
 		if (empty($request->get('mail'))) {
 			$info['mail'] = [];
