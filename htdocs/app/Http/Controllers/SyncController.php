@@ -840,7 +840,7 @@ class SyncController extends Controller
 						}
 					}
 				} else {
-					$messages[] = "查無教師資料，無法同步：". $http->error();
+					$messages[] = "cn=" . $idno . " 查無教師資料，無法同步：". $http->error();
 				}
 			}
 			$filter = "(&(o=$dc)(!(employeeType=學生)))";
@@ -1658,7 +1658,7 @@ class SyncController extends Controller
 						}
 					}
 				} else {
-					$messages[] = "cn=無 查無學生資料，無法同步：". $http->error();
+					$messages[] = "cn=" . $idno . " 查無學生資料，無法同步：". $http->error();
 				}
 			}
 			$filter = "(&(o=$dc)(tpClass=$clsid))";
