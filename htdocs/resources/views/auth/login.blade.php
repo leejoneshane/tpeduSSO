@@ -15,11 +15,11 @@
 	<div class="form-top">
             <div class="form-top-left">
                 <h3>歡迎使用</h3>
-		@if (session('error'))
-		<p style="color:red">{{ session('error') }}</p>
-		@else
-                <p>請輸入您的使用者名稱與密碼：</p>
-		@endif
+		        @if (session('error') || session('success'))
+		            <p style="color:red">{{ session('error') }}{{ session('success') }}</p>
+		        @else
+                    <p>請輸入您的使用者名稱與密碼：</p>
+		        @endif
             </div>
     	    <div class="form-top-right">
                 <i class="fa fa-lock"></i>

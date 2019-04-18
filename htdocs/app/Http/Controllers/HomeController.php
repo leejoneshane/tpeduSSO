@@ -140,7 +140,7 @@ class HomeController extends Controller
 				}
 				if (isset($data['mail'])) Notification::route('mail', $data['mail'])->notify(new AccountChangeNotification($new));
 			}
-			return back()->withInput()->with("success","帳號變更成功！");
+			return redirect('/')->with("success","帳號變更成功，請重新登入！");
 		}
     }
 
@@ -184,7 +184,7 @@ class HomeController extends Controller
 			}
 			if (isset($data['mail'])) Notification::route('mail', $data['mail'])->notify(new PasswordChangeNotification($new));
 		}
-		return back()->withInput()->with("success","密碼變更成功！");
+		return redirect('/')->with("success","密碼變更成功，請重新登入！");
     }
 
 }
