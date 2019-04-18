@@ -1,4 +1,4 @@
-__臺北市教育人員目錄服務 管理後台__，為臺北市政府教育局客製化之 openldap 伺服器管理後台，在知名的 phpldapadmin 套件中新增各種臺北市自訂 schema 的模板，請參考 [templates](https://github.com/leejoneshane/tpeduSSO/tree/master/phpldapadmin/templates) 資料夾， config 資料夾之設定為測試環境參數，若要用於正式對外服務請務必修改。
+__臺北市教育人員目錄服務 管理後台__，為臺北市政府教育局客製化之 openldap 伺服器管理後台，在知名的 phpldapadmin 套件中新增各種臺北市自訂 schema 的模板，請參考 [templates](https://github.com/leejoneshane/tpeduSSO/tree/master/phpldapadmin/templates) 資料夾， environment 資料夾之設定為測試環境參數，若要用於正式對外服務請務必修改。
 
 這個 Docker 映像檔，使用 [osixia/phpldapadmin](https://github.com/osixia/docker-phpLDAPadmin) 做為基礎映像檔。
 相關技術文件資料請前往該專案的 Github 頁面查閱。
