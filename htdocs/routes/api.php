@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 
 Route::group(['middleware' => 'auth:api'], function () {
-    Route::get('validate', function() { return response()->json(['data' => 'Token is valid!' ]); });
+    Route::get('validate', 'Api\profileController@validate');
     Route::get('logout', 'Api\profileController@logout');
     Route::get('me', 'Api\profileController@me')->middleware('scope:me');
     Route::get('email', 'Api\profileController@email')->middleware('scope:email');
@@ -61,7 +61,7 @@ Route::group(['middleware' => 'clientid:school'], function () {
 
 Route::group(['prefix' => 'v2'], function () {
     Route::group(['middleware' => 'auth:api'], function () {
-        Route::get('validate', function() { return response()->json(['data' => 'Token is valid!']); });
+        Route::get('validate', 'Api_V2\v2_profileController@validate');
         Route::get('logout', 'Api_V2\v2_profileController@logout');
         Route::get('me', 'Api_V2\v2_profileController@me')->middleware('scope:me');
         Route::get('email', 'Api_V2\v2_profileController@email')->middleware('scope:email');

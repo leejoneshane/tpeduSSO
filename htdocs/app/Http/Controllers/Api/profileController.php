@@ -11,7 +11,13 @@ use Illuminate\Http\Response;
 
 class profileController extends Controller
 {
-    public function logout(Request $request)
+
+	public function validate(Request $request)
+    {
+		return response()->json(['data' => 'Token is valid!' ]);
+	}
+
+	public function logout(Request $request)
     {
 		$request->session()->flush();
 		$request->session()->regenerate();
