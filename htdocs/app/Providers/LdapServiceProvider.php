@@ -232,7 +232,7 @@ class LdapServiceProvider extends ServiceProvider
 				$this->administrator();
 				$base_dn = Config::get('ldap.rdn');
 				$sch_rdn = "dc=$identifier";
-				$resource = @ldap_search(self::$ldap_read, $base_dn, $sch_rdn);
+				$resource = @ldap_search(self::$ldap_read, $base_dn, $sch_rdn, array("*","entryUUID","modifyTimestamp"));
 				if ($resource) {
 						$entry = ldap_first_entry(self::$ldap_read, $resource);
 						return $entry;
@@ -246,7 +246,9 @@ class LdapServiceProvider extends ServiceProvider
 				if (is_array($attr)) {
 	    			$fields = $attr;
 				} elseif ($attr == '') {
-	    			$fields[] = 'o';
+						$fields[] = 'entryUUID';
+						$fields[] = 'modifyTimestamp';
+						$fields[] = 'o';
 	    			$fields[] = 'businessCategory';
 	    			$fields[] = 'st';
 	    			$fields[] = 'description';
