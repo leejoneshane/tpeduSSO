@@ -12,9 +12,9 @@ use Illuminate\Http\Response;
 class profileController extends Controller
 {
 
-	public function validate(Request $request)
+	public function valid_token(Request $request)
     {
-		return response()->json(['data' => 'Token is valid!' ]);
+		return response()->json(['data' => 'Token is valid!']);
 	}
 
 	public function logout(Request $request)
