@@ -746,7 +746,7 @@ class LdapServiceProvider extends ServiceProvider
 				} else {
 	    			$fields[] = $attr;
 				}
-				if (in_array('uid',$fields))
+				if (in_array('uid', $fields))
 						$fields = array_values(array_unique($fields + ['mail', 'mobile']));
 				if (in_array('ou',$fields) || in_array('tpClass',$fields) || in_array('tpTeachClass',$fields))
 						$fields = array_values(array_unique($fields + ['o']));

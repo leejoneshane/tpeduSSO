@@ -341,9 +341,9 @@ class v2_schoolController extends Controller
 		if (!empty($request->get('ipv4'))) $schoolinfo['tpIpv4'] = $request->get('ipv4');
 		if (!empty($request->get('ipv6'))) $schoolinfo['tpIpv6'] = $request->get('ipv6');
 		if (!empty($request->get('admins'))) $schoolinfo['tpAdministrator'] = $request->get('admins');
-		$openldap->updateOus($request->get('ous'));
-		$openldap->updateClasses($request->get('classes'));
-		$openldap->updateSubjects($request->get('subjects'));
+		$openldap->updateOus($dc, $request->get('ous'));
+		$openldap->updateClasses($dc, $request->get('classes'));
+		$openldap->updateSubjects($dc, $request->get('subjects'));
 		$openldap->updateData($entry, $schoolinfo);
 		$entry = $openldap->getOrgEntry($dc);
 		$json = $openldap->getOrgData($entry);
@@ -503,7 +503,7 @@ class v2_schoolController extends Controller
                     if (is_array($person['title'])) {
                         $titles = $person['title'];
                     } else {
-                        $titles[] = $original['title'];
+                        $titles[] = $person['title'];
                     }
                     foreach ($titles as $title_pair) {
                         $a = explode(',', $title_pair);
