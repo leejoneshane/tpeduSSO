@@ -1184,8 +1184,6 @@ class SyncController extends Controller
 							$messages[] = "cn=". $idno .",teaid=". $teaid .",name=". $data['name'] . "教師新增失敗！".$openldap->error();
 						}
 					}
-				} else {
-					$messages[] = "cn=無,teaid=". $teaid .",name=". (isset($data['name']) ? $data['name'] : '無') ." 查無身份證號無法同步：". $http->error();
 				}
 			}
 			$filter = "(&(o=$dc)(!(employeeType=學生)))";
@@ -1657,8 +1655,6 @@ class SyncController extends Controller
 							$messages[] = "cn=". $idno .",stdno=". $stdno .",name=". $data['name'] . "學生新增失敗！".$openldap->error();
 						}
 					}
-				} else {
-					$messages[] = "cn=" . $idno . " 查無學生資料，無法同步：". $http->error();
 				}
 			}
 			$filter = "(&(o=$dc)(tpClass=$clsid))";
