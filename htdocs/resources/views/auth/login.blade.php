@@ -32,9 +32,8 @@
         			<input type="hidden" id="SAMLRequest" name="SAMLRequest" value="{{ $_GET['SAMLRequest'] }}">
     			@endif
                 <div class="form-group">
-                    <label for="username" class="sr-only">登入名稱
+                    <label for="username" class="sr-only">登入名稱</label>
                     <input id="username" type="text" placeholder="自訂帳號、電子郵件或手機號碼..." class="form-username form-control{{ $errors->has('username') ? ' is-invalid' : '' }}" name="username" value="{{ old('username') }}" autocomplete="off" required autofocus>
-                    </label>
                     @if ($errors->has('username'))
                         <span class="invalid-feedback">
                             <strong>{{ $errors->first('username') }}</strong>
@@ -42,9 +41,8 @@
                     @endif
                 </div>
                 <div class="form-group">
-                    <label for="password" class="sr-only">登入密碼
+                    <label for="password" class="sr-only">登入密碼</label>
                     <input id="password" type="password" placeholder="密碼..." class="form-password form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" autocomplete="off" required>
-                    </label>
                     @if ($errors->has('password'))
                         <span class="invalid-feedback">
                             <strong>{{ $errors->first('password') }}</strong>
