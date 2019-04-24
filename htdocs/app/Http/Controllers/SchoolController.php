@@ -2179,8 +2179,8 @@ class SchoolController extends Controller
 				$orgs = array_values(array_diff($orgs, [$dc]));
 				$openldap->updateData($entry, [ 'tpAdminSchools' => $orgs ]);
 	    	}
-		    $entry = $openldap->getOrgEntry($dc);
-		    $result = $openldap->deleteData($entry, [ 'tpAdministrator' => $idno ]);
+		    $org_entry = $openldap->getOrgEntry($dc);
+		    $result = $openldap->deleteData($org_entry, [ 'tpAdministrator' => $idno ]);
 	    	if ($result) {
 				return back()->with("success","已經為您刪除學校管理員！");
 		    } else {
