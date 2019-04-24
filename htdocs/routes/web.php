@@ -10,6 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+//Route::prefix('img')->middleware('image.cache'); //實驗圖片快取功能
 
 //Auth::routes();
 // Authentication Routes...

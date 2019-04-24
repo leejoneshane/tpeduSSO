@@ -11,8 +11,8 @@ jQuery(document).ready(function() {
 	              , "/img/backgrounds/4.jpg"
 	              , "/img/backgrounds/5.jpg"
 	              , "/img/backgrounds/6.jpg"
-	             ], {duration: 5000, fade: 750});
-    
+				 ], {duration: 5000, fade: 750});
+	$('.backstretch img').attr('alt', 'this is a background image');  
     /*
         Form validation
     */
