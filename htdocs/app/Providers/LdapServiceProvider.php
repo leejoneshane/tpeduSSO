@@ -708,6 +708,7 @@ class LdapServiceProvider extends ServiceProvider
     
     public function getUserData($entry, $attr = '')
     {
+				$this->administrator();
 				$fields = array();
 				if ($attr == '') {
 						$fields[] = 'entryUUID';
@@ -913,7 +914,7 @@ class LdapServiceProvider extends ServiceProvider
   	{
 				$entry = $this->getUserEntry($identifier);
 				$name = $this->getUserData($entry, 'displayName');
-				return $name['displayName'];
+				return !empty($name['displayName']) ? $name['displayName'] : $identifier;
   	}
 
 		public function getUserAccounts($identifier)

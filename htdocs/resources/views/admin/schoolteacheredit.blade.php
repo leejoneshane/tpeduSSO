@@ -72,6 +72,7 @@
 			    <div class="form-group">
 					<label style="display:block">單位職稱</label>
 					@if (!empty($user['title']))
+					@if (is_array($user['title']))
 						@foreach ($user['title'] as $title)
 						<div></div>
 						<select id="role" class="form-control" style="width:50%;display:inline" name="roles[]">
@@ -80,6 +81,12 @@
 			    			@endforeach
 						</select><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
 						@endforeach
+					@else
+					<select id="role" class="form-control" style="width:50%;display:inline" name="roles[]">
+						@foreach ($roles as $role => $desc)
+							<option value="{{ $role }}"{{ $user['title'] == $dc.','.$role  ? ' selected' : '' }}>{{ $desc }}</option>
+							@endforeach
+					</select><button type="button" class="btn btn-danger btn-circle" onclick="$(this).prev().remove();$(this).remove();"><i class="fa fa-minus"></i></button>
 					@endif
 					<button id="nrole" type="button" class="btn btn-primary btn-circle" onclick="add_role()"><i class="fa fa-plus"></i></button>
 				</div>
