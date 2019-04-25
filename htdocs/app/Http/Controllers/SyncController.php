@@ -355,8 +355,10 @@ class SyncController extends Controller
 		$messages[] = "開始進行同步";
 		if ($classes) {
 			foreach ($classes as $clsid => $clsname) {
-				for ($i=0;$i<count($org_classes);$i++) {
-					if ($clsid == $org_classes[$i]->ou) array_splice($org_classes, $i, 1);
+				if (!empty($org_classes)) {
+					for ($i=0;$i<count($org_classes);$i++) {
+						if ($clsid == $org_classes[$i]->ou) array_splice($org_classes, $i, 1);
+					}
 				}
 				$class_entry = $openldap->getOuEntry($dc, $clsid);
 				if ($class_entry) {
@@ -381,13 +383,15 @@ class SyncController extends Controller
 					}
 				}
 			}
-			foreach ($org_classes as $org_class) {
-				$class_entry = $openldap->getOuEntry($dc, $org_class->ou);
-				$result = $openldap->deleteEntry($class_entry);
-				if ($result) {
-					$messages[] = "ou=". $org_class->ou ." 已經為您刪除班級，班級名稱為：". $org_class->description;
-				} else {
-					$messages[] = "ou=". $org_class->ou ." 班級刪除失敗：". $openldap->error();
+			if (!empty($org_classes)) {
+				foreach ($org_classes as $org_class) {
+					$class_entry = $openldap->getOuEntry($dc, $org_class->ou);
+					$result = $openldap->deleteEntry($class_entry);
+					if ($result) {
+						$messages[] = "ou=". $org_class->ou ." 已經為您刪除班級，班級名稱為：". $org_class->description;
+					} else {
+						$messages[] = "ou=". $org_class->ou ." 班級刪除失敗：". $openldap->error();
+					}
 				}
 			}
 			$messages[] = "同步完成！";
