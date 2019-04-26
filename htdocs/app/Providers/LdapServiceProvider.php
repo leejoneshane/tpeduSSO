@@ -1000,7 +1000,7 @@ class LdapServiceProvider extends ServiceProvider
 				unset($info['dn']);
 				$info = array_filter($info);
 				$value = @ldap_add(self::$ldap_write, $dn, $info);
-				if (!$value && Config::get('ldap.debug')) Log::debug("Entry can't create for $dn:\n".$this->error()."\n".print_r($info, true)."\n");
+				if (!$value && Config::get('ldap.debug')) Log::debug("Entry can't create for $dn:\n".print_r($info, true)."\n".$this->error()."\n");
 				return $value;
     }
 
