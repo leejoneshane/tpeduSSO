@@ -2159,14 +2159,14 @@ class SchoolController extends Controller
 		}
     }
     
-  public function delSchoolAdmin(Request $request)
-  {
+	public function delSchoolAdmin(Request $request)
+	{
 		$dc = $request->get('dc');
 		$openldap = new LdapServiceProvider();
 		if ($request->has('delete-admin')) {
-		  $idno = $request->get('delete-admin');
-	  	$entry = $openldap->getUserEntry($idno);
-		  if ($entry) {
+			$idno = $request->get('delete-admin');
+			$entry = $openldap->getUserEntry($idno);
+			if ($entry) {
 				$orgs = array();
 				$data = $openldap->getUserData($entry, [ "o", "cn", "tpAdminSchools" ]);
 				if (array_key_exists('tpAdminSchools', $data)) {
@@ -2178,16 +2178,16 @@ class SchoolController extends Controller
 				}
 				$orgs = array_values(array_diff($orgs, [$dc]));
 				$openldap->updateData($entry, [ 'tpAdminSchools' => $orgs ]);
-	  	}
-		  $org_entry = $openldap->getOrgEntry($dc);
+			}
+			$org_entry = $openldap->getOrgEntry($dc);
 			$result = $openldap->deleteData($org_entry, [ 'tpAdministrator' => $idno ]);
-	    if ($result) {
+			if ($result) {
 				return back()->with("success","已經為您刪除學校管理員！");
-		  } else {
+			} else {
 				return back()->with("error","管理員刪除失敗，請稍後再試一次！".$openldap->error());
-	    }
+			}
 		}
-  }
+	}
 
 	private function chomp_address($address)
 	{
