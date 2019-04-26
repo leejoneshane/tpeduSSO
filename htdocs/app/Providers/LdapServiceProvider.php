@@ -708,7 +708,6 @@ class LdapServiceProvider extends ServiceProvider
     
     public function getUserData($entry, $attr = '')
     {
-				$this->administrator();
 				$fields = array();
 				if ($attr == '') {
 						$fields[] = 'entryUUID';
