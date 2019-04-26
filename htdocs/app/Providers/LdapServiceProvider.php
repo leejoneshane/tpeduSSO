@@ -963,10 +963,6 @@ class LdapServiceProvider extends ServiceProvider
     {
 				$this->administrator();
 				$fields = array_filter($fields);
-				$dn = @ldap_get_dn(self::$ldap_read, $entry);
-				foreach ($fields as $k => $field) {
-						if (empty($field)) unset($fields[$k]);
-				}
 				$fields = array_values($fields);
 				$value = @ldap_mod_add(self::$ldap_write, $dn, $fields);
 				if (!$value && Config::get('ldap.debug')) Log::debug("Data can't add into $dn:\n".print_r($fields, true)."\n".$this->error()."\n");
