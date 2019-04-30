@@ -1236,42 +1236,42 @@ class LdapServiceProvider extends ServiceProvider
 		return false;
 	}
 
-    public function ssha_check($text,$hash)
-    {
+	public function ssha_check($text,$hash)
+	{
 		$ohash = base64_decode(substr($hash,6));
 		$osalt = substr($ohash,20);
-        $ohash = substr($ohash,0,20);
-        $nhash = pack("H*",sha1($text.$osalt));
-        return $ohash == $nhash;
-    }
+		$ohash = substr($ohash,0,20);
+		$nhash = pack("H*",sha1($text.$osalt));
+		return $ohash == $nhash;
+	}
 
-    public function make_ssha_password($password)
-    {
+	public function make_ssha_password($password)
+	{
 		$salt = random_bytes(4);
 		$hash = "{SSHA}" . base64_encode(pack("H*", sha1($password . $salt)) . $salt);
 		return $hash;
-    }
+	}
     
-    public function make_ssha256_password($password)
-    {
-        $salt = random_bytes(4);
-        $hash = "{SSHA256}" . base64_encode(pack("H*", hash('sha256', $password . $salt)) . $salt);
-        return $hash;
-    }
+	public function make_ssha256_password($password)
+	{
+		$salt = random_bytes(4);
+		$hash = "{SSHA256}" . base64_encode(pack("H*", hash('sha256', $password . $salt)) . $salt);
+		return $hash;
+	}
     
-    public function make_ssha384_password($password)
-    {
-        $salt = random_bytes(4);
-        $hash = "{SSHA384}" . base64_encode(pack("H*", hash('sha384', $password . $salt)) . $salt);
-        return $hash;
-    }
+	public function make_ssha384_password($password)
+	{
+		$salt = random_bytes(4);
+		$hash = "{SSHA384}" . base64_encode(pack("H*", hash('sha384', $password . $salt)) . $salt);
+		return $hash;
+	}
     
-    public function make_ssha512_password($password)
-    {
-        $salt = random_bytes(4);
-        $hash = "{SSHA512}" . base64_encode(pack("H*", hash('sha512', $password . $salt)) . $salt);
-        return $hash;
-    }
+	public function make_ssha512_password($password)
+	{
+		$salt = random_bytes(4);
+		$hash = "{SSHA512}" . base64_encode(pack("H*", hash('sha512', $password . $salt)) . $salt);
+		return $hash;
+	}
     
     public function make_sha_password($password)
     {

@@ -89,7 +89,7 @@ class HomeController extends Controller
 			$user = Auth::user();
 			$idno = $user->idno;
 		} else {
-		    $idno = $request->session()->pull('idno');
+		  $idno = $request->session()->pull('idno');
 		}
 		$old = $request->get('current-account');
 		$new = $request->get('new-account');
