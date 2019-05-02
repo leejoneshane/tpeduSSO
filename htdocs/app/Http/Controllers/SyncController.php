@@ -926,6 +926,8 @@ class SyncController extends Controller
 								$uids = array_diff($uids, [$uid]);
 								$user = User::where('uname', $uid)->first();
 								if ($user) $user->delete();
+								$acc = $openldap->getAccountEntry($uid);
+								$openldap->deleteEntry($acc);
 							}
 						}
 					}
@@ -1287,6 +1289,8 @@ class SyncController extends Controller
 								$uids = array_diff($uids, [$uid]);
 								$user = User::where('uname', $uid)->first();
 								if ($user) $user->delete();
+								$acc = $openldap->getAccountEntry($uid);
+								$openldap->deleteEntry($acc);
 							}
 						}
 					}
@@ -1547,6 +1551,8 @@ class SyncController extends Controller
 								$uids = array_diff($uids, [$uid]);
 								$user = User::where('uname', $uid)->first();
 								if ($user) $user->delete();
+								$acc = $openldap->getAccountEntry($uid);
+								$openldap->deleteEntry($acc);
 							}
 						}
 					}
@@ -1738,6 +1744,8 @@ class SyncController extends Controller
 								$uids = array_diff($uids, [$uid]);
 								$user = User::where('uname', $uid)->first();
 								if ($user) $user->delete();
+								$acc = $openldap->getAccountEntry($uid);
+								$openldap->deleteEntry($acc);
 							}
 						}
 					}
