@@ -1120,26 +1120,28 @@ class LdapServiceProvider extends ServiceProvider
     {
 		$this->administrator();
 		$data = $this->getUserData($entry, ['cn', 'uid', 'userPassword']);
-		$idno = $data['cn'];
-		$password = $data['userPassword'];
-		$accounts = array();
-		if (isset($data['uid'])) {
-			if (is_array($data['uid']))
-				$accounts = $data['uid'];
-			else
-				$accounts[] = $data['uid'];
+		if ($data) {
+			$idno = $data['cn'];
+			$password = $data['userPassword'];
+			$accounts = array();
+			if (!empty($data['uid'])) {
+				if (is_array($data['uid']))
+					$accounts = $data['uid'];
+				else
+					$accounts[] = $data['uid'];
+			}
+			if (!in_array($account, $accounts)) $this->addData($entry, array( "uid" => $account));
+			$acc = $this->getAccountEntry($account);
+			if ($acc) return;
+			$account_info = array();
+			$account_info['dn'] = "uid=$account,".Config::get('ldap.authdn');
+			$account_info['objectClass'] = "radiusObjectProfile";
+			$account_info['uid'] = $account;
+			$account_info['cn'] = $idno;
+			$account_info['userPassword'] = $password;
+			$account_info['description'] = $memo;
+			$this->createEntry($account_info);
 		}
-		if (!in_array($account, $accounts)) $this->addData($entry, array( "uid" => $account));
-		$acc = $this->getAccountEntry($account);
-		if ($acc) return;
-		$account_info = array();
-		$account_info['dn'] = "uid=$account,".Config::get('ldap.authdn');
-		$account_info['objectClass'] = "radiusObjectProfile";
-		$account_info['uid'] = $account;
-		$account_info['cn'] = $idno;
-		$account_info['userPassword'] = $password;
-		$account_info['description'] = $memo;
-		$this->createEntry($account_info);
     }
 
     public function renameAccount($entry, $old_account, $new_account)
