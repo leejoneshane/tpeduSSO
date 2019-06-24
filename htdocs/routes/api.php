@@ -78,11 +78,11 @@ Route::group(['prefix' => 'v2'], function () {
     });
 
     Route::group(['middleware' => 'clientid:schoolAdmin'], function () {
-        Route::patch('school/{dc}', 'Api\schoolController@updateSchool');
-        Route::post('school/{dc}/people', 'Api\schoolController@peopleAdd');
-        Route::patch('school/{dc}/people/{uuid}', 'Api\schoolController@peopleUpdate');
-        Route::delete('school/{dc}/people/{uuid}', 'Api\schoolController@peopleRemove');
-        Route::get('school/{dc}/people/{uuid}', 'Api\schoolController@people');
+        Route::patch('school/{dc}', 'Api_V2\v2_schoolController@updateSchool');
+        Route::post('school/{dc}/people', 'Api_V2\v2_schoolController@peopleAdd');
+        Route::patch('school/{dc}/people/{uuid}', 'Api_V2\v2_schoolController@peopleUpdate');
+        Route::delete('school/{dc}/people/{uuid}', 'Api_V2\v2_schoolController@peopleRemove');
+        Route::get('school/{dc}/people/{uuid}', 'Api_V2\v2_schoolController@people');
     });
 
     Route::group(['middleware' => 'clientid:school'], function () {
