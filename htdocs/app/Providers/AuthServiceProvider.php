@@ -41,6 +41,7 @@ class AuthServiceProvider extends ServiceProvider
 	        'account' => '想要修改您的自訂帳號、電子郵件、手機號碼和密碼',
 	        'school' => '想要讀取學校公開資訊',
     	    'schoolAdmin' => '想要更新學校資訊，以及增刪修學校人員',
+    	    'admin' => '想要更新所有學校資訊，以及增刪修所有學校人員',
     	]);
 
         Auth::provider('ldap', function($app, array $config) {

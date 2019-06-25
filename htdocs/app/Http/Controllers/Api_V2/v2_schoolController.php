@@ -464,7 +464,7 @@ class v2_schoolController extends Controller
         $permision = false;
         if ($request->get('oauth_client_id') == 1) $permision=true;
         if (!$permision) return response()->json(["error" => "此專案不是特權專案"], 403);
-        $dc = strtolower($request->get('dc'));
+        $dc = strtolower($request->get('o'));
         if (empty($dc)) return response()->json(["error" => "請提供所屬機關學校"], 400);
         $idno = strtoupper($request->get('idno'));
         if (empty($idno)) return response()->json(["error" => "請提供身分證字號"], 400);
@@ -667,7 +667,7 @@ class v2_schoolController extends Controller
         if ($request->get('oauth_client_id') == 1) $permision=true;
         if (!$permision) return response()->json(["error" => "此專案不是特權專案"], 403);
 
-        $dc = $request->get('dc');        
+        $dc = strtolower($request->get('o'));
         $entry = $openldap->getUserEntry($uuid);
         $person = $openldap->getUserData($entry);
         $info = array();
