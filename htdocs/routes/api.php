@@ -30,15 +30,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('school/{dc}/people/{uuid}', 'Api\schoolController@people')->middleware('scope:schoolAdmin');
 });
 
-Route::group(['middleware' => 'clientid:schoolAdmin'], function () {
-    Route::patch('school/{dc}', 'Api\schoolController@updateSchool');
-    Route::post('school/{dc}/people', 'Api\schoolController@peopleAdd');
-    Route::patch('school/{dc}/people/{uuid}', 'Api\schoolController@peopleUpdate');
-    Route::delete('school/{dc}/people/{uuid}', 'Api\schoolController@peopleRemove');
-    Route::get('school/{dc}/people/{uuid}', 'Api\schoolController@people');
-});
-
-Route::group(['middleware' => 'clientid:school'], function () {
+Route::group(['middleware' => 'client:school'], function () {
     Route::get('school', 'Api\schoolController@all');
     Route::get('school/{dc}', 'Api\schoolController@one');
     Route::get('school/{dc}/teachers', 'Api\schoolController@allTeachersByOrg');
@@ -78,11 +70,11 @@ Route::group(['prefix' => 'v2'], function () {
     });
 
     Route::group(['middleware' => 'clientid:schoolAdmin'], function () {
-        Route::patch('school/{dc}', 'Api_V2\v2_schoolController@updateSchool');
-        Route::post('school/{dc}/people', 'Api_V2\v2_schoolController@peopleAdd');
-        Route::patch('school/{dc}/people/{uuid}', 'Api_V2\v2_schoolController@peopleUpdate');
-        Route::delete('school/{dc}/people/{uuid}', 'Api_V2\v2_schoolController@peopleRemove');
-        Route::get('school/{dc}/people/{uuid}', 'Api_V2\v2_schoolController@people');
+        Route::patch('admin/school/{dc}', 'Api_V2\v2_schoolController@sp_updateSchool');
+        Route::post('admin/people', 'Api_V2\v2_schoolController@sp_peopleAdd');
+        Route::patch('admin/people/{uuid}', 'Api_V2\v2_schoolController@sp_peopleUpdate');
+        Route::delete('admin/people/{uuid}', 'Api_V2\v2_schoolController@sp_peopleRemove');
+        Route::get('admin/people/{uuid}', 'Api_V2\v2_schoolController@sp_people');
     });
 
     Route::group(['middleware' => 'clientid:school'], function () {

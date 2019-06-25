@@ -256,22 +256,17 @@ class schoolController extends Controller
     // below function for schoolAdmin scope.
     public function updateSchool(Request $request, $dc)
     {
-        if (Auth::check()) {
-            $user = $request->user();
-            $openldap = new LdapServiceProvider();
-            $entry = $openldap->getOrgEntry($dc);
-            $data = $openldap->getOrgData($entry, 'tpAdministrator');
-            if (is_array($data['tpAdministrator'])) {
-                if (!in_array($user->idno, $data['tpAdministrator']))
-                    return response()->json(["error" => "你未被權限管理此機關學校"], 403);
-            } elseif ($user->idno != $data['tpAdministrator']) {
+        $openldap = new LdapServiceProvider();
+        $user = $request->user();
+        $entry = $openldap->getOrgEntry($dc);
+        $data = $openldap->getOrgData($entry, 'tpAdministrator');
+        if (is_array($data['tpAdministrator'])) {
+            if (!in_array($user->idno, $data['tpAdministrator']))
                 return response()->json(["error" => "你未被權限管理此機關學校"], 403);
-            }
-        } else {
-            $permission = false;
-            if ($request->get('oauth_client_id') == 1) $permision=true;
-            if (!$permision) return response()->json(["error" => "此專案不是特權專案"], 403);
+        } elseif ($user->idno != $data['tpAdministrator']) {
+            return response()->json(["error" => "你未被權限管理此機關學校"], 403);
         }
+
         $schoolinfo = array();
         if (!empty($request->get('area'))) $schoolinfo['st'] = $request->get('area');
 		if (!empty($request->get('name'))) $schoolinfo['description'] = $request->get('name');
@@ -296,22 +291,17 @@ class schoolController extends Controller
 
     public function peopleAdd(Request $request, $dc)
     {
-        if (Auth::check()) {
-            $user = $request->user();
-            $openldap = new LdapServiceProvider();
-            $entry = $openldap->getOrgEntry($dc);
-            $data = $openldap->getOrgData($entry, 'tpAdministrator');
-            if (is_array($data['tpAdministrator'])) {
-                if (!in_array($user->idno, $data['tpAdministrator']))
-                    return response()->json(["error" => "你未被權限管理此機關學校"], 403);
-            } elseif ($user->idno != $data['tpAdministrator']) {
+        $openldap = new LdapServiceProvider();
+        $user = $request->user();
+        $entry = $openldap->getOrgEntry($dc);
+        $data = $openldap->getOrgData($entry, 'tpAdministrator');
+        if (is_array($data['tpAdministrator'])) {
+            if (!in_array($user->idno, $data['tpAdministrator']))
                 return response()->json(["error" => "你未被權限管理此機關學校"], 403);
-            }
-        } else {
-            $permission = false;
-            if ($request->get('oauth_client_id') == 1) $permision=true;
-            if (!$permision) return response()->json(["error" => "此專案不是特權專案"], 403);
+        } elseif ($user->idno != $data['tpAdministrator']) {
+            return response()->json(["error" => "你未被權限管理此機關學校"], 403);
         }
+
         $idno = strtoupper($request->get('idno'));
         if (empty(idno)) return response()->json(["error" => "請提供身分證字號"], 400);
         $entry = $openldap->getUserEntry($idno);
@@ -393,38 +383,28 @@ class schoolController extends Controller
 
     public function peopleUpdate(Request $request, $dc, $uuid)
     {
-        if (Auth::check()) {
-            $user = $request->user();
-            $openldap = new LdapServiceProvider();
-            $entry = $openldap->getOrgEntry($dc);
-            $data = $openldap->getOrgData($entry, 'tpAdministrator');
-            if (is_array($data['tpAdministrator'])) {
-                if (!in_array($user->idno, $data['tpAdministrator']))
-                    return response()->json(["error" => "你未被權限管理此機關學校"], 403);
-            } elseif ($user->idno != $data['tpAdministrator']) {
+        $openldap = new LdapServiceProvider();
+        $user = $request->user();
+        $entry = $openldap->getOrgEntry($dc);
+        $data = $openldap->getOrgData($entry, 'tpAdministrator');
+        if (is_array($data['tpAdministrator'])) {
+            if (!in_array($user->idno, $data['tpAdministrator']))
                 return response()->json(["error" => "你未被權限管理此機關學校"], 403);
-            }
-        } else {
-            $permission = false;
-            if ($request->get('oauth_client_id') == 1) $permision=true;
-            if (!$permision) return response()->json(["error" => "此專案不是特權專案"], 403);
+        } elseif ($user->idno != $data['tpAdministrator']) {
+            return response()->json(["error" => "你未被權限管理此機關學校"], 403);
         }
+
         $entry = $openldap->getUserEntry($uuid);
         $person = $openldap->getUserData($entry);
-        $info = array();
-        if (is_array($person['o']) && !in_array($dc, $person['o'])) {
+        $orgs = array();
+        if (is_array($person['o'])) {
             $orgs = $person['o'];
-            $orgs[] = $dc;
-            $info['o'] = $orgs;
-            $educloud = array();
-            foreach ($orgs as $o) {
-                $entry = $openldap->getOrgEntry($o);
-                $data = $openldap->getOrgData($entry, 'tpUniformNumbers');
-                $sid = $data['tpUniformNumbers'];
-                $educloud[] = json_encode(array("sid" => $sid, "role" => $request->get('type')), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
-            }
-            $info['info'] = $educloud;
+        } else {
+            $orgs[] = $person['o'];
         }
+        if (!in_array($dc, $orgs)) return response()->json([ 'error' => '找不到指定的人員'], 404);
+
+        $info = array();
 		if (!empty($request->get('lastname'))) $info['sn'] = $request->get('lastname');
 		if (!empty($request->get('firstname'))) $info['givenName'] = $request->get('firstname');
 		if (!empty($request->get('lastname')) && !empty($request->get('firstname'))) $info['displayName'] = $info['sn'].$info['givenName'];
@@ -538,55 +518,58 @@ class schoolController extends Controller
     
     public function peopleRemove(Request $request, $dc, $uuid)
     {
-        if (Auth::check()) {
-            $user = $request->user();
-            $openldap = new LdapServiceProvider();
-            $entry = $openldap->getOrgEntry($dc);
-            $data = $openldap->getOrgData($entry, 'tpAdministrator');
-            if (is_array($data['tpAdministrator'])) {
-                if (!in_array($user->idno, $data['tpAdministrator']))
-                    return response()->json(["error" => "你未被權限管理此機關學校"], 403);
-            } elseif ($user->idno != $data['tpAdministrator']) {
+        $openldap = new LdapServiceProvider();
+        $user = $request->user();
+        $entry = $openldap->getOrgEntry($dc);
+        $data = $openldap->getOrgData($entry, 'tpAdministrator');
+        if (is_array($data['tpAdministrator'])) {
+            if (!in_array($user->idno, $data['tpAdministrator']))
                 return response()->json(["error" => "你未被權限管理此機關學校"], 403);
-            }
-        } else {
-            $permission = false;
-            if ($request->get('oauth_client_id') == 1) $permision=true;
-            if (!$permision) return response()->json(["error" => "此專案不是特權專案"], 403);
+        } elseif ($user->idno != $data['tpAdministrator']) {
+            return response()->json(["error" => "你未被權限管理此機關學校"], 403);
         }
-		$entry = $openldap->getUserEntry($uuid);
+
+        $entry = $openldap->getUserEntry($uuid);
+        $person = $openldap->getUserData($entry);
+        $orgs = array();
+        if (is_array($person['o'])) {
+            $orgs = $person['o'];
+        } else {
+            $orgs[] = $person['o'];
+        }
+        if (!in_array($dc, $orgs)) return response()->json([ 'error' => '找不到指定的人員'], 404);
+
         $result = $openldap->updateData($entry,  [ 'inetUserStatus' => 'deleted' ]);
-//		$result = $openldap->deleteEntry($entry);
-		if ($result)
-		    return response()->json([ 'success' => '指定的人員已經刪除'], 410);
-		else
-		    return response()->json([ 'error' => '指定的人員刪除失敗'], 500);
+//      $result = $openldap->deleteEntry($entry);
+        if ($result)
+            return response()->json([ 'success' => '指定的人員已經刪除'], 410);
+        else
+            return response()->json([ 'error' => '指定的人員刪除失敗'], 500);
     }
     
     public function people(Request $request, $dc, $uuid)
     {
         $openldap = new LdapServiceProvider();
-        if (Auth::check()) {
-            $user = $request->user();
-            $entry = $openldap->getOrgEntry($dc);
-            $data = $openldap->getOrgData($entry, 'tpAdministrator');
-            if (is_array($data['tpAdministrator'])) {
-                if (!in_array($user->idno, $data['tpAdministrator']))
-                    return response()->json(["error" => "你未被權限管理此機關學校"], 403);
-            } elseif ($user->idno != $data['tpAdministrator']) {
+        $user = $request->user();
+        $entry = $openldap->getOrgEntry($dc);
+        $data = $openldap->getOrgData($entry, 'tpAdministrator');
+        if (is_array($data['tpAdministrator'])) {
+            if (!in_array($user->idno, $data['tpAdministrator']))
                 return response()->json(["error" => "你未被權限管理此機關學校"], 403);
-            }
-        } else {
-            $permission = false;
-            if ($request->get('oauth_client_id') == 1) $permision=true;
-            if (!$permision) return response()->json(["error" => "此專案不是特權專案"], 403);
+        } elseif ($user->idno != $data['tpAdministrator']) {
+            return response()->json(["error" => "你未被權限管理此機關學校"], 403);
         }
-		$entry = $openldap->getUserEntry($uuid);
-		$json = $openldap->getUserData($entry);
-        if ($json)
-            return json_encode($json, JSON_UNESCAPED_UNICODE);
-        else
-            return response()->json([ 'error' => '找不到指定的人員'], 404);
+
+        $entry = $openldap->getUserEntry($uuid);
+        $person = $openldap->getUserData($entry);
+        $orgs = array();
+        if (is_array($person['o'])) {
+            $orgs = $person['o'];
+        } else {
+            $orgs[] = $person['o'];
+        }
+        if (!in_array($dc, $orgs)) return response()->json([ 'error' => '找不到指定的人員'], 404);
+        return json_encode($person, JSON_UNESCAPED_UNICODE);
     }
 
     // below function for ajax calling
