@@ -1731,13 +1731,13 @@ class SyncController extends Controller
 					$user_entry = $openldap->getUserEntry($stu['cn']);
 					$original = $openldap->getUserData($user_entry);
 					$uids = array();
+					$flag = false;
 					if (!empty($original['uid'])) {
 						if (is_array($original['uid'])) {
 							$uids = $original['uid'];
 						} else {
 							$uids[] = $original['uid'];
 						}
-						$flag = false;
 						foreach ($uids as $uid) {
 							if (strpos($uid,$dc)) {
 								$flag = true;
