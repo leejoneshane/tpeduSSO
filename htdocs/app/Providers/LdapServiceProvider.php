@@ -843,7 +843,7 @@ class LdapServiceProvider extends ServiceProvider
 					$ou = $a[0];
 				}
 				$ous[] = $ou;
-				$obj = new stdClass();
+				$obj = new \stdClass();
 				$obj->key = $ou_pair;
 				$obj->name = $this->getOuTitle($o, $ou);
 				$userinfo['department'][$o][] = $obj; 
@@ -869,7 +869,7 @@ class LdapServiceProvider extends ServiceProvider
 						$role = $a[0];
 					}
 					$titles[] = "$o,$ou,$role";
-					$obj = new stdClass();
+					$obj = new \stdClass();
 					$obj->key = $role_pair;
 					$obj->name = $this->getRoleTitle($o, $ou, $role);
 					$userinfo['titleName'][$o][] = $obj; 
@@ -897,7 +897,7 @@ class LdapServiceProvider extends ServiceProvider
 					if (isset($a[1])) $subject = $a[1];
 				}
 				$tclass[] = "$o,$class,$subject";
-				$obj = new stdClass();
+				$obj = new \stdClass();
 				$obj->key = $class_pair;
 				$obj->name = $this->getOuTitle($o, $class).$this->getSubjectTitle($o, $subject);
 				$userinfo['teachClass'][$o][] = $obj; 
