@@ -914,11 +914,11 @@ class v2_schoolController extends Controller
 			$teacher->idno = $one['cn'];
             $teacher->name = $one['displayName'];           
             if (isset($one['titleName'][$dc])) {
-                foreach ($one['titleName'][$dc] as $role_pair => $title) {
-                    $a = explode(',', $role_pair);
-                    if (count($a) == 3 && $a[0] == $dc && $a[1] == $ou) $teacher->title = $title;
+                foreach ($one['titleName'][$dc] as $role) {
+                    $a = explode(',', $role->key);
+                    if (count($a) == 3 && $a[0] == $dc && $a[1] == $ou) $teacher->title = $role->name;
                 }
-                if (!isset($teacher->title)) $teacher->title = array_values($one['titleName'][$dc])[0];
+                if (!isset($teacher->title)) $teacher->title = $one['titleName'][$dc][0]->name;
             }
 
 			$json[] = $teacher;

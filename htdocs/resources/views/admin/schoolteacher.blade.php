@@ -88,14 +88,14 @@
 						<td style="vertical-align: inherit;">
 							@if (isset($teacher['department'][$dc]))
 							@foreach ($teacher['department'][$dc] as $ou)
-							<span>{{ $ou }}</span>
+							<span>{{ $ou->name }}</span>
 							@endforeach
 							@endif
 						</td>
 						<td style="vertical-align: inherit;">
 						@if (isset($teacher['titleName'][$dc]))
 							@foreach ($teacher['titleName'][$dc] as $title)
-							<span>{{ $title }}</span>
+							<span>{{ $title->name }}</span>
 							@endforeach
 							@endif
 						</td>

@@ -99,7 +99,7 @@
 								@foreach ($user->ldap['department'][$o] as $ou)
             					<div class="row">
             		    		<div class="col-md-4 text-md-right">單位</div>
-            		    		<div class="col-md-6">{{ $ou }}</div>
+            		    		<div class="col-md-6">{{ $ou->name }}</div>
                 				</div>
 								@endforeach
                 				@endif
@@ -107,7 +107,7 @@
 								@foreach ($user->ldap['titleName'][$o] as $role)
             					<div class="row">
             		    		<div class="col-md-4 text-md-right">職稱</div>
-            		    		<div class="col-md-6">{{ $role }}</div>
+            		    		<div class="col-md-6">{{ $role->name }}</div>
                 				</div>
 								@endforeach
                 				@endif
@@ -115,7 +115,7 @@
 								@foreach ($user->ldap['teachClass'][$o] as $class)
             					<div class="row">
             		    		<div class="col-md-4 text-md-right">任教班級</div>
-            		    		<div class="col-md-6">{{ $class }}</div>
+            		    		<div class="col-md-6">{{ $class->name }}</div>
                 				</div>
 								@endforeach
                 				@endif

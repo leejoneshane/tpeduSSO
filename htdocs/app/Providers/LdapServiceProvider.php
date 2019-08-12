@@ -843,7 +843,10 @@ class LdapServiceProvider extends ServiceProvider
 					$ou = $a[0];
 				}
 				$ous[] = $ou;
-				$userinfo['department'][$o][$ou_pair] = $this->getOuTitle($o, $ou);
+				$obj = new stdClass();
+				$obj->key = $ou_pair;
+				$obj->name = $this->getOuTitle($o, $ou);
+				$userinfo['department'][$o][] = $obj; 
 			}
 			if (!is_array($userinfo['ou'])) $userinfo['ou'] = $orgs[0].",".$userinfo['ou'];
 			$roles = array();
@@ -866,7 +869,10 @@ class LdapServiceProvider extends ServiceProvider
 						$role = $a[0];
 					}
 					$titles[] = "$o,$ou,$role";
-					$userinfo['titleName'][$o][$role_pair] = $this->getRoleTitle($o, $ou, $role);
+					$obj = new stdClass();
+					$obj->key = $role_pair;
+					$obj->name = $this->getRoleTitle($o, $ou, $role);
+					$userinfo['titleName'][$o][] = $obj; 
 				}
 				$userinfo['title'] = $titles;
 			}
@@ -891,7 +897,10 @@ class LdapServiceProvider extends ServiceProvider
 					if (isset($a[1])) $subject = $a[1];
 				}
 				$tclass[] = "$o,$class,$subject";
-				$userinfo['teachClass'][$o][$class_pair] = $this->getOuTitle($o, $class).$this->getSubjectTitle($o, $subject);
+				$obj = new stdClass();
+				$obj->key = $class_pair;
+				$obj->name = $this->getOuTitle($o, $class).$this->getSubjectTitle($o, $subject);
+				$userinfo['teachClass'][$o][] = $obj; 
 			}
 			$userinfo['tpTeachClass'] = $tclass;
 		}
