@@ -79,9 +79,9 @@ class v2_profileController extends Controller
 	    if (array_key_exists('tpSeat', $user->ldap)) $json->seat = $user->ldap['tpSeat'];
 	} else {
 	    if (array_key_exists('employeeNumber', $user->ldap)) $json->teacherId = $user->ldap['employeeNumber'];
-	    if (array_key_exists('department', $user->ldap)) $json->unit = $user->ldap['department'];
-	    if (array_key_exists('titleName', $user->ldap)) $json->title = $user->ldap['titleName'];
-	    if (array_key_exists('teachClass', $user->ldap)) $json->teachClass = $user->ldap['teachClass'];
+	    if (array_key_exists('department', $user->ldap)) $json->unit = (array) $user->ldap['department'];
+	    if (array_key_exists('titleName', $user->ldap)) $json->title = (array) $user->ldap['titleName'];
+	    if (array_key_exists('teachClass', $user->ldap)) $json->teachClass = (array) $user->ldap['teachClass'];
 	    if (array_key_exists('tpTutorClass', $user->ldap)) $json->tutorClass = $user->ldap['tpTutorClass'];
 	}
 	if (array_key_exists('tpCharacter', $user->ldap)) $json->character = $user->ldap['tpCharacter'];
