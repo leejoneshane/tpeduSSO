@@ -53,7 +53,7 @@ class v2_schoolController extends Controller
     public function allTeachersByOrg(Request $request, $dc)
     {
 		$openldap = new LdapServiceProvider();
-        $filter = "(&(o=$dc)(!(employeeType=學生)))";
+        $filter = "(&(o=$dc)(!(employeeType=學生))(inetUserStatus=active))";
         $teachers = $openldap->findUsers($filter, "entryUUID");
 		$json = array();
 		foreach ($teachers as $teacher) {
@@ -88,7 +88,7 @@ class v2_schoolController extends Controller
             foreach ($condition as $c) {
                 $filter .= $c;
             }
-            $filter .= ')';
+            $filter .= '(inetUserStatus=active))';
             $people = $openldap->findUsers($filter, "entryUUID");
             $json = array();
             if ($people)
@@ -129,7 +129,7 @@ class v2_schoolController extends Controller
     {
 		$json = array();
 		$openldap = new LdapServiceProvider();
-		$teachers = $openldap->findUsers("(&(o=$dc)(ou=*$ou_id))", "entryUUID");
+		$teachers = $openldap->findUsers("(&(o=$dc)(ou=*$ou_id)(inetUserStatus=active))", "entryUUID");
 		foreach ($teachers as $teacher) {
 	    	$json[] = $teacher['entryUUID'];
 		}
@@ -164,7 +164,7 @@ class v2_schoolController extends Controller
     {
 		$json = array();
 		$openldap = new LdapServiceProvider();
-		$teachers = $openldap->findUsers("(&(o=$dc)(tpTeachClass=*$subj_id))", "entryUUID");
+		$teachers = $openldap->findUsers("(&(o=$dc)(tpTeachClass=*$subj_id)(inetUserStatus=active))", "entryUUID");
 		foreach ($teachers as $teacher) {
 	    	$json[] = $teacher['entryUUID'];
 		}
@@ -223,7 +223,7 @@ class v2_schoolController extends Controller
     {
 		$json = array();
 		$openldap = new LdapServiceProvider();
-		$teachers = $openldap->findUsers("(&(o=$dc)(ou=*$ou_id)(title=*$role_id))", "entryUUID");
+		$teachers = $openldap->findUsers("(&(o=$dc)(ou=*$ou_id)(title=*$role_id)(inetUserStatus=active))", "entryUUID");
 		foreach ($teachers as $teacher) {
 	    	$json[] = $teacher['entryUUID'];
 		}
@@ -261,7 +261,7 @@ class v2_schoolController extends Controller
     {
 		$json = array();
 		$openldap = new LdapServiceProvider();
-		$teachers = $openldap->findUsers("(&(o=$dc)(tpTeachClass=*$class_id*))", "entryUUID");
+		$teachers = $openldap->findUsers("(&(o=$dc)(tpTeachClass=*$class_id*)(inetUserStatus=active))", "entryUUID");
 		foreach ($teachers as $teacher) {
 	    	$json[] = $teacher['entryUUID'];
 		}
@@ -275,7 +275,7 @@ class v2_schoolController extends Controller
     {
 		$json = array();
 		$openldap = new LdapServiceProvider();
-		$students = $openldap->findUsers("(&(o=$dc)(tpClass=$class_id))", "entryUUID");
+		$students = $openldap->findUsers("(&(o=$dc)(tpClass=$class_id)(inetUserStatus=active))", "entryUUID");
 		foreach ($students as $student) {
 	    	$json[] = $student['entryUUID'];
 		}
@@ -908,7 +908,7 @@ class v2_schoolController extends Controller
     {
 		$json = array();
 		$openldap = new LdapServiceProvider();
-		$teachers = $openldap->findUsers("(&(o=$dc)(ou=*$ou))", ["cn","displayName","o","ou","title"]);
+		$teachers = $openldap->findUsers("(&(o=$dc)(ou=*$ou)(inetUserStatus=active))", ["cn","displayName","o","ou","title"]);
 		foreach ($teachers as $one) {
 			$teacher = new \stdClass;
 			$teacher->idno = $one['cn'];
