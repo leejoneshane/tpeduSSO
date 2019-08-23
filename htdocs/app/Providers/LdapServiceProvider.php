@@ -759,6 +759,7 @@ class LdapServiceProvider extends ServiceProvider
 			$classname = $this->getOuTitle($userinfo['o'], $userinfo['tpClass']);
 			if (!empty($classname) && (!isset($userinfo['tpClassTitle']) || $userinfo['tpClassTitle'] != $classname))
 				$this->updateData($entry, [ "tpClassTitle" => $classname ]);
+			$userinfo['tpClassTitle'] = $classname;
 		}
 		if (in_array('inetUserStatus', $fields) && empty($userinfo['inetUserStatus'])) {
 			$userinfo['inetUserStatus'] = 'active';

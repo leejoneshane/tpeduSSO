@@ -70,12 +70,12 @@ class v2_profileController extends Controller
 	$json->role = $user->ldap['employeeType'];
 	if (array_key_exists('gender', $user->ldap)) $json->gender = $user->ldap['gender'];
 	if (array_key_exists('birthDate', $user->ldap)) $json->birthDate = $user->ldap['birthDate'];
-	if (array_key_exists('o', $user->ldap)) $json->o = $user->ldap['o'];;
+	if (array_key_exists('o', $user->ldap)) $json->o = $user->ldap['o'];
 	if (array_key_exists('school', $user->ldap)) $json->organization = $user->ldap['school'];
 	if ($json->role == '學生') {
 	    if (array_key_exists('employeeNumber', $user->ldap)) $json->studentId = $user->ldap['employeeNumber'];
 	    if (array_key_exists('tpClass', $user->ldap)) $json->class = $user->ldap['tpClass'];
-	    if (array_key_exists('tpClassTitle', $user->ldap)) $json->className = $user->ldap['tpClassTitle'];
+		if (array_key_exists('tpClassTitle', $user->ldap)) $json->className = $user->ldap['tpClassTitle'];
 	    if (array_key_exists('tpSeat', $user->ldap)) $json->seat = $user->ldap['tpSeat'];
 	} else {
 	    if (array_key_exists('employeeNumber', $user->ldap)) $json->teacherId = $user->ldap['employeeNumber'];
