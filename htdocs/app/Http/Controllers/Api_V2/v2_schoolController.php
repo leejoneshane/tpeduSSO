@@ -73,6 +73,8 @@ class v2_schoolController extends Controller
         if ($role) $condition[] = "(employeeType=$role)";
         $idno = $request->get('idno');
         if ($idno) $condition[] = "(cn=$idno)";
+        $uid = $request->get('uid');
+        if ($uid) $condition[] = "(uid=$uid)";
         $sysid = $request->get('sysid');
         if ($sysid) $condition[] = "(employeeNumber=$sysid)";
         $gender = $request->get('gender');
