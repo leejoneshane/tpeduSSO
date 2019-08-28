@@ -632,7 +632,6 @@ class SyncController extends Controller
 			if ($sys == 'oneplus') $result = $this->js_syncTeacher($dc, $sid);
 			if ($sys == 'alle') $result = $this->ps_syncTeacher($dc, $sid);
 		}
-		$result = array();
 		return view('admin.syncteacherinfo', [ 'sims' => $sys, 'dc' => $dc, 'result' => $result ]);
 	}
 	
