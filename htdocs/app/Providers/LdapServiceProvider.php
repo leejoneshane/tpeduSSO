@@ -106,7 +106,7 @@ class LdapServiceProvider extends ServiceProvider
     public function checkAccount($username)
     {
         if (empty($username)) return false;
-        $filter = "uid=".$username;
+        $filter = "(uid=$username)";
 		$this->administrator();
 		$resource = @ldap_search(self::$ldap_read, Config::get('ldap.authdn'), $filter, array('cn'));
 		if ($resource) {
@@ -121,7 +121,7 @@ class LdapServiceProvider extends ServiceProvider
     public function checkEmail($email)
     {
     	if (empty($email)) return false;
-    	$filter = "mail=".$email."*";
+    	$filter = "(mail=$email)";
 		$this->administrator();
 		$resource = @ldap_search(self::$ldap_read, Config::get('ldap.userdn'), $filter, array('cn'));
 		if ($resource) {
@@ -136,7 +136,7 @@ class LdapServiceProvider extends ServiceProvider
     public function checkMobil($mobile)
     {
     	if (empty($mobile)) return false;
-    	$filter = "mobile=".$mobile;
+    	$filter = "(mobile=$mobile)";
 		$this->administrator();
 		$resource = ldap_search(self::$ldap_read, Config::get('ldap.userdn'), $filter, array('cn'));
 		if ($resource) {
