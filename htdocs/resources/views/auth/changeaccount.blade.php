@@ -19,18 +19,6 @@
 		<p>注意：為了避免帳號遭到盜用，請勿繼續使用預設帳號與預設密碼！</p>
 		<form class="form-horizontal" method="POST" action="{{ route('changeAccount') }}">
 		    {{ csrf_field() }}
-		    <div class="form-group{{ $errors->has('current-account') ? ' has-error' : '' }}">
-			<label for="current-account" class="col-md-8 control-label">目前的自訂帳號</label>
-			<div class="col-md-8">
-			    <input id="current-password" type="text" class="form-control" name="current-account" placeholder="若您還沒有帳號請勿填寫，請勿輸入電子郵件或手機號碼....">
-			    @if ($errors->has('current-account'))
-				<span class="help-block">
-				    <strong>{{ $errors->first('current-account') }}</strong>
-				</span>
-			    @endif
-			</div>
-		    </div>
-
 		    <div class="form-group{{ $errors->has('new-account') ? ' has-error' : '' }}">
 			<label for="new-account" class="col-md-8 control-label">新帳號</label>
 			<div class="col-md-8">

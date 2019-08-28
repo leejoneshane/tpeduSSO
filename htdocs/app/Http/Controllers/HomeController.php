@@ -91,21 +91,15 @@ class HomeController extends Controller
 		} else {
 		  $idno = $request->session()->pull('idno');
 		}
-		$old = $request->get('current-account');
 		$new = $request->get('new-account');
 		$openldap = new LdapServiceProvider();
 		$accounts = $openldap->getUserAccounts($idno);
 		$match = false;
 		foreach ($accounts as $account) {
-    		if ($old == $account) $match = true;
+    		if ($new == $account) $match = true;
 		}
-		if (empty($accounts)) $match = true;
-		if (!$match) return back()->withInput()->with("error","您輸入的帳號不正確，請您重新輸入一次！");
-
-		if(strcmp($idno, $new) == 0)
-	    	return back()->withInput()->with("error","新帳號不可以跟身分證字號相同，請重新想一個新帳號再試一次！");
-		if(strcmp($old, $new) == 0)
-	    	return back()->withInput()->with("error","新帳號不可以跟舊的帳號相同，請重新想一個新帳號再試一次！");
+		if ($match) return back()->withInput()->with("error","新帳號不可以跟舊的帳號相同，請重新想一個新帳號再試一次！");
+		if(strcmp($idno, $new) == 0) return back()->withInput()->with("error","新帳號不可以跟身分證字號相同，請重新想一個新帳號再試一次！");
 		$validatedData = $request->validate([
 			'new-account' => 'required|string|min:6|confirmed',
 		]);
@@ -159,17 +153,13 @@ class HomeController extends Controller
 		} else {
 		    $idno = $request->session()->pull('idno');
 		}
-		$old = $request->get('current-password');
 		$new = $request->get('new-password');
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getUserEntry($idno);
 		$data = $openldap->getUserData($entry);
-		if (!$openldap->userLogin("cn=$idno", $old))
-	    	return back()->withInput()->with("error","您輸入的原密碼不正確，請您重新輸入一次！");
-		if($old == $new)
+		if (!$openldap->userLogin("cn=$idno", $new))
 	    	return back()->withInput()->with("error","新密碼不可以跟舊的密碼相同，請重新想一個新密碼再試一次！");
 		$validatedData = $request->validate([
-			'current-password' => 'required',
 			'new-password' => 'required|string|min:6|confirmed',
 		]);
 		if (Auth::check()) {

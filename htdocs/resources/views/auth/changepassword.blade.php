@@ -19,18 +19,6 @@
 		<p>注意：為了避免帳號遭到盜用，請勿繼續使用預設帳號與預設密碼！</p>
 		<form class="form-horizontal" method="POST" action="{{ route('changePassword') }}">
 		    {{ csrf_field() }}
-		    <div class="form-group{{ $errors->has('current-password') ? ' has-error' : '' }}">
-			<label for="current-password" class="col-md-4 control-label">原密碼</label>
-			<div class="col-md-6">
-			    <input id="current-password" type="password" class="form-control" name="current-password" required>
-			    @if ($errors->has('current-password'))
-				<span class="help-block">
-				    <strong>{{ $errors->first('current-password') }}</strong>
-				</span>
-			    @endif
-			</div>
-		    </div>
-
 		    <div class="form-group{{ $errors->has('new-password') ? ' has-error' : '' }}">
 			<label for="new-password" class="col-md-4 control-label">新密碼</label>
 			<div class="col-md-6">
