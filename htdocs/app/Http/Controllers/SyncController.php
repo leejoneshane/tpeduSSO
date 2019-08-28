@@ -1448,6 +1448,7 @@ class SyncController extends Controller
 					}
 					$info = array();
 					$info['o'] = $dc;
+					$info['info'] = json_encode(array("sid" => $sid, "role" => "學生"), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 					$info['inetUserStatus'] = 'active';
 					$info['employeeType'] = '學生';
 					$info['employeeNumber'] = $data['stdno'];
