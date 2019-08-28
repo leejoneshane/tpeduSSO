@@ -227,16 +227,33 @@ class SimsServiceProvider extends ServiceProvider
         else return false;
     }
 
-    public function ps_getTeachers($sid)
+    public function ps_getTeachers($sid, $class = '')
     {
         if (empty($sid)) return false;
-        $data = $this->ps_call('teachers_info', ["sid" => $sid]);
         $teachers = array();
-        if (!empty($data))
-            foreach ($data as $teacher) {
-                $teachers[] = $teacher->teaid;
+        if (empty($class)) {
+            $data = $this->ps_call('teachers_info', ["sid" => $sid]);
+            if (!empty($data)) {
+                foreach ($data as $teacher) {
+                    $teachers[] = $teacher->teaid;
+                }
             }
-        return $teachers;
+        } else {
+            $classes = array();
+            if (is_array($class)) {
+                $classes = $class;
+            } else {
+                $classes[] = $class;
+            }
+            foreach ($classes as $clsid) {
+                $data = $this->ps_call('teachers_in_class', ["sid" => $sid, "clsid" => $clsid]);
+                usleep(100);
+                if ($data) $teachers = array_merge($teachers, $data);
+            }
+            $teachers = array_values(array_unique($teachers));
+        }
+        if (!empty($teachers)) return $teachers;
+        else return false;
     }
 
     public function js_getStudents($sid, $class = '')

@@ -102,6 +102,8 @@ class HomeController extends Controller
 		if (empty($accounts)) $match = true;
 		if (!$match) return back()->withInput()->with("error","您輸入的帳號不正確，請您重新輸入一次！");
 
+		if(strcmp($idno, $new) == 0)
+	    	return back()->withInput()->with("error","新帳號不可以跟身分證字號相同，請重新想一個新帳號再試一次！");
 		if(strcmp($old, $new) == 0)
 	    	return back()->withInput()->with("error","新帳號不可以跟舊的帳號相同，請重新想一個新帳號再試一次！");
 		$validatedData = $request->validate([
