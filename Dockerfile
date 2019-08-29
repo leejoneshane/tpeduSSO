@@ -26,7 +26,7 @@ ENV MAIL_ENCRYPTION tls
 
 ADD htdocs /root/htdocs
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-COPY restore.sh /usr/local/bin/restore/restore.sh
+COPY restore.sh /usr/local/bin/restore
 COPY crontab /etc/crontabs/root
 COPY supervisord.conf /etc/supervisord.conf
 WORKDIR /var/www/localhost/htdocs
