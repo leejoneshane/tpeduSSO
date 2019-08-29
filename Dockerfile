@@ -24,9 +24,10 @@ ENV MAIL_USERNAME your@gmail.com
 ENV MAIL_PASSWORD password
 ENV MAIL_ENCRYPTION tls
 
-ADD docker-entrypoint.sh /usr/local/bin/
-ADD restore.sh /usr/local/bin/restore
 ADD htdocs /root/htdocs
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY restore.sh /usr/local/bin/restore/restore.sh
+COPY crontab /etc/crontabs/root
 WORKDIR /var/www/localhost/htdocs
 
 RUN chmod 755 /usr/local/bin/* \
