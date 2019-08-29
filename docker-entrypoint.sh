@@ -24,7 +24,4 @@ php artisan clear
 php artisan cache:clear
 php artisan view:cache
 php artisan route:cache
-exec php artisan queue:work --timeout=7000 &
-
-rm -f /run/apache2/httpd.pid
-exec httpd -DFOREGROUND
+supervisord -n -c /etc/supervisord.conf
