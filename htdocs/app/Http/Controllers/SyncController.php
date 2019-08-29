@@ -735,7 +735,7 @@ class SyncController extends Controller
 							}
 							foreach ($educloud as $k => $c) {
 								$i = (array) json_decode($c, true);
-								if ($i['sid'] == $sid) unset($educloud[$k]);
+								if (array_key_exists('sid', $i) && $i['sid'] == $sid) unset($educloud[$k]);
 							}
 						}
 						$educloud[] = json_encode(array("sid" => $sid, "role" => $data['type']), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
@@ -908,7 +908,7 @@ class SyncController extends Controller
 						}
 						foreach ($educloud as $k => $c) {
 							$i = (array) json_decode($c, true);
-							if ($i['sid'] == $sid) unset($educloud[$k]);
+							if (array_key_exists('sid', $i) && $i['sid'] == $sid) unset($educloud[$k]);
 						}
 					}
 					$uids = array();
@@ -1070,7 +1070,7 @@ class SyncController extends Controller
 							}
 							foreach ($educloud as $k => $c) {
 								$i = (array) json_decode($c, true);
-								if ($i['sid'] == $sid) unset($educloud[$k]);
+								if (array_key_exists('sid', $i) && $i['sid'] == $sid) unset($educloud[$k]);
 							}
 						}
 						if (!empty($data['job_title'])) {
@@ -1271,7 +1271,7 @@ class SyncController extends Controller
 						}
 						foreach ($educloud as $k => $c) {
 							$i = (array) json_decode($c, true);
-							if ($i['sid'] == $sid) unset($educloud[$k]);
+							if (array_key_exists('sid', $i) && $i['sid'] == $sid) unset($educloud[$k]);
 						}
 					}
 					$uids = array();
@@ -1648,6 +1648,7 @@ class SyncController extends Controller
 						}
 						$info = array();
 						$info['o'] = $dc;
+						$info['info'] = json_encode(array("sid" => $sid, "role" => "學生"), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 						$info['employeeType'] = '學生';
 						$info['inetUserStatus'] = 'active';
 						$info['employeeNumber'] = $stdno;
