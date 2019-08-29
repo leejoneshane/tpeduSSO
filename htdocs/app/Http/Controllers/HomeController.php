@@ -123,7 +123,7 @@ class HomeController extends Controller
 			}
 			return back()->withInput()->with("success","帳號建立成功！");
 		} else {
-			$openldap->renameAccount($entry, $old, $new);
+			$openldap->renameAccount($entry, $new);
 			if (Auth::check()) {
 				$user->uname = $new;
 				$user->save();

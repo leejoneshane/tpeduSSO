@@ -1154,11 +1154,9 @@ class LdapServiceProvider extends ServiceProvider
 		}
     }
 
-    public function renameAccount($entry, $old_account, $new_account)
+    public function renameAccount($entry, $new_account)
     {
 		$this->administrator();
-		$dn = "uid=$old_account,".Config::get('ldap.authdn');
-		$rdn = "uid=$new_account";
 		$data = $this->getUserData($entry, 'uid');
 		$uid = $data['uid'];
 		$accounts = array();
@@ -1168,9 +1166,17 @@ class LdapServiceProvider extends ServiceProvider
 			$accounts[] = $uid;
 		}
 		for ($i=0;$i<count($accounts);$i++) {
-			if ($accounts[$i] == $old_account) $accounts[$i] = $new_account;
+			$match = true;
+			if (array_key_exists('mail',$data) && $accounts[$i] == $data['mail']) $match = false;
+			if (array_key_exists('mobile',$data) && $accounts[$i] == $data['mobile']) $match = false;
+			if ($match) {
+				$old_account = $accounts[$i];
+				$accounts[$i] = $new_account;
+			}
 		}
 		$this->updateData($entry, array( "uid" => $accounts));
+		$dn = "uid=$old_account,".Config::get('ldap.authdn');
+		$rdn = "uid=$new_account";
 		$result = @ldap_rename(self::$ldap_write, $dn, $rdn, null, true);
 		return $result;
 	}
