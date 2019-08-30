@@ -80,7 +80,7 @@ class LdapServiceProvider extends ServiceProvider
 		if (strlen($idno) == 13) $idno = substr($idno,3);
 		if (strlen($idno) != 10) return false;
 		$this->administrator();
-		$resource = @ldap_search(self::$ldap_read, Config::get('ldap.userdn'), "cn=$idno");
+		$resource = @ldap_list(self::$ldap_read, Config::get('ldap.userdn'), "cn=$idno");
 		if ($resource) {
 	    	$entry = ldap_first_entry(self::$ldap_read, $resource);
 			if (!$entry) return false;
@@ -94,7 +94,7 @@ class LdapServiceProvider extends ServiceProvider
     {
 		if (empty($dc)) return false;
 		$this->administrator();
-		$resource = @ldap_search(self::$ldap_read, Config::get('ldap.rdn'), $dc, array("tpAdministrator"));
+		$resource = @ldap_list(self::$ldap_read, Config::get('ldap.rdn'), $dc, array('tpAdministrator'));
 		if ($resource) {
 	    	$entry = ldap_first_entry(self::$ldap_read, $resource);
 			if (!$entry) return false;
@@ -108,7 +108,7 @@ class LdapServiceProvider extends ServiceProvider
         if (empty($username)) return false;
         $filter = "(uid=$username)";
 		$this->administrator();
-		$resource = @ldap_search(self::$ldap_read, Config::get('ldap.authdn'), $filter, array('cn'));
+		$resource = @ldap_list(self::$ldap_read, Config::get('ldap.authdn'), $filter, array('cn'));
 		if ($resource) {
 			$entry = ldap_first_entry(self::$ldap_read, $resource);
 			if (!$entry) return false;
@@ -123,7 +123,7 @@ class LdapServiceProvider extends ServiceProvider
     	if (empty($email)) return false;
     	$filter = "(mail=$email)";
 		$this->administrator();
-		$resource = @ldap_search(self::$ldap_read, Config::get('ldap.userdn'), $filter, array('cn'));
+		$resource = @ldap_list(self::$ldap_read, Config::get('ldap.userdn'), $filter, array('cn'));
 		if ($resource) {
 			$entry = ldap_first_entry(self::$ldap_read, $resource);
 			if (!$entry) return false;
@@ -138,7 +138,7 @@ class LdapServiceProvider extends ServiceProvider
     	if (empty($mobile)) return false;
     	$filter = "(mobile=$mobile)";
 		$this->administrator();
-		$resource = ldap_search(self::$ldap_read, Config::get('ldap.userdn'), $filter, array('cn'));
+		$resource = ldap_list(self::$ldap_read, Config::get('ldap.userdn'), $filter, array('cn'));
 		if ($resource) {
 			$entry = @ldap_first_entry(self::$ldap_read, $resource);
 			if (!$entry) return false;
@@ -164,10 +164,10 @@ class LdapServiceProvider extends ServiceProvider
 
     public function accountAvailable($idno, $account)
     {
-		if (empty($idno) || empty($account)) return;
+		if (empty($idno) || empty($account)) return false;
 		$filter = "(&(uid=$account)(!(cn=$idno)))";
 		$this->administrator();
-		$resource = @ldap_search(self::$ldap_read, Config::get('ldap.userdn'), $filter);
+		$resource = @ldap_list(self::$ldap_read, Config::get('ldap.authdn'), $filter, array('uid'));
 		if (ldap_first_entry(self::$ldap_read, $resource))
 			return false;
 		else
@@ -179,7 +179,7 @@ class LdapServiceProvider extends ServiceProvider
 		if (empty($idno) || empty($mailaddr)) return;
 		$filter = "(&(mail=$mailaddr)(!(cn=$idno)))";
 		$this->administrator();
-		$resource = @ldap_search(self::$ldap_read, Config::get('ldap.userdn'), $filter);
+		$resource = @ldap_list(self::$ldap_read, Config::get('ldap.userdn'), $filter, array('mail'));
 		if (ldap_first_entry(self::$ldap_read, $resource))
 			return false;
 		else
@@ -191,7 +191,7 @@ class LdapServiceProvider extends ServiceProvider
 		if (empty($idno) || empty($mobile)) return;
 		$filter = "(&(mobile=$mobile)(!(cn=$idno)))";
 		$this->administrator();
-		$resource = @ldap_search(self::$ldap_read, Config::get('ldap.userdn'), $filter);
+		$resource = @ldap_list(self::$ldap_read, Config::get('ldap.userdn'), $filter, array('mobile'));
 		if (ldap_first_entry(self::$ldap_read, $resource))
 			return false;
 		else
@@ -664,7 +664,7 @@ class LdapServiceProvider extends ServiceProvider
 		$userinfo = array();
 		$this->administrator();
 		$base_dn = Config::get('ldap.userdn');
-		$resource = @ldap_search(self::$ldap_read, $base_dn, $filter, array("*","entryUUID","modifyTimestamp"));
+		$resource = @ldap_list(self::$ldap_read, $base_dn, $filter, array("*","entryUUID","modifyTimestamp"));
 		if ($resource) {
 			$entry = ldap_first_entry(self::$ldap_read, $resource);
 			if ($entry) {
@@ -687,7 +687,7 @@ class LdapServiceProvider extends ServiceProvider
 		} else { //uuid
 			$filter = "entryUUID=$identifier";
 		}
-		$resource = @ldap_search(self::$ldap_read, $base_dn, $filter, array("*","entryUUID","modifyTimestamp"));
+		$resource = @ldap_list(self::$ldap_read, $base_dn, $filter, array("*","entryUUID","modifyTimestamp"));
 		if ($resource) {
 			$entry = ldap_first_entry(self::$ldap_read, $resource);
 			return $entry;
@@ -1014,7 +1014,7 @@ class LdapServiceProvider extends ServiceProvider
 		$accountinfo = array();
 		$this->administrator();
 		$base_dn = Config::get('ldap.authdn');
-		$resource = @ldap_search(self::$ldap_read, $base_dn, $filter);
+		$resource = @ldap_list(self::$ldap_read, $base_dn, $filter);
 		if ($resource) {
 			$entry = ldap_first_entry(self::$ldap_read, $resource);
 			if ($entry) {
@@ -1032,7 +1032,7 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$base_dn = Config::get('ldap.authdn');
 		$auth_rdn = "uid=$identifier";
-		$resource = @ldap_search(self::$ldap_read, $base_dn, $auth_rdn);
+		$resource = @ldap_list(self::$ldap_read, $base_dn, $auth_rdn);
 		if ($resource) {
 			$entry = @ldap_first_entry(self::$ldap_read, $resource);
 			return $entry;
@@ -1196,7 +1196,7 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$base_dn = Config::get('ldap.groupdn');
 		$grp_rdn = "cn=$grp";
-		$resource = ldap_search(self::$ldap_read, $base_dn, $grp_rdn);
+		$resource = ldap_list(self::$ldap_read, $base_dn, $grp_rdn);
 		if ($resource) {
 			$entry = ldap_first_entry(self::$ldap_read, $resource);
 			return $entry;
@@ -1217,7 +1217,7 @@ class LdapServiceProvider extends ServiceProvider
     {
 		$this->administrator();
     	$filter = "objectClass=groupOfURLs";
-    	$resource = @ldap_search(self::$ldap_read, Config::get('ldap.groupdn'), $filter);
+    	$resource = @ldap_list(self::$ldap_read, Config::get('ldap.groupdn'), $filter);
     	if ($resource) {
     		$info = @ldap_get_entries(self::$ldap_read, $resource);
     		$groups = array();
