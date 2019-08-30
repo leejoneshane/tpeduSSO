@@ -1607,7 +1607,7 @@ class SyncController extends Controller
 					if (!empty($classes)) $request->session()->put('classes', $classes);
 				}
 			}
-			if ($clsid && $clsname) {
+			if (!empty($clsid) && !empty($clsname)) {
 				$result = $this->ps_syncStudent($dc, $sid, $clsid, $clsname);
 			}
 			if (!empty($classes)) {
