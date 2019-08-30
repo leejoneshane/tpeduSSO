@@ -3,6 +3,7 @@ set -euo pipefail
 if ! [ -d /var/www/localhost/htdocs/vendor ]; then
   composer update
   composer required laravel/telescope
+  chown -R apache:apache /var/www
 fi
 
 if ! [ -d /var/www/localhost/htdocs/storage/framework/views ]; then
@@ -19,7 +20,6 @@ else
   php artisan telescope:install
 fi
 
-chown -R apache:apache /var/www
 php artisan clear
 php artisan cache:clear
 php artisan view:cache
