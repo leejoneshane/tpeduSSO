@@ -1397,10 +1397,12 @@ class SyncController extends Controller
 				}
 			} else {
 				$classes = $request->session()->pull('classes');
-				$clsid = key($classes);
-				$clsname = $classes[$clsid];
-				unset($classes[$clsid]);
-				if (!empty($classes)) $request->session()->put('classes', $classes);
+				if (!empty($classes)) {
+					$clsid = key($classes);
+					$clsname = $classes[$clsid];
+					unset($classes[$clsid]);
+					if (!empty($classes)) $request->session()->put('classes', $classes);
+				}
 			}
 			if ($clsid && $clsname) {
 				$result = $this->js_syncStudent($dc, $sid, $clsid, $clsname);

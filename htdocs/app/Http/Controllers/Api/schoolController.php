@@ -45,7 +45,7 @@ class schoolController extends Controller
         if ($json)
             return json_encode($json, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該機關學校尚未新增教職員'], 404);
+            return response()->json([ 'error' => '該機關學校查無教職員'], 404);
     }
 
     public function allOu($dc)
@@ -55,7 +55,7 @@ class schoolController extends Controller
         if ($json)
             return json_encode($json, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該機關學校尚未新增行政部門'], 404);
+            return response()->json([ 'error' => '該機關學校查無行政部門'], 404);
     }
 
     public function oneOu($dc, $ou_id)
@@ -80,7 +80,7 @@ class schoolController extends Controller
         if ($json)
             return json_encode($json, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該行政部門尚未新增在職人員'], 404);
+            return response()->json([ 'error' => '該行政部門查無在職人員'], 404);
     }
 
     public function allSubject($dc)
@@ -90,7 +90,7 @@ class schoolController extends Controller
         if ($json)
             return json_encode($json, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該機關學校尚未新增教學科目'], 404);
+            return response()->json([ 'error' => '該機關學校查無教學科目'], 404);
     }
 
     public function oneSubject($dc, $subj_id)
@@ -115,7 +115,7 @@ class schoolController extends Controller
         if ($json)
             return json_encode($json, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該教學科目尚未指派任教教師'], 404);
+            return response()->json([ 'error' => '該教學科目查無任教教師'], 404);
     }
 
     public function allClassesBySubject($dc, $subj_id)
@@ -139,7 +139,7 @@ class schoolController extends Controller
         if ($json)
             return json_encode($json, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該教學科目尚未指派授課班級'], 404);
+            return response()->json([ 'error' => '該教學科目查無授課班級'], 404);
     }
 
     public function allRole($dc, $ou_id)
@@ -149,7 +149,7 @@ class schoolController extends Controller
         if ($json)
             return json_encode($json, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該行政部門尚未登錄職務資訊'], 404);
+            return response()->json([ 'error' => '該行政部門查無職務資訊'], 404);
     }
 
     public function oneRole($dc, $ou_id, $role_id)
@@ -174,20 +174,21 @@ class schoolController extends Controller
         if ($json)
             return json_encode($json, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該行政職務尚未設定在職人員'], 404);
+            return response()->json([ 'error' => '該行政職務查無在職人員'], 404);
     }
 
     public function allClass($dc)
     {
 		$openldap = new LdapServiceProvider();
         $json = $openldap->getOus($dc, "教學班級");
-        foreach (array_keys($json) as $key) {
-            unset($json[$key]->teacher);
-        }
-        if ($json)
+        if ($json) {
+            foreach (array_keys($json) as $key) {
+                unset($json[$key]->teacher);
+            }
             return json_encode($json, JSON_UNESCAPED_UNICODE);
-        else
-            return response()->json([ 'error' => '該機關學校尚未新增班級'], 404);
+        } else {
+            return response()->json([ 'error' => '該機關學校查無班級'], 404);
+        }
     }
 
     public function oneClass($dc, $class_id)
@@ -195,10 +196,11 @@ class schoolController extends Controller
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getOuEntry($dc,$class_id);
 		$json = $openldap->getOuData($entry);
-        if ($json)
+        if ($json) {
             return json_encode($json, JSON_UNESCAPED_UNICODE);
-        else
+        } else {
             return response()->json([ 'error' => '找不到指定的班級'], 404);
+        }
     }
 
     public function allTeachersByClass($dc, $class_id)
@@ -212,7 +214,7 @@ class schoolController extends Controller
         if ($json)
             return json_encode($json, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該班級尚未指派任教老師'], 404);
+            return response()->json([ 'error' => '該班級查無任教老師'], 404);
     }
 
     public function allStudentsByClass($dc, $class_id)
@@ -226,7 +228,7 @@ class schoolController extends Controller
         if ($json)
             return json_encode($json, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該班級尚未新增學生'], 404);
+            return response()->json([ 'error' => '該班級查無學生'], 404);
     }
 
     public function allSubjectsByClass($dc, $class_id)
@@ -250,7 +252,7 @@ class schoolController extends Controller
         if ($json)
             return json_encode($json, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該班級尚未指派教學科目'], 404);
+            return response()->json([ 'error' => '該班級查無教學科目'], 404);
     }
 
     // below function for schoolAdmin scope.
