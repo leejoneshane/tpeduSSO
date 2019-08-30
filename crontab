@@ -1,1 +1,1 @@
-* * * * * php /path/to/artisan schedule:run >> /proc/self/fd/1 2>/proc/self/fd/2
+* * * * * php /var/www/localhost/htdocs/artisan schedule:run >> /proc/self/fd/1 2>/proc/self/fd/2
