@@ -168,7 +168,7 @@ class LdapServiceProvider extends ServiceProvider
 		$filter = "(&(uid=$account)(!(cn=$idno)))";
 		$this->administrator();
 		$resource = @ldap_list(self::$ldap_read, Config::get('ldap.authdn'), $filter, array('uid'));
-		if (ldap_first_entry(self::$ldap_read, $resource))
+		if ($resource && ldap_first_entry(self::$ldap_read, $resource))
 			return false;
 		else
 			return true;
@@ -180,7 +180,7 @@ class LdapServiceProvider extends ServiceProvider
 		$filter = "(&(mail=$mailaddr)(!(cn=$idno)))";
 		$this->administrator();
 		$resource = @ldap_list(self::$ldap_read, Config::get('ldap.userdn'), $filter, array('mail'));
-		if (ldap_first_entry(self::$ldap_read, $resource))
+		if ($resource && ldap_first_entry(self::$ldap_read, $resource))
 			return false;
 		else
 			return true;
@@ -192,7 +192,7 @@ class LdapServiceProvider extends ServiceProvider
 		$filter = "(&(mobile=$mobile)(!(cn=$idno)))";
 		$this->administrator();
 		$resource = @ldap_list(self::$ldap_read, Config::get('ldap.userdn'), $filter, array('mobile'));
-		if (ldap_first_entry(self::$ldap_read, $resource))
+		if ($resource && ldap_first_entry(self::$ldap_read, $resource))
 			return false;
 		else
 			return true;
