@@ -856,7 +856,7 @@ class v2_schoolController extends Controller
         $entry = $openldap->getUserEntry($uuid);
         $person = $openldap->getUserData($entry);
         $orgs = array();
-        if (array_key_exists('o',$person)) {
+        if (!array_key_exists('o',$person)) {
             return response()->json([ 'error' => '找不到指定的人員'], 404);
         } else {
             if (is_array($person['o'])) {
