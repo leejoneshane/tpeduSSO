@@ -1139,8 +1139,10 @@ class LdapServiceProvider extends ServiceProvider
 					$accounts = $data['uid'];
 				else
 					$accounts[] = $data['uid'];
+				if (!in_array($account, $accounts)) $this->addData($entry, array( "uid" => $account));
+			} else {
+				$this->updateData($entry, array( "uid" => $account));
 			}
-			if (!in_array($account, $accounts)) $this->addData($entry, array( "uid" => $account));
 			$acc = $this->getAccountEntry($account);
 			if ($acc) return;
 			$account_info = array();
