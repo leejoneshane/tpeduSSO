@@ -763,7 +763,7 @@ class LdapServiceProvider extends ServiceProvider
 		}
 		if (in_array('inetUserStatus', $fields) && empty($userinfo['inetUserStatus'])) {
 			$userinfo['inetUserStatus'] = 'active';
-			$this->addData($entry, [ "inetUserStatus" => "active" ]);
+			$this->updateData($entry, [ "inetUserStatus" => "active" ]);
 		}
 		if (isset($userinfo['inetUserStatus']) && $userinfo['inetUserStatus'] == 'Active') {
 			$userinfo['inetUserStatus'] = 'active';
