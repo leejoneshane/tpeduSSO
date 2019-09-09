@@ -61,7 +61,7 @@
                                 @endif
                             </ul>
                         </li>
-                        <li-- {{ (Request::is('school/student') ? 'class="active"' : '') }}>
+                        <li {{ (Request::is('school/student') ? 'class="active"' : '') }}>
                             <a href="#"><i class="fa fa-child fa-fw"></i> 學生管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li {{ (Request::is('sync_student') ? 'class="active"' : '') }}>
