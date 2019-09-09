@@ -394,6 +394,14 @@ class LdapServiceProvider extends ServiceProvider
 				}
 			}
 		}
+		if ($info['businessCategory'] == '教學班級') {
+			$dn=ldap_get_dn($entry);
+			$augs=split($dn,',');
+			$o=split($augs[1],'=');
+			$filter='(&(o='.$o[1].')(tpTutorClass='.$info['ou'].'))';
+			$teacher=findUsers($filter,'entryUUID');
+			$info['tpTutor']=$teacher['entryUUID'];
+		}
 		return $info;
 	}
     
