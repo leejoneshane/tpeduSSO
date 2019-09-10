@@ -1234,6 +1234,7 @@ class SchoolController extends Controller
     public function updateSchoolTeacher(Request $request, $dc, $uuid)
     {
 		$openldap = new LdapServiceProvider();
+		$sid = $openldap->getOrgId($dc);
 		$entry = $openldap->getUserEntry($uuid);
 		$original = $openldap->getUserData($entry, [ 'cn', 'o', 'ou', 'title', 'tpTeachClass', 'info' ]);
 		$my_field = $request->session()->get('field');
@@ -1251,6 +1252,7 @@ class SchoolController extends Controller
 		$idno = strtoupper($request->get('idno'));
 		$info = array();
 		$info['employeeType'] = $request->get('type');
+		$info['info'] = json_encode(array("sid" => $sid, "role" => $info['employeeType']), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 		$info['sn'] = $request->get('sn');
 		$info['givenName'] = $request->get('gn');
 		$info['displayName'] = $info['sn'].$info['givenName'];
