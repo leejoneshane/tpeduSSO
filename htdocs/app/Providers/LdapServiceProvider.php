@@ -395,12 +395,17 @@ class LdapServiceProvider extends ServiceProvider
 			}
 		}
 		if ($info['businessCategory'] == '教學班級') {
-			$dn=ldap_get_dn($entry);
-			$augs=split($dn,',');
-			$o=split($augs[1],'=');
+			$dn=ldap_get_dn(self::$ldap_read,$entry);
+			$augs=explode(',', $dn);
+			$o=explode('=', $augs[1]);
 			$filter='(&(o='.$o[1].')(tpTutorClass='.$info['ou'].'))';
-			$teacher=findUsers($filter,'entryUUID');
-			$info['tpTutor']=$teacher['entryUUID'];
+			Log::debug($filter);
+			$teacher=$this->findUsers($filter,'entryUUID');
+			if ($teacher) {
+				foreach ($teacher as $t) {
+					$info['tpTutor']=$t['entryUUID'];
+				}
+			}
 		}
 		return $info;
 	}

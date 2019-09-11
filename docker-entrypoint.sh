@@ -8,8 +8,7 @@ fi
 
 if ! [ -d /var/www/localhost/htdocs/storage/framework/views ]; then
   mkdir -p /var/www/localhost/htdocs/storage/framework/views
-else
-  rm -rf /var/www/localhost/htdocs/storage/framework/views/*.php
+  chown -R apache:apache /var/www
 fi
 
 if mysqlshow --host=${DB_HOST} --user=${DB_USERNAME} --password=${DB_PASSWORD} ${DB_DATABASE} users; then
