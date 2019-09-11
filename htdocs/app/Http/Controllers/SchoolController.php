@@ -1236,7 +1236,7 @@ class SchoolController extends Controller
 		$openldap = new LdapServiceProvider();
 		$sid = $openldap->getOrgId($dc);
 		$entry = $openldap->getUserEntry($uuid);
-		$original = $openldap->getUserData($entry, [ 'cn', 'o', 'ou', 'title', 'tpTeachClass', 'info' ]);
+		$original = $openldap->getUserData($entry, [ 'cn', 'o', 'ou', 'employeeType', 'title', 'tpTeachClass', 'info' ]);
 		$my_field = $request->session()->get('field');
 		$keywords = $request->session()->get('keywords');
 		$validatedData = $request->validate([
@@ -1252,7 +1252,22 @@ class SchoolController extends Controller
 		$idno = strtoupper($request->get('idno'));
 		$info = array();
 		$info['employeeType'] = $request->get('type');
-		$info['info'] = json_encode(array("sid" => $sid, "role" => $info['employeeType']), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
+		if ($original['employeeType'] != $info['employeeType']) {
+			$educloud = array();
+			if (!empty($original['info'])) {
+				if (is_array($original['info'])) {
+					$educloud = $original['info'];
+				} else {
+					$educloud[] = $original['info'];
+				}
+				foreach ($educloud as $k => $c) {
+					$i = (array) json_decode($c, true);
+					if (array_key_exists('sid', $i) && $i['sid'] == $sid) unset($educloud[$k]);
+				}
+			}
+			$educloud[] = json_encode(array("sid" => $sid, "role" => $info['employeeType']), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
+			$info['info'] = $educloud;
+		}
 		$info['sn'] = $request->get('sn');
 		$info['givenName'] = $request->get('gn');
 		$info['displayName'] = $info['sn'].$info['givenName'];

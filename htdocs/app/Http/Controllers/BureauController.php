@@ -553,6 +553,8 @@ class BureauController extends Controller
     public function updateBureauTeacher(Request $request, $uuid)
     {
 		$openldap = new LdapServiceProvider();
+		$entry = $openldap->getUserEntry($uuid);
+		$original = $openldap->getUserData($entry, array('cn', 'info', 'employeeType'));
 		$my_field = $request->session()->get('field');
 		$keywords = $request->session()->get('keywords');
 		$area = $request->get('area')[0];
@@ -566,14 +568,40 @@ class BureauController extends Controller
 		]);
 		$idno = strtoupper($request->get('idno'));
 		$orgs = $request->get('o');
-		$educloud = array();
+		$all_sid = array();
 		foreach ($orgs as $o) {
 			$sid = $openldap->getOrgId($o);
-			$educloud[] = json_encode([ "sid" => $sid, "role" => $request->get('type') ], JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
+			$all_sid[] = $sid;
 		}
 		$info = array();
-		$info['employeeType'] = $request->get('type');
 		$info['o'] = $orgs;
+		$info['employeeType'] = $request->get('type');
+		$educloud = array();
+		if ($original['employeeType'] != $info['employeeType']) {
+			if (!empty($original['info'])) {
+				if (is_array($original['info'])) {
+					$educloud = $original['info'];
+				} else {
+					$educloud[] = $original['info'];
+				}
+				foreach ($educloud as $k => $c) {
+					$i = (array) json_decode($c, true);
+					if (!in_array($i['sid'], $all_sid)) {
+						unset($educloud[$k]);
+					} else {
+						$nk = array_search($i['sid'], $all_sid);
+						unset($all_sid[$nk]);
+						if ($i['role'] == $original['employeeType']) {
+							unset($educloud[$k]);
+							$educloud[] = json_encode(array("sid" => $i['sid'], "role" => $info['employeeType']), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
+						}
+					}
+				}
+			}
+		}
+		foreach ($all_sid as $sid) {
+			$educloud[] = json_encode(array("sid" => $sid, "role" => $info['employeeType']), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
+		}
 		$info['info'] = $educloud;
 		$info['sn'] = $request->get('sn');
 		$info['givenName'] = $request->get('gn');
@@ -662,10 +690,7 @@ class BureauController extends Controller
 	    		$data[] = $request->get('htel');
 			}
 			$info['homePhone'] = array_values(array_filter($data));
-		}
-		
-		$entry = $openldap->getUserEntry($uuid);
-		$original = $openldap->getUserData($entry, 'cn');
+		}		
 		$result = $openldap->updateData($entry, $info);
 		if ($result) {
 			if ($original['cn'] != $idno) {

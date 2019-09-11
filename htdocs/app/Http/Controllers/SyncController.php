@@ -910,6 +910,9 @@ class SyncController extends Controller
 							$i = (array) json_decode($c, true);
 							if (array_key_exists('sid', $i) && $i['sid'] == $sid) unset($educloud[$k]);
 						}
+						if (count($educloud) == 0) $info['inetUserStatus'] = 'deleted';
+					} else {	
+						$info['inetUserStatus'] = 'deleted';
 					}
 					$uids = array();
 					if (!empty($original['uid'])) {
@@ -918,11 +921,10 @@ class SyncController extends Controller
 						} else {
 							$uids[] = $original['uid'];
 						}
-						$flag = false;
 						foreach ($uids as $uid) {
-							if (strpos($uid,$dc)) {
-								$flag = true;
-								$uids = array_diff($uids, [$uid]);
+							if (substr($uid,strlen($dc)) == $dc) {
+								$new_uids = array_diff($uids, [$uid]);
+								$info['uid'] = array_values($new_uids);
 								$user = User::where('uname', $uid)->first();
 								if ($user) $user->delete();
 								$acc = $openldap->getAccountEntry($uid);
@@ -931,7 +933,6 @@ class SyncController extends Controller
 						}
 					}
 					$info = array();
-					if ($flag) $info['uid'] = array_values($uids);
 					$info['o'] = array_values($orgs);
 					$info['ou'] = array_values($units);
 					$info['title'] = array_values($roles);
@@ -1079,7 +1080,6 @@ class SyncController extends Controller
 								if (strpos($job, '工友')) $role = '職工';
 								if (strpos($job, '警衛')) $role = '職工';
 								if (strpos($job, '幹事')) $role = '職工';
-								if (strpos($job, '員')) $role = '職工';
 								if (strpos($job, '心')) $role = '職工';
 								if (strpos($job, '護')) $role = '職工';
 								$k = base64_encode($job);
@@ -1273,6 +1273,9 @@ class SyncController extends Controller
 							$i = (array) json_decode($c, true);
 							if (array_key_exists('sid', $i) && $i['sid'] == $sid) unset($educloud[$k]);
 						}
+						if (count($educloud) == 0) $info['inetUserStatus'] = 'deleted';
+					} else {	
+						$info['inetUserStatus'] = 'deleted';
 					}
 					$uids = array();
 					if (!empty($original['uid'])) {
@@ -1281,11 +1284,10 @@ class SyncController extends Controller
 						} else {
 							$uids[] = $original['uid'];
 						}
-						$flag = false;
 						foreach ($uids as $uid) {
-							if (strpos($uid,$dc)) {
-								$flag = true;
-								$uids = array_diff($uids, [$uid]);
+							if (substr($uid,strlen($dc)) == $dc) {
+								$new_uids = array_diff($uids, [$uid]);
+								$info['uid'] = array_values($new_uids);
 								$user = User::where('uname', $uid)->first();
 								if ($user) $user->delete();
 								$acc = $openldap->getAccountEntry($uid);
@@ -1294,14 +1296,12 @@ class SyncController extends Controller
 						}
 					}
 					$info = array();
-					if ($flag) $info['uid'] = array_values($uids);
 					$info['o'] = array_values($orgs);
 					$info['ou'] = array_values($units);
 					$info['title'] = array_values($roles);
 					$info['tpTeachClass'] = array_values($assign);
 					$info['info'] = array_values($educloud);;
 					$info['tpTutorClass'] = [];
-					$info['inetUserStatus'] = 'deleted';
 					$openldap->updateData($user_entry, $info);
 				}
 			}
