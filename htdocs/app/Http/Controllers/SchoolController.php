@@ -1266,7 +1266,7 @@ class SchoolController extends Controller
 				}
 			}
 			$educloud[] = json_encode(array("sid" => $sid, "role" => $info['employeeType']), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
-			$info['info'] = $educloud;
+			$info['info'] = array_values($educloud);
 		}
 		$info['sn'] = $request->get('sn');
 		$info['givenName'] = $request->get('gn');
@@ -1422,7 +1422,7 @@ class SchoolController extends Controller
 				$result = $openldap->renameUser($original['cn'], $idno);
 				if ($result) {
 					$user = User::where('idno', $original['cn'])->first();
-	        if ($user) $user->delete();
+	        		if ($user) $user->delete();
 					if ($request->user()->idno == $original['cn']) Auth::logout();
 					return redirect('school/'.$dc.'/teacher?field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新教師基本資料！");
 				} else {

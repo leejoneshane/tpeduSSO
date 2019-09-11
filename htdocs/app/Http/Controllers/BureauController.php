@@ -602,7 +602,7 @@ class BureauController extends Controller
 		foreach ($all_sid as $sid) {
 			$educloud[] = json_encode(array("sid" => $sid, "role" => $info['employeeType']), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 		}
-		$info['info'] = $educloud;
+		$info['info'] = array_values($educloud);
 		$info['sn'] = $request->get('sn');
 		$info['givenName'] = $request->get('gn');
 		$info['displayName'] = $info['sn'].$info['givenName'];
