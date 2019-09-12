@@ -399,7 +399,6 @@ class LdapServiceProvider extends ServiceProvider
 			$augs=explode(',', $dn);
 			$o=explode('=', $augs[1]);
 			$filter='(&(o='.$o[1].')(tpTutorClass='.$info['ou'].'))';
-			Log::debug($filter);
 			$teacher=$this->findUsers($filter,'entryUUID');
 			if ($teacher) {
 				foreach ($teacher as $t) {

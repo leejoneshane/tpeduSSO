@@ -34,7 +34,10 @@ class SchoolController extends Controller
 		$openldap = new LdapServiceProvider();
 		$school = $openldap->getOrgEntry($dc);
 		$data = $openldap->getOrgData($school, "tpSims");
-        return view('school', [ 'dc' => $dc, 'sims' => $data['tpSims'] ]);
+		$sims = "";
+		if (array_key_exists('tpSims', $data)) $sims = $data['tpSims'];
+
+        return view('school', [ 'dc' => $dc, 'sims' => $sims ]);
     }
     
     public function schoolStudentSearchForm(Request $request, $dc)
