@@ -20,9 +20,11 @@
                         <li {{ (Request::is('school/class') ? 'class="active"' : '') }}>
                             <a href="#"><i class="fa fa-graduation-cap fa-fw"></i> 班級管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
+                                @if (!empty($sims))
                                 <li {{ (Request::is('sync_class') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.sync_class', [ 'dc' => $dc ]) }}">同步班級</a>
                                 </li>
+                                @endif
                                 <li {{ (Request::is('school/class') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.class', [ 'dc' => $dc ]) }}">編輯班級資訊</a>
                                 </li>
@@ -34,9 +36,11 @@
                         <li {{ (Request::is('school/subject') ? 'class="active"' : '') }}>
                             <a href="#"><i class="fa fa-flask fa-fw"></i> 教學科目管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
+                                @if (!empty($sims))
                                 <li {{ (Request::is('sync_subject') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.sync_subject', [ 'dc' => $dc ]) }}">同步教學科目</a>
                                 </li>
+                                @endif
                                 <li {{ (Request::is('school/subject') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.subject', [ 'dc' => $dc ]) }}">編輯科目資訊</a>
                                 </li>
@@ -45,9 +49,11 @@
                         <li {{ (Request::is('school/teacher') ? 'class="active"' : '') }}>
                             <a href="#"><i class="fa fa-female fa-fw"></i> 教師管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
+                                @if (!empty($sims))
                                 <li {{ (Request::is('sync_teacher') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.sync_teacher', [ 'dc' => $dc ]) }}">同步教師</a>
                                 </li>
+                                @endif
                                 <li {{ (Request::is('school/teacher') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.teacher', [ 'dc' => $dc ]) }}">瀏覽及搜尋</a>
                                 </li>
@@ -64,9 +70,11 @@
                         <li {{ (Request::is('school/student') ? 'class="active"' : '') }}>
                             <a href="#"><i class="fa fa-child fa-fw"></i> 學生管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
+                                @if (!empty($sims))
                                 <li {{ (Request::is('sync_student') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.sync_student', [ 'dc' => $dc ]) }}">同步學生</a>
                                 </li>
+                                @endif
                                 <li {{ (Request::is('school/student') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.student', [ 'dc' => $dc ]) }}">瀏覽及搜尋</a>
                                 </li>
