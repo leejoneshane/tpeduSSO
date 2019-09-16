@@ -91,6 +91,9 @@ class HomeController extends Controller
 		} else {
 		  $idno = $request->session()->pull('idno');
 		}
+		$validatedData = $request->validate([
+			'new-account' => 'required|alpha_num|min:6|confirmed',
+		]);
 		$new = $request->get('new-account');
 		$openldap = new LdapServiceProvider();
 		$accounts = $openldap->getUserAccounts($idno);
@@ -100,11 +103,7 @@ class HomeController extends Controller
 		}
 		if ($match) return back()->withInput()->with("error","新帳號不可以跟舊的帳號相同，請重新想一個新帳號再試一次！");
 		if(strcmp($idno, $new) == 0) return back()->withInput()->with("error","新帳號不可以跟身分證字號相同，請重新想一個新帳號再試一次！");
-		$validatedData = $request->validate([
-			'new-account' => 'required|alpha_num|min:6|confirmed',
-		]);
-		if (!$openldap->accountAvailable($idno, $new))
-			return back()->withInput()->with("error","您輸入的帳號已經被別人使用，請您重新輸入一次！");
+		if (!$openldap->accountAvailable($new)) return back()->withInput()->with("error","您輸入的帳號已經被別人使用，請您重新輸入一次！");
 		$entry = $openldap->getUserEntry($idno);
 		$data = $openldap->getUserData($entry);
 		if (empty($accounts)) {

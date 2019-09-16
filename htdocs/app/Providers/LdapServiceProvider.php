@@ -162,16 +162,17 @@ class LdapServiceProvider extends ServiceProvider
 		return false;
     }
 
-    public function accountAvailable($idno, $account)
+    public function accountAvailable($account)
     {
-		if (empty($idno) || empty($account)) return false;
-		$filter = "(&(uid=$account)(!(cn=$idno)))";
+		if (empty($account)) return false;
+		$filter = "uid=$account";
 		$this->administrator();
 		$resource = @ldap_list(self::$ldap_read, Config::get('ldap.authdn'), $filter, array('uid'));
-		if ($resource && ldap_first_entry(self::$ldap_read, $resource))
+		if ($resource && ldap_first_entry(self::$ldap_read, $resource)) {
 			return false;
-		else
+		} else {
 			return true;
+		}
     }
 
     public function emailAvailable($idno, $mailaddr)
