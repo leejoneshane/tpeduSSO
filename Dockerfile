@@ -74,7 +74,6 @@ RUN chmod 755 /usr/local/bin/* \
     && chown -R apache:apache /root/htdocs \
     && cp -rdp /root/htdocs /var/www/localhost
 
-USER apache
 VOLUME ["/var/www/localhost/htdocs"]
 EXPOSE 80 443 
 CMD ["docker-entrypoint.sh"]
