@@ -992,6 +992,7 @@ class SyncController extends Controller
 				$allsubject[$k] = $s['tpSubject'];
 			}
 		$teachers = $http->ps_getTeachers($sid);
+		$current = array();
 		if (empty($teachers)) {
 			$messages[] = "查無教師清單，因此無法同步！";
 		} else {
@@ -1006,6 +1007,7 @@ class SyncController extends Controller
 						$messages[] = "cn=". $idno .",teaid=". $teaid .",name=". $data['name'] ." 身分證字號格式或內容不正確，跳過不處理！";
 						continue;
 					}
+					$current[] = $idno;
 					$user_entry = $openldap->getUserEntry($idno);
 					$orgs = array();
 					$units = array();
@@ -1212,7 +1214,7 @@ class SyncController extends Controller
 			$filter = "(&(o=$dc)(!(employeeType=學生)))";
 			$org_teachers = $openldap->findUsers($filter, [ 'cn', 'employeeNumber' ]);
 			foreach ($org_teachers as $tea) {
-				if (empty($tea['employeeNumber']) || !in_array($tea['employeeNumber'], $teachers)) {
+				if (!in_array($tea['cn'], $current)) {
 					$user_entry = $openldap->getUserEntry($tea['cn']);
 					$original = $openldap->getUserData($user_entry);
 					$os = $orgs = array();
