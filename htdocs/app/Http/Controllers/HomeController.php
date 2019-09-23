@@ -57,14 +57,18 @@ class HomeController extends Controller
 	    	$userinfo['mail'] = $email;
 	    	$user->email = $email;
 		}
-		if ($mobile != $user->mobile) {
+		if ($mobile && $mobile != $user->mobile) {
 	    	$validatedData = $request->validate([
 			    'mobile' => 'nullable|string|digits:10|numeric',
 			]);
-	    	if (!$openldap->mobileAvailable($idno, $mobile))
+			if (!$openldap->mobileAvailable($idno, $mobile))
 				return back()->withInput()->with("error","您輸入的手機號碼已經被別人使用，請您重新輸入一次！");
-	    	$userinfo['mobile'] = $mobile;
-	    	$user->mobile = $mobile;
+    		$userinfo['mobile'] = $mobile;
+    		$user->mobile = $mobile;
+		}
+		if (!$mobile) {
+    		$userinfo['mobile'] = array();
+    		$user->mobile = '';
 		}
 		$user->save();
 		$entry = $openldap->getUserEntry($idno);
