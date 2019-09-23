@@ -59,7 +59,7 @@ class HomeController extends Controller
 		}
 		if ($mobile != $user->mobile) {
 	    	$validatedData = $request->validate([
-			    'mobile' => 'string|digits:10|numeric',
+			    'mobile' => 'nullable|string|digits:10|numeric',
 			]);
 	    	if (!$openldap->mobileAvailable($idno, $mobile))
 				return back()->withInput()->with("error","您輸入的手機號碼已經被別人使用，請您重新輸入一次！");
