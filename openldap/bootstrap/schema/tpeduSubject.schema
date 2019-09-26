@@ -1,9 +1,7 @@
 attributetype ( 2.5.4.113
 	NAME 'tpSubject'
 	DESC 'A string identifying the course program for school'
-	EQUALITY caseIgnoreMatch
-	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
-	SINGLE-VALUE )
+	SUP name )
 	
 attributetype ( 2.5.4.114
 	NAME 'tpSubjectDomain'

@@ -5,11 +5,6 @@ olcdbindex: o eq
 olcdbindex: dc eq
 olcdbindex: st eq
 olcdbindex: ou eq
-olcdbindex: title eq
-olcdbindex: tpSubject eq
-olcdbindex: tpTeachClass sub
-olcdbindex: tpTutorClass eq
-olcdbindex: tpCharacter eq
 olcdbindex: cn eq
 olcdbindex: uid eq
 olcdbindex: displayName eq,sub
@@ -18,7 +13,6 @@ olcdbindex: mobile eq
 olcdbindex: memberOf eq
 olcdbindex: tpUniformNumbers eq
 olcdbindex: employeeNumber eq
-olcdbindex: telephoneNumber eq
 olcdbindex: entryCSN eq
 olcdbindex: entryUUID eq
 olcdbindex: objectClass eq
