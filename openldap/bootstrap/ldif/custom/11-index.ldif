@@ -7,13 +7,13 @@ olcdbindex: st eq
 olcdbindex: ou eq
 olcdbindex: cn eq
 olcdbindex: uid eq
+olcdbindex: tpSubject eq,sub
 olcdbindex: displayName eq,sub
 olcdbindex: mail eq,sub
 olcdbindex: mobile eq
 olcdbindex: memberOf eq
 olcdbindex: tpUniformNumbers eq
 olcdbindex: employeeNumber eq
-olcdbindex: entryCSN eq
 olcdbindex: entryUUID eq
 olcdbindex: objectClass eq
 -
