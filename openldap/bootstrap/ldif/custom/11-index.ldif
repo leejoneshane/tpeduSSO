@@ -11,6 +11,11 @@ olcdbindex: tpSubject eq,sub
 olcdbindex: displayName eq,sub
 olcdbindex: mail eq,sub
 olcdbindex: mobile eq
+olcdbindex: telephoneNumber eq
+olcdbindex: title eq	
+olcdbindex: tpTeachClass sub	
+olcdbindex: tpTutorClass eq	
+olcdbindex: tpCharacter eq
 olcdbindex: memberOf eq
 olcdbindex: tpUniformNumbers eq
 olcdbindex: employeeNumber eq
