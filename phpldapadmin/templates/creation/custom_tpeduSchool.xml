@@ -13,6 +13,7 @@
 
 <objectClasses>
 <objectClass id="tpeduSchool"></objectClass>
+<objectClass id="top"></objectClass>
 </objectClasses>
 
 <attributes>

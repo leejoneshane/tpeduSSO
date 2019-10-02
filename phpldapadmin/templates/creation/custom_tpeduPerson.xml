@@ -96,8 +96,8 @@
 	<order>12</order>
 	<page>1</page>
 </attribute>
-<attribute id="tpTeachSubject">
-	<display>任教科目</display>
+<attribute id="tpTutorClass">
+	<display>擔任導師的班級</display>
 	<order>13</order>
 	<page>1</page>
 </attribute>
@@ -143,11 +143,16 @@
 	<order>21</order>
 	<page>1</page>
 </attribute>
+<attribute id="uid">
+	<display>登入帳號</display>
+	<order>22</order>
+	<page>1</page>
+</attribute>
 <attribute id="userPassword">
 	<display>管理密碼</display>
 	<icon>lock.png</icon>
 	<post><![CDATA[=php.PasswordEncrypt(%enc%;%userPassword%)]]></post>
-	<order>22</order>
+	<order>23</order>
 	<page>1</page>
 	<verify>1</verify>
 </attribute>
@@ -157,7 +162,7 @@
 	<value id="active">啟用</value>
 	<value id="inactive">停用</value>
 	<value id="deleted">刪除</value>
-	<order>23</order>
+	<order>24</order>
 	<page>1</page>
 </attribute>
 
