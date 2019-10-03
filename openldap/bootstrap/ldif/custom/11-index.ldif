@@ -7,14 +7,14 @@ olcdbindex: st eq
 olcdbindex: ou eq
 olcdbindex: cn eq
 olcdbindex: uid eq
-olcdbindex: tpSubject eq,sub
+olcdbindex: tpSubject eq
 olcdbindex: displayName eq,sub
 olcdbindex: mail eq,sub
 olcdbindex: mobile eq
 olcdbindex: telephoneNumber eq
 olcdbindex: title eq	
 olcdbindex: tpTeachClass sub	
-olcdbindex: tpTutorClass eq	
+olcdbindex: tpTutorClass eq
 olcdbindex: tpCharacter eq
 olcdbindex: memberOf eq
 olcdbindex: tpUniformNumbers eq
