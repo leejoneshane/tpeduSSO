@@ -68,7 +68,7 @@ class HomeController extends Controller
 		}
 		if (!$mobile) {
     		$userinfo['mobile'] = array();
-    		$user->mobile = '';
+    		$user->mobile = NULL;
 		}
 		$user->save();
 		$entry = $openldap->getUserEntry($idno);
