@@ -152,6 +152,7 @@ class BureauController extends Controller
 		$user2->type = '學生';
 		$user2->stdno = '102247';
 		$user2->class = '601';
+		$user2->classtitle = '六年一班';
 		$user2->seat = '7';
 		$user2->sn = '蘇';
 		$user2->gn = '小小';
@@ -164,7 +165,8 @@ class BureauController extends Controller
 		$user2->htel = '(03)3127221';
 		$user2->register = "臺北市中正區龍興里9鄰三元街17巷22號5樓";
 		$user2->address = "新北市板橋區中山路1段196號";
-		$user->www = 'http://johnny.dev.io';		return view('admin.bureaupeoplejson', [ 'sample1' => $user, 'sample2' => $user2 ]);
+		$user->www = 'http://johnny.dev.io';
+		return view('admin.bureaupeoplejson', [ 'sample1' => $user, 'sample2' => $user2 ]);
 	}
 	
     public function importBureauPeople(Request $request)
@@ -184,6 +186,7 @@ class BureauController extends Controller
 			} else {
 				$teachers[] = $json;
 			}
+			$classes = array();
 			$i = 0;
 	 		foreach($teachers as $person) {
 				$i++;
@@ -278,6 +281,16 @@ class BureauController extends Controller
     				$entry["employeeNumber"] = $person->stdno;
     				$entry["tpClass"] = $person->class;
 	    			$entry["tpSeat"] = $person->seat;
+					if (!in_array($person->class, $classes)) {
+						$oclass = new \stdClass;
+						$oclass->id = $person->class;
+						$classname = $person->classtitle;
+						if (empty($classname)) $classname = $person->class;
+						$entry["tpClassTitle"] = $classname;
+						$oclass->name = $classname;
+						$classes[] = $oclass;
+						unset($oclass);
+					}
     			}
 				$user_entry = $openldap->getUserEntry($idno);
 				if (!$user_entry) {
@@ -408,6 +421,18 @@ class BureauController extends Controller
 						else
 							$messages[] = "第 $i 筆記錄，".$person->name."帳號資訊無法建立！".$openldap->error();
 					}
+				}
+			}
+			if (!empty($classes)) {
+				foreach($classes as $oclass) {
+					$info = array();
+					$info['dn'] = "ou=$oclass->id,dc=$dc,".Config::get('ldap.rdn'); 
+					$info["objectClass"] = "organizationalUnit";
+					$info["ou"] = $oclass->id;
+					$info["businessCategory"] = '教學班級';
+					$info["description"] = $oclass->name;
+					$ou_result = $openldap->getOuEntry($dc, $oclass->id);
+					if (!$ou_result) $openldap->createEntry($info);
 				}
 			}
 			$messages[0] = "人員資訊匯入完成！報表如下：";
