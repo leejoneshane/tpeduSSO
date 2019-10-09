@@ -114,6 +114,7 @@ class SchoolController extends Controller
 		$user2->id = 'B123456789';
 		$user2->stdno = '102247';
 		$user2->class = '601';
+		$user2->classtitle = '六年一班';
 		$user2->seat = 7;
 		$user2->sn = '蘇';
 		$user2->gn = '小小';
@@ -143,6 +144,7 @@ class SchoolController extends Controller
 			} else {
 				$students[] = $json;
 			}
+			$classes = array();
 			$i = 0;
 	 		foreach($students as $person) {
 				$i++;
@@ -201,9 +203,9 @@ class SchoolController extends Controller
 				}
 				$user_dn = "cn=$idno,".Config::get('ldap.userdn');
 				$user_entry = $openldap->getUserEntry($idno);
-				$original = $openldap->getUserData($user_entry);
 				$orgs = array();
 				if ($user_entry) {
+					$original = $openldap->getUserData($user_entry);
 					$os = array();
 					if (isset($original['o'])) {
 						if (is_array($original['o'])) {
@@ -235,7 +237,16 @@ class SchoolController extends Controller
 				$entry['info'] = $educloud;
     			$entry["employeeType"] = "學生";
     			$entry["employeeNumber"] = $person->stdno;
-    			$entry["tpClass"] = $person->class;
+				$entry["tpClass"] = $person->class;
+				if (!in_array($person->class, $classes)) {
+					$oclass = new \stdClass;
+					$oclass->id = $person->class;
+					$classname = $person->classtitle;
+					if (empty($classname)) $classname = $person->class;
+					$oclass->name = $classname;
+					$classes[] = $oclass;
+					unset($oclass);
+				}
 				$entry["tpSeat"] = $person->seat;
 				if (!$user_entry) {
 					$account = array();
@@ -367,6 +378,16 @@ class SchoolController extends Controller
 							$messages[] = "第 $i 筆記錄，".$person->name."帳號資訊無法建立！".$openldap->error();
 					}
 				}
+			}
+			foreach($classes as $oclass) {
+				$info = array();
+				$info['dn'] = "ou=$oclass->id,dc=$dc,".Config::get('ldap.rdn'); 
+				$info["objectClass"] = "organizationalUnit";
+				$info["ou"] = $oclass->id;
+				$info["businessCategory"] = '教學班級';
+				$info["description"] = $oclass->name;
+				$ou_result = $openldap->getOuEntry($dc, $oclass->id);
+				if (!$ou_result) $openldap->createEntry($info);
 			}
 			$messages[0] = "學生資訊匯入完成！報表如下：";
 			return back()->with("success", $messages);
