@@ -95,7 +95,7 @@ class SchoolController extends Controller
 		$user->id = 'B123456789';
 		$user->stdno = '102247';
 		$user->class = '601';
-		$user->seat = '7';
+		$user->seat = 7;
 		$user->character = '雙胞胎 外籍配偶子女';
 		$user->sn = '蘇';
 		$user->gn = '小小';
@@ -114,7 +114,7 @@ class SchoolController extends Controller
 		$user2->id = 'B123456789';
 		$user2->stdno = '102247';
 		$user2->class = '601';
-		$user2->seat = '7';
+		$user2->seat = 7;
 		$user2->sn = '蘇';
 		$user2->gn = '小小';
 		$user2->gender = 2;
