@@ -32,6 +32,38 @@
 		<p>每次僅同步一個班級，若顯示結果後管理員未回應網頁訊息，60秒後自動同步下一個班級。同步過程需要時間，直到全部同步完畢為止，請勿關閉瀏覽器或離開此網頁，以避免同步程序被關閉。</p>			
 		<form role="form" method="POST" action="{{ route('school.sync_student', [ 'dc' => $dc ]) }}">
 			@csrf
+			<div class="col-sm-12">
+				<div class="panel panel-default">	  
+				<div class="panel-heading">
+					<h4>請選擇要同步的班級：</h4>
+				</div>
+				<div class="panel-body">
+					<div class="form-group">
+						<input type="checkbox" id="all" name="all" value="all">全部班級
+					</div>
+					<div class="form-group">
+						<select class="form-control" id="grade" name="grade">
+							<option value=""></option>
+						@if (!empty($grades))
+						@foreach ($grades as $grade)
+							<option value="{{ $grade }}">{{ $grade }}年級</option>
+						@endforeach
+						@endif
+						</select>所有班級
+					</div>
+					<div class="form-group">
+						<select class="form-control" id="class" name="class">
+							<option value=""></option>
+						@if (!empty($classes))
+						@foreach ($classes as $cls)
+							<option value="{{ $cls->ou }}">{{ $cls->description }}</option>
+						@endforeach
+						@endif
+						</select>
+					</div>
+				</div>
+				</div>
+			</div>
 			<div class="form-group">
 				<button class="btn btn-default" type="submit" name="submit" value="true">
 					我瞭解了，請開始同步

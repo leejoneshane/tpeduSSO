@@ -1323,45 +1323,59 @@ class SyncController extends Controller
 		else $sys = '';
 		if ($request->isMethod('post')) {
 			$clsid = $request->get('clsid');
-			if ($sys == 'oneplus') {
-				if (empty($clsid)) {
+			if ($request->has('all') && empty($clsid)) {
+				if ($sys == 'oneplus') {
 					$classes = $http->js_getClasses($sid);
 					if ($classes) {
 						ksort($classes);
-						$clsid = key($classes);
-						$clsname = $classes[$clsid];
-						unset($classes[$clsid]);
 						$request->session()->put('classes', $classes);
 					}
-				} else {
-					$classes = $request->session()->pull('classes');
-					$clsid = key($classes);
-					$clsname = $classes[$clsid];
-					unset($classes[$clsid]);
-					if (!empty($classes)) $request->session()->put('classes', $classes);
+				} elseif ($sys == 'alle') {
+					if (empty($clsid)) {
+						$classes = $http->ps_getClasses($sid);
+						$temp = array();
+						foreach ($classes as $c) {
+							$temp[$c->clsid] = $c->clsname;
+						}
+						ksort($temp);
+						$classes = $temp;
+						$request->session()->put('classes', $classes);
+					}
 				}
-				$result = $this->js_syncStudent($dc, $sid, $clsid, $clsname);
-			}
-			if ($sys == 'alle') {
-				if (empty($clsid)) {
+			} elseif ($request->filled('grade') && empty($clsid)) {
+				$grade = $request->get('grade');
+				if ($sys == 'oneplus') {
+					$classes = $http->js_getClasses($sid);
+					if ($classes) {
+						foreach ($classes as $ou => $cls) {
+							if (substr($ou, 0, 1) != $grade) unset($classes[$ou]);
+						}
+						ksort($classes);
+						$request->session()->put('classes', $classes);
+					}
+				}
+				if ($sys == 'alle') {
 					$classes = $http->ps_getClasses($sid);
 					$temp = array();
 					foreach ($classes as $c) {
-						$temp[$c->clsid] = $c->clsname;
+						if (substr($c->clsid, 0, 1) == $grade) $temp[$c->clsid] = $c->clsname;
 					}
 					ksort($temp);
 					$classes = $temp;
-					$clsid = key($classes);
-					$clsname = $classes[$clsid];
-					unset($classes[$clsid]);
 					$request->session()->put('classes', $classes);
-				} else {
-					$classes = $request->session()->pull('classes');
-					$clsid = key($classes);
-					$clsname = $classes[$clsid];
-					unset($classes[$clsid]);
-					if (!empty($classes)) $request->session()->put('classes', $classes);
 				}
+			} elseif ($request->filled('class') && empty($clsid)) {
+				$classes[$request->get('class')] = $request->get('class');
+				$request->session()->put('classes', $classes);
+			}
+			$classes = $request->session()->pull('classes');
+			$clsid = key($classes);
+			$clsname = $classes[$clsid];
+			unset($classes[$clsid]);
+			if (!empty($classes)) $request->session()->put('classes', $classes);
+			if ($sys == 'oneplus') {
+				$result = $this->js_syncStudent($dc, $sid, $clsid, $clsname);
+			} elseif ($sys == 'alle') {
 				$result = $this->ps_syncStudent($dc, $sid, $clsid, $clsname);
 			}
 			if (!empty($classes)) {
@@ -1371,7 +1385,14 @@ class SyncController extends Controller
 				return view('admin.syncstudentinfo', [ 'sims' => $sys, 'dc' => $dc, 'result' => $result ]);	
 			}
 		} else {
-			return view('admin.syncstudentinfo', [ 'sims' => $sys, 'dc' => $dc ]);	
+			$data = $openldap->getOus($dc, '教學班級');
+			$grades = array();
+			$classes = array();
+			foreach ($data as $class) {
+				if (!in_array($class->grade, $grades)) $grades[] = $class->grade;
+				$classes[] = $class;
+			}
+			return view('admin.syncstudentinfo', [ 'sims' => $sys, 'dc' => $dc, 'grades' => $grades, 'classes' => $classes ]);	
 		}
 	}
 	
