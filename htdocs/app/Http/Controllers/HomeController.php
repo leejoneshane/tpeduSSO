@@ -109,7 +109,7 @@ class HomeController extends Controller
 		if(strcmp($idno, $new) == 0) return back()->withInput()->with("error","新帳號不可以跟身分證字號相同，請重新想一個新帳號再試一次！");
 		if (!$openldap->accountAvailable($new)) return back()->withInput()->with("error","您輸入的帳號已經被別人使用，請您重新輸入一次！");
 		$entry = $openldap->getUserEntry($idno);
-		$data = $openldap->getUserData($entry);
+		$data = $openldap->getUserData($entry, 'mail');
 		if (empty($accounts)) {
 			$openldap->addAccount($entry, $new, "自建帳號");
 			if (Auth::check()) {
@@ -125,7 +125,7 @@ class HomeController extends Controller
 				if (isset($data['mail'])) Notification::route('mail', $data['mail'])->notify(new AccountChangeNotification($new));
 			}
 			return back()->withInput()->with("success","帳號建立成功！");
-		} else {
+		} elseif (!$match) {
 			$openldap->renameAccount($entry, $new);
 			if (Auth::check()) {
 				$user->uname = $new;
