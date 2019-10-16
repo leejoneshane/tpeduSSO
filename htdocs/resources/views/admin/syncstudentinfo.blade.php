@@ -42,7 +42,7 @@
 						<input type="checkbox" id="all" name="all" value="all">全部班級
 					</div>
 					<div class="form-group">
-						<select class="form-control" id="grade" name="grade">
+						<select class="form-control" style="width:20%;display:inline" id="grade" name="grade">
 							<option value=""></option>
 						@if (!empty($grades))
 						@foreach ($grades as $grade)
