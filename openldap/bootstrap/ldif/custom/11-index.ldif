@@ -9,7 +9,7 @@ olcdbindex: cn eq
 olcdbindex: uid eq
 olcdbindex: tpSubject eq
 olcdbindex: displayName eq,sub
-olcdbindex: mail eq,sub
+olcdbindex: mail eq
 olcdbindex: mobile eq
 olcdbindex: telephoneNumber eq
 olcdbindex: title eq	
