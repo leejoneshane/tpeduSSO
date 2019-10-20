@@ -7,13 +7,14 @@ LDAP_CONFIG_PASSWORD: test
 LDAP_BACKEND: mdb
 LDAP_READONLY_USER: 'true'
 LDAP_READONLY_USER_PASSWORD: test
+LDAP_TLS: 'false'
 #LDAP_TLS_CRT_FILENAME: fullchain.pem
 #LDAP_TLS_KEY_FILENAME: privkey.pem
 #LDAP_TLS_CA_CRT_FILENAME: ca.crt
 #LDAP_TLS_ENFORCE: 'false'
 #LDAP_TLS_PROTOCOL_MIN: 1.2
 #LDAP_TLS_CIPHER_SUITE: NORMAL:SECURE256:-VERS-SSL3.0:+VERS-TLS1.2
-LDAP_TLS_VERIFY_CLIENT: never
+#LDAP_TLS_VERIFY_CLIENT: never
 #LDAP_REPLICATION: 'true'
 #LDAP_REPLICATION_CONFIG_SYNCPROV: binddn="cn=admin,cn=config" bindmethod=simple credentials="test" searchbase="cn=config" type=refreshAndPersist retry="60 +" timeout=1
 #LDAP_REPLICATION_DB_SYNCPROV: binddn="cn=admin,dc=tp,dc=edu,dc=tw" bindmethod=simple credentials="test" searchbase="dc=tp,dc=edu,dc=tw" type=refreshAndPersist interval=00:00:00:10 retry="60 +" timeout=1
