@@ -91,7 +91,7 @@
 		    	@csrf
 			    <div class="form-group{{ $errors->has('new-ou') ? ' has-error' : '' }}">
 					<label>班級代號</label>
-					<input id="new-ou" type="text" pattern="[0-9]{3,5}" class="form-control" name="new-ou" value="{{ $errors->has('new-ou') ? old('new-ou') : '' }}" placeholder="請輸入 3 到 5 位數字" required>
+					<input id="new-ou" type="text" pattern="[0-9a-z]{3,}" class="form-control" name="new-ou" value="{{ $errors->has('new-ou') ? old('new-ou') : '' }}" placeholder="請使用英文字母＋數字，至少三個字。" required>
 					@if ($errors->has('new-ou'))
 						<p class="help-block">
 							<strong>{{ $errors->first('new-ou') }}</strong>
