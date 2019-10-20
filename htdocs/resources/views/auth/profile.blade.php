@@ -51,7 +51,7 @@
             	    <div class="form-group row">
             		<label for="email" class="col-md-4 col-form-label text-md-right">電子郵件</label>
             		<div class="col-md-6">
-            		    <input id="email" type="text" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ $user->email }}" required autofocus>            		    
+            		    <input id="email" type="text" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ $user->email }}" placeholder="請勿填寫他人的電子郵件，以免密碼外洩。" required autofocus>            		    
             		    @if ($errors->has('email'))
             			<span class="invalid-feedback">
             			    <strong>{{ $errors->first('email') }}</strong>
@@ -71,7 +71,7 @@
             	    <div class="form-group row">
             		<label for="mobile" class="col-md-4 col-form-label text-md-right">手機號碼</label>
             		<div class="col-md-6">
-            		    <input id="mobile" type="text" class="form-control{{ $errors->has('mobile') ? ' is-invalid' : '' }}" name="mobile" value="{{ isset($user->ldap['mobile']) ? $user->ldap['mobile'] : '' }}">          		    
+            		    <input id="mobile" type="text" class="form-control{{ $errors->has('mobile') ? ' is-invalid' : '' }}" name="mobile" value="{{ isset($user->ldap['mobile']) ? $user->ldap['mobile'] : '' }}" placeholder="若無手機可以免填，請勿填寫家長的手機號碼。">
             		    @if ($errors->has('mobile'))
             			<span class="invalid-feedback">
             			    <strong>{{ $errors->first('mobile') }}</strong>
