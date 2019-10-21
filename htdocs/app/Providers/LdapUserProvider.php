@@ -37,50 +37,14 @@ class LdapUserProvider extends EloquentUserProvider
 			$id = $this->openLDAP->checkMobile($credentials['mobile']);
 		}
 		if ($id) {
+			$entry = $this->openLDAP->getUserEntry($id);
+			$data = $this->openLDAP->getUserData($entry);
 			$model = parent::createModel();
 			$user = User::where('idno', $id)->first();
+			if (!$user) $user = User::where('uuid', $data['entryUUID'])->first();
 			if (!$user) {
-				$entry = $this->openLDAP->getUserEntry($id);
-				if ($entry) {
-					$data = $this->openLDAP->getUserData($entry);
-					$user = new \App\User();
-					$user->idno = $id;
-					if (isset($data['uid'])) {
-						if (is_array($data['uid'])) {
-							$user->uname = $data['uid'][0];
-						} else {
-							$user->uname = $data['uid'];
-						}
-					}
-					$user->name = $data['displayName'];
-					$user->uuid = $data['entryUUID'];
-					if (isset($credentials['email'])) {
-						$user->email = $credentials['email'];
-					} elseif (isset($data['mail'])) {
-						if (is_array($data['mail'])) {
-							$user->email = $data['mail'][0];
-						} else {
-							$user->email = $data['mail'];
-						}
-					} else $user->email = null;
-					if (isset($data['mobile'])) {
-						if (is_array($data['mobile'])) {
-							$user->mobile = $data['mobile'][0];
-						} else {
-							$user->mobile = $data['mobile'];
-						}
-					} else $user->mobile = null;
-					if (isset($credentials['password'])) {
-						$user->password = \Hash::make($credentials['password']);
-					} else {
-						$user->password = \Hash::make(substr($id,-6));
-					}
-					$user->save();
-					return $user;
-				}
-			} else {
-				$entry = $this->openLDAP->getUserEntry($id);
-				$data = $this->openLDAP->getUserData($entry);
+				$user = new User();
+				$user->idno = $id;
 				if (isset($data['uid'])) {
 					if (is_array($data['uid'])) {
 						$user->uname = $data['uid'][0];
@@ -88,9 +52,32 @@ class LdapUserProvider extends EloquentUserProvider
 						$user->uname = $data['uid'];
 					}
 				}
+				$user->name = $data['displayName'];
+				$user->uuid = $data['entryUUID'];
+				if (isset($credentials['email'])) {
+					$user->email = $credentials['email'];
+				} elseif (isset($data['mail'])) {
+					if (is_array($data['mail'])) {
+						$user->email = $data['mail'][0];
+					} else {
+						$user->email = $data['mail'];
+					}
+				} else $user->email = null;
+				if (isset($data['mobile'])) {
+					if (is_array($data['mobile'])) {
+						$user->mobile = $data['mobile'][0];
+					} else {
+						$user->mobile = $data['mobile'];
+					}
+				} else $user->mobile = null;
+				if (isset($credentials['password'])) {
+					$user->password = \Hash::make($credentials['password']);
+				} else {
+					$user->password = \Hash::make(substr($id,-6));
+				}
 				$user->save();
-				return $user;
 			}
+			return $user;
 		}
 	}
 
