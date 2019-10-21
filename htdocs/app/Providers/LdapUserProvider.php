@@ -56,14 +56,14 @@ class LdapUserProvider extends EloquentUserProvider
 				$user->uuid = $data['entryUUID'];
 				if (isset($credentials['email'])) {
 					$user->email = $credentials['email'];
-				} elseif (isset($data['mail'])) {
+				} elseif (!empty($data['mail'])) {
 					if (is_array($data['mail'])) {
 						$user->email = $data['mail'][0];
 					} else {
 						$user->email = $data['mail'];
 					}
 				} else $user->email = null;
-				if (isset($data['mobile'])) {
+				if (!empty($data['mobile'])) {
 					if (is_array($data['mobile'])) {
 						$user->mobile = $data['mobile'][0];
 					} else {
