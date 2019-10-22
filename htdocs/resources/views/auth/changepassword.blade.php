@@ -1,5 +1,9 @@
-@extends('layouts.app')
-@section('content')
+@extends('layouts.userboard')
+
+@section('page_heading')
+@endsection
+
+@section('section')
 <div class="container">
     <div class="row justify-content-center">
 	<div class="col-md-8 col-md-offset-2">
@@ -32,7 +36,7 @@
 		    </div>
 
 		    <div class="form-group">
-			<label for="new-password-confirm" class="col-md-4 control-label">請再輸入一次新密碼</label>
+			<label for="new-password-confirm" class="col-md-4 control-label">請再輸入新密碼</label>
 			<div class="col-md-6">
 			    <input id="new-password-confirm" type="password" class="form-control" name="new-password_confirmation" required>
 			</div>
@@ -45,7 +49,18 @@
 			    </button>
 			</div>
 		    </div>
+			<div class="form-group">
+			
+			</div>
 		</form>
+		<p>
+		新密碼變更需符合強式密碼規則:</BR>
+			<Ul>
+			<LI>長度至少為8個字元</LI>
+			<LI>密碼須包含字母(區分大小寫)、數字、符號每種至少一個</LI>
+			<LI>符號限制使用以下字元:!@#$%&</LI>
+			</Ul>
+		</p>	
 	        </div>
 	    </div>
 	</div>
