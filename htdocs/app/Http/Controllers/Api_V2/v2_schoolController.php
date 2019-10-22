@@ -931,4 +931,115 @@ class v2_schoolController extends Controller
 		}
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
+
+    public function allCoursesByTeacher(Request $request, $dc, $idno)
+    {
+        $json = array();
+        $classes = array();
+
+		$openldap = new LdapServiceProvider();
+		$t = $openldap->findUsers("(&(o=$dc)(employeeType=教師)(cn=$idno))", ["o", "entryUUID", "tpTeachClass"]);
+
+		if(!empty($t)){
+			$t = $t[0];
+
+            if (is_array($t['tpTeachClass'])) {
+                $classes = $t['tpTeachClass'];
+            } else {
+                $classes[] = $t['tpTeachClass'];
+            }
+
+			$subjs = [];
+			$csids = [];
+			if(count($classes) > 0){
+				$cc = $openldap->getSubjects($dc);
+				foreach($cc as $c)
+					if(is_string($c['description']) && !empty($c['description']))
+						$subjs[$c['tpSubject']] = $c['description'];
+
+				$cc = \App\TeacherClassroom::where('uuid',$t['entryUUID'])->get();
+				foreach($cc as $c)
+					if(!empty($c->enrollment_code))
+						$csids[$c->subjkey] = $c->enrollment_code;
+			}
+
+            foreach ($classes as $class) {
+                $a = explode(',', $class);
+				$obj = array();
+                if (count($a) == 3 && $a[0] == $dc) $obj = ['class' => $a[1], 'subject' => $a[2], 'description' => '', 'roomid' => ''];
+                if (count($a) == 2) $obj = ['class' => $a[0], 'subject' => $a[1], 'description' => '', 'roomid' => ''];
+
+				if(count($obj) > 0){
+					$subjkey = $dc.','.$obj['class'].','.$obj['subject'];
+					if(array_key_exists($obj['subject'],$subjs)) $obj['description'] = $subjs[$obj['subject']];
+					if(array_key_exists($subjkey,$csids)) $obj['description'] = $csids[$subjkey];
+					$json[] = $obj;
+				}
+            }
+		}else{
+			return response()->json([ 'error' => '無此教師'], 404);
+		}
+
+        if ($json)
+            return json_encode($json, JSON_UNESCAPED_UNICODE);
+        else
+            return response()->json([ 'error' => '該教師尚未指派授課科目'], 404);
+    }
+
+    public function allParentsLinkStatus(Request $request, $dc, $cid)
+    {
+        $json = array();
+
+		$openldap = new LdapServiceProvider();
+
+		$idnos = [];
+		$stds = [];
+		$stdData = $openldap->findUsers("(&(o=$dc)(employeeType=學生)(tpClass=$cid)(inetUserStatus=active))", ["o", "cn", "tpSeat", "displayName"]);
+		foreach($stdData as $s){
+			$stds[$s['cn']] = ['seat' => $s['tpSeat'], 'sname' => $s['displayName']];
+			array_push($idnos,$s['cn']);
+		}
+
+		if(count($idnos) > 0){
+			$sort = [];
+			$names = array();
+
+			//取得學生已連結的家長
+			$pars = \App\StudentParentRelation::whereIn('student_idno', $idnos)->get();
+			foreach ($pars as $p){
+				$idno = $p->student_idno;
+				$seat = str_pad($stds[$idno]['seat'],2,'0',STR_PAD_LEFT);
+				array_push($names, $idno.'_'.$p->parent_name);
+				$obj = ['sidno' => $idno, 'seat' => $stds[$idno]['seat'], 'sname' => $stds[$idno]['sname'], 'pname' => $p->parent_name, 'relation' => $p->parent_relation, 'linked' => ($p->status == '1'?'Y':'N')];
+				if(!array_key_exists($seat,$sort)){
+					$sort[$seat] = [$obj];
+				}else array_push($sort[$seat],$obj);
+			}
+
+			//取得所有學生未連結的家長
+			$pars = \App\StudentParentData::whereIn('student_idno', $idnos)->get();
+			foreach ($pars as $p){
+				$idno = $p->student_idno;
+				if(!in_array($idno.'_'.$p->parent_name, $names)){
+					$seat = str_pad($stds[$idno]['seat'],2,'0',STR_PAD_LEFT);
+					$obj = ['sidno' => $idno, 'seat' => $seat, 'sname' => $stds[$idno]['sname'], 'pname' => $p->parent_name, 'relation' => $p->parent_relation, 'linked' => 'N'];
+					if(!array_key_exists($seat,$sort)){
+						$sort[$seat] = [$obj];
+					}else array_push($sort[$seat],$obj);
+				}
+			}
+
+			ksort($sort);
+
+			foreach($sort as $seat){
+				foreach($seat as $s)
+					$json[] = $s;
+			}
+		}
+
+        if ($json)
+            return json_encode($json, JSON_UNESCAPED_UNICODE);
+        else
+            return response()->json([ 'error' => '查無家長資料'], 404);
+    }
 }
