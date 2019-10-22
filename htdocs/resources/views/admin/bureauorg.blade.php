@@ -1,7 +1,7 @@
 @extends('layouts.superboard')
 
 @section('page_heading')
-教育機構管理
+<h1 class="page-header">教育機構管理</h1>
 @endsection
 
 @section('section')

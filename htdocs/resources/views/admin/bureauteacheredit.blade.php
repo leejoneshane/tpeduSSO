@@ -1,7 +1,7 @@
 @extends('layouts.superboard')
 
 @section('page_heading')
-編輯教師資訊
+<h1 class="page-header">編輯教師資訊</h1>
 @endsection
 
 @section('section')

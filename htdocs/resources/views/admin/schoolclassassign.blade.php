@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('page_heading')
-管理班級配課
+<h1 class="page-header">管理班級配課</h1>
 @endsection
 
 @section('section')

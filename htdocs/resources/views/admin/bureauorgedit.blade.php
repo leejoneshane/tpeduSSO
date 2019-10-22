@@ -1,7 +1,7 @@
 @extends('layouts.superboard')
 
 @section('page_heading')
-{{ isset($user) ? '編輯' : '新增' }}教育機構
+<h1 class="page-header">{{ isset($user) ? '編輯' : '新增' }}教育機構</h1>
 @endsection
 
 @section('section')

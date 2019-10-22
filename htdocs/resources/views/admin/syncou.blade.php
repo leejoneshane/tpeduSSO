@@ -1,7 +1,7 @@
 @extends('layouts.syncboard')
 
 @section('page_heading')
-同步行政部門
+<h1 class="page-header">同步行政部門</h1>
 @endsection
 
 @section('section')
