@@ -6,8 +6,12 @@ use Config;
 use Validator;
 use Auth;
 use DB;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\User;
+use App\Thirdapp;
+use App\OauthScopeAccessLog;
+use App\Usagerecord;
 use App\Providers\LdapServiceProvider;
 use App\Rules\idno;
 use App\Rules\ipv4cidr;
@@ -33,7 +37,204 @@ class BureauController extends Controller
     {
         return view('bureau');
     }
-    
+
+	public function bureauThirdapp (Request $request)
+	{
+		$entry = $request->get('entry');
+
+		$app = new Thirdapp;
+
+		if(is_string($entry) && $entry != ''){
+			$app = Thirdapp::where('unit','like','%'.$entry.'%')
+				->orWhere('entry','like','%'.$entry.'%')
+				->orWhere('background','like','%'.$entry.'%')
+				//->orWhere('url','like','%'.$entry.'%')
+				//->orWhere('redirect','like','%'.$entry.'%')
+				->orWhere('conman','like','%'.$entry.'%')
+				//->orWhere('conunit','like','%'.$entry.'%')
+				->orWhere('contel','like','%'.$entry.'%')
+				//->orWhere('conmail','like','%'.$entry.'%')
+				->orderBy('id','asc')
+				->get();
+		}else{
+			$entry = '';
+			$app = Thirdapp::orderBy('id','asc')->get();
+		}
+
+		if($request->path() == 'thirdapp'){
+			return view('thirdapp', [ 'apps' => $app, 'entry' => $entry ]);
+		}else{
+			return view('admin.bureauthirdapp', [ 'apps' => $app, 'entry' => $entry ]);
+		}
+	}
+
+	public function updateBureauThirdappForm (Request $request, $id = null)
+	{
+		if(ctype_digit($id))
+			$app = Thirdapp::where('id', $id)->first();
+		if(!isset($app))
+			return redirect('bureau/thirdapp');
+
+		$ut = $app['unittype'];
+		if($ut == '1' || $ut == '2' || $ut == '3')
+			$app['unittype'.$ut] = 'Y';
+
+		$sc = $app['scope'];
+
+		if(is_string($sc) && $sc != ''){
+			$ss = explode(" ", $sc);
+			for($x = 0;$x < count($ss);$x++){
+				if($ss[$x] == "me") $app['scope0'] = 'Y';
+				else if($ss[$x] == "email") $app['scope1'] = 'Y';
+				else if($ss[$x] == "user") $app['scope2'] = 'Y';
+				else if($ss[$x] == "idno") $app['scope3'] = 'Y';
+				else if($ss[$x] == "profile") $app['scope4'] = 'Y';
+				else if($ss[$x] == "account") $app['scope5'] = 'Y';
+				else if($ss[$x] == "school") $app['scope6'] = 'Y';
+				else if($ss[$x] == "schoolAdmin") $app['scope7'] = 'Y';
+			}
+		}
+
+		return view('admin.bureauthirdappedit', ['data' => $app]);
+	}
+
+	public function updateBureauThirdapp (Request $request, $id = null)
+	{
+		//foreach ($_REQUEST as $key => $value)
+		//	file_put_contents('testlog.txt',$key.' - '.$value.PHP_EOL,FILE_APPEND);
+
+		/*
+		$v = Validator::make($request->all(), [
+			'unit' => 'required',
+			'recdt' => 'required',
+			'conman' => 'required',
+		]);
+
+		if ($v->fails())
+			return back()->withErrors($v->errors());
+		*/
+		$errors = [];
+
+		if(!is_string($request->get('unit')) || $request->get('unit') == '')
+			$errors['unit'] = '申請單位是必填欄位。';
+		if(!is_string($request->get('entry')) || $request->get('entry') == '')
+			$errors['entry'] = '應用平臺名稱是必填欄位。';
+
+		if(!is_string($request->get('url')) || $request->get('url') == ''){
+			$errors['url'] = '應用平臺網址是必填欄位。';
+		}else if(strlen($request->get('url')) < 10 || (substr(strtolower($request->get('url')),0,4) != 'http' && substr(strtolower($request->get('url')),0,5) != 'https')){
+			$errors['url'] = '應用平臺網址格式不正確。';
+		}else{
+			$where = [['url',$request->get('url')]];
+			if(ctype_digit($id))
+				array_push($where,['id', '<>', $id]);
+			if(Thirdapp::where($where)->count() > 0)
+				$errors['url'] = '應用平臺網址已存在。';
+		}
+
+		if(!is_string($request->get('redirect')) || $request->get('redirect') == ''){
+			$errors['redirect'] = 'SSO認證後重導向URL是必填欄位。';
+		}else if(strlen($request->get('redirect')) < 10 || (substr(strtolower($request->get('redirect')),0,4) != 'http' && substr(strtolower($request->get('redirect')),0,5) != 'https')){
+			$errors['redirect'] = 'SSO認證後重導向URL格式不正確。';
+		}
+
+		if(!is_string($request->get('conman')) || $request->get('conman') == '')
+			$errors['conman'] = '姓名是必填欄位。';
+		if($request->get('conmail') != '' && !filter_var($request->get('conmail'), FILTER_VALIDATE_EMAIL))
+			$errors['conmail'] = 'Email格式錯誤。';
+		if(!is_string($request->get('contel')) || $request->get('contel') == '')
+			$errors['contel'] = '電話是必填欄位。';
+		if($request->get('recdt') != '' && (!ctype_digit($request->get('recdt')) || strlen($request->get('recdt')) != 8 || !checkdate(substr($request->get('recdt'),4,2),substr($request->get('recdt'),6,2),substr($request->get('recdt'),0,4))))
+			$errors['recdt'] = '收件日期格式不正確。';
+		if($request->get('key') == ''){
+			$errors['key'] = '系統識別碼是必填欄位。';
+		}else if(!ctype_digit($request->get('key')) || intval($request->get('key')) < 1){
+			$errors['key'] = '系統識別碼必須是正整數。';
+		}else{
+			$where = [['key',$request->get('key')]];
+			if(ctype_digit($id))
+				array_push($where,['id', '<>', $id]);
+			if(Thirdapp::where($where)->count() > 0)
+				$errors['key'] = '此識別碼已被其他設定使用。';
+		}
+
+		if($request->get('stopdt') != '' && (!ctype_digit($request->get('stopdt')) || strlen($request->get('stopdt')) != 8 || !checkdate(substr($request->get('stopdt'),4,2),substr($request->get('stopdt'),6,2),substr($request->get('stopdt'),0,4))))
+			$errors['stopdt'] = '撤銷日期格式不正確。';
+
+		$unittype = null;
+		$t1 = $request->get('unittype1');
+		$t2 = $request->get('unittype2');
+		$t3 = $request->get('unittype3');
+		if(is_string($t1) && $t1 == 'Y') $unittype = '1';
+		else if(is_string($t2) && $t2 == 'Y') $unittype = '2';
+		else if(is_string($t3) && $t3 == 'Y') $unittype = '3';
+
+		if($unittype == null)
+			$errors['unittype'] = '單位別必須勾選。';
+
+		$scope = "";
+		$scopes = array("me","email","user","idno","profile","account","school","schoolAdmin");
+		for($x = 0;$x < count($scopes);$x++){
+			$s = $request->get('scope'.$x);
+			if(is_string($s) && $s == 'Y') $scope .= ' '.$scopes[$x];
+		}
+		$scope = $scope == '' ? null : substr($scope,1);
+
+		//if($scope == null)
+		//	$errors['scope'] = '可調用資料範圍必須勾選。';
+
+		if (sizeof($errors) > 0){
+			$request->flash();
+			return back()->withErrors($errors);
+		}
+
+		if($id != null){
+			$app = Thirdapp::where('id', $id)->first();
+			if(!isset($app))
+				return back()->with("error", "找不到紀錄！");
+		}else{
+			$app = new Thirdapp;
+		}
+
+		$app->unit = $request->get('unit');
+		$app->entry = $request->get('entry');
+		$app->background = is_string($request->get('background'))?$request->get('background'):null;
+		$app->url = $request->get('url');
+		$app->redirect = $request->get('redirect');
+		$app->unittype = $unittype;
+		$app->conman = $request->get('conman');
+		$app->conmail = $request->get('conmail');
+		$app->conunit = is_string($request->get('conunit'))?$request->get('conunit'):null;
+		$app->contel = $request->get('contel');
+		$app->recdt = $request->get('recdt');
+		$app->recno = is_string($request->get('recno'))?$request->get('recno'):null;
+		$app->key = $request->get('key');
+		$app->scope = $scope;
+		$app->stopdt = $request->get('stopdt');
+		$app->authyn = ($request->get('authyn') == 'Y')?'Y':'N';
+		$app->stopyn = ($request->get('stopyn') == 'Y')?'Y':'N';
+		$app->save();
+
+		if($id != null)
+			return redirect('bureau/thirdapp')->with("success", "資料修改完成！");
+
+		return back()->with("success", "已新增應用平臺！");
+	}
+
+	public function removeBureauThirdapp (Request $request, $id = null)
+	{
+		if(ctype_digit($id))
+			$app = Thirdapp::where('id', $id)->first();
+
+		if(isset($app)){
+			$name = $app->entry;
+			$app->delete();
+			return back()->with("success", "已刪除應用平臺『".$name."』！");
+		}
+
+		return back()->with("error", "指定的應用平臺不存在！");
+	}
+
     public function bureauPeopleSearchForm(Request $request)
     {
 		$my_field = $request->get('field');
@@ -574,7 +775,149 @@ class BureauController extends Controller
 			return redirect('bureau/people?area='.$area.'&dc='.$orgs[0].'&field='.$my_field.'&keywords='.$keywords)->with("error", "人員新增失敗！".$openldap->error());
 		}
 	}
-	
+
+	public function bureauOauthScopeAccessLogForm(Request $request)
+	{
+		$a = [];
+		foreach (Thirdapp::all() as $t)
+			$a[$t->id] = $t->entry;
+
+		$data = ['data' => OauthScopeAccessLog::orderBy('id','desc')->get()];
+
+		foreach ($data['data'] as $t)
+			if(array_key_exists($t->system_id, $a))
+				$t->entry = $a[$t->system_id];
+		$request->flash();
+
+		return view('admin.bureauOauthScopeAccessLog', $data);
+	}
+
+	public function bureauOauthScopeAccessLog(Request $request)
+	{
+		$auth = $request->get('authorizer');
+		$approve = $request->get('approve');
+		$entry = $request->get('entry');
+		$dt1 = $request->get('dt1');
+		$dt2 = $request->get('dt2');
+		$scope = $request->get('scope');
+		$range = $request->get('scope_range');
+
+		$a = [];
+
+		if(is_string($auth) && $auth != '')
+			array_push($a,['authorizer', 'like', '%'.$auth.'%']);
+		if(is_string($approve) && $approve != '')
+			array_push($a,['approve', 'like', '%'.$approve.'%']);
+		if(is_string($dt1) && $dt1 != '' && is_string($dt2) && $dt2 != ''){
+			$c1 = Carbon::createFromFormat('YmdHis', $dt1.'000000', 'Asia/Taipei');
+			$c2 = Carbon::createFromFormat('YmdHis', $dt2.'235959', 'Asia/Taipei');
+			array_push($a,['created_at', '>=', $c1]);
+			array_push($a,['created_at', '<=', $c2]);
+		}else if(is_string($dt1) && $dt1 != ''){
+			array_push($a,['created_at', '>=', Carbon::createFromFormat('YmdHis', $dt1.'000000', 'Asia/Taipei')]);
+		}else if(is_string($dt2) && $dt2 != ''){
+			array_push($a,['created_at', '<=', Carbon::createFromFormat('YmdHis', $dt2.'235959', 'Asia/Taipei')]);
+		}
+		if(is_string($scope) && $scope != '')
+			array_push($a,['scope', 'like', '%'.$scope.'%']);
+		if(is_string($range) && $range != '')
+			array_push($a,['scope_range', 'like', '%'.$range.'%']);
+
+		$data = OauthScopeAccessLog::where($a);
+
+		if(is_string($entry) && $entry != ''){
+			$ary = [];
+			$third = Thirdapp::where('entry', 'like', '%'.$entry.'%')->get();
+			foreach($third as $t)
+				array_push($ary, $t->id);
+			$data = $data->whereIn('system_id', $ary);
+		}
+
+		$data = $data->orderBy('id','desc')->get();
+		$request->flash();
+
+		$b = [];
+		foreach (Thirdapp::all() as $t)
+			$b[$t->id] = $t->entry;
+
+		foreach ($data as $t)
+			if(array_key_exists($t->system_id, $b))
+				$t->entry = $b[$t->system_id];
+
+		return view('admin.bureauOauthScopeAccessLog', ['data' => $data]);
+	}
+
+	public function bureauUsagerecordForm(Request $request)
+	{
+		$request->flash();
+		return view('admin.bureauusagerecord', ['data' => Usagerecord::orderBy('id','desc')->get()]);
+	}
+
+	public function bureauUsagerecord(Request $request)
+	{
+		$user = $request->get('user');
+		$ip = $request->get('ip');
+		$dt1 = $request->get('dt1');
+		$dt2 = $request->get('dt2');
+		$module = $request->get('module');
+		$content = $request->get('content');
+		$note = $request->get('note');
+
+		$a = [];
+		$c = [];
+		if(is_string($user) && $user != ''){
+			array_push($a,['username', 'like', '%'.$user.'%']);
+			$c['username'] = $user;
+		}
+		if(is_string($ip) && $ip != ''){
+			array_push($a,['ipaddress', 'like', '%'.$ip.'%']);
+			$c['ipaddress'] = $ip;
+		}
+		if(is_string($dt1) && $dt1 != '' && is_string($dt2) && $dt2 != ''){
+			$c1 = Carbon::createFromFormat('YmdHis', $dt1.'000000', 'Asia/Taipei');
+			$c2 = Carbon::createFromFormat('YmdHis', $dt2.'235959', 'Asia/Taipei');
+			array_push($a,['created_at', '>=', $c1]);
+			array_push($a,['created_at', '<=', $c2]);
+		}else if(is_string($dt1) && $dt1 != ''){
+			array_push($a,['created_at', '>=', Carbon::createFromFormat('YmdHis', $dt1.'000000', 'Asia/Taipei')]);
+		}else if(is_string($dt2) && $dt2 != ''){
+			array_push($a,['created_at', '<=', Carbon::createFromFormat('YmdHis', $dt2.'235959', 'Asia/Taipei')]);
+		}
+
+		/*
+		if($dt1 != '' && $dt2 != ''){
+			array_push($a,['eventtime', '>=', $dt1]);
+			array_push($a,['eventtime', '<=', $dt2.'99999999999999']);
+			$c['dt1'] = $dt1;
+			$c['dt2'] = $dt2;
+		}else if($dt1 != ''){
+			array_push($a,['eventtime', '>=', $dt1]);
+			$c['dt1'] = $dt1;
+		}else if($dt2 != ''){
+			array_push($a,['eventtime', '<=', $dt2]);
+			$c['dt2'] = $dt2;
+		}
+		*/
+
+		if(is_string($module) && $module != ''){
+			array_push($a,['module', 'like', '%'.$module.'%']);
+			$c['module'] = $module;
+		}
+		if(is_string($content) && $content != ''){
+			array_push($a,['content', 'like', '%'.$content.'%']);
+			$c['content'] = $content;
+		}
+		if(is_string($note) && $note != ''){
+			array_push($a,['note', 'like', '%'.$note.'%']);
+			$c['note'] = $note;
+		}
+
+		$data = Usagerecord::where($a)->orderBy('id','desc')->get();
+		$request->flash();
+
+		return view('admin.bureauusagerecord', ['data' => $data]);//back()->withInput()->with(['data' => $data]);
+	}
+
     public function updateBureauTeacher(Request $request, $uuid)
     {
 		$openldap = new LdapServiceProvider();
@@ -924,8 +1267,15 @@ class BureauController extends Controller
 		$idno = $data['cn'];
 		$info = array();
 		$info['userPassword'] = $openldap->make_ssha_password(substr($idno,-6));
-		
+
 		if (array_key_exists('uid', $data) && !empty($data['uid'])) {
+			//設定密碼還原後的有效期
+			$fp = Config::get('app.firstPasswordChangeDay');
+			if(ctype_digit(''.$fp) && $fp > 0){
+				$dt = Carbon::now()->addDays($fp)->format('Ymd');
+				$info['description'] = '<DEFAULT_PW_CREATEDATE>'.$dt.'</DEFAULT_PW_CREATEDATE>';
+			}
+
 			if (is_array($data['uid'])) {
 				foreach ($data['uid'] as $account) {
 					$account_entry = $openldap->getAccountEntry($account);
@@ -955,6 +1305,7 @@ class BureauController extends Controller
 			$user = User::where('idno', $idno)->first();
 			if ($user) {
 				$user->password = \Hash::make(substr($idno,-6));
+				$user->is_change_password = 0;
 				$user->save();
 			}
 			return back()->with("success", "已經將人員密碼重設為身分證字號後六碼！");
