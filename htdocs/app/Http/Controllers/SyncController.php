@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use Log;
 use Config;
 use Validator;
+use DB;
 use Auth;
 use App\User;
+use App\StudentParentData;
+use App\StudentParentRelation;
 use Illuminate\Http\Request;
 use App\Providers\LdapServiceProvider;
 use App\Providers\SimsServiceProvider;
@@ -508,18 +511,21 @@ class SyncController extends Controller
 		$subjects = $http->js_getSubjects($sid);
 		if (!$subjects) return ["無法從校務行政系統取得所有科目，請稍後再同步！"];
 		$org_subjects = $openldap->getSubjects($dc);
-		for ($i=0;$i<count($org_subjects);$i++) {
+
+		$i = 0;
+		while ($i<count($org_subjects)) {
 			if (!in_array($org_subjects[$i]['description'], $subjects)) {
 				$entry = $openldap->getSubjectEntry($dc, $org_subjects[$i]['tpSubject']);
 				$result = $openldap->deleteEntry($entry);
 				if ($result) {
-					array_splice($org_subjects, $i, 1);
 					$messages[] = "subject=". $org_subjects[$i]['tpSubject'] ." 已經刪除！";
+					array_splice($org_subjects, $i, 1);
 				} else {
 					$messages[] = "subject=". $org_subjects[$i]['tpSubject'] ." 已經不再使用，但無法刪除：". $http->error();
 				}
-			}
+			}else $i++;
 		}
+
 		$subject_ids = array();
 		$subject_names = array();
 		if (!empty($org_subjects)) {
@@ -572,18 +578,21 @@ class SyncController extends Controller
 		$subjects = $http->ps_getSubjects($sid);
 		if (!$subjects) return ["無法從校務行政系統取得所有科目，請稍後再同步！"];
 		$org_subjects = $openldap->getSubjects($dc);
-		for ($i=0;$i<count($org_subjects);$i++) {
+
+		$i = 0;
+		while ($i<count($org_subjects)) {
 			if (!in_array($org_subjects[$i]['description'], $subjects)) {
 				$entry = $openldap->getSubjectEntry($dc, $org_subjects[$i]['tpSubject']);
 				$result = $openldap->deleteEntry($entry);
 				if ($result) {
-					array_splice($org_subjects, $i, 1);
 					$messages[] = "subject=". $org_subjects[$i]['tpSubject'] ." 已經刪除！";
+					array_splice($org_subjects, $i, 1);
 				} else {
 					$messages[] = "subject=". $org_subjects[$i]['tpSubject'] ." 已經不再使用，但無法刪除：". $http->error();
 				}
-			}
+			}else $i++;
 		}
+
 		$subject_ids = array();
 		$subject_names = array();
 		foreach ($org_subjects as $subj) {
@@ -659,6 +668,7 @@ class SyncController extends Controller
 		if (empty($teachers)) {
 			$messages[] = "查無教師清單，因此無法同步！";
 		} else {
+			$tutors = [];
 			foreach ($teachers as $k => $idno) {
 				$idno = strtoupper($idno);
 				$data = $http->js_getPerson($sid, $idno);
@@ -754,6 +764,7 @@ class SyncController extends Controller
 						$info['ou'] = array_values(array_unique($units));
 						$info['title'] = array_values(array_unique($roles));
 						$info['info'] = array_values(array_unique($educloud));
+						if (!empty($data['tutor'])) $info['tpTutorClass'] = $data['tutor'];
 						if (!empty($assign)) $info['tpTeachClass'] = array_values(array_unique($assign));
 						$info['inetUserStatus'] = 'active';
 						$info['employeeType'] = $data['type'];
@@ -819,6 +830,7 @@ class SyncController extends Controller
 						$info['ou'] = array_values(array_unique($units));
 						$info['title'] = array_values(array_unique($roles));
 						$info['info'] = json_encode(array("sid" => $sid, "role" => $data['type']), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
+						if (!empty($data['tutor'])) $info['tpTutorClass'] = $data['tutor'];
 						if (!empty($assign)) $info['tpTeachClass'] = array_values(array_unique($assign));
 						$info['inetUserStatus'] = 'active';
 						$info['employeeType'] = $data['type'];
@@ -842,10 +854,23 @@ class SyncController extends Controller
 							$messages[] = "cn=". $idno .",name=". $data['name'] . "教師新增失敗！".$openldap->error();
 						}
 					}
+
+					if (!empty($data['tutor']))
+						$tutors[$idno] = $data['tutor'];
 				} else {
 					$messages[] = "cn=" . $idno . " 查無教師資料，無法同步：". $http->error();
 				}
 			}
+
+			foreach($tutors as $k => $v){
+				$filter = "(&(tpTutorClass=".$v.")(!(cn=".$k.")))";
+				$teas = $openldap->findUsers($filter, ['entryUUID','cn']);
+				foreach($teas as $tea){
+					$result = $openldap->deleteData($openldap->getUserEntry($tea['entryUUID']), ['tpTutorClass' => $v]);
+					$messages[] = "cn=".$tea['cn']." 清除 ".$v." 班導師身分，導師已配給".$k."！";
+				}
+			}
+
 			$filter = "(&(o=$dc)(!(employeeType=學生)))";
 			$org_teachers = $openldap->findUsers($filter, 'cn');
 			foreach ($org_teachers as $tea) {
@@ -986,13 +1011,13 @@ class SyncController extends Controller
 		}
 		$allsubject = array();
 		$subjects = $openldap->getSubjects($dc);
+		$current = array();
 		if (!empty($subjects))
 			foreach ($subjects as $s) {
 				$k = base64_encode($s['description']);
 				$allsubject[$k] = $s['tpSubject'];
 			}
 		$teachers = $http->ps_getTeachers($sid);
-		$current = array();
 		if (empty($teachers)) {
 			$messages[] = "查無教師清單，因此無法同步！";
 		} else {
@@ -1405,18 +1430,40 @@ class SyncController extends Controller
 		$http = new SimsServiceProvider();
 		$filter = "(&(st=$area)(tpSims=oneplus))";
 		$schools = $openldap->getOrgs($filter);
+
+		$dc = $request->get('dc');
+		if(empty($dc) && sizeof($schools) > 0) $dc = $schools[0]->o;
+		$sid = empty($dc) ? null:$openldap->getOrgID($dc);
+		$cls = $request->get('cls');
+
 		if ($request->isMethod('post')) {
-			$dc = $request->get('dc');
 			$clsid = $request->get('clsid');
-			$sid = $openldap->getOrgID($dc);
 			if (empty($clsid)) {
 				$classes = $http->js_getClasses($sid);
+				$temp = array();
 				if ($classes) {
-					ksort($classes);
-					$clsid = key($classes);
-					$clsname = $classes[$clsid];
-					unset($classes[$clsid]);
-					$request->session()->put('classes', $classes);	
+					if(!empty($cls)){
+						foreach ($classes as $k => $v) {
+							if($k == $cls){
+								$clsid = $k;
+								$clsname = $v;
+								break;
+							}
+						}
+						$classes = array();
+					}else{
+						ksort($classes);
+						$clsid = key($classes);
+						$clsname = $classes[$clsid];
+						unset($classes[$clsid]);
+						$request->session()->put('classes', $classes);	
+					}
+
+					if (!$clsid || !$clsname) {
+						$result[] = '查無班級，因此無法取得學生清單！';
+					}
+				}else{
+					$result[] = '查無班級，因此無法取得學生清單！';
 				}
 			} else {
 				$classes = $request->session()->pull('classes');
@@ -1429,25 +1476,44 @@ class SyncController extends Controller
 			}
 			if ($clsid && $clsname) {
 				$result = $this->js_syncStudent($dc, $sid, $clsid, $clsname);
-			} else {
-				$result[] = '查無班級，因此無法取得學生清單！';
 			}
+			//else {
+			//	$result[] = '查無班級，因此無法取得學生清單！';
+			//}
 			if (!empty($classes)) {
 				$nextid = key($classes);
-				return view('admin.syncstudent', [ 'sims' => 'oneplus', 'dc' => $dc, 'clsid' => $nextid, 'result' => $result ]);	
+				return view('admin.syncstudent', [ 'sims' => 'oneplus', 'area' => $area, 'dc' => $dc, 'clsid' => $nextid, 'result' => $result ]);	
 			} else {
-				return view('admin.syncstudent', [ 'sims' => 'oneplus', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'result' => $result ]);	
+				$classes = array();
+				$temp = $http->js_getClasses($sid);
+
+				if($temp){
+					ksort($temp);
+					foreach($temp as $k => $v)
+						array_push($classes,(object)['clsid' => $k, 'clsname' => $v]);
+				}
+
+				return view('admin.syncstudent', [ 'sims' => 'oneplus', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'classes' => $classes, 'cls' => $cls, 'result' => $result ]);	
 			}
 		} else {
-			return view('admin.syncstudent', [ 'sims' => 'oneplus', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => '' ]);	
-		}	
+			$classes = array();
+			$temp = $http->js_getClasses($sid);
+
+			if($temp){
+				ksort($temp);
+				foreach($temp as $k => $v)
+					array_push($classes,(object)['clsid' => $k, 'clsname' => $v]);
+			}
+
+			return view('admin.syncstudent', [ 'sims' => 'oneplus', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'classes' => $classes, 'cls' => '' ]);
+		}
 	}
 	
 	public function js_syncStudent($dc, $sid, $clsid, $clsname)
 	{
 		$openldap = new LdapServiceProvider();
 		$http = new SimsServiceProvider();
-		$messages[] = "開始進行同步";
+		$messages[] = "開始進行 $clsname 同步";
 		$students = $http->js_getStudents($sid, $clsid);
 		if (empty($students)) {
 			$messages[] = "班級：$clsname 沒有學生，因此無法同步！";
@@ -1462,6 +1528,8 @@ class SyncController extends Controller
 					unset($students[$k]);
 					continue;
 				}
+				unset($parents);
+				unset($clses);
 				$data = $http->js_getPerson($sid, $idno);
 				$user_entry = $openldap->getUserEntry($idno);
 				if ($user_entry) {
@@ -1491,10 +1559,14 @@ class SyncController extends Controller
 							[ 'mail' => $data['mail'] ], [ 'mail' => 'email' ]
 						);
 						if ($validator->passes()) $info['mail'] = $data['mail'];
-					}	
+					}
+
 					$result = $openldap->updateData($user_entry, $info);
+
 					if ($result) {
 						$messages[] = "cn=". $idno .",stdno=". $data['stdno'] .",name=". $data['name'] ." 資料及帳號更新完成！";
+						$parents = $data['parent'];
+						$clses = $data['tclass'];
 					} else {
 						$messages[] = "cn=". $idno .",stdno=". $data['stdno'] .",name=". $data['name'] ." 無法更新學生資料：". $openldap->error();
 					}
@@ -1549,11 +1621,90 @@ class SyncController extends Controller
 						if ($validator->passes()) $info['mail'] = $data['mail'];
 					}	
 					$result = $openldap->createEntry($info);
+
 					if ($result) {
 						$messages[] = "cn=". $idno .",stdno=". $data['stdno'] .",name=". $data['name'] . "已經為您建立學生資料！";
+						$parents = $data['parent'];
+						$clses = $data['tclass'];
 					} else {
 						$messages[] = "cn=". $idno .",stdno=". $data['stdno'] .",name=". $data['name'] . "學生新增失敗！".$openldap->error();
 					}
+				}
+
+				//學生的父母及家長塞到mysql
+				if (isset($parents) && !empty($parents) && is_array($parents)) {
+					//取出已建立親子連結的家長
+					$spd = StudentParentRelation::where('student_idno',$idno)->get();
+					$names = [];
+					foreach($spd as $s)
+						if(!empty($s->parent_name))
+							$names[$s->parent_name] = 'Y';
+
+					$inspar = [];
+					foreach ($parents as $par) {
+						if(is_array($par) && sizeof($par) == 4){
+							if(sizeof($names) == 0 || !array_key_exists($par[0],$names)){
+								array_push($inspar,['school_id' => $sid
+									, 'student_id' => $data['stdno']
+									, 'student_idno' => $idno
+									, 'student_birthday' => substr($data['birthdate'],0,8)
+									, 'parent_name' => $par[0]
+									, 'parent_relation' => $par[1]
+									, 'parent_mobile' => $par[2]
+									, 'parent_email' => $par[3]
+									, 'created_at' => \Carbon\Carbon::now()
+									, 'updated_at' => \Carbon\Carbon::now()
+								]);
+							}
+						}
+					}
+
+					DB::transaction(function() use ($sid,$idno,$inspar){
+						DB::table('student_parent_data')->where('student_idno',$idno)->delete();
+						DB::table('student_parent_data')->insert($inspar);
+					});
+				}
+
+				//學生的上課班級塞到mysql
+				if (isset($clses) && !empty($clses) && is_array($clses)) {
+					$user = $openldap->getUserData($openldap->getUserEntry($idno), array('entryUUID'));
+					$uuid = $user['entryUUID'];
+
+					$oldkey = [];
+					$datakey = [];
+					$sc = \App\StudentClasssubj::where('uuid',$uuid)->get();
+					foreach ($sc as $s)
+						$oldkey[$s->subjkey] = $s->id;
+
+					$insles = array();
+					foreach ($clses as $cls) {
+						list($clsid, $subjid) = explode(',', $cls);
+						$subjid = 'subj'.$subjid;
+						$subjkey = "$dc,$clsid,$subjid";
+
+						if(!array_key_exists($subjkey,$oldkey)){
+							if(!in_array($subjkey,$datakey)){
+								array_push($insles,['uuid' => $uuid
+									, 'subjkey' => $subjkey
+									, 'school' => $dc
+									, 'clsid' => $clsid
+									, 'subjid' => $subjid
+									, 'created_at' => \Carbon\Carbon::now()
+									, 'updated_at' => \Carbon\Carbon::now()
+								]);
+								array_push($datakey,$subjkey);
+							}
+						}else{
+							unset($oldkey[$subjkey]);
+						}
+					}
+
+					$values = array_values($oldkey);
+
+					DB::transaction(function() use ($values,$insles){
+						DB::table('student_classsubj')->whereIn('id',$values)->delete();
+						DB::table('student_classsubj')->insert($insles);
+					});
 				}
 			}
 			$filter = "(&(o=$dc)(tpClass=$clsid))";
@@ -1601,23 +1752,41 @@ class SyncController extends Controller
 		$http = new SimsServiceProvider();
 		$filter = "(&(st=$area)(tpSims=alle))";
 		$schools = $openldap->getOrgs($filter);
+
+		$dc = $request->get('dc');
+		if(empty($dc) && sizeof($schools) > 0) $dc = $schools[0]->o;
+		$sid = empty($dc) ? null:$openldap->getOrgID($dc);
+		$cls = $request->get('cls');
+
 		if ($request->isMethod('post')) {
-			$dc = $request->get('dc');
 			$clsid = $request->get('clsid');
-			$sid = $openldap->getOrgID($dc);
 			if (empty($clsid)) {
 				$classes = $http->ps_getClasses($sid);
 				$temp = array();
 				if (!empty($classes)) {
-					foreach ($classes as $c) {
-						$temp[$c->clsid] = $c->clsname;
+					if(!empty($cls)){
+						foreach ($classes as $c) {
+							if($c->clsid == $cls){
+								$temp[$c->clsid] = $c->clsname;
+								break;
+							}
+						}
+					}else{
+						foreach ($classes as $c) {
+							$temp[$c->clsid] = $c->clsname;
+						}
 					}
-					ksort($temp);
-					$classes = $temp;
-					$clsid = key($classes);
-					$clsname = $classes[$clsid];
-					unset($classes[$clsid]);
-					$request->session()->put('classes', $classes);	
+
+					if(sizeof($temp) > 0){
+						ksort($temp);
+						$classes = $temp;
+						$clsid = key($classes);
+						$clsname = $classes[$clsid];
+						unset($classes[$clsid]);
+						$request->session()->put('classes', $classes);	
+					} else {
+						$result[] = '查無班級，因此無法取得學生清單！';
+					}
 				} else {
 					$result[] = '查無班級，因此無法取得學生清單！';
 				}
@@ -1635,12 +1804,16 @@ class SyncController extends Controller
 			}
 			if (!empty($classes)) {
 				$nextid = key($classes);
-				return view('admin.syncstudent', [ 'sims' => 'alle', 'dc' => $dc, 'clsid' => $nextid, 'result' => $result ]);	
+				return view('admin.syncstudent', [ 'sims' => 'alle', 'area' => $area, 'dc' => $dc, 'clsid' => $nextid, 'result' => $result ]);
 			} else {
-				return view('admin.syncstudent', [ 'sims' => 'alle', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'result' => $result ]);	
+				$classes = $http->ps_getClasses($sid);
+				if(!$classes) $classes = array();
+				return view('admin.syncstudent', [ 'sims' => 'alle', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'classes' => $classes, 'cls' => $cls, 'result' => $result ]);
 			}
 		} else {
-			return view('admin.syncstudent', [ 'sims' => 'alle', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => '' ]);	
+			$classes = $http->ps_getClasses($sid);
+			if(!$classes) $classes = array();
+			return view('admin.syncstudent', [ 'sims' => 'alle', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'classes' => $classes, 'cls' => '' ]);
 		}	
 	}
 	
@@ -1648,11 +1821,29 @@ class SyncController extends Controller
 	{
 		$openldap = new LdapServiceProvider();
 		$http = new SimsServiceProvider();
-		$messages[] = "開始進行同步";
+		$messages[] = "開始進行 $clsname 同步";
 		$students = $http->ps_getStudents($sid, $clsid);
 		if (empty($students)) {
 			$messages[] = "班級：$clsname 沒有學生，因此無法同步！";
 		} else {
+			$subjs = [];
+			//取出已同步過的科目代碼及名稱
+			$subjects = $openldap->getSubjects($dc);
+			foreach($subjects as $s)
+				$subjs[$s['description']] = $s['tpSubject'];
+
+			$clssubj = [];
+			//取回班級科目
+			$subjects = $http->ps_call('subject_for_class', [ 'sid' => $sid, 'clsid' => $clsid ]);
+			if ($subjects && !empty($subjects[0]->subjects)) {
+				$subjects = $subjects[0]->subjects;
+				foreach ($subjects as $s) {
+					$name = array_keys((array)$s)[0];
+					if (array_key_exists($name, $subjs) && !in_array($subjs[$name],$clssubj))
+						$clssubj[] = $subjs[$name];
+				}
+			}
+
 			foreach ($students as $stdno) {
 				$data = $http->ps_getStudent($sid, $stdno);
 				if (isset($data['idno'])) {
@@ -1692,6 +1883,7 @@ class SyncController extends Controller
 						$result = $openldap->updateData($user_entry, $info);
 						if ($result) {
 							$messages[] = "cn=". $idno .",stdno=". $stdno .",name=". $data['name'] ." 資料及帳號更新完成！";
+							$pars = $http->ps_call('student_parents_info', [ 'sid' => $sid, 'stdno' => $stdno ]);
 						} else {
 							$messages[] = "cn=". $idno .",stdno=". $stdno .",name=". $data['name'] ." 無法更新學生資料：". $openldap->error();
 						}
@@ -1744,9 +1936,91 @@ class SyncController extends Controller
 						$result = $openldap->createEntry($info);
 						if ($result) {
 							$messages[] = "cn=". $idno .",stdno=". $stdno .",name=". $data['name'] . "已經為您建立學生資料！";
+							$pars = $http->ps_call('student_parents_info', [ 'sid' => $sid, 'stdno' => $stdno ]);
 						} else {
 							$messages[] = "cn=". $idno .",stdno=". $stdno .",name=". $data['name'] . "學生新增失敗！".$openldap->error();
 						}
+					}
+
+					//學生家長塞到mysql
+					if(isset($pars) && !empty($pars))
+					{
+						$inspar = [];
+
+						$spd = StudentParentRelation::where('student_idno',$idno)->get();
+						$names = [];
+						foreach($spd as $s)
+							if(!empty($s->parent_name))
+								$names[$s->parent_name] = 'Y';
+
+						foreach ($pars as $par) {
+							if(!empty($par) && array_key_exists('name',$par)){
+								if(count($names) == 0 || !array_key_exists($par->name,$names)){
+									$insdata = ['school_id' => $sid
+										, 'student_id' => $stdno
+										, 'student_idno' => $idno
+										, 'student_birthday' => substr($data['birthdate'],0,8)
+										, 'parent_name' => $par->name
+										//, 'parent_email' => $par[3]
+										, 'created_at' => \Carbon\Carbon::now()
+										, 'updated_at' => \Carbon\Carbon::now()
+									];
+
+									if(array_key_exists('relation',$par) && !empty($par->relation))
+										$insdata['parent_relation'] = $par->relation;
+									if(array_key_exists('telephone',$par) && !empty($par->telephone))
+										$insdata['parent_mobile'] = $par->telephone;
+
+									array_push($inspar,$insdata);
+								}
+							}
+						}
+
+						DB::transaction(function() use ($sid,$idno,$inspar){
+							DB::table('student_parent_data')->where('student_idno',$idno)->delete();
+							DB::table('student_parent_data')->insert($inspar);
+						});
+
+						unset($pars);
+					}
+
+					//學生的上課班級塞到mysql
+					if ($result) {
+						$user = $openldap->getUserData($openldap->getUserEntry($idno), array('entryUUID'));
+						$uuid = $user['entryUUID'];
+
+						$oldkey = [];
+						$datakey = [];
+						$sc = \App\StudentClasssubj::where('uuid',$uuid)->get();
+						foreach ($sc as $s)
+							$oldkey[$s->subjkey] = $s->id;
+
+						$insles = array();
+						foreach ($clssubj as $c) {
+							$subjkey = $dc.','.$clsid.','.$c;
+							if(!array_key_exists($subjkey,$oldkey)){
+								if(!in_array($subjkey,$datakey)){
+									array_push($insles,['uuid' => $uuid
+										, 'subjkey' => $subjkey
+										, 'school' => $dc
+										, 'clsid' => $clsid
+										, 'subjid' => $c
+										, 'created_at' => \Carbon\Carbon::now()
+										, 'updated_at' => \Carbon\Carbon::now()
+									]);
+									array_push($datakey,$subjkey);
+								}
+							}else{
+								unset($oldkey[$subjkey]);
+							}
+						}
+
+						$values = array_values($oldkey);
+
+						DB::transaction(function() use ($values,$insles){
+							DB::table('student_classsubj')->whereIn('id',$values)->delete();
+							DB::table('student_classsubj')->insert($insles);
+						});
 					}
 				}
 			}
