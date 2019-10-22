@@ -160,6 +160,18 @@ class LdapServiceProvider extends ServiceProvider
 			return 'active';
 		}
 		return false;
+	}
+	
+	public function getEmployeeType($idno)
+    {
+    	if (empty($idno)) return false;
+		$this->administrator();
+		$entry = $this->getUserEntry($idno);
+		$data = $this->getUserData($entry, 'employeeType');
+		if ($data) {
+			return $data['employeeType'] ;
+		}
+		return '';
     }
 
     public function accountAvailable($account)
@@ -1045,7 +1057,7 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$base_dn = Config::get('ldap.authdn');
 		$auth_rdn = "uid=$identifier";
-		$resource = @ldap_list(self::$ldap_read, $base_dn, $auth_rdn);
+		$resource = @ldap_list(self::$ldap_read, $base_dn, $auth_rdn, ['*', '+']);
 		if ($resource) {
 			$entry = @ldap_first_entry(self::$ldap_read, $resource);
 			return $entry;
@@ -1061,6 +1073,7 @@ class LdapServiceProvider extends ServiceProvider
 			$fields[] = 'uid';
 			$fields[] = 'userPassword';
 			$fields[] = 'description';
+			$fields[] = 'createTimestamp';			
 		} elseif (is_array($attr)) {
 			$fields = $attr;
 		} else {
