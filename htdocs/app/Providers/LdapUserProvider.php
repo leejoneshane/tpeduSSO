@@ -62,6 +62,7 @@ class LdapUserProvider extends EloquentUserProvider
 					} else {
 						$user->email = $data['mail'];
 					}
+					if (!$this->openLDAP->emailAvailable($id, $user->email)) $user->email = null;
 				} else $user->email = null;
 				if (!empty($data['mobile'])) {
 					if (is_array($data['mobile'])) {
