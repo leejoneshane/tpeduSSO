@@ -31,7 +31,13 @@ class RevokeOldTokens
             ->where('id', '<>', $event->tokenId)
             ->where('user_id', $event->userId)
             ->where('client_id', $event->clientId)
-            ->update(['revoked' => true]);
+            ->where('revoked', true)
+            ->delete();
 
+        DB::table('oauth_auth_codes')
+            ->where('user_id', $event->userId)
+            ->where('client_id', $event->clientId)
+            ->where('revoked', true)
+            ->delete();
     }
 }

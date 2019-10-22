@@ -30,6 +30,7 @@ class PruneOldTokens
         DB::table('oauth_refresh_tokens')
             ->where('id', '<>', $event->refreshTokenId)
             ->where('access_token_id', '<>', $event->accessTokenId)
-            ->update(['revoked' => true]);
+            ->where('revoked', true)
+            ->delete();
     }
 }
