@@ -32,6 +32,6 @@ class RevokeOldTokens
             ->where('user_id', $event->userId)
             ->where('client_id', $event->clientId)
             ->update(['revoked' => true]);
-
+//            ->delete();
     }
 }
