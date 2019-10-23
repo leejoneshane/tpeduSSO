@@ -61,7 +61,7 @@
                                     </ul>
                             </div>
                         @endif
-                        @if ($denyYearsAgo12)
+    /*                    @if ($denyYearsAgo12)
                         <div class="scopes">
                         <p><strong>授權警告：</strong></p>
                             <p><strong>本應用程式未滿12歲須由家長進行學童個資授權同意 </strong></p>
@@ -98,7 +98,7 @@
                                 <button class="btn btn-danger">不同意</button>
                             </form>
                         </div>
-                        @endif
+                        @endif */
                     </div>
                 </div>
             </div>
