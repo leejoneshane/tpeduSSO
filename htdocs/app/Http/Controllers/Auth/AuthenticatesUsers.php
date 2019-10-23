@@ -170,8 +170,7 @@ trait AuthenticatesUsers
             $this->fireLockoutEvent($request);
             return $this->sendLockoutResponse($request);
         }
-        if($attemptLogin) {
-        //if ($this->attemptLogin($request)) {
+        if ($this->attemptLogin($request)) {
             return $this->sendLoginResponse($request);
         }
         // If the login attempt was unsuccessful we will increment the number of attempts
