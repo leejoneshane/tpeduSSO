@@ -10,13 +10,13 @@ class ModifyUsersTable extends Migration
      * Run the migrations.
      *
      * @return void
-     */
-   
-	public function up() {
-		Schema::table('users', function (Blueprint $table) {
-			$table->timestamp('gsuite_created_at')->nullable();
-		});
-	}
+     */   
+    public function up() {
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('gsuite_email')->nullable()->after('is_admin');
+            $table->timestamp('gsuite_created_at')->nullable()->after('gsuite_email');
+        });
+    }
 
     /**
      * Reverse the migrations.
@@ -25,6 +25,8 @@ class ModifyUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColume(['gsuite_email', 'gsuite_created_at']);
+        });
     }
 }
