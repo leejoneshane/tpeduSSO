@@ -5,5 +5,5 @@
 @endsection
 
 @section('section')
-<i class="fa fa-long-arrow-left"></i>請點選左側選單，進行管理操作！
+<i class="fas fa-long-arrow-alt-left" style="margin: 0 3px;"></i>請點選左側選單，進行管理操作！
 @endsection

@@ -13,7 +13,15 @@ return [
     |
     */
 
-    'name' => '臺北市教育人員單一身份驗證服務',
+    'name' => '臺北市教育人員單一身分驗證服務',
+
+    'areas' =>  [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ],
+
+    'schoolCategory' =>  [ '國民小學', '國民中學', '高中', '高職' ],
+    'oauth_scopes' => ['me','email','user','idno','profile','account','school','schoolAdmin'],
+
+    //第一次密碼有效天數(day) 0 表示不啟用
+    'firstPasswordChangeDay' => 3 ,
 
     /*
     |--------------------------------------------------------------------------
@@ -146,7 +154,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-
+        
         /*
          * Package Service Providers...
          */
@@ -160,6 +168,12 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\TelescopeServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        Mews\Captcha\CaptchaServiceProvider::class,
+        //Laravel\Socialite\SocialiteServiceProvider::class,
+        \SocialiteProviders\Manager\ServiceProvider::class,
+        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
+        Sujip\Guid\GuidServiceProvider::class,
+        KingStarter\LaravelSaml\LaravelSamlServiceProvider::class,
 
     ],
 
@@ -209,7 +223,9 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
+        'Captcha' => Mews\Captcha\Facades\Captcha::class,
+//        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
+        'Guid' => Sujip\Guid\Guid::class,
     ],
-
 ];

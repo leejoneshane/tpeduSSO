@@ -144,8 +144,10 @@ trait SamlAuth
         $roles = array();
         if(\Auth::check()){
             $user  = \Auth::user();
-            $email = $user->uname.'@'.config('saml.email_domain');
-            $name  = $user->name;
+			$email = \App\User::where('uuid',$user->uuid)->first()->gsuite_email;
+			if(empty($email))
+				$email = $user->uname.'@'.config('saml.email_domain');
+            $name  = $user->uname;// $user->name mb_convert_encoding($user->name, "HTML-ENTITIES", "UTF-8"); only ascii
             if (config('saml.forward_roles'))
                 $roles = $user->roles->pluck('name')->all();
         }else {
