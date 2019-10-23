@@ -10,7 +10,7 @@ class Authenticate extends Middleware
     public function handle($request, Closure $next, ...$guards)
     {
         $this->authenticate($request, $guards);
-
+/*
 		$md = $_SERVER['REQUEST_METHOD'];
 		$uri = $_SERVER['REQUEST_URI'];
 		if(!empty($uri) && strpos($uri,'?')) $uri = substr($uri,0,strpos($uri,'?'));
@@ -62,7 +62,7 @@ class Authenticate extends Middleware
 			if(array_key_exists($uri, $u))
 				\App\UsageLogger::add($u[$uri]['module'], array_key_exists('content',$u[$uri])?$u[$uri]['content']:$this->reqParam($request), $u[$uri]['note']);
 		}
-
+*/
         return $next($request);
     }
 
