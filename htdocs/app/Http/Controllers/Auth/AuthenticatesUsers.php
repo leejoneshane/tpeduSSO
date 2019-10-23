@@ -65,7 +65,19 @@ trait AuthenticatesUsers
         $status = $openldap->checkStatus($idno);
         if ($status == 'inactive') return redirect()->back()->with("error","很抱歉，您已經被管理員停權！");
         if ($status == 'deleted') return redirect()->back()->with("error","很抱歉，您已經被管理員刪除！");
-
+        if (substr($username,-9) == substr($idno, -9)) {
+            if ($openldap->authenticate($username,$password)) {
+                $request->session()->put('idno', $idno);
+                return redirect()->route('changeAccount');
+            }
+        }
+        if ($password == substr($idno, -6)) {
+            if ($openldap->authenticate($username,$password)) {
+                $request->session()->put('idno', $idno);
+                return redirect()->route('changePassword');
+            }
+        }
+/*
         $attemptLogin=false;
         if ($this->attemptLogin($request)) {
             $attemptLogin=true;
@@ -148,7 +160,7 @@ trait AuthenticatesUsers
                 return app('App\Http\Controllers\HomeController')->connectChildQrcode($request);
             }
         }
-
+*/
 
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
@@ -158,8 +170,7 @@ trait AuthenticatesUsers
             $this->fireLockoutEvent($request);
             return $this->sendLockoutResponse($request);
         }
-        if($attemptLogin) {
-        //if ($this->attemptLogin($request)) {
+        if ($this->attemptLogin($request)) {
             return $this->sendLoginResponse($request);
         }
         // If the login attempt was unsuccessful we will increment the number of attempts
