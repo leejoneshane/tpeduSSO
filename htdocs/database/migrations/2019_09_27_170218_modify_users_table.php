@@ -14,7 +14,7 @@ class ModifyUsersTable extends Migration
     public function up() {
         Schema::table('users', function (Blueprint $table) {
             $table->string('gsuite_email')->nullable()->after('is_admin');
-            $table->timestamp('gsuite_created_at')->nullable()->after('gsuite_email');
+            $table->timestamp('gsuite_created_at')->nullable()->after('is_admin');
         });
     }
 
