@@ -2,11 +2,6 @@
 set -euo pipefail
 if ! [ -d /var/www/localhost/htdocs/vendor ]; then
   composer update
-  composer required laravel/telescope
-  composer required mews/captcha
-  composer required socialiteproviders/manager
-  composer required simplesoftwareio/simple-qrcode
-  composer required sudiptpa/guid
   chown -R apache:apache /var/www/localhost/htdocs
 fi
 
