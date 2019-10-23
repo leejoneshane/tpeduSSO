@@ -84,7 +84,6 @@
 			@csrf
 		</form>			
 	</div>
-
 	<div id="addSchoolClassModal" class="modal fade">
 		<div class="modal-dialog">
 			<div class="modal-content">
