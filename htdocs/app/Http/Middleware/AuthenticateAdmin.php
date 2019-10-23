@@ -16,7 +16,7 @@ class AuthenticateAdmin
                 return redirect('/');
             }
         }
-
+/*
 		$md = $_SERVER['REQUEST_METHOD'];
 		$uri = $_SERVER['REQUEST_URI'];
 		if(!empty($uri) && strpos($uri,'?')) $uri = substr($uri,0,strpos($uri,'?'));
@@ -102,23 +102,22 @@ class AuthenticateAdmin
 					$j = json_encode($p,JSON_UNESCAPED_UNICODE);
 					$u['/bureau/teacher/'.$uuid.'/update'] = ['module' => '局端管理/人員管理-更新教師', 'content' => $j, 'note' => '修改資料'];
 					$u['/bureau/student/'.$uuid.'/update'] = ['module' => '局端管理/人員管理-更新學生', 'content' => $j, 'note' => '修改資料'];
-					$u['/bureau/people/'.$uuid.'/remove'] = ['module' => '局端管理/人員管理-標記刪除', 'content' => $j, 'note' => '標記刪除'];
-					$u['/bureau/people/'.$uuid.'/toggle'] = ['module' => '局端管理/人員管理-切換人員狀態', 'content' => $j, 'note' => '切換人員狀態'];
+					$u['/bureau/people/'.$uuid.'/remove'] = ['module' => '局端管理/人員管理-標記刪除', 'content' => $j, 'note' => '標記刪除']					$u['/bureau/people/'.$uuid.'/toggle'] = ['module' => '局端管理/人員管理-切換人員狀態', 'content' => $j, 'note' => '切換人員狀態'];
 					$u['/bureau/people/'.$uuid.'/undo'] = ['module' => '局端管理/人員管理-取消刪除標記', 'content' => $j, 'note' => '取消刪除標記'];
 					$u['/bureau/people/'.$uuid.'/resetpass'] = ['module' => '局端管理/人員管理-回復密碼', 'content' => $j, 'note' => '回復密碼'];
 				}
 
 				if(array_key_exists($uri, $u))
 					\App\UsageLogger::add($u[$uri]['module'], array_key_exists('content',$u[$uri])?$u[$uri]['content']:$this->reqParam($request), $u[$uri]['note']);
-/*
+
 	Route::get('orgs/{area}', 'Api\schoolController@listOrgs');
 	Route::get('units/{dc}', 'Api\schoolController@allOu');
 	Route::get('roles/{dc}/{ou_id}', 'Api\schoolController@allRole');
 	Route::get('classes/{dc}', 'Api\schoolController@listClasses');
-*/
+
 			}
 		}
-
+*/
         return $next($request);
     }
 
