@@ -65,7 +65,7 @@
 					<label>身份別</label>
 					<select id="type" class="form-control" name="type" onchange="switchtype()">
 					@foreach ($types as $type)
-			    		<option value="{{ $type }}"{{ array_key_exists('employeeType', $user) && $type == $user['employeeType'] ? ' selected' : '' }}>{{ $type }}</option>
+			    		<option value="{{ $type }}"{{ !empty($user['employeeType']) && $type == $user['employeeType'] ? ' selected' : '' }}>{{ $type }}</option>
 			    	@endforeach
 					</select>
 				</div>

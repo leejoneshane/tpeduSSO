@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'debug' => true,
+    'debug' => false,
     'host'	=> env('LDAP_HOST', '127.0.0.1'),
     'rhost'	=> env('LDAP_HOST_R', ''),
     'whost'	=> env('LDAP_HOST_W', ''),

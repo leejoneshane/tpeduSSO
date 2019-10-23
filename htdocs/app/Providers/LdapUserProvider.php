@@ -2,106 +2,80 @@
 
 namespace App\Providers;
 
-use App\User;
 use Illuminate\Support\Str;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Contracts\Hashing\Hasher as HasherContract;
 use Illuminate\Contracts\Auth\Authenticatable as UserContract;
 use App\Providers\LdapServiceProvider;
+use App\User;
 
 class LdapUserProvider extends EloquentUserProvider
 {
-    protected $openLDAP;
-    
-    public function __construct(HasherContract $hasher, $model)
-    {
-        $this->model = $model;
-        $this->hasher = $hasher;
-		$this->openLDAP = new LdapServiceProvider();
-    }
 
     public function retrieveByCredentials(array $credentials)
     {
 		if (empty($credentials)) return;
+		$openldap = new LdapServiceProvider();
 		if (isset($credentials['username'])) {
 			if (substr($credentials['username'],0,3) == 'cn=') {
-				$id = $this->openLDAP->checkIdno($credentials['username']);
+				$id = $openldap->checkIdno($credentials['username']);
 			} else {
-				$id = $this->openLDAP->checkAccount($credentials['username']);
+				$id = $openldap->checkAccount($credentials['username']);
 			}
 		}
 		if (isset($credentials['email'])) {
-			$id = $this->openLDAP->checkEmail($credentials['email']);
+			$id = $openldap->checkEmail($credentials['email']);
 		}
 		if (isset($credentials['mobile'])) {
-			$id = $this->openLDAP->checkMobile($credentials['mobile']);
+			$id = $openldap->checkMobile($credentials['mobile']);
 		}
 		if ($id) {
-			$model = parent::createModel();
+			$entry = $openldap->getUserEntry($id);
+			$data = $openldap->getUserData($entry);
 			$user = User::where('idno', $id)->first();
-			if (!$user) {
-				$entry = $this->openLDAP->getUserEntry($id);
-				if ($entry) {
-					$data = $this->openLDAP->getUserData($entry);
-					$user = new \App\User();
-					$user->idno = $id;
-					if (isset($data['uid'])) {
-						if (is_array($data['uid'])) {
-							$user->uname = $data['uid'][0];
-						} else {
-							$user->uname = $data['uid'];
-						}
-					}
-					$user->name = $data['displayName'];
-					$user->uuid = $data['entryUUID'];
-					if (isset($credentials['email'])) {
-						$user->email = $credentials['email'];
-					} elseif (isset($data['mail'])) {
-						if (is_array($data['mail'])) {
-							$user->email = $data['mail'][0];
-						} else {
-							$user->email = $data['mail'];
-						}
-					} else $user->email = null;
-					if (isset($data['mobile'])) {
-						if (is_array($data['mobile'])) {
-							$user->mobile = $data['mobile'][0];
-						} else {
-							$user->mobile = $data['mobile'];
-						}
-					} else $user->mobile = null;
-					if (isset($credentials['password'])) {
-						$user->password = \Hash::make($credentials['password']);
-					} else {
-						$user->password = \Hash::make(substr($id,-6));
-					}
-					$user->save();
-					return $user;
+			if (is_null($user)) {
+				$user = new User();
+				$user->idno = $id;
+				$user->uuid = $data['entryUUID'];
+				if (isset($credentials['password'])) {
+					$user->password = \Hash::make($credentials['password']);
+				} else {
+					$user->password = \Hash::make(substr($id,-6));
 				}
-			} else {
-				$entry = $this->openLDAP->getUserEntry($id);
-				$data = $this->openLDAP->getUserData($entry);
-				if (isset($data['uid'])) {
-					if (is_array($data['uid'])) {
-						$user->uname = $data['uid'][0];
-					} else {
-						$user->uname = $data['uid'];
-					}
-				}
-				$user->save();
-				return $user;
+				$accounts = $openldap->getUserAccounts($id);
+				$user->uname = $accounts[0];
 			}
+			$user->name = $data['displayName'];
+			if (isset($credentials['email'])) {
+				$user->email = $credentials['email'];
+			} elseif (!empty($data['mail'])) {
+				if (is_array($data['mail']))
+					$user->email = $data['mail'][0];
+				else
+					$user->email = $data['mail'];
+				if (!$openldap->emailAvailable($id, $user->email)) $user->email = null;
+			} else $user->email = null;
+			if (!empty($data['mobile'])) {
+				if (is_array($data['mobile']))
+					$user->mobile = $data['mobile'][0];
+				else
+					$user->mobile = $data['mobile'];
+				if (!$openldap->mobileAvailable($id, $user->mobile)) $user->mobile = null;
+			} else $user->mobile = null;
+			$user->save();
+			return $user;
 		}
 	}
 
 	public function validateCredentials(UserContract $user, array $credentials)
 	{
+		$openldap = new LdapServiceProvider();
 		if (isset($credentials['username'])) {
-			if (substr($credentials['username'],0,3) == 'cn=') {
-				return $this->openLDAP->userLogin($credentials['username'], $credentials['password']);
-			} else {
-				return $this->openLDAP->authenticate($credentials['username'], $credentials['password']);
-			} 
-		}	
+		    if (substr($credentials['username'],0,3) == 'cn=') {
+			    return $openldap->userLogin($credentials['username'], $credentials['password']);
+		    } else {
+			    return $openldap->authenticate($credentials['username'], $credentials['password']);
+		    }
+    }
 	}
 }

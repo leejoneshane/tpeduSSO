@@ -861,13 +861,8 @@ class LdapServiceProvider extends ServiceProvider
 			}
 			foreach ($units as $ou_pair) {
 				$a = explode(',' , $ou_pair);
-				if (count($a) == 2) {
-					$o = $a[0];
-					$ou = $a[1];
-				} else {
-					$o = $orgs[0];
-					$ou = $a[0];
-				}
+				$o = $a[0];
+				$ou = $a[1];
 				$ous[] = $ou;
 				$obj = new \stdClass();
 				$obj->key = $ou_pair;
@@ -885,15 +880,9 @@ class LdapServiceProvider extends ServiceProvider
 				$titles = array();
 				foreach ($roles as $role_pair) {
 					$a = explode(',' , $role_pair);
-					if (count($a) == 3 ) {
-						$o = $a[0];
-						$ou = $a[1];
-						$role = $a[2];
-					} else {
-						$o = $orgs[0];
-						$ou = $ous[0];
-						$role = $a[0];
-					}
+					$o = $a[0];
+					$ou = $a[1];
+					$role = $a[2];
 					$titles[] = "$o,$ou,$role";
 					$obj = new \stdClass();
 					$obj->key = $role_pair;
@@ -911,17 +900,10 @@ class LdapServiceProvider extends ServiceProvider
 			}
 			foreach ($classes as $class_pair) {
 				$a = explode(',' , $class_pair);
-				if (count($a) == 3) {
-					$o = $a[0];
-					$class = $a[1];
-					$subject = '';
-					if (isset($a[2])) $subject = $a[2];
-				} else {
-					$o = $orgs[0];
-					$class = $a[0];
-					$subject = '';
-					if (isset($a[1])) $subject = $a[1];
-				}
+				$o = $a[0];
+				$class = $a[1];
+				$subject = '';
+				if (isset($a[2])) $subject = $a[2];
 				$tclass[] = "$o,$class,$subject";
 				$obj = new \stdClass();
 				$obj->key = $class_pair;
@@ -987,9 +969,16 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$fields = array_filter($fields);
 		$dn = @ldap_get_dn(self::$ldap_read, $entry);
-		$value = @ldap_mod_add(self::$ldap_write, $dn, $fields);
-		if (!$value && Config::get('ldap.debug')) Log::debug("Data can't add into $dn:\n".print_r($fields, true)."\n".$this->error()."\n");
-		return $value;
+		$attrs = @ldap_get_attributes(self::$ldap_read, $entry);
+		foreach ($fields as $k => $field) {
+			if (in_array($k, $attrs) && in_array($field, $attrs[$k])) unset($fields[$k]);
+		}
+		if (!empty($fields)) {
+			$value = @ldap_mod_add(self::$ldap_write, $dn, $fields);
+			if (!$value && Config::get('ldap.debug')) Log::debug("Data can't add into $dn:\n".print_r($fields, true)."\n".$this->error()."\n");
+			return $value;
+		}
+		return false;
 	}
 
     public function updateData($entry, array $fields)
@@ -1004,14 +993,18 @@ class LdapServiceProvider extends ServiceProvider
     public function deleteData($entry, array $fields)
     {
 		$this->administrator();
+		$fields = array_filter($fields);
 		$dn = @ldap_get_dn(self::$ldap_read, $entry);
 		$attrs = @ldap_get_attributes(self::$ldap_read, $entry);
 		foreach ($fields as $k => $field) {
-			if (!in_array($k, $attrs) || empty($field)) unset($fields[$k]);
+			if (!in_array($k, $attrs) || !in_array($field, $attrs[$k])) unset($fields[$k]);
 		}
-		$value = @ldap_mod_del(self::$ldap_write, $dn, $fields);
-		if (!$value && Config::get('ldap.debug')) Log::debug("Data can't remove from $dn:\n".print_r($fields, true)."\n".$this->error()."\n");
-		return $value;
+		if (!empty($fields)) {
+			$value = @ldap_mod_del(self::$ldap_write, $dn, $fields);
+			if (!$value && Config::get('ldap.debug')) Log::debug("Data can't remove from $dn:\n".print_r($fields, true)."\n".$this->error()."\n");
+			return $value;
+		}
+		return false;
 	}
 
     public function createEntry(array $info)
@@ -1121,7 +1114,7 @@ class LdapServiceProvider extends ServiceProvider
 				}
 		}
 		$idno = $data['cn'];
-		$acc_data = $this->findAccounts("cn=$idno", "uid");
+		$acc_data = $this->findAccounts("cn=$idno", 'uid');
 		if (!empty($acc_data)) {
 			foreach ($acc_data as $acc) {
 				if (!in_array($acc['uid'], $accounts))  $this->deleteAccount($entry, $acc['uid']);
@@ -1136,18 +1129,14 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$ssha = $this->make_ssha_password($pwd);
 		$new_passwd = array( 'userPassword' => $ssha );
-		$data = $this->getUserData($entry, 'uid');
-		$accounts = array();
-		if (isset($data['uid'])) {
-			if (is_array($data['uid'])) {
-				$accounts = $data['uid'];
-			} else {
-				$accounts[] = $data['uid'];
-			}
-			foreach ($accounts as $account) {
-				$acc_entry = $this->getAccountEntry($account);
+		$data = $this->getUserData($entry, 'cn');
+		$idno = $data['cn'];
+		$resource = @ldap_list(self::$ldap_read, Config::get('ldap.authdn'), "cn=$idno");
+		if ($resource) {
+			$acc_entry = ldap_first_entry(self::$ldap_read, $resource);
+			do {
 				if ($acc_entry) $this->updateData($acc_entry,$new_passwd);
-			}
+			} while ($acc_entry=ldap_next_entry(self::$ldap_read, $acc_entry));
 		}
 		$this->updateData($entry,$new_passwd);
     }
@@ -1156,47 +1145,35 @@ class LdapServiceProvider extends ServiceProvider
     {
 		$this->administrator();
 		$data = $this->getUserData($entry, ['cn', 'uid', 'userPassword']);
-		if (isset($data['cn'])) {
-			$idno = $data['cn'];
-			$password = $data['userPassword'];
-			$accounts = array();
-			if (!empty($data['uid'])) {
-				if (is_array($data['uid']))
-					$accounts = $data['uid'];
-				else
-					$accounts[] = $data['uid'];
-				if (!in_array($account, $accounts)) $this->addData($entry, array( "uid" => $account));
-			} else {
-				$this->updateData($entry, array( "uid" => $account));
-			}
-			$acc = $this->getAccountEntry($account);
-			if ($acc) return;
-			$account_info = array();
-			$account_info['dn'] = "uid=$account,".Config::get('ldap.authdn');
-			$account_info['objectClass'] = "radiusObjectProfile";
-			$account_info['uid'] = $account;
-			$account_info['cn'] = $idno;
-			$account_info['userPassword'] = $password;
-			$account_info['description'] = $memo;
-			$this->createEntry($account_info);
-		}
+		$idno = $data['cn'];
+		$password = $data['userPassword'];
+		$this->addData($entry, array( "uid" => $account));
+		$acc = $this->getAccountEntry($account);
+		if ($acc) return;
+		$account_info = array();
+		$account_info['dn'] = "uid=$account,".Config::get('ldap.authdn');
+		$account_info['objectClass'] = "radiusObjectProfile";
+		$account_info['uid'] = $account;
+		$account_info['cn'] = $idno;
+		$account_info['userPassword'] = $password;
+		$account_info['description'] = $memo;
+		$this->createEntry($account_info);
     }
 
     public function renameAccount($entry, $new_account)
     {
 		$this->administrator();
-		$data = $this->getUserData($entry, 'uid');
+		$data = $this->getUserData($entry, ['uid', 'mail', 'mobile']);
 		$uid = $data['uid'];
 		$accounts = array();
-		if (is_array($uid)) {
+		if (is_array($uid))
 			$accounts = $uid;
-		} else {
+		else
 			$accounts[] = $uid;
-		}
 		for ($i=0;$i<count($accounts);$i++) {
 			$match = true;
-			if (array_key_exists('mail',$data) && $accounts[$i] == $data['mail']) $match = false;
-			if (array_key_exists('mobile',$data) && $accounts[$i] == $data['mobile']) $match = false;
+			if (isset($data['mail']) && $accounts[$i] == $data['mail']) $match = false;
+			if (isset($data['mobile']) && $accounts[$i] == $data['mobile']) $match = false;
 			if ($match) {
 				$old_account = $accounts[$i];
 				$accounts[$i] = $new_account;

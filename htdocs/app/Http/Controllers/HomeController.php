@@ -63,7 +63,7 @@ class HomeController extends Controller
 		$idno = $user->idno;
 		$accounts = $openldap->getUserAccounts($idno);
 		$userinfo = array();
-		if ($email != $user->email) {
+		if ($email && $email != $user->email) {
 	    	$validatedData = $request->validate([
 			    'email' => 'required|email|unique:users',
 			]);
@@ -71,6 +71,10 @@ class HomeController extends Controller
 				return back()->withInput()->with("error","您輸入的電子郵件已經被別人使用，請您重新輸入一次！");
 	    	$userinfo['mail'] = $email;
 	    	$user->email = $email;
+		}
+		if (!$email) {
+    		$userinfo['email'] = array();
+    		$user->email = null;
 		}
 		if ($mobile && $mobile != $user->mobile) {
 	    	$validatedData = $request->validate([
@@ -120,7 +124,7 @@ class HomeController extends Controller
 			$user = Auth::user();
 			$idno = $user->idno;
 		} else {
-		  $idno = $request->session()->pull('idno');
+		  $idno = $request->session()->get('idno');
 		}
 		$validatedData = $request->validate([
 			'new-account' => 'required|alpha_num|min:6',
@@ -128,13 +132,11 @@ class HomeController extends Controller
 		$new = $request->get('new-account');
 		$openldap = new LdapServiceProvider();
 		$accounts = $openldap->getUserAccounts($idno);
-		$match = false;
 		foreach ($accounts as $account) {
-    		if ($new == $account) $match = true;
+    		if ($new == $account) return back()->withInput()->with("error","新帳號不可以跟舊的帳號相同，請重新想一個新帳號再試一次！");
 		}
-		if ($match) return back()->withInput()->with("error","新帳號不可以跟舊的帳號相同，請重新想一個新帳號再試一次！");
-		if(strcmp($idno, $new) == 0) return back()->withInput()->with("error","新帳號不可以跟身分證字號相同，請重新想一個新帳號再試一次！");
-		if (!$openldap->accountAvailable($new)) return back()->withInput()->with("error","您輸入的".$new."帳號已經被別人使用，請您重新輸入一次！");
+		if($idno == $new) return back()->withInput()->with("error","新帳號不可以跟身分證字號相同，請重新想一個新帳號再試一次！");
+		if (!$openldap->accountAvailable($new)) return back()->withInput()->with("error","您輸入的帳號已經被別人使用，請您重新輸入一次！");
 		$entry = $openldap->getUserEntry($idno);
 		$data = $openldap->getUserData($entry, 'mail');
 		if (empty($accounts)) {
@@ -152,7 +154,7 @@ class HomeController extends Controller
 				if (isset($data['mail'])) Notification::route('mail', $data['mail'])->notify(new AccountChangeNotification($new));
 			}
 			return back()->withInput()->with("success","帳號建立成功！");
-		} elseif (!$match) {
+		} else {
 			$openldap->renameAccount($entry, $new);
 			if (Auth::check()) {
 				$user->uname = $new;
