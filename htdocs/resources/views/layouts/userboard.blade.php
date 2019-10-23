@@ -43,16 +43,16 @@
 				@endif
 				@if(Auth::user() != null AND (Auth::user()->inRole('家長') OR Auth::user()->inRole('教師'))) 
                 <li>
-					<a href="#submenu2" data-toggle="collapse" {{ (Request::is('listConnectChildren','showConnectChildrenAuthForm') ? 'aria-expanded=true' : 'aria-expanded=false') }} class="dropdown-toggle">
+					<a href="#submenu2" data-toggle="collapse" {{ (Request::is('parents/listConnectChildren','parents/showConnectChildrenAuthForm') ? 'aria-expanded=true' : 'aria-expanded=false') }} class="dropdown-toggle">
                         <i class="glyphicon glyphicon-user" style="margin: 0 3px;"></i>家長服務
                     </a>
-					@if(Request::is('listConnectChildren','showConnectChildrenAuthForm'))
+					@if(Request::is('parents/listConnectChildren','parents/showConnectChildrenAuthForm'))
 					<ul class="list-unstyled collapse in" id="submenu2" aria-expanded="true">
 					@else
                     <ul class="list-unstyled collapse" id="submenu2">
 					@endif
-						<li {{ (Request::is('listConnectChildren') ? 'class=active' : '') }} ><a class="func-item" href="{{ route('parents.listConnectChildren') }}">親子連結</a></li>
-						<li {{ (Request::is('showConnectChildrenAuthForm') ? 'class=active' : '') }}><a class="func-item" href="{{ route('parents.showConnectChildrenAuthForm') }}">12歲以下學童個資授權同意</a></li>
+						<li {{ (Request::is('parents/listConnectChildren') ? 'class=active' : '') }} ><a class="func-item" href="{{ route('parents.listConnectChildren') }}">親子連結</a></li>
+						<li {{ (Request::is('parents/showConnectChildrenAuthForm') ? 'class=active' : '') }}><a class="func-item" href="{{ route('parents.showConnectChildrenAuthForm') }}">12歲以下學童個資授權同意</a></li>
                     </ul>
                 </li>
 				@endif
