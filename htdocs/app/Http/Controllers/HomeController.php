@@ -103,19 +103,7 @@ class HomeController extends Controller
 
     public function showChangeAccountForm(Request $request)
     {
-		if (Auth::check()) {
-			$user = Auth::user();
-			$username=$user->uname;
-			$isChangeAccount=$user->is_change_account;
-		} else {
-			$username=$request->session()->get('username');
-			$isChangeAccount='0';
-		}
-		if($isChangeAccount=='1') {
-			return view('auth.changeaccount')->with("username",$username)->with("is_change_account",$isChangeAccount)->with("success","您已經調整過帳號，限調整一次，謝謝！");
-		} else  {
-			return view('auth.changeaccount')->with("username",$username)->with("is_change_account",$isChangeAccount);
-		}
+		return view('auth.changeaccount');
     }
 
     public function changeAccount(Request $request)
@@ -158,14 +146,12 @@ class HomeController extends Controller
 			$openldap->renameAccount($entry, $new);
 			if (Auth::check()) {
 				$user->uname = $new;
-				$user->is_change_account=1;
 				$user->save();
 				if (!empty($user->email)) $user->notify(new PasswordChangeNotification($new));
 			} else {
 				$user = User::where('idno', $idno)->first();
 				if ($user) {
 					$user->uname = $new;
-					$user->is_change_account=1;
 					$user->save();
 				}
 				if (isset($data['mail'])) Notification::route('mail', $data['mail'])->notify(new AccountChangeNotification($new));
@@ -226,7 +212,6 @@ class HomeController extends Controller
 		if (Auth::check()) {
 			$user->resetLdapPassword($new);
 			$user->password = \Hash::make($new);
-			$user->is_change_password = 1;
 			$user->save();
 			if (!empty($user->email)) $user->notify(new PasswordChangeNotification($new));
 		} else {
@@ -234,7 +219,6 @@ class HomeController extends Controller
 			$user = User::where('idno', $idno)->first();
 			if ($user) {
 				$user->password = \Hash::make($new);
-				$user->is_change_password = 1;
 				$user->save();
 			}
 			if (isset($data['mail'])) Notification::route('mail', $data['mail'])->notify(new PasswordChangeNotification($new));
@@ -570,7 +554,6 @@ class HomeController extends Controller
 			$user = User::where('idno', $idno)->first();
 			if ($user) {
 				$user->password = \Hash::make(substr($idno,-6));
-				$user->is_change_password = 0;
 				$user->save();
 			}
 
