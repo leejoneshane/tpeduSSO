@@ -16,7 +16,7 @@ class AuthenticateAdmin
                 return redirect('/');
             }
         }
-
+/*
 		$md = $_SERVER['REQUEST_METHOD'];
 		$uri = $_SERVER['REQUEST_URI'];
 		if(!empty($uri) && strpos($uri,'?')) $uri = substr($uri,0,strpos($uri,'?'));
@@ -110,20 +110,13 @@ class AuthenticateAdmin
 
 				if(array_key_exists($uri, $u))
 					\App\UsageLogger::add($u[$uri]['module'], array_key_exists('content',$u[$uri])?$u[$uri]['content']:$this->reqParam($request), $u[$uri]['note']);
-/*
-	Route::get('orgs/{area}', 'Api\schoolController@listOrgs');
-	Route::get('units/{dc}', 'Api\schoolController@allOu');
-	Route::get('roles/{dc}/{ou_id}', 'Api\schoolController@allRole');
-	Route::get('classes/{dc}', 'Api\schoolController@listClasses');
-*/
 			}
 		}
-
         return $next($request);
     }
 
 	protected function reqParam($request)
 	{
-		return json_encode($request->except(['_token']),JSON_UNESCAPED_UNICODE);
+		return json_encode($request->except(['_token']),JSON_UNESCAPED_UNICODE); */
 	}
 }
