@@ -13,4 +13,4 @@
 /htdocs/npm-debug.log
 /htdocs/yarn-error.log
 .DS_Store
-Icon
+*Icon
