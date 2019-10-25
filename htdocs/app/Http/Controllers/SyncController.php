@@ -1630,7 +1630,7 @@ class SyncController extends Controller
 						$messages[] = "cn=". $idno .",stdno=". $data['stdno'] .",name=". $data['name'] . "學生新增失敗！".$openldap->error();
 					}
 				}
-
+/*
 				//學生的父母及家長塞到mysql
 				if (isset($parents) && !empty($parents) && is_array($parents)) {
 					//取出已建立親子連結的家長
@@ -1705,7 +1705,7 @@ class SyncController extends Controller
 						DB::table('student_classsubj')->whereIn('id',$values)->delete();
 						DB::table('student_classsubj')->insert($insles);
 					});
-				}
+				}*/
 			}
 			$filter = "(&(o=$dc)(tpClass=$clsid))";
 			$org_students = $openldap->findUsers($filter, 'cn');
@@ -1941,7 +1941,7 @@ class SyncController extends Controller
 							$messages[] = "cn=". $idno .",stdno=". $stdno .",name=". $data['name'] . "學生新增失敗！".$openldap->error();
 						}
 					}
-
+/*
 					//學生家長塞到mysql
 					if(isset($pars) && !empty($pars))
 					{
@@ -2021,7 +2021,7 @@ class SyncController extends Controller
 							DB::table('student_classsubj')->whereIn('id',$values)->delete();
 							DB::table('student_classsubj')->insert($insles);
 						});
-					}
+					}*/
 				}
 			}
 			$filter = "(&(o=$dc)(tpClass=$clsid))";
