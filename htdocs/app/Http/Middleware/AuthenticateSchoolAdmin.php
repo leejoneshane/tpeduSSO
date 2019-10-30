@@ -18,7 +18,7 @@ class AuthenticateSchoolAdmin
                 return redirect('/');
             }
         }
-/*
+
 		$md = $_SERVER['REQUEST_METHOD'];
 		$uri = $_SERVER['REQUEST_URI'];
 		if(!empty($uri) && strpos($uri,'?')) $uri = substr($uri,0,strpos($uri,'?'));
@@ -90,6 +90,10 @@ class AuthenticateSchoolAdmin
 			if(array_key_exists($uri, $u))
 				\App\UsageLogger::add($u[$uri]['module'], array_key_exists('content',$u[$uri])?$u[$uri]['content']:$this->reqParam($request), $u[$uri]['note']);
 		}
+/*
+    Route::post('{dc}/sync_unit', 'SyncController@syncOuHelp')->name('school.sync_ou');
+*/
+
         return $next($request);
     }
 
@@ -97,6 +101,6 @@ class AuthenticateSchoolAdmin
 	{
 		$p = $request->except(['_token']);
 		$p['dc'] = $request->route('dc');
-		return json_encode($p,JSON_UNESCAPED_UNICODE);*/
+		return json_encode($p,JSON_UNESCAPED_UNICODE);
 	}
 }

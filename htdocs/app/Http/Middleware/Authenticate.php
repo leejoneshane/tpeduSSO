@@ -7,10 +7,10 @@ use Illuminate\Auth\Middleware\Authenticate as Middleware;
 
 class Authenticate extends Middleware
 {
-/*    public function handle($request, Closure $next, ...$guards)
+    public function handle($request, Closure $next, ...$guards)
     {
-		$this->authenticate($request, $guards);
-		
+        $this->authenticate($request, $guards);
+
 		$md = $_SERVER['REQUEST_METHOD'];
 		$uri = $_SERVER['REQUEST_URI'];
 		if(!empty($uri) && strpos($uri,'?')) $uri = substr($uri,0,strpos($uri,'?'));
@@ -62,9 +62,9 @@ class Authenticate extends Middleware
 			if(array_key_exists($uri, $u))
 				\App\UsageLogger::add($u[$uri]['module'], array_key_exists('content',$u[$uri])?$u[$uri]['content']:$this->reqParam($request), $u[$uri]['note']);
 		}
+
         return $next($request);
     }
-*/
 
     /**
      * Get the path the user should be redirected to when they are not authenticated.
@@ -76,11 +76,10 @@ class Authenticate extends Middleware
     {
         return route('login');
     }
-/*
+
 	protected function reqParam($request)
 	{
 		$p = $request->except(['_token']);
 		return json_encode($p,JSON_UNESCAPED_UNICODE);
 	}
-*/
 }
