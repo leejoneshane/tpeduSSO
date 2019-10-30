@@ -12,11 +12,14 @@ class ModifyUsersTable extends Migration
      * @return void
      */
    
-	public function up() {
-		Schema::table('users', function (Blueprint $table) {
-			$table->timestamp('gsuite_created_at')->nullable();
-		});
-	}
+		 public function up() {
+		    Schema::table('users', function (Blueprint $table) {
+		
+		        $table->tinyInteger('is_change_account')->default(0)->after('is_admin');
+		        $table->tinyInteger('is_change_password')->default(0)->after('is_admin');
+		
+		    });
+		}   
 
     /**
      * Reverse the migrations.
