@@ -1305,6 +1305,7 @@ class BureauController extends Controller
 			$user = User::where('idno', $idno)->first();
 			if ($user) {
 				$user->password = \Hash::make(substr($idno,-6));
+				$user->is_change_password = 0;
 				$user->save();
 			}
 			return back()->with("success", "已經將人員密碼重設為身分證字號後六碼！");

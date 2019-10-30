@@ -21,9 +21,10 @@
 			{{ session('success') }}
 		    </div>
 		@endif
-		    <p>注意：為了避免帳號遭到盜用，請勿繼續使用預設帳號與預設密碼！</p>
-		    <form class="form-horizontal" method="POST" action="{{ route('changeAccount') }}">
+		<p>注意：為了避免帳號遭到盜用，請勿繼續使用預設帳號與預設密碼！</p>
+		<form class="form-horizontal" method="POST" action="{{ route('changeAccount') }}">
 		    {{ csrf_field() }}
+			@if ($is_change_account!='1')
 		    <div class="form-group{{ $errors->has('new-account') ? ' has-error' : '' }}">
 			<label for="new-account" class="col-md-4 control-label">新帳號</label>
 			<div class="col-md-6">
@@ -33,16 +34,32 @@
 				<strong>{{ $errors->first('new-account') }}</strong>
 			    </span>
 			    @endif
+
+
 			</div>
 		    </div>
+			<!--
+		    <div class="form-group">
+			<div for="new-account-confirm" class="col-md-8">請再輸入一次新帳號</div>
+			<div class="col-md-8">
+			    <input id="new-account-confirm" type="password" class="form-control" name="new-account_confirmation" required>
+			</div>
+		    </div>
+			-->
 		    <div class="form-group">
 			<div class="col-md-8 col-md-offset-4">
 			    <button type="submit" class="btn btn-primary">
 				確定
 			    </button>
 			</div>
-		    </div>		
-		    </form>
+		    </div>
+			@endif
+			@if ($is_change_account=='1')
+		    <div class="alert alert-danger">
+			您的帳號已經變更完成，限變更一次!!
+		    </div>
+			@endif			
+		</form>
 	        </div>
 	    </div>
 	</div>
