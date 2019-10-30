@@ -453,8 +453,8 @@ class HomeController extends Controller
 
 				return '{"success":"success","key":"'.$key.'"}';
 			}else{
-//				if(isset($error) && !empty($error))
-//					return '{"error":"建立G-Suite課程失敗:'.$error.'"}';
+				if(isset($error) && !empty($error))
+					return '{"error":"建立G-Suite課程失敗:'.$error.'"}';
 				return '{"error":"建立G-Suite課程失敗！"}';
 			}
 		}
@@ -1332,8 +1332,8 @@ public function listConnectChildren(Request $request)
 					}
 
 					if(!$flag){
-//						if(isset($error))
-//							return back()->withInput()->with("error","註冊帳號失敗:".$error);
+						if(isset($error))
+							return back()->withInput()->with("error","註冊帳號失敗:".$error);
 						return back()->withInput()->with("error","註冊帳號失敗！");
 					}
 				}else{
