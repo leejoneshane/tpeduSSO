@@ -19,7 +19,7 @@
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
 //Route::get('logout', 'Auth\LoginController@logout');
-//Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+//oute::post('logout', 'Auth\LoginController@logout')->name('logout');
 Route::match(array('GET','POST'),'logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('api/logout', 'Api\profileController@logout');
 Route::get('api/v2/logout', 'Api_V2\v2_profileController@logout');
@@ -32,6 +32,10 @@ Route::get('yahoo/link', 'Auth\LoginController@oauth_yahoo');
 Route::get('yahoo/callback', 'Auth\LoginController@oauth_yahoo_callback');
 Route::get('registerThird', 'Auth\LoginController@showRegisterThirdForm')->name('registerThird');
 Route::post('registerThird', 'Auth\LoginController@registerThird');
+
+
+Route::get('thirdapp', 'BureauController@bureauThirdapp')->name('thirdapp');
+Route::get('resourcedownload', 'HomeController@resourceDownloadForm');
 
 // Registration Routes...
 //Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
@@ -54,41 +58,42 @@ Route::post('changePassword', 'HomeController@changePassword')->name('changePass
 Route::get('changeAccount', 'HomeController@showChangeAccountForm');
 Route::post('changeAccount', 'HomeController@changeAccount')->name('changeAccount');
 
-Route::get('linkqrcode', 'HomeController@linkqrcode');
-Route::get('oauth/resource', 'oauthController@oauthResource');
-Route::get('resourcedownload', 'HomeController@resourceDownloadForm');
 
 Route::group(['middleware' => 'auth'], function () {
-  Route::get('/', 'HomeController@index')->name('home');
+	Route::get('/', 'HomeController@index')->name('home');
   Route::get('profile', 'HomeController@showProfileForm');
   Route::post('profile', 'HomeController@changeProfile')->name('profile');
   Route::get('oauth', 'oauthController@index')->name('oauth');
   
   //家長功能  
-  Route::get('parents/listConnectChildren', 'HomeController@listConnectChildren')->name('parents.listConnectChildren');
-  Route::match(array('GET','POST'),'parents/showConnectChildForm', 'HomeController@showConnectChildForm')->name('parents.showConnectChildForm');
-  Route::post('parents/connectChild', 'HomeController@connectChild')->name('parents.connectChild');
-  Route::get('parents/showConnectChildrenAuthForm', 'HomeController@showConnectChildrenAuthForm')->name('parents.showConnectChildrenAuthForm');
-  Route::post('parents/authConnectChild', 'HomeController@authConnectChild')->name('parents.authConnectChild');
+	Route::get('parents/listConnectChildren', 'HomeController@listConnectChildren')->name('parents.listConnectChildren');
+	Route::match(array('GET','POST'),'parents/showConnectChildForm', 'HomeController@showConnectChildForm')->name('parents.showConnectChildForm');
+	Route::post('parents/connectChild', 'HomeController@connectChild')->name('parents.connectChild');
+	Route::get('parents/showConnectChildrenAuthForm', 'HomeController@showConnectChildrenAuthForm')->name('parents.showConnectChildrenAuthForm');
+	Route::post('parents/authConnectChild', 'HomeController@authConnectChild')->name('parents.authConnectChild');
 
-  //導師班級管理
-  Route::get('personal/tutor_student', 'HomeController@tutorStudent')->name('personal.tutor_student');
-  Route::post('personal/{uuid}/resetpw_student', 'HomeController@resetpwStudent')->name('personal.resetpwStudent');
-  Route::get('personal/listparents', 'HomeController@listparents');
-  Route::get('personal/listmyparents/{uuid}', 'HomeController@listmyparents');
-  Route::post('personal/linkedChange', 'HomeController@linkedChange');
-  Route::post('personal/parentsqrcode', 'HomeController@parentsqrcode');
-  Route::post('personal/listparentsqrcode', 'HomeController@listparentsqrcode')->name('personal.listparentsqrcode');
 
-  //G-Suite Class Room 建立
-  Route::get('personal/teacher_lessons', 'HomeController@teacherLessons')->name('personal.teacher_lessons');
-  Route::post('personal/lessons_member', 'HomeController@lessonsMember');
-  Route::post('personal/teacher_courses', 'HomeController@teacherCourses')->name('personal.teacher_courses');
+	//導師班級管理
+	Route::get('personal/tutor_student', 'HomeController@tutorStudent')->name('personal.tutor_student');
+	Route::post('personal/{uuid}/resetpw_student', 'HomeController@resetpwStudent')->name('personal.resetpwStudent');
+	Route::get('personal/listparents', 'HomeController@listparents');
+	Route::get('personal/listmyparents/{uuid}', 'HomeController@listmyparents');
+	Route::post('personal/linkedChange', 'HomeController@linkedChange');
+	Route::post('personal/parentsqrcode', 'HomeController@parentsqrcode');
+	Route::post('personal/listparentsqrcode', 'HomeController@listparentsqrcode')->name('personal.listparentsqrcode');
 
-  //使用G-Suite服務
-  Route::get('personal/gsuitepage', 'HomeController@gsuitepage')->name('personal.gsuitepage');
-  Route::post('personal/gsuiteregister', 'HomeController@gsuiteregister')->name('personal.gsuiteregister');
+	//G-Suite Class Room 建立
+	Route::get('personal/teacher_lessons', 'HomeController@teacherLessons')->name('personal.teacher_lessons');
+	Route::post('personal/lessons_member', 'HomeController@lessonsMember');
+	Route::post('personal/teacher_courses', 'HomeController@teacherCourses')->name('personal.teacher_courses');
+
+	//使用G-Suite服務
+	Route::get('personal/gsuitepage', 'HomeController@gsuitepage')->name('personal.gsuitepage');
+	Route::post('personal/gsuiteregister', 'HomeController@gsuiteregister')->name('personal.gsuiteregister');
 });
+
+Route::get('linkqrcode', 'HomeController@linkqrcode');
+Route::get('oauth/resource', 'oauthController@oauthResource');
 
 Route::group(['prefix' => 'sync', 'middleware' => 'auth.admin'], function () {
     Route::get('/', 'SyncController@index')->name('sync');
@@ -99,7 +104,7 @@ Route::group(['prefix' => 'sync', 'middleware' => 'auth.admin'], function () {
     Route::post('ps/sync_class', 'SyncController@ps_syncClassForm')->name('sync.ps.sync_class');
     Route::get('ps/sync_subject', 'SyncController@ps_syncSubjectForm');
     Route::post('ps/sync_subject', 'SyncController@ps_syncSubjectForm')->name('sync.ps.sync_subject');
-    Route::get('ps/sync_teacher', 'SyncController@ps_syncTeacherForm');
+	Route::get('ps/sync_teacher', 'SyncController@ps_syncTeacherForm');
     Route::post('ps/sync_teacher', 'SyncController@ps_syncTeacherForm')->name('sync.ps.sync_teacher');
     Route::get('ps/sync_student', 'SyncController@ps_syncStudentForm');
     Route::post('ps/sync_student', 'SyncController@ps_syncStudentForm')->name('sync.ps.sync_student');
@@ -114,7 +119,7 @@ Route::group(['prefix' => 'sync', 'middleware' => 'auth.admin'], function () {
     Route::post('js/sync_class', 'SyncController@js_syncClassForm')->name('sync.js.sync_class');
     Route::get('js/sync_subject', 'SyncController@js_syncSubjectForm');
     Route::post('js/sync_subject', 'SyncController@js_syncSubjectForm')->name('sync.js.sync_subject');
-    Route::get('js/sync_teacher', 'SyncController@js_syncTeacherForm');
+	Route::get('js/sync_teacher', 'SyncController@js_syncTeacherForm');
     Route::post('js/sync_teacher', 'SyncController@js_syncTeacherForm')->name('sync.js.sync_teacher');
     Route::get('js/sync_student', 'SyncController@js_syncStudentForm');
     Route::post('js/sync_student', 'SyncController@js_syncStudentForm')->name('sync.js.sync_student');
