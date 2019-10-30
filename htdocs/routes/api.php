@@ -97,7 +97,5 @@ Route::group(['prefix' => 'v2'], function () {
         Route::get('school/{dc}/class/{class_id}/teachers', 'Api_V2\v2_schoolController@allTeachersByClass');
         Route::get('school/{dc}/class/{class_id}/students', 'Api_V2\v2_schoolController@allStudentsByClass');
         Route::get('school/{dc}/class/{class_id}/subjects', 'Api_V2\v2_schoolController@allSubjectsByClass');
-		Route::get('school/{dc}/teacher/{idno}/courses', 'Api_V2\v2_schoolController@allCoursesByTeacher');
-		Route::get('school/{dc}/class/{cid}/parents', 'Api_V2\v2_schoolController@allParentsLinkStatus');
     });
 });

@@ -1,7 +1,7 @@
 @extends('layouts.superboard')
 
 @section('page_heading')
-<h1 class="page-header">匯入人員資訊</h1>
+匯入人員資訊
 @endsection
 
 @section('section')

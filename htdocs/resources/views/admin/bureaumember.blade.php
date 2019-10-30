@@ -1,7 +1,7 @@
 @extends('layouts.superboard')
 
 @section('page_heading')
-<h1 class="page-header">{{ $group }}群組成員一覽表</h1>
+{{ $group }}群組成員一覽表
 @endsection
 
 @section('section')

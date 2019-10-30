@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('page_heading')
-<h1 class="page-header">{{ isset($user) ? '編輯' : '新增' }}學生資訊</h1>
+{{ isset($user) ? '編輯' : '新增' }}學生資訊
 @endsection
 
 @section('section')

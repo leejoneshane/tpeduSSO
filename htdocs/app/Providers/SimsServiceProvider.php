@@ -205,17 +205,15 @@ class SimsServiceProvider extends ServiceProvider
         if (!empty($classes)) {
 		    foreach ($classes as $class) {
 			    $data = $this->ps_call('subject_for_class', [ 'sid' => $sid, 'clsid' => $class->clsid ]);
-				if($data){
-					if (!empty($data[0]->subjects)) {
-						$class_subjects = $data[0]->subjects;
-						foreach ($class_subjects as $subj) {
-							$subj_name = array_keys((array)$subj)[0];
-							if (!in_array($subj_name, $subjects)) $subjects[] = $subj_name;
-						}
-					} else {
-						return false;
-					}
-				}
+			    if (!empty($data[0]->subjects)) {
+				    $class_subjects = $data[0]->subjects;
+				    foreach ($class_subjects as $subj) {
+					    $subj_name = array_keys((array)$subj)[0];
+					    if (!in_array($subj_name, $subjects)) $subjects[] = $subj_name;
+				    }
+			    } else {
+                    return false;
+                }
             }
         }
         return $subjects;

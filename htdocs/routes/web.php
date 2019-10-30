@@ -14,29 +14,11 @@
 
 //Auth::routes();
 // Authentication Routes...
-//Route::get('info', function () { return view('info');});	
-
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
-//Route::get('logout', 'Auth\LoginController@logout');
-//oute::post('logout', 'Auth\LoginController@logout')->name('logout');
-Route::match(array('GET','POST'),'logout', 'Auth\LoginController@logout')->name('logout');
+Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('api/logout', 'Api\profileController@logout');
 Route::get('api/v2/logout', 'Api_V2\v2_profileController@logout');
-
-Route::get('google/link', 'Auth\LoginController@oauth_google');
-Route::get('google/callback', 'Auth\LoginController@oauth_google_callback');
-Route::get('facebook/link', 'Auth\LoginController@oauth_facebook');
-Route::get('facebook/callback', 'Auth\LoginController@oauth_facebook_callback');
-Route::get('yahoo/link', 'Auth\LoginController@oauth_yahoo');
-Route::get('yahoo/callback', 'Auth\LoginController@oauth_yahoo_callback');
-Route::get('registerThird', 'Auth\LoginController@showRegisterThirdForm')->name('registerThird');
-Route::post('registerThird', 'Auth\LoginController@registerThird');
-
-
-Route::get('thirdapp', 'BureauController@bureauThirdapp')->name('thirdapp');
-Route::get('resourcedownload', 'HomeController@resourceDownloadForm');
-
 // Registration Routes...
 //Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
 //Route::post('register', 'Auth\RegisterController@register');
@@ -58,42 +40,12 @@ Route::post('changePassword', 'HomeController@changePassword')->name('changePass
 Route::get('changeAccount', 'HomeController@showChangeAccountForm');
 Route::post('changeAccount', 'HomeController@changeAccount')->name('changeAccount');
 
-
 Route::group(['middleware' => 'auth'], function () {
 	Route::get('/', 'HomeController@index')->name('home');
-  Route::get('profile', 'HomeController@showProfileForm');
-  Route::post('profile', 'HomeController@changeProfile')->name('profile');
-  Route::get('oauth', 'oauthController@index')->name('oauth');
-  
-  //家長功能  
-	Route::get('parents/listConnectChildren', 'HomeController@listConnectChildren')->name('parents.listConnectChildren');
-	Route::match(array('GET','POST'),'parents/showConnectChildForm', 'HomeController@showConnectChildForm')->name('parents.showConnectChildForm');
-	Route::post('parents/connectChild', 'HomeController@connectChild')->name('parents.connectChild');
-	Route::get('parents/showConnectChildrenAuthForm', 'HomeController@showConnectChildrenAuthForm')->name('parents.showConnectChildrenAuthForm');
-	Route::post('parents/authConnectChild', 'HomeController@authConnectChild')->name('parents.authConnectChild');
-
-
-	//導師班級管理
-	Route::get('personal/tutor_student', 'HomeController@tutorStudent')->name('personal.tutor_student');
-	Route::post('personal/{uuid}/resetpw_student', 'HomeController@resetpwStudent')->name('personal.resetpwStudent');
-	Route::get('personal/listparents', 'HomeController@listparents');
-	Route::get('personal/listmyparents/{uuid}', 'HomeController@listmyparents');
-	Route::post('personal/linkedChange', 'HomeController@linkedChange');
-	Route::post('personal/parentsqrcode', 'HomeController@parentsqrcode');
-	Route::post('personal/listparentsqrcode', 'HomeController@listparentsqrcode')->name('personal.listparentsqrcode');
-
-	//G-Suite Class Room 建立
-	Route::get('personal/teacher_lessons', 'HomeController@teacherLessons')->name('personal.teacher_lessons');
-	Route::post('personal/lessons_member', 'HomeController@lessonsMember');
-	Route::post('personal/teacher_courses', 'HomeController@teacherCourses')->name('personal.teacher_courses');
-
-	//使用G-Suite服務
-	Route::get('personal/gsuitepage', 'HomeController@gsuitepage')->name('personal.gsuitepage');
-	Route::post('personal/gsuiteregister', 'HomeController@gsuiteregister')->name('personal.gsuiteregister');
+    Route::get('profile', 'HomeController@showProfileForm');
+    Route::post('profile', 'HomeController@changeProfile')->name('profile');
+    Route::get('oauth', 'oauthController@index')->name('oauth');
 });
-
-Route::get('linkqrcode', 'HomeController@linkqrcode');
-Route::get('oauth/resource', 'oauthController@oauthResource');
 
 Route::group(['prefix' => 'sync', 'middleware' => 'auth.admin'], function () {
     Route::get('/', 'SyncController@index')->name('sync');
@@ -159,15 +111,6 @@ Route::group(['prefix' => 'bureau', 'middleware' => 'auth.admin'], function () {
 	Route::post('people/new', 'BureauController@createBureauPeople')->name('bureau.createPeople');
 	Route::get('people/json', 'BureauController@bureauPeopleJSONForm');
 	Route::post('people/json', 'BureauController@importBureauPeople')->name('bureau.jsonPeople');
-	Route::get('thirdapp', 'BureauController@bureauThirdapp')->name('bureau.thirdapp');
-	Route::post('thirdapp', 'BureauController@updateBureauThirdapp')->name('bureau.appendThirdapp');
-	Route::get('thirdapp/{id}/update', 'BureauController@updateBureauThirdappForm');
-	Route::post('thirdapp/{id}/update', 'BureauController@updateBureauThirdapp')->name('bureau.updateThirdapp');
-	Route::post('thirdapp/{id}/remove', 'BureauController@removeBureauThirdapp')->name('bureau.removeThirdapp');
-	Route::get('OauthScopeAccessLog', 'BureauController@bureauOauthScopeAccessLogForm');
-	Route::post('OauthScopeAccessLog', 'BureauController@bureauOauthScopeAccessLog')->name('bureau.OauthScopeAccessLog');
-	Route::get('usagerecord', 'BureauController@bureauUsagerecordForm');
-	Route::post('usagerecord', 'BureauController@bureauUsagerecord')->name('bureau.usagerecord');
 	Route::get('orgs/{area}', 'Api\schoolController@listOrgs');
 	Route::get('units/{dc}', 'Api\schoolController@allOu');
 	Route::get('roles/{dc}/{ou_id}', 'Api\schoolController@allRole');
@@ -183,7 +126,6 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
 	Route::post('{dc}/unit', 'SchoolController@createSchoolUnit')->name('school.createUnit');
 	Route::post('{dc}/unit/{ou}/update', 'SchoolController@updateSchoolUnit')->name('school.updateUnit');
 	Route::post('{dc}/unit/{ou}/remove', 'SchoolController@removeSchoolUnit')->name('school.removeUnit');
-	Route::get('{dc}/unit/role', 'SchoolController@schoolUnitRoleForm')->name('school.unitrole');
 	Route::get('{dc}/unit/{ou}/role', 'SchoolController@schoolRoleForm')->name('school.role');
 	Route::post('{dc}/unit/{ou}/role', 'SchoolController@createSchoolRole')->name('school.createRole');
 	Route::post('{dc}/unit/{ou}/role/{role}/update', 'SchoolController@updateSchoolRole')->name('school.updateRole');

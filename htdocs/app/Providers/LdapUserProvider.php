@@ -70,12 +70,10 @@ class LdapUserProvider extends EloquentUserProvider
 	public function validateCredentials(UserContract $user, array $credentials)
 	{
 		$openldap = new LdapServiceProvider();
-		if (isset($credentials['username'])) {
-		    if (substr($credentials['username'],0,3) == 'cn=') {
-			    return $openldap->userLogin($credentials['username'], $credentials['password']);
-		    } else {
-			    return $openldap->authenticate($credentials['username'], $credentials['password']);
-		    }
-    }
+		if (substr($credentials['username'],0,3) == 'cn=') {
+			return $openldap->userLogin($credentials['username'], $credentials['password']);
+		} else {
+			return $openldap->authenticate($credentials['username'], $credentials['password']);
+		}
 	}
 }

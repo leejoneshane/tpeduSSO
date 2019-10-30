@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('page_heading')
-<h1 class="page-header">同步教學科目</h1>
+同步教學科目
 @endsection
 
 @section('section')

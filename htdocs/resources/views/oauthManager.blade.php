@@ -1,6 +1,6 @@
-@extends('layouts.userboard')
+@extends('layouts.app')
 
-@section('section')
+@section('content')
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8" style="margin-top: 20px">

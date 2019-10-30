@@ -149,53 +149,6 @@ class User extends Authenticatable
 			} else $user->mobile = null;
 	        $user->save();
 		    return $user;
-		}
-			
-	}
-	
-	public function inRole($authRole)
-	{		
-		if(!isset($this->idno)) return FALSE;
-		if(!isset($this->employeeType)) {
-			$openldap = new LdapServiceProvider();
-			$employeeTypeData=$openldap->getEmployeeType($this->idno);
-            if(is_array($employeeTypeData)) {
-                $this->employeeType = $employeeTypeData;
-            } else {
-				//$this->employeeType[] = $employeeTypeData;
-				$array_tmp= array();
-				array_push($array_tmp,$employeeTypeData);
-				array_push($array_tmp,$this->employeeType);
-				$this->employeeType = $array_tmp;
-			}
 		}	
-		if(is_array($this->employeeType)) {
-			if ( in_array($authRole,$this->employeeType)) return TRUE;
-			 else return FALSE;
-		} else {
-			if ($authRole==$this->employeeType) return TRUE;
-			else return FALSE;	
-		}	 
-	}
-	
-	public function onlyRole($authRole)
-	{		
-		if(!isset($this->idno)) return FALSE;
-		if(!isset($this->employeeType)) {
-			$openldap = new LdapServiceProvider();
-			$employeeTypeData=$openldap->getEmployeeType($this->idno);
-            if(is_array($employeeTypeData)) {
-               return FALSE;
-            } else {
-                $this->employeeType = $employeeTypeData;
-			}
-		} else {	
-			if(is_array($this->employeeType)) {
-				if ( $authRole==$this->employeeType[0]) return TRUE;
-				 else return FALSE;
-			}
-		}	
-		if ( $authRole==$this->employeeType) return TRUE;
-		else return FALSE;		
-    }	
+    }
 }

@@ -61,23 +61,7 @@
                                     </ul>
                             </div>
                         @endif
-                        @if ($denyYearsAgo12)
-                        <div class="scopes">
-                        <p><strong>授權警告：</strong></p>
-                            <p><strong>本應用程式未滿12歲須由家長進行學童個資授權同意 </strong></p>
-                            <p><strong>您目前尚未滿12歲，請您的家長先登入本系統後，進行12歲以下學童個資授權同意，再重新使用本應用程式。</strong></p>
-                        </div>
-                        <div class="buttons">
-                        <form method="post" action="{{ url('/oauth/authorize') }}">
-                                {{ csrf_field() }}
-                                {{ method_field('DELETE') }}
-                                    
-                                    <button class="btn btn-danger">結束授權</button>
-                                    <input type="hidden" name="state" value="{{ $request->state }}">
-                                    <input type="hidden" name="client_id" value="{{ $client->id }}">
-                            </form>                                    
-                        </div>
-                        @else
+
                         <div class="buttons">
                             <!-- Authorize Button -->
                             <form method="post" action="{{ url('/oauth/authorize') }}">
@@ -98,7 +82,6 @@
                                 <button class="btn btn-danger">不同意</button>
                             </form>
                         </div>
-                        @endif
                     </div>
                 </div>
             </div>

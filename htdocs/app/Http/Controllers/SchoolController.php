@@ -6,7 +6,6 @@ use Log;
 use Config;
 use Validator;
 use Auth;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\User;
 use App\Providers\LdapServiceProvider;
@@ -1528,13 +1527,6 @@ class SchoolController extends Controller
 		$info['userPassword'] = $openldap->make_ssha_password(substr($idno,-6));
 		
 		if (array_key_exists('uid', $data) && !empty($data['uid'])) {
-			//設定密碼還原後的有效期
-			$fp = Config::get('app.firstPasswordChangeDay');
-			if(ctype_digit(''.$fp) && $fp > 0){
-				$dt = Carbon::now()->addDays($fp)->format('Ymd');
-				$info['description'] = '<DEFAULT_PW_CREATEDATE>'.$dt.'</DEFAULT_PW_CREATEDATE>';
-			}
-
 			if (is_array($data['uid'])) {
 				foreach ($data['uid'] as $account) {
 					$account_entry = $openldap->getAccountEntry($account);
@@ -1572,11 +1564,6 @@ class SchoolController extends Controller
 		}
 	}
 	
-    public function schoolUnitRoleForm(Request $request, $dc)
-    {
-		return $this->schoolRoleForm($request, $dc, null);
-	}
-
     public function schoolRoleForm(Request $request, $dc, $my_ou)
     {
 		$ous = array();
@@ -1584,10 +1571,7 @@ class SchoolController extends Controller
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getOus($dc, '行政部門');
 		if ($data) {
-			if (empty($my_ou))
-				//$my_ou = $data[0]->ou;
-				return redirect('school/'.$dc.'/unit/'.$data[0]->ou.'/role');
-
+			if (empty($my_ou)) $my_ou = $data[0]->ou;
 			foreach ($data as $ou) {
 				if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
 			}
@@ -2161,15 +2145,6 @@ class SchoolController extends Controller
 				$admins[] = $admin;
 			}
 		}
-		$teachers = $openldap->findUsers("(&(o=$dc)(adminSchools=$dc))", ['cn', 'displayName']);
-		if ($teachers) {
-			foreach ($teachers as $tea) {
-				$admin = new \stdClass;
-				$admin->idno = $tea['cn'];
-				$admin->name = $tea['displayName'];
-				if (!in_array($admin, $admins)) $admins[] = $admin;
-			}
-		}
 		return view('admin.schooladminwithsidebar', [ 'admins' => $admins, 'dc' => $dc, 'sims' => $sims ]);
     }
 
@@ -2321,4 +2296,5 @@ class SchoolController extends Controller
  		}
 		return $ret;
 	}
+
 }

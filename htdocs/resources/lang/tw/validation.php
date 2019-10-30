@@ -87,7 +87,6 @@ return [
     'unique'               => ':attribute 已經被別人使用。',
     'uploaded'             => ':attribute 上傳失敗。',
     'url'                  => ':attribute 網址格式不正確。',
-    'captcha'              => ':attribute錯誤!!',
 
     /*
     |--------------------------------------------------------------------------
@@ -117,9 +116,6 @@ return [
     |
     */
 
-    'attributes' => [
-        'captcha'               => '驗證碼',
-
-    ],
+    'attributes' => [],
 
 ];

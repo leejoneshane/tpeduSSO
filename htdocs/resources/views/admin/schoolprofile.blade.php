@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('page_heading')
-<h1 class="page-header">學校基本資料</h1>
+學校基本資料
 @endsection
 
 @section('section')

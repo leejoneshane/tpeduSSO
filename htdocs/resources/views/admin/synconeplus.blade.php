@@ -1,7 +1,7 @@
 @extends('layouts.syncboard')
 
 @section('page_heading')
-<h1 class="page-header">巨耀校務行政系統自動同步</h1>
+巨耀校務行政系統自動同步
 @endsection
 
 @section('section')

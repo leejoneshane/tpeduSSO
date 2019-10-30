@@ -46,12 +46,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if ($exception instanceof \Illuminate\Session\TokenMismatchException) {
-            return redirect()->route('login')->with('error','Session失效，請重新登入');
-        }
-
         return parent::render($request, $exception);
     }
-
-
 }

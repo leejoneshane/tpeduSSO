@@ -1,7 +1,7 @@
 @extends('layouts.superboard')
 
 @section('page_heading')
-<h1 class="page-header">人員管理</h1>
+人員管理
 @endsection
 
 @section('section')

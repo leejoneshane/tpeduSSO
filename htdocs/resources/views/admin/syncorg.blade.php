@@ -1,7 +1,7 @@
 @extends('layouts.syncboard')
 
 @section('page_heading')
-<h1 class="page-header">同步學校</h1>
+同步學校
 @endsection
 
 @section('section')

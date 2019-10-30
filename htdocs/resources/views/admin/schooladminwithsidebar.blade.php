@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('page_heading')
-<h1 class="page-header">設定管理員</h1>
+設定管理員
 @endsection
 
 @section('section')

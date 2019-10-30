@@ -1,7 +1,7 @@
 @extends('layouts.syncboard')
 
 @section('page_heading')
-<h1 class="page-header">移除標記為已刪除人員</h1>
+移除標記為已刪除人員
 @endsection
 
 @section('section')

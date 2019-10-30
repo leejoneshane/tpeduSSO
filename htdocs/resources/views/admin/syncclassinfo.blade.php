@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('page_heading')
-<h1 class="page-header">同步班級資訊</h1>
+同步班級資訊
 @endsection
 
 @section('section')
