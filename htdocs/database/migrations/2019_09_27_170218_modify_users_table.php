@@ -15,6 +15,10 @@ class ModifyUsersTable extends Migration
 	public function up() {
 		Schema::table('users', function (Blueprint $table) {
 			$table->timestamp('gsuite_created_at')->nullable();
+<<<<<<< HEAD
+=======
+			$table->string('gsuite_email')->nullable();
+>>>>>>> parent of 071b0327... Delete 2019_09_27_170218_modify_users_table.php
 		});
 	}
 
@@ -25,6 +29,14 @@ class ModifyUsersTable extends Migration
      */
     public function down()
     {
+<<<<<<< HEAD
         Schema::dropIfExists('users');
     }
 }
+=======
+	Schema::table('users', function (Blueprint $table) {
+		$table->dropColume(['gsuite_created_at', 'gsuite_email']);
+	});
+    }
+}
+>>>>>>> parent of 071b0327... Delete 2019_09_27_170218_modify_users_table.php
