@@ -79,6 +79,11 @@ trait AuthenticatesUsers
             }
         }
 
+        //Scan QRcode 
+        if($request->session()->has('qrcodeObject')) {
+            return app('App\Http\Controllers\HomeController')->connectChildQrcode($request);
+        }
+
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
         // the IP address of the client making these requests into this application.
@@ -88,9 +93,6 @@ trait AuthenticatesUsers
             return $this->sendLockoutResponse($request);
         }
         if ($this->attemptLogin($request)) {
-            //Scan QRcode 
-            if($request->session()->has('qrcodeObject'))
-                return app('App\Http\Controllers\HomeController')->connectChildQrcode($request);
             return $this->sendLoginResponse($request);
         }
         // If the login attempt was unsuccessful we will increment the number of attempts

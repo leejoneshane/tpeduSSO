@@ -1123,7 +1123,9 @@ public function listConnectChildren(Request $request)
 	public function showConnectChildrenAuthForm(Request $request)
     {
 		$openldap = new LdapServiceProvider();
-		$userNow = $request->user();
+		if (Auth::check()) {
+			$userNow = Auth::user();
+		} else return redirect()->back()->with("error","無法取得您的登入資訊，請重新登入，謝謝！");	
 		//取家長的學生
 		$yearsAgo12=date("Ymd",strtotime("-12 year"));
 		$data = StudentParentRelation::where('parent_idno',$userNow->idno)->where('status','1')->orderBy('created_at','desc')->get();
@@ -1209,7 +1211,9 @@ public function listConnectChildren(Request $request)
 	
 	public function authConnectChild(Request $request)
     {
-		$userNow = $request->user();
+		if (Auth::check()) {
+			$userNow = Auth::user();
+		} else return redirect()->back()->with("error","無法取得您的登入資訊，請重新登入，謝謝！");	
 		if($request->get('student')=='') {
 			return redirect()->back()->with("error","無法進行更新，可能您選擇的是非12歲以下學生，謝謝！")->withInput();
 		} 
@@ -1243,7 +1247,8 @@ public function listConnectChildren(Request $request)
 
 	public function connectChildQRcode(Request $request)
 	{
-	    $userNow = $request->user();
+	    if (!Auth::check()) redirect()->route('/')->with("error","無法取得您的登入資訊，請重新登入，謝謝！");
+	    $userNow = Auth::user();
 
 		$openldap = new LdapServiceProvider();
 	    $qrcodeData = $request->session()->pull('qrcodeObject'); //StudentParentsQrcode
@@ -1294,25 +1299,28 @@ public function listConnectChildren(Request $request)
 	  }
 	}
 
-	public function gsuitepage(Request $request)
+	public function gsuitepage()
 	{
-		$user = $request->user();
+		$user = User::where('uuid',Auth::user()->uuid)->first();
 		$date = '';
+
 		if($user && !empty($user->gsuite_created_at))
 			$date = $user->gsuite_created_at;
-		$domain = env('SAML_MAIL', 'gm.tp.edu.tw');
+
+		$domain = 'gm.tp.edu.tw';//env('SAML_MAIL', 'gm.tp.edu.tw');
 
 		return view('admin.personalgsuitepage', ['date' => $date, 'domain' => $domain]);
 	}
 
-	public function gsuiteregister(Request $request)
+	public function gsuiteregister()
 	{
-		$user = $request->user();
-		if (!empty($user)) {
-			if (empty($user->gsuite_created_at)) {
+		$user = User::where('uuid',Auth::user()->uuid)->first();
+
+		if(!empty($user)){
+			if(empty($user->gsuite_created_at)){
 				$openldap = new LdapServiceProvider();
 				$gs = new GoogleServiceProvider();
-				$domain = env('SAML_MAIL', 'gm.tp.edu.tw');
+				$domain = 'gm.tp.edu.tw';//env('SAML_MAIL', 'gm.tp.edu.tw');
 
 				$a = $openldap->findAccounts('cn='.Auth::user()->idno, ['uid']);
 				$email = $a[0]['uid'].'@'.$domain;
