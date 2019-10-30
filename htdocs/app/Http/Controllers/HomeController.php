@@ -190,8 +190,8 @@ class HomeController extends Controller
 				}
 			}
 
-			$mustChangePW=$request->session()->pull('mustChangePW', false);
-			if ($mustChangePW) {
+			$mustChangePW=$request->session()->pull('mustChangePW');
+			if (isset($mustChangePW) && $mustChangePW == 'true') {
 				$request->session()->put('idno', $idno);
 				return redirect()->route('changePassword')->with("success","帳號變更成功，要先修改密碼才能執行後續作業！");
 			} else {
@@ -321,7 +321,7 @@ class HomeController extends Controller
 				for($i=0;$i<count($teas);$i++)
 					array_push($idx,$teas[$i]['entryUUID']);
 
-				$users = User::where('uuid',$idx)->get();
+				$users = \App\User::where('uuid',$idx)->get();
 				$idx = [];
 				foreach($users as $u){
 					if(!empty($u->gsuite_email))
@@ -348,7 +348,7 @@ class HomeController extends Controller
 					array_push($idx,$stud[$i]['entryUUID']);
 
 				if(count($idx) > 0){
-					$users = User::whereIn('uuid', $idx)->get();
+					$users = \App\User::whereIn('uuid',$idx)->get();
 					$idx = [];
 					foreach($users as $u){
 						if(!empty($u->gsuite_email))
@@ -1245,13 +1245,13 @@ public function listConnectChildren(Request $request)
 		return redirect()->route('parents.showConnectChildrenAuthForm')->with("success","授權更新成功！")->with("student",$request->get('student'));
 	}		
 
-	public function connectChildQRcode(Request $request)
-	{
-	    if (!Auth::check()) redirect()->route('/')->with("error","無法取得您的登入資訊，請重新登入，謝謝！");
-	    $userNow = Auth::user();
+	public function connectChildQRcode(Request $request) {
 
-		$openldap = new LdapServiceProvider();
-	    $qrcodeData = $request->session()->pull('qrcodeObject'); //StudentParentsQrcode
+	  if (Auth::check()) {
+			$userNow = Auth::user();
+	  } else redirect()->route('/')->with("error","無法取得您的登入資訊，請重新登入，謝謝！");	
+	  $openldap = new LdapServiceProvider();
+	  $qrcodeData = $request->session()->pull('qrcodeObject'); //StudentParentsQrcode
 	  //用姓名 座號 位置 於LDAP找學生
 	  $students = $openldap->findUsers("(&(displayName=$qrcodeData->std_name)(tpSeat=$qrcodeData->std_seat)(employeeType=學生)(tpClass=$qrcodeData->std_cls))", ["entryUUID","inetUserStatus","uid","cn","displayName","tpClass","tpSeat","o","birthDate"]);
 	  if($students) {

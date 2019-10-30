@@ -68,7 +68,6 @@ trait AuthenticatesUsers
         if (substr($username,-9) == substr($idno, -9)) {
             if ($openldap->authenticate($username,$password)) {
                 $request->session()->put('idno', $idno);
-                if ($password == substr($idno, -6)) $request->session()->put('mustChangePW', true);
                 return redirect()->route('changeAccount');
             }
         }
@@ -78,11 +77,90 @@ trait AuthenticatesUsers
                 return redirect()->route('changePassword');
             }
         }
+/*
+        $attemptLogin=false;
+        if ($this->attemptLogin($request)) {
+            $attemptLogin=true;
 
-        //Scan QRcode 
-        if($request->session()->has('qrcodeObject')) {
-            return app('App\Http\Controllers\HomeController')->connectChildQrcode($request);
+            if (Auth::check()) {
+                $user = Auth::user();
+                $idno = $user->idno;
+
+                $data = DB::table('users')->where('uname',$username)->first();
+                if($data) {
+                    $user->is_change_account=$data->is_change_account;
+                    $user->is_change_password=$data->is_change_password;
+                }
+            } else {
+                $user  = new user;
+                $user->is_change_account=0;
+                $user->is_change_password=0;
+            }        
+
+            //確認是否預設密碼有超過使用期限
+            $firstPasswordChangeDay = Config::get('app.firstPasswordChangeDay');
+            if($firstPasswordChangeDay > 0) {
+                if ($password == substr($idno, -6) && $user->is_change_password == 0) {
+                    $accountEntry = $openldap->getAccountEntry($username);
+                    if ($accountEntry) {
+                        $accountData = $openldap->getAccountData($accountEntry);
+                        $dt='';
+                        if(isset($accountData['createTimestamp'])) $dt = subStr($accountData['createTimestamp'],0,8);                        
+                        if(isset($accountData['description'])) {
+                            preg_match_all('/<DEFAULT_PW_CREATEDATE>(.*?)<\/DEFAULT_PW_CREATEDATE>/s', $accountData['description'], $matches);
+                            if(!empty($matches[1])) {
+                                $dt = $matches[1][0];
+                            } 
+                        } 
+
+                        if(((strtotime(date('Ymd'))-strtotime($dt))/(60*60*24)) > $firstPasswordChangeDay) {
+                            $this->guard()->logout();
+                            return redirect()->back()->with("error","很抱歉，您預設密碼已經超過有效期限，請老師重新設定您的密碼！");
+                        }    
+                     }   
+                    
+                }    
+                
+            }
+            $c=$firstPasswordChangeDay > 0? 1:2;
+            $employeeTypeData=$openldap->getEmployeeType($idno);
+            if(is_array($employeeTypeData)) {
+                $employeeType = $employeeTypeData;
+            } else {
+                $employeeType[] = $employeeTypeData;
+            }
+
+            if ($user->is_change_password!=1) {
+                $request->session()->put('mustChangePW','true');
+            }  else $request->session()->put('mustChangePW','false');
+
+            //原判斷if (substr($username,-9) == substr($idno, -9)) {
+            if ( in_array('教師',$employeeType) && $user->is_change_account!=1) {            
+                    if ($openldap->authenticate($username,$password)) {
+                        $request->session()->put('idno', $idno);
+                        $request->session()->put('username', $username);
+                        $this->guard()->logout();
+                        return redirect()->route('changeAccount')->with("success","您要先設定新帳號才能執行後續作業！");
+                    }
+                }
+
+            //全都要執行第一次改密碼
+            $mustChangePW=$request->session()->get('mustChangePW');
+            if ( isset($mustChangePW) && $mustChangePW == 'true') { 
+            //原判斷if ($password == substr($idno, -6)) {
+                if ($openldap->authenticate($username,$password)) {
+                    $request->session()->put('idno', $idno);
+                    $this->guard()->logout();
+                    return redirect()->route('changePassword')->with("success","要先修改密碼才能執行後續作業！");
+                }
+            }
+
+            //Scan QRcode 
+            if($request->session()->has('qrcodeObject')) {
+                return app('App\Http\Controllers\HomeController')->connectChildQrcode($request);
+            }
         }
+*/
 
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
