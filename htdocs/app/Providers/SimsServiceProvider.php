@@ -10,6 +10,7 @@ class SimsServiceProvider extends ServiceProvider
 {
     private static $oauth_ps = null;
     private static $oauth_js = null;
+    private static $oauth_hs = null;
     private static $seme = null;
     private static $error = '';
 
@@ -25,7 +26,67 @@ class SimsServiceProvider extends ServiceProvider
                 'verify' => false,
                 'base_uri' => Config::get('sims.js.base_uri'),
             ]);
+        if (is_null(self::$oauth_hs))
+            self::$oauth_hs = new \GuzzleHttp\Client([
+                'verify' => false,
+                'base_uri' => Config::get('sims.hs.base_uri'),
+            ]);
         self::$seme = $this->seme();
+    }
+
+    public function error()
+    {
+        return self::$error;
+    }
+
+    public function hs_send($url)
+    {
+        //get token
+        $response = self::$oauth_hs->request('POST', Config::get('sims.hs.token'), [
+            'form_params' => [
+                'account' => Config::get('sims.hs.oauth_account'),
+                'password' => Config::get('sims.hs.oauth_password'),
+            ],
+            'headers' => [ 'Accept' => 'application/json', 'Content-Type' => 'application/x-www-form-urlencoded' ],
+            'http_errors' => false,
+        ]);
+        $json = json_decode($response);
+        $token = $json->token;
+
+        $data = self::$oauth_hs->request('POST', $url, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+                'Accept' => 'application/json',
+            ],
+            'http_errors' => false,
+        ]);
+        return $data;
+    }
+
+    public function hs_call($info, array $replacement = null)
+    {
+        if (empty($info)) return false;
+        if (!empty($replacement)) {
+            $search = array();
+            $values = array();
+            foreach ($replacement as $key => $data) {
+                $search[] = '{'.$key.'}';
+                $values[] = $data;
+            }
+            $url = str_replace($search, $values, Config::get("sims.hs.$info"));
+        } else {
+            $url = Config::get("sims.hs.$info");
+        }
+        $res = $this->hs_send($url);
+        $json = json_decode((string) $res->getBody());
+        if ($json->Data) {
+            self::$error = $json->Message;
+            if (Config::get('sims.hs.debug')) Log::debug('Oauth call:'.$url.' failed! Server response:'.$res->getBody());
+            return false;
+        } else {
+            if (isset($json->Data)) return $json->Data;
+            return false;
+        }
     }
 
     public function js_send($url)
@@ -98,11 +159,6 @@ class SimsServiceProvider extends ServiceProvider
             'http_errors' => false,
         ]);
         return $response;
-    }
-
-    public function error()
-    {
-        return self::$error;
     }
 
     public function ps_call($info, array $replacement)

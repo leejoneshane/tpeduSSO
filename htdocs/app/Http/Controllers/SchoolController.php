@@ -2074,7 +2074,7 @@ class SchoolController extends Controller
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 		$openldap = new LdapServiceProvider();
 		$school = $openldap->getOrgEntry($dc);
-		$data = $openldap->getOrgData($school, "tpSims");
+		$data = $openldap->getOrgData($school);
 		$sims = '';
 		if (array_key_exists('tpSims', $data)) $sims = $data['tpSims'];
 		return view('admin.schoolprofile', [ 'categorys' => $categorys, 'dc' => $dc, 'sims' => $sims, 'data' => $data, 'areas' => $areas ]);
