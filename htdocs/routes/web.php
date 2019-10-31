@@ -79,6 +79,7 @@ Route::group(['prefix' => 'sync', 'middleware' => 'auth.admin'], function () {
     Route::post('js/auto', 'SyncController@js_autoSync')->name('sync.js.auto');
     Route::get('fix/remove_fake', 'SyncController@removeFake')->name('sync.remove_fake');
     Route::get('fix/remove_deleted', 'SyncController@removeDeleted')->name('sync.remove_deleted');
+    Route::get('fix/remove_description', 'SyncController@removeDescription')->name('sync.remove_description');
 });
 
 Route::group(['prefix' => 'bureau', 'middleware' => 'auth.admin'], function () {

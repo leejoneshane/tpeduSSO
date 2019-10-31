@@ -1886,6 +1886,21 @@ class SyncController extends Controller
 		return view('admin.syncremovedeleted', [ 'result' => $messages ]);
 	}
 
+	public function removeDescription() {
+		$openldap = new LdapServiceProvider();
+		$filter = '(description=*)';
+		$modifier = $openldap->findUserEntries($filter);
+		if (!empty($modifier)) {
+			$count = 0;
+			foreach ($modifier as $entry) {
+				$openldap->deleteData($entry, [ 'description' => array() ]);
+				$count++;
+			}
+			$messages[] = "共移除 $count 筆記錄！";
+		}
+		return view('admin.syncremovedescription', [ 'result' => $messages ]);
+	}
+
 	function guess_name($myname) {
 		$len = mb_strlen($myname, "UTF-8");
 		if ($len > 3) {

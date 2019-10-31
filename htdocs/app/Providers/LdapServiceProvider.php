@@ -691,6 +691,24 @@ class LdapServiceProvider extends ServiceProvider
 		return false;
 	}
 
+    public function findUserEntries($filter)
+    {
+		$userentry = array();
+		$this->administrator();
+		$base_dn = Config::get('ldap.userdn');
+		$resource = @ldap_list(self::$ldap_read, $base_dn, $filter, array("*","entryUUID","modifyTimestamp"));
+		if ($resource) {
+			$entry = ldap_first_entry(self::$ldap_read, $resource);
+			if ($entry) {
+				do {
+					$userentry[] = $entry;
+				} while ($entry=ldap_next_entry(self::$ldap_read, $entry));
+			}
+			return $userentry;
+		}
+		return false;
+	}
+
     public function getUserEntry($identifier)
     {
 		$this->administrator();
