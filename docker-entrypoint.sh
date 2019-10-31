@@ -2,7 +2,6 @@
 set -euo pipefail
 if ! [ -d /var/www/localhost/htdocs/vendor ]; then
   composer update
-  composer required laravel/telescope
   chown -R apache:apache /var/www/localhost/htdocs
 fi
 
@@ -22,6 +21,7 @@ fi
 restore
 php artisan clear
 php artisan cache:clear
+php artisan view:clear
 php artisan view:cache
 php artisan route:cache
 rm -rf /run/apache2/httpd.pid
