@@ -999,7 +999,6 @@ class LdapServiceProvider extends ServiceProvider
     public function deleteData($entry, array $fields)
     {
 		$this->administrator();
-		$fields = array_filter($fields);
 		$dn = @ldap_get_dn(self::$ldap_read, $entry);
 		$attrs = @ldap_get_attributes(self::$ldap_read, $entry);
 		foreach ($fields as $k => $field) {
