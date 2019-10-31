@@ -8,7 +8,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class LockoutNotification extends Notification implements ShouldQueue
+class LockoutAdminNotification extends Notification implements ShouldQueue
 {
     use Queueable;
     private $idno;
