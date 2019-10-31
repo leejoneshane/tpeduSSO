@@ -1,6 +1,7 @@
 #!/bin/sh
 set -euo pipefail
 if ! [ -d /var/www/localhost/htdocs/vendor ]; then
+  composer global require laravel/installer
   composer update
   chown -R apache:apache /var/www/localhost/htdocs
 fi
