@@ -1,7 +1,7 @@
 #!/bin/sh
 set -euo pipefail
 if ! [ -d /var/www/localhost/htdocs/vendor ]; then
-  composer update
+  composer install
   chown -R apache:apache /var/www/localhost/htdocs
 fi
 
