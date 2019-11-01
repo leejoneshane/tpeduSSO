@@ -124,7 +124,7 @@ class User extends Authenticatable
 			$entry = $openldap->getUserEntry($id);
 			$data = $openldap->getUserData($entry);
 			$user = $this->where('idno', $id)->first();
-		    if (is_null($user)) {
+/*		    if (is_null($user)) {
 				$user = new User();
 				$user->idno = $id;
 				$user->uuid = $data['entryUUID'];
@@ -147,7 +147,7 @@ class User extends Authenticatable
 					$user->mobile = $data['mobile'];
 				if (!$openldap->mobileAvailable($id, $user->mobile)) $user->mobile = null;
 			} else $user->mobile = null;
-	        $user->save();
+			$user->save();*/
 		    return $user;
 		}	
     }

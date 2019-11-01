@@ -26,7 +26,7 @@
 		<form role="form" method="POST" action="{{ route('sync.hs.sync_student') }}">
 		@endif
 		@csrf
-    	<div class="input-group custom-search-form">
+    	<div class="form-group">
 			<select id='area' name='area' class="form-control" style="width: auto" onchange="location='{{ url()->current() }}?area=' + $(this).val();">
 				@foreach ($areas as $st)
 			    	<option value="{{ $st }}"{{ $area == $st ? ' selected' : '' }}>{{ $st }}</option>
@@ -37,29 +37,31 @@
 			    	<option value="{{ $sch->o }}"{{ $dc == $sch->o ? ' selected' : '' }}>{{ $sch->description }}</option>
 			    @endforeach
 			</select>
-			<p>請選擇要同步的班級：</p>
-			<div class="input-group">
-				<input type="checkbox" id="all" name="all" value="all">全部班級
-			</div>
-			<div class="input-group">
-				<select class="form-control" style="width:auto" id="grade" name="grade">
-					<option value="">請選擇年級</option>
-				@if (!empty($grades))
-				@foreach ($grades as $grade)
-					<option value="{{ $grade }}">{{ $grade }}年級</option>
-				@endforeach
-				@endif
-				</select>
-			</div>
 			<div class="form-group">
-				<select class="form-control" style="width:auto" id="class" name="class">
-					<option value="">請選擇班級</option>
-				@if (!empty($classes))
-				@foreach ($classes as $cls)
-					<option value="{{ $cls->ou }}">{{ $cls->description }}</option>
-				@endforeach
-				@endif
-				</select>
+				<label>請選擇要同步的班級：</label>
+				<div class="input-group">
+					<input type="checkbox" id="all" name="all" value="all">全部班級
+				</div>
+				<div class="input-group">
+					<select class="form-control" style="width:auto" id="grade" name="grade">
+						<option value="">請選擇年級</option>
+					@if (!empty($grades))
+					@foreach ($grades as $grade)
+						<option value="{{ $grade }}">{{ $grade }}年級</option>
+					@endforeach
+					@endif
+					</select>
+				</div>
+				<div class="input-group">
+					<select class="form-control" style="width:auto" id="class" name="class">
+						<option value="">請選擇班級</option>
+					@if (!empty($classes))
+					@foreach ($classes as $cls)
+						<option value="{{ $cls->ou }}">{{ $cls->description }}</option>
+					@endforeach
+					@endif
+					</select>
+				</div>
 			</div>
 			<span class="input-group-btn" style="width: auto">
             	<button class="btn btn-default" type="submit">

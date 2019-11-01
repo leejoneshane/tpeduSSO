@@ -50,7 +50,8 @@ class SimsServiceProvider extends ServiceProvider
             'headers' => [ 'Accept' => 'application/json', 'Content-Type' => 'application/x-www-form-urlencoded' ],
             'http_errors' => false,
         ]);
-        $token = $response->token;
+        $json = json_decode((string) $response->getBody());
+        $token = $json->token;
 
         $data = self::$oauth_hs->request('POST', $url, [
             'headers' => [
