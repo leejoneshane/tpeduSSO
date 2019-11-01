@@ -147,7 +147,7 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
 	Route::post('{dc}/unit/{ou}/role/{role}/update', 'SchoolController@updateSchoolRole')->name('school.updateRole');
 	Route::post('{dc}/unit/{ou}/role/{role}/remove', 'SchoolController@removeSchoolRole')->name('school.removeRole');
     Route::get('{dc}/sync_unit', 'SyncController@syncOuHelp');
-    Route::post('{dc}/sync_unit', 'SyncController@syncOuHelp')->name('school.sync_ou');
+    Route::post('{dc}/sync_unit', 'SyncController@syncOuHelp')->name('school.sync_unit');
 	Route::get('{dc}/subject', 'SchoolController@schoolSubjectForm')->name('school.subject');
 	Route::post('{dc}/subject', 'SchoolController@createSchoolSubject')->name('school.createSubject');
 	Route::post('{dc}/subject/{subject}/update', 'SchoolController@updateSchoolSubject')->name('school.updateSubject');
