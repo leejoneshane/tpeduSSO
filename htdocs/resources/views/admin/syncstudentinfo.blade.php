@@ -42,18 +42,18 @@
 						<input type="checkbox" id="all" name="all" value="all">全部班級
 					</div>
 					<div class="form-group">
-						<select class="form-control" style="width:10%;display:inline" id="grade" name="grade">
-							<option value="">同步年級</option>
+						<select class="form-control" style="width:auto" id="grade" name="grade">
+							<option value="">請選擇年級</option>
 						@if (!empty($grades))
 						@foreach ($grades as $grade)
 							<option value="{{ $grade }}">{{ $grade }}年級</option>
 						@endforeach
 						@endif
-						</select>所有班級
+						</select>
 					</div>
 					<div class="form-group">
-						<select class="form-control" style="width:20%;display:inline" id="class" name="class">
-							<option value="">同步班級</option>
+						<select class="form-control" style="width:auto" id="class" name="class">
+							<option value="">請選擇班級</option>
 						@if (!empty($classes))
 						@foreach ($classes as $cls)
 							<option value="{{ $cls->ou }}">{{ $cls->description }}</option>

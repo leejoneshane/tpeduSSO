@@ -37,33 +37,29 @@
 			    	<option value="{{ $sch->o }}"{{ $dc == $sch->o ? ' selected' : '' }}>{{ $sch->description }}</option>
 			    @endforeach
 			</select>
-			<div class="panel-heading">
-				<h4>請選擇要同步的班級：</h4>
+			<p>請選擇要同步的班級：</p>
+			<div class="input-group">
+				<input type="checkbox" id="all" name="all" value="all">全部班級
 			</div>
-			<div class="panel-body">
-				<div class="form-group">
-					<input type="checkbox" id="all" name="all" value="all">全部班級
-				</div>
-				<div class="form-group">
-					<select class="form-control" style="width:10%;display:inline" id="grade" name="grade">
-						<option value="">同步年級</option>
-					@if (!empty($grades))
-					@foreach ($grades as $grade)
-						<option value="{{ $grade }}">{{ $grade }}年級</option>
-					@endforeach
-					@endif
-					</select>所有班級
-				</div>
-				<div class="form-group">
-					<select class="form-control" style="width:20%;display:inline" id="class" name="class">
-						<option value="">同步班級</option>
-					@if (!empty($classes))
-					@foreach ($classes as $cls)
-						<option value="{{ $cls->ou }}">{{ $cls->description }}</option>
-					@endforeach
-					@endif
-					</select>
-				</div>
+			<div class="input-group">
+				<select class="form-control" style="width:auto" id="grade" name="grade">
+					<option value="">請選擇年級</option>
+				@if (!empty($grades))
+				@foreach ($grades as $grade)
+					<option value="{{ $grade }}">{{ $grade }}年級</option>
+				@endforeach
+				@endif
+				</select>
+			</div>
+			<div class="form-group">
+				<select class="form-control" style="width:auto" id="class" name="class">
+					<option value="">請選擇班級</option>
+				@if (!empty($classes))
+				@foreach ($classes as $cls)
+					<option value="{{ $cls->ou }}">{{ $cls->description }}</option>
+				@endforeach
+				@endif
+				</select>
 			</div>
 			<span class="input-group-btn" style="width: auto">
             	<button class="btn btn-default" type="submit">
