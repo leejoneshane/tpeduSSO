@@ -40,6 +40,9 @@
                                 <li {{ (Request::is('sync/js/sync_school') ? 'class="active"' : '') }}>
                                     <a href="{{ route('sync.js.sync_school') }}">同步學校</a>
                                 </li>
+                                <li {{ (Request::is('sync/js/sync_ou') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('sync.js.sync_ou') }}">同步部門職稱</a>
+                                </li>
                                 <li {{ (Request::is('sync/js/sync_class') ? 'class="active"' : '') }}>
                                     <a href="{{ route('sync.js.sync_class') }}">同步班級</a>
                                 </li>
@@ -54,6 +57,35 @@
                                 </li>
                                 <li {{ (Request::is('sync/js/auto') ? 'class="active"' : '') }}>
                                     <a href="{{ route('sync.js.auto') }}">自動同步</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li {{ (Request::is('sync/hs') ? 'class="active"' : '') }}>
+                            <a href="#"><i class="fa fa-sitemap fa-fw"></i>虹橋校務行政系統介接</a>
+                            <ul class="nav nav-second-level">
+                                <li {{ (Request::is('sync/hs/runtime_test') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('sync.hs.runtime_test') }}">連線測試</a>
+                                </li>
+                                <li {{ (Request::is('sync/hs/sync_school') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('sync.hs.sync_school') }}">同步學校</a>
+                                </li>
+                                <li {{ (Request::is('sync/hs/sync_ou') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('sync.hs.sync_ou') }}">同步部門職稱</a>
+                                </li>
+                                <li {{ (Request::is('sync/hs/sync_class') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('sync.hs.sync_class') }}">同步班級</a>
+                                </li>
+                                <li {{ (Request::is('sync/hs/sync_subject') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('sync.hs.sync_subject') }}">同步教學科目</a>
+                                </li>
+                                <li {{ (Request::is('sync/hs/sync_teacher') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('sync.hs.sync_teacher') }}">同步教師</a>
+                                </li>
+                                <li {{ (Request::is('sync/hs/sync_student') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('sync.hs.sync_student') }}">同步學生</a>
+                                </li>
+                                <li {{ (Request::is('sync/hs/auto') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('sync.hs.auto') }}">自動同步</a>
                                 </li>
                             </ul>
                         </li>

@@ -185,6 +185,21 @@ class SimsServiceProvider extends ServiceProvider
         }
     }
 
+    public function hs_getUnits($sid)
+    {
+        if (empty($sid)) return false;
+        $units = array();
+        $data = $this->hs_call('units_info', ["sid" => $sid]);
+		if ($data) {
+			foreach ($data as $unit) {
+				$units[$unit->ou] = $unit->name;
+			}
+            return $units;
+		} else {
+            return false;
+        }
+    }
+
     public function js_getUnits($sid)
     {
         if (empty($sid)) return false;
@@ -198,6 +213,24 @@ class SimsServiceProvider extends ServiceProvider
 		} else {
             return false;
         }
+    }
+
+    public function hs_getRoles($sid, $unit = '')
+    {
+        if (empty($sid)) return false;
+        $roles = array();
+        if (empty($unit)) {
+            $units = $this->hs_getUnits($sid);
+        } else {
+            $units[$unit] = $unit;
+        }
+        foreach ($units as $ou => $name) {
+            $data = $this->hs_call('roles_info', [ "sid" => $sid, "ou" => $ou ]);
+            usleep(100);
+            if ($data) $roles = array_merge($roles, [ $ou => $data ]);
+        }
+		if (!empty($roles)) return $roles;
+		else return false;
     }
 
     public function js_getRoles($sid, $unit = '')
@@ -216,6 +249,21 @@ class SimsServiceProvider extends ServiceProvider
         }
 		if (!empty($roles)) return $roles;
 		else return false;
+    }
+
+    public function hs_getClasses($sid)
+    {
+        if (empty($sid)) return false;
+        $classes = array();
+        $data = $this->hs_call('classes_info', ["sid" => $sid]);
+		if ($data) {
+			foreach ($data as $cls) {
+				$classes[$cls->ou] = $cls->name;
+			}
+            return $classes;
+		} else {
+            return false;
+        }
     }
 
     public function js_getClasses($sid)
@@ -238,6 +286,20 @@ class SimsServiceProvider extends ServiceProvider
         if (empty($sid)) return false;
         $classes = $this->ps_call('classes_info', ["sid" => $sid]);
         return $classes;
+    }
+
+    public function hs_getSubjects($sid)
+    {
+        $subjects = array();
+		$data = $this->hs_call('subjects_info', ['sid' => $sid]);
+		if ($data) {
+			foreach ($data as $subj) {
+				$subjects['subj'.$subj->subject] = $subj->name;
+			}
+            return $subjects;
+		} else {
+            return false;
+        }
     }
 
     public function js_getSubjects($sid)
@@ -273,6 +335,14 @@ class SimsServiceProvider extends ServiceProvider
             }
         }
         return $subjects;
+    }
+
+    public function hs_getTeachers($sid, $class = '')
+    {
+        if (empty($sid)) return false;
+        $teachers = $this->hs_call('teachers_info', ["sid" => $sid]);
+        if (!empty($teachers)) return $teachers;
+        else return false;
     }
 
     public function js_getTeachers($sid, $class = '')
@@ -312,6 +382,25 @@ class SimsServiceProvider extends ServiceProvider
         else return false;
     }
 
+    public function hs_getStudents($sid, $class = '')
+    {
+        if (empty($sid)) return false;
+        $students = array();
+        if (empty($class)) {
+            $classes = $this->hs_getClasses($sid);
+        } else {
+            $classes[$class] = $class;
+        }
+        foreach ($classes as $clsid => $cls_name) {
+            $data = $this->hs_call('students_in_class', ["sid" => $sid, "clsid" => $clsid]);
+            usleep(100);
+            if ($data) $students = array_merge($students, $data);
+        }
+        $students = array_values(array_unique($students));
+        if (!empty($students)) return $students;
+        else return false;
+    }
+
     public function js_getStudents($sid, $class = '')
     {
         if (empty($sid)) return false;
@@ -347,6 +436,14 @@ class SimsServiceProvider extends ServiceProvider
             if ($stu) $students = array_merge($students, $stu[0]->students);
         }
         return $students;
+    }
+
+    public function hs_getPerson($sid, $idno)
+    {
+        if (empty($sid) || empty($idno)) return false;
+        $data = $this->hs_call('person_info', [ 'sid' => $sid, 'idno' => $idno ]);
+        if ($data) return (array)$data;
+        else return false;
     }
 
     public function js_getPerson($sid, $idno)

@@ -12,7 +12,17 @@
                             <a href="{{ route('school.profile', [ 'dc' => $dc ]) }}"><i class="fa fa-list-alt fa-fw"></i> 學校基本資料</a>
                         </li>
                         <li {{ (Request::is('school/unit') ? 'class="active"' : '') }}>
-                            <a href="{{ route('school.unit', [ 'dc' => $dc ]) }}"><i class="fa fa-sitemap fa-fw"></i> 行政部門管理</a>
+                            <a href="#"><i class="fa fa-sitemap fa-fw"></i> 行政部門管理</a>
+                            <ul class="nav nav-second-level">
+                                @if (!empty($sims) && $sims != 'alle')
+                                <li {{ (Request::is('sync_unit') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('school.sync_unit', [ 'dc' => $dc ]) }}">同步部門及職稱</a>
+                                </li>
+                                @endif
+                                <li {{ (Request::is('school/unit') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('school.unit', [ 'dc' => $dc ]) }}">編輯單位資訊</a>
+                                </li>
+                            </ul>
                         </li>
                         <li {{ (Request::is('school/role') ? 'class="active"' : '') }}>
                             <a href="{{ route('school.role', [ 'dc' => $dc, 'ou' => 'null' ]) }}"><i class="fa fa-suitcase fa-fw"></i> 職稱管理</a>

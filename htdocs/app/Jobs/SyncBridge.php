@@ -16,7 +16,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class SyncOneplus implements ShouldQueue
+class SyncBridge implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -48,7 +48,7 @@ class SyncOneplus implements ShouldQueue
 
         //sync depatments
 		$org_units = $openldap->getOus($dc, '行政部門');
-		$units = $http->js_getUnits($sid);
+		$units = $http->hs_getUnits($sid);
 		if ($units) {
 			foreach ($units as $unit) {
 				for ($i=0;$i<count($org_units);$i++) {
@@ -75,7 +75,7 @@ class SyncOneplus implements ShouldQueue
         
         //sync classes
 		$org_classes = $openldap->getOus($dc, '教學班級');
-		$classes = $http->js_getClasses($sid);
+		$classes = $http->hs_getClasses($sid);
 		if ($classes) {
 			foreach ($classes as $clsid => $clsname) {
 				for ($i=0;$i<count($org_classes);$i++) {
@@ -101,7 +101,7 @@ class SyncOneplus implements ShouldQueue
         }
         
         // sync subjects
-		$subjects = $http->js_getSubjects($sid);
+		$subjects = $http->hs_getSubjects($sid);
 		if ($subjects) {
     		$org_subjects = $openldap->getSubjects($dc);
 	    	for ($i=0;$i<count($org_subjects);$i++) {
@@ -130,11 +130,11 @@ class SyncOneplus implements ShouldQueue
             }
         }
         //sync teachers
-		$teachers = $http->js_getTeachers($sid);
+		$teachers = $http->hs_getTeachers($sid);
 		if (!empty($teachers)) {
 			foreach ($teachers as $k => $idno) {
 				$idno = strtoupper($idno);
-				$data = $http->js_getPerson($sid, $idno);
+				$data = $http->hs_getPerson($sid, $idno);
 				if ($data) {
 					$validator = Validator::make(
 						[ 'idno' => $idno ], [ 'idno' => new idno ]
@@ -377,10 +377,10 @@ class SyncOneplus implements ShouldQueue
 		}
 
         //sync students
-		$classes = $http->js_getClasses($sid);
+		$classes = $http->hs_getClasses($sid);
 		if ($classes) {
 			foreach ($classes as $clsid => $clsname) {
-        		$students = $http->js_getStudents($sid, $clsid);
+        		$students = $http->hs_getStudents($sid, $clsid);
 		        if (!empty($students)) {
         			foreach ($students as $k => $idno) {
 		        		$idno = strtoupper($idno);
@@ -391,7 +391,7 @@ class SyncOneplus implements ShouldQueue
 		        			unset($students[$k]);
 				        	continue;
         				}
-		        		$data = $http->js_getPerson($sid, $idno);
+		        		$data = $http->hs_getPerson($sid, $idno);
         				$user_entry = $openldap->getUserEntry($idno);
 		        		if ($user_entry) {
 				        	$result = $openldap->updateAccounts($user_entry, [ $dc.$data['stdno'] ]);

@@ -424,7 +424,8 @@ class SyncAlle implements ShouldQueue
 		$classes = $http->ps_getClasses($sid);
 		if ($classes) {
 			foreach ($classes as $class) {
-                $clsid = $class->clsid;
+				$clsid = $class->clsid;
+				$clsname = $class->clsname;
                 $students = $http->ps_getStudents($sid, $clsid);
                 if (!empty($students)) {
                     foreach ($students as $stdno) {
@@ -521,6 +522,15 @@ class SyncAlle implements ShouldQueue
             }
         }
     }
+
+	function guess_name($myname) {
+		$len = mb_strlen($myname, "UTF-8");
+		if ($len > 3) {
+			return array(mb_substr($myname, 0, 2, "UTF-8"), mb_substr($myname, 2, null, "UTF-8"));
+		} else {
+			return array(mb_substr($myname, 0, 1, "UTF-8"), mb_substr($myname, 1, null, "UTF-8"));
+		}
+	}	
 
     public function retryUntil() {
         return now()->addSeconds(5);
