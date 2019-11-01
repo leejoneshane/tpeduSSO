@@ -2061,7 +2061,7 @@ class SyncController extends Controller
 			}
 		} else {
 			$dc = $request->get('dc');
-			if (empty($dc)) $dc = $schools[0]->o;
+			if (empty($dc) && !empty($schools)) $dc = $schools[0]->o;
 			$data = $openldap->getOus($dc, '教學班級');
 			$grades = array();
 			$classes = array();
@@ -2276,7 +2276,7 @@ class SyncController extends Controller
 			}
 		} else {
 			$dc = $request->get('dc');
-			if (empty($dc)) $dc = $schools[0]->o;
+			if (empty($dc) && !empty($schools)) $dc = $schools[0]->o;
 			$data = $openldap->getOus($dc, '教學班級');
 			$grades = array();
 			$classes = array();
@@ -2450,42 +2450,61 @@ class SyncController extends Controller
 			$dc = $request->get('dc');
 			$clsid = $request->get('clsid');
 			$sid = $openldap->getOrgID($dc);
-			if (empty($clsid)) {
-				$classes = $http->ps_getClasses($sid);
-				$temp = array();
-				if (!empty($classes)) {
+			if ($request->has('all') && empty($clsid)) {
+				if (empty($clsid)) {
+					$classes = $http->ps_getClasses($sid);
+					$temp = array();
 					foreach ($classes as $c) {
 						$temp[$c->clsid] = $c->clsname;
 					}
 					ksort($temp);
 					$classes = $temp;
-					$clsid = key($classes);
-					$clsname = $classes[$clsid];
-					unset($classes[$clsid]);
-					$request->session()->put('classes', $classes);	
-				} else {
-					$result[] = '查無班級，因此無法取得學生清單！';
+					$request->session()->put('classes', $classes);
 				}
-			} else {
-				$classes = $request->session()->pull('classes');
-				if (!empty($classes)) {
-					$clsid = key($classes);
-					$clsname = $classes[$clsid];
-					unset($classes[$clsid]);
-					if (!empty($classes)) $request->session()->put('classes', $classes);
+			} elseif ($request->filled('grade') && empty($clsid)) {
+				$grade = $request->get('grade');
+				$classes = $http->ps_getClasses($sid);
+				$temp = array();
+				foreach ($classes as $c) {
+					if (substr($c->clsid, 0, 1) == $grade) $temp[$c->clsid] = $c->clsname;
 				}
+				ksort($temp);
+				$classes = $temp;
+				$request->session()->put('classes', $classes);
+			} elseif ($request->filled('class') && empty($clsid)) {
+				$classes[$request->get('class')] = $request->get('class');
+				$request->session()->put('classes', $classes);
 			}
-			if (!empty($clsid) && isset($clsname) && !empty($clsname)) {
-				$result = $this->ps_syncStudent($dc, $sid, $clsid, $clsname);
-			}
+			$classes = $request->session()->pull('classes');
+			$clsid = key($classes);
+			$clsname = $classes[$clsid];
+			unset($classes[$clsid]);
+			if (!empty($classes)) $request->session()->put('classes', $classes);
+			$result = $this->ps_syncStudent($dc, $sid, $clsid, $clsname);
 			if (!empty($classes)) {
 				$nextid = key($classes);
 				return view('admin.syncstudent', [ 'sims' => 'alle', 'dc' => $dc, 'clsid' => $nextid, 'result' => $result ]);	
 			} else {
-				return view('admin.syncstudent', [ 'sims' => 'alle', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'result' => $result ]);	
+				$data = $openldap->getOus($dc, '教學班級');
+				$grades = array();
+				$classes = array();
+				foreach ($data as $class) {
+					if (!in_array($class->grade, $grades)) $grades[] = $class->grade;
+					$classes[] = $class;
+				}
+				return view('admin.syncstudent', [ 'sims' => 'alle', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'grades' => $grades, 'classes' => $classes, 'result' => $result ]);
 			}
 		} else {
-			return view('admin.syncstudent', [ 'sims' => 'alle', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => '' ]);	
+			$dc = $request->get('dc');
+			if (empty($dc) && !empty($schools)) $dc = $schools[0]->o;
+			$data = $openldap->getOus($dc, '教學班級');
+			$grades = array();
+			$classes = array();
+			foreach ($data as $class) {
+				if (!in_array($class->grade, $grades)) $grades[] = $class->grade;
+				$classes[] = $class;
+			}
+			return view('admin.syncstudent', [ 'sims' => 'alle', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'grades' => $grades, 'classes' => $classes ]);
 		}	
 	}
 	
