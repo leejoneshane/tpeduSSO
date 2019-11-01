@@ -1890,8 +1890,11 @@ class SyncController extends Controller
 		$openldap = new LdapServiceProvider();
 		$filter = '(description=*)';
 		$modifier = $openldap->findUserEntries($filter);
-		if (!empty($modifier)) {
-			$count = 0;
+		$messages = array();
+		if (empty($modifier)) {
+			$messages[] = "找不到符合條件的紀錄！";
+		} else {
+				$count = 0;
 			foreach ($modifier as $entry) {
 				$openldap->deleteData($entry, [ 'description' => array() ]);
 				$count++;
