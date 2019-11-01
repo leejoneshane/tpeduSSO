@@ -2020,37 +2020,56 @@ class SyncController extends Controller
 			$dc = $request->get('dc');
 			$clsid = $request->get('clsid');
 			$sid = $openldap->getOrgID($dc);
-			if (empty($clsid)) {
-				$classes = $http->js_getClasses($sid);
+			if ($request->has('all') && empty($clsid)) {
+				$classes = $http->hs_getClasses($sid);
 				if ($classes) {
 					ksort($classes);
-					$clsid = key($classes);
-					$clsname = $classes[$clsid];
-					unset($classes[$clsid]);
-					$request->session()->put('classes', $classes);	
+					$request->session()->put('classes', $classes);
 				}
-			} else {
-				$classes = $request->session()->pull('classes');
-				if (!empty($classes)) {
-					$clsid = key($classes);
-					$clsname = $classes[$clsid];
-					unset($classes[$clsid]);
-					if (!empty($classes)) $request->session()->put('classes', $classes);
+			} elseif ($request->filled('grade') && empty($clsid)) {
+				$grade = $request->get('grade');
+				$classes = $http->hs_getClasses($sid);
+				if ($classes) {
+					foreach ($classes as $ou => $cls) {
+						if (substr($ou, 0, 1) != $grade) unset($classes[$ou]);
+					}
+					ksort($classes);
+					$request->session()->put('classes', $classes);
 				}
+			} elseif ($request->filled('class') && empty($clsid)) {
+				$classes[$request->get('class')] = $request->get('class');
+				$request->session()->put('classes', $classes);
 			}
-			if ($clsid && $clsname) {
-				$result = $this->hs_syncStudent($dc, $sid, $clsid, $clsname);
-			} else {
-				$result[] = '查無班級，因此無法取得學生清單！';
-			}
+			$classes = $request->session()->pull('classes');
+			$clsid = key($classes);
+			$clsname = $classes[$clsid];
+			unset($classes[$clsid]);
+			if (!empty($classes)) $request->session()->put('classes', $classes);
+			$result = $this->hs_syncStudent($dc, $sid, $clsid, $clsname);
 			if (!empty($classes)) {
 				$nextid = key($classes);
 				return view('admin.syncstudent', [ 'sims' => 'bridge', 'dc' => $dc, 'clsid' => $nextid, 'result' => $result ]);	
 			} else {
-				return view('admin.syncstudent', [ 'sims' => 'bridge', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'result' => $result ]);	
+				$data = $openldap->getOus($dc, '教學班級');
+				$grades = array();
+				$classes = array();
+				foreach ($data as $class) {
+					if (!in_array($class->grade, $grades)) $grades[] = $class->grade;
+					$classes[] = $class;
+				}
+				return view('admin.syncstudent', [ 'sims' => 'bridge', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'grades' => $grades, 'classes' => $classes, 'dc' => $dc, 'result' => $result ]);	
 			}
 		} else {
-			return view('admin.syncstudent', [ 'sims' => 'bridge', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => '' ]);	
+			$dc = $request->get('dc');
+			if (empty($dc)) $dc = $schools[0]->o;
+			$data = $openldap->getOus($dc, '教學班級');
+			$grades = array();
+			$classes = array();
+			foreach ($data as $class) {
+				if (!in_array($class->grade, $grades)) $grades[] = $class->grade;
+				$classes[] = $class;
+			}
+			return view('admin.syncstudent', [ 'sims' => 'bridge', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'grades' => $grades, 'classes' => $classes, 'dc' => $dc ]);	
 		}	
 	}
 	
@@ -2216,37 +2235,56 @@ class SyncController extends Controller
 			$dc = $request->get('dc');
 			$clsid = $request->get('clsid');
 			$sid = $openldap->getOrgID($dc);
-			if (empty($clsid)) {
+			if ($request->has('all') && empty($clsid)) {
 				$classes = $http->js_getClasses($sid);
 				if ($classes) {
 					ksort($classes);
-					$clsid = key($classes);
-					$clsname = $classes[$clsid];
-					unset($classes[$clsid]);
-					$request->session()->put('classes', $classes);	
+					$request->session()->put('classes', $classes);
 				}
-			} else {
-				$classes = $request->session()->pull('classes');
-				if (!empty($classes)) {
-					$clsid = key($classes);
-					$clsname = $classes[$clsid];
-					unset($classes[$clsid]);
-					if (!empty($classes)) $request->session()->put('classes', $classes);
+			} elseif ($request->filled('grade') && empty($clsid)) {
+				$grade = $request->get('grade');
+				$classes = $http->js_getClasses($sid);
+				if ($classes) {
+					foreach ($classes as $ou => $cls) {
+						if (substr($ou, 0, 1) != $grade) unset($classes[$ou]);
+					}
+					ksort($classes);
+					$request->session()->put('classes', $classes);
 				}
+			} elseif ($request->filled('class') && empty($clsid)) {
+				$classes[$request->get('class')] = $request->get('class');
+				$request->session()->put('classes', $classes);
 			}
-			if ($clsid && $clsname) {
-				$result = $this->js_syncStudent($dc, $sid, $clsid, $clsname);
-			} else {
-				$result[] = '查無班級，因此無法取得學生清單！';
-			}
+			$classes = $request->session()->pull('classes');
+			$clsid = key($classes);
+			$clsname = $classes[$clsid];
+			unset($classes[$clsid]);
+			if (!empty($classes)) $request->session()->put('classes', $classes);
+			$result = $this->js_syncStudent($dc, $sid, $clsid, $clsname);
 			if (!empty($classes)) {
 				$nextid = key($classes);
 				return view('admin.syncstudent', [ 'sims' => 'oneplus', 'dc' => $dc, 'clsid' => $nextid, 'result' => $result ]);	
 			} else {
-				return view('admin.syncstudent', [ 'sims' => 'oneplus', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'result' => $result ]);	
+				$data = $openldap->getOus($dc, '教學班級');
+				$grades = array();
+				$classes = array();
+				foreach ($data as $class) {
+					if (!in_array($class->grade, $grades)) $grades[] = $class->grade;
+					$classes[] = $class;
+				}
+				return view('admin.syncstudent', [ 'sims' => 'oneplus', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'grades' => $grades, 'classes' => $classes, 'dc' => $dc, 'result' => $result ]);	
 			}
 		} else {
-			return view('admin.syncstudent', [ 'sims' => 'oneplus', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => '' ]);	
+			$dc = $request->get('dc');
+			if (empty($dc)) $dc = $schools[0]->o;
+			$data = $openldap->getOus($dc, '教學班級');
+			$grades = array();
+			$classes = array();
+			foreach ($data as $class) {
+				if (!in_array($class->grade, $grades)) $grades[] = $class->grade;
+				$classes[] = $class;
+			}
+			return view('admin.syncstudent', [ 'sims' => 'oneplus', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'grades' => $grades, 'classes' => $classes, 'dc' => $dc ]);
 		}	
 	}
 	

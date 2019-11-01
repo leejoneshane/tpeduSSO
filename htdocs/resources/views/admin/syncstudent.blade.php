@@ -22,19 +22,50 @@
 		@if ($sims == 'oneplus')
 		<form role="form" method="POST" action="{{ route('sync.js.sync_student') }}">
 		@endif
+		@if ($sims == 'bridge')
+		<form role="form" method="POST" action="{{ route('sync.hs.sync_student') }}">
+		@endif
 		@csrf
     	<div class="input-group custom-search-form">
-			<select name='area' class="form-control" style="width: auto" onchange="location='{{ url()->current() }}?area=' + $(this).val();">
+			<select id='area' name='area' class="form-control" style="width: auto" onchange="location='{{ url()->current() }}?area=' + $(this).val();">
 				@foreach ($areas as $st)
 			    	<option value="{{ $st }}"{{ $area == $st ? ' selected' : '' }}>{{ $st }}</option>
 			    @endforeach
 			</select>
-			<select name='dc' class="form-control" style="width: auto">
+			<select name='dc' class="form-control" style="width: auto" onchange="location='{{ url()->current() }}?area=' + $('#area').val() + '&dc=' + $(this).val();">
 				@foreach ($schools as $sch)
 			    	<option value="{{ $sch->o }}"{{ $dc == $sch->o ? ' selected' : '' }}>{{ $sch->description }}</option>
 			    @endforeach
 			</select>
-            <span class="input-group-btn" style="width: auto">
+			<div class="panel-heading">
+				<h4>請選擇要同步的班級：</h4>
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+					<input type="checkbox" id="all" name="all" value="all">全部班級
+				</div>
+				<div class="form-group">
+					<select class="form-control" style="width:10%;display:inline" id="grade" name="grade">
+						<option value="">同步年級</option>
+					@if (!empty($grades))
+					@foreach ($grades as $grade)
+						<option value="{{ $grade }}">{{ $grade }}年級</option>
+					@endforeach
+					@endif
+					</select>所有班級
+				</div>
+				<div class="form-group">
+					<select class="form-control" style="width:20%;display:inline" id="class" name="class">
+						<option value="">同步班級</option>
+					@if (!empty($classes))
+					@foreach ($classes as $cls)
+						<option value="{{ $cls->ou }}">{{ $cls->description }}</option>
+					@endforeach
+					@endif
+					</select>
+				</div>
+			</div>
+			<span class="input-group-btn" style="width: auto">
             	<button class="btn btn-default" type="submit">
             		開始同步
             	</button>
@@ -48,6 +79,9 @@
 	@endif
 	@if ($sims == 'oneplus')
 	<form id="sync" role="form" method="POST" action="{{ route('sync.js.sync_student') }}">
+	@endif
+	@if ($sims == 'bridge')
+	<form id="sync" role="form" method="POST" action="{{ route('sync.hs.sync_student') }}">
 	@endif
 		@csrf
 		<input type="hidden" name="dc" value="{{ $dc }}">

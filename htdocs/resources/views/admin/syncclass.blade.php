@@ -21,6 +21,9 @@
 		@if ($sims == 'oneplus')
 		<form role="form" method="POST" action="{{ route('sync.js.sync_class') }}">
 		@endif
+		@if ($sims == 'bridge')
+		<form role="form" method="POST" action="{{ route('sync.hs.sync_class') }}">
+		@endif
 		@csrf
     	<div class="input-group custom-search-form">
 			<select name="area" class="form-control" style="width: auto" onchange="location='{{ url()->current() }}?area=' + $(this).val();">
