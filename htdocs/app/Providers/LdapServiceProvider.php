@@ -1001,9 +1001,6 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$dn = @ldap_get_dn(self::$ldap_read, $entry);
 		$attrs = @ldap_get_attributes(self::$ldap_read, $entry);
-		foreach ($fields as $k => $field) {
-			if (!in_array($k, $attrs) || !in_array($field, $attrs[$k])) unset($fields[$k]);
-		}
 		if (!empty($fields)) {
 			$value = @ldap_mod_del(self::$ldap_write, $dn, $fields);
 			if (!$value && Config::get('ldap.debug')) Log::debug("Data can't remove from $dn:\n".print_r($fields, true)."\n".$this->error()."\n");
