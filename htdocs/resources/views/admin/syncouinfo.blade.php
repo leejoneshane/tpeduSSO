@@ -16,7 +16,7 @@
 	@else
 		<p>將從校務行政系統將行政部門資料同步到 openldap，同步過程中會自動移除已經不存在的單位，並更新單位名稱，同時也會視狀況為您新增行政部門。</p>
 		<p>同步過程需要時間，直到結果出現為止，請勿關閉瀏覽器或離開此網頁，以避免同步程序被關閉。</p>
-		<form role="form" method="POST" action="{{ route('school.sync_ou', [ 'dc' => $dc ]) }}">
+		<form role="form" method="POST" action="{{ route('school.sync_unit', [ 'dc' => $dc ]) }}">
 			@csrf
 			<div class="form-group">
 				<button class="btn btn-default" type="submit" name="submit" value="true">
