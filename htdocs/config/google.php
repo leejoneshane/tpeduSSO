@@ -18,7 +18,14 @@ return [
     'client_id' => env('GOOGLE_CLIENT_ID', ''),
     'client_secret' => env('GOOGLE_CLIENT_SECRET', ''),
     'redirect_uri' => env('GOOGLE_REDIRECT', ''),
-    'scopes' => [],
+    'scopes' => [
+        \Google_Service_Directory::ADMIN_DIRECTORY_USER,
+        \Google_Service_Directory::ADMIN_DIRECTORY_USER_ALIAS,
+        \Google_Service_Directory::ADMIN_DIRECTORY_GROUP,
+        \Google_Service_Directory::ADMIN_DIRECTORY_GROUP_MEMBER,
+        \Google_Service_Classroom::CLASSROOM_COURSES,
+        \Google_Service_Classroom::CLASSROOM_ROSTERS,
+    ],
     'access_type' => 'online',
     'approval_prompt' => 'auto',
     /*
@@ -40,16 +47,7 @@ return [
     | app engine or compute engine will be used.
     |
     */
-    'service' => [
-        /*
-        | Enable service account auth or not.
-        */
-        'enable' => env('GOOGLE_SERVICE_ENABLED', true),
-        /*
-        | Path to service account json file
-        */
-        'file' => env('GOOGLE_SERVICE_ACCOUNT_JSON_LOCATION', ''),
-    ],
+    'service_auth_file' => env('GOOGLE_SERVICE_ACCOUNT_JSON_LOCATION', ''),
     /*
     |----------------------------------------------------------------------------
     | Additional config for the Google Client

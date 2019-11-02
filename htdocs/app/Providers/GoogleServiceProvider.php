@@ -2,20 +2,22 @@
 namespace App\Providers;
 
 use Config;
-use Google;
 use Illuminate\Support\ServiceProvider;
 
-class GsuiteServiceProvider extends ServiceProvider
+class GoogleServiceProvider extends ServiceProvider
 {
 	protected $client;
 	protected $directory;
 	protected $classroom;
 
     function __construct() {
-        $this->client = Google::getClient();
+		$this->client = new \Google_Client();
+		$this->client->setApplicationName(Config::get('google.application_name'));
+		$this->client->setScopes(Config::get('google.scopes'));
+		$this->client->setAuthConfig(Config::get('google.service_auth_file'));
 		$this->client->setSubject('sean@ms.tp.edu.tw');
-        $this->directory = $this->client->make('directory');
-		$this->classroom = $this->client->make('classroom');
+        $this->directory = new \Google_Service_Directory($this->client);
+		$this->classroom = new \Google_Service_Classroom($this->client);
 		
         if ($this->client->getAuth()->isAccessTokenExpired()) {
           $this->client->getAuth()->fetchAccessTokenWithRefreshToken();
