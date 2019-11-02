@@ -578,12 +578,12 @@ class LdapServiceProvider extends ServiceProvider
 		if (!empty($ous))
 			foreach ($ous as $ou) {
 				$ou_id = $ou->ou;
-				$uname = $ou->description;
+				$ou_name = $ou->description;
 				$info = $this->getRoles($dc, $ou_id);
 				foreach ($info as $role_obj) {
 					$role = new \stdClass();
 					$role->cn = "$ou_id,".$role_obj->cn;
-					$role->description = $uname.$role_obj->description;
+					$role->description = $ou_name.$role_obj->description;
 					$roles[] = $role;
 				}
 			}

@@ -42,8 +42,6 @@ class LdapUserProvider extends EloquentUserProvider
 				} else {
 					$user->password = \Hash::make(substr($id,-6));
 				}
-				$accounts = $openldap->getUserAccounts($id);
-				$user->uname = $accounts[0];
 			}
 			$user->name = $data['displayName'];
 			if (isset($credentials['email'])) {

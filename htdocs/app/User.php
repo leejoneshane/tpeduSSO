@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Log;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -39,6 +38,20 @@ class User extends Authenticatable
 		'is_admin' => 'boolean',
     ];
 
+	public function gmails()
+	{
+    	return $this->hasMany('App\Gsuite', 'idno', 'idno');
+	}
+
+	public function primary_gmail()
+	{
+		$gmails = $this->gmails();
+		foreach ($gmails as $mail) {
+			if ($mail->primary) return $mail->gmail;
+		}
+    	return false;
+	}
+
     public function getLdapAttribute()
     {
 		$openldap = new LdapServiceProvider();
@@ -46,13 +59,6 @@ class User extends Authenticatable
 		$data = $openldap->getUserData($entry);
 		if (array_key_exists('entryUUID', $data)) {
 			$this->attributes['uuid'] = $data['entryUUID'];
-		}
-		if (array_key_exists('uid', $data)) {
-	    	if (is_array($data['uid'])) {
-				$this->attributes['uname'] = $data['uid'][0];
-		    } else {
-		    	$this->attributes['uname'] = $data['uid'];
-		    }
 		}
 		if (array_key_exists('mail', $data)) {
 	    	if (is_array($data['mail'])) {
@@ -121,33 +127,7 @@ class User extends Authenticatable
 		$openldap = new LdapServiceProvider();
 		$id = $openldap->checkAccount($username);
 		if ($id) {
-			$entry = $openldap->getUserEntry($id);
-			$data = $openldap->getUserData($entry);
 			$user = $this->where('idno', $id)->first();
-/*		    if (is_null($user)) {
-				$user = new User();
-				$user->idno = $id;
-				$user->uuid = $data['entryUUID'];
-				$accounts = $openldap->getUserAccounts($id);
-				$user->uname = $accounts[0];
-				$user->password = \Hash::make(substr($id,-6));
-			}
-			$user->name = $data['displayName'];
-			if (!empty($data['mail'])) {
-				if (is_array($data['mail']))
-					$user->email = $data['mail'][0];
-				else
-					$user->email = $data['mail'];
-				if (!$openldap->emailAvailable($id, $user->email)) $user->email = null;
-			} else $user->email = null;
-			if (!empty($data['mobile'])) {
-				if (is_array($data['mobile']))
-					$user->mobile = $data['mobile'][0];
-				else
-					$user->mobile = $data['mobile'];
-				if (!$openldap->mobileAvailable($id, $user->mobile)) $user->mobile = null;
-			} else $user->mobile = null;
-			$user->save();*/
 		    return $user;
 		}	
     }

@@ -115,30 +115,30 @@ class HomeController extends Controller
 		if (empty($accounts)) {
 			$openldap->addAccount($entry, $new, "自建帳號");
 			if (Auth::check()) {
-				$user->uname = $new;
-				$user->save();
+//				$user->uname = $new;
+//				$user->save();
 				if (!empty($user->email)) $user->notify(new PasswordChangeNotification($new));
 			} else {
-				$user = User::where('idno', $idno)->first();
-				if ($user) {
-					$user->uname = $new;
-					$user->save();
-				}
+//				$user = User::where('idno', $idno)->first();
+//				if ($user) {
+//					$user->uname = $new;
+//					$user->save();
+//				}
 				if (isset($data['mail'])) Notification::route('mail', $data['mail'])->notify(new AccountChangeNotification($new));
 			}
 			return back()->withInput()->with("success","帳號建立成功！");
 		} else {
 			$openldap->renameAccount($entry, $new);
 			if (Auth::check()) {
-				$user->uname = $new;
-				$user->save();
+//				$user->uname = $new;
+//				$user->save();
 				if (!empty($user->email)) $user->notify(new PasswordChangeNotification($new));
 			} else {
-				$user = User::where('idno', $idno)->first();
-				if ($user) {
-					$user->uname = $new;
-					$user->save();
-				}
+//				$user = User::where('idno', $idno)->first();
+//				if ($user) {
+//					$user->uname = $new;
+//					$user->save();
+//				}
 				if (isset($data['mail'])) Notification::route('mail', $data['mail'])->notify(new AccountChangeNotification($new));
 			}
 			return redirect('login')->with("success","帳號變更成功，請重新登入！");

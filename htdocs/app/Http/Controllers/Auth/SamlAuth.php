@@ -144,12 +144,12 @@ trait SamlAuth
         $roles = array();
         if(\Auth::check()){
             $user  = \Auth::user();
-            $email = $user->uname.'@'.config('saml.email_domain');
+            $email = $user->primary_gmail();
             $name  = $user->name;
             if (config('saml.forward_roles'))
                 $roles = $user->roles->pluck('name')->all();
         }else {
-            $email = $request['username'].'@'.config('saml.email_domain');
+            $email = $user->primary_gmail();
             $name = 'Place Holder';
         }
         

@@ -120,7 +120,6 @@ class SyncAlle implements ShouldQueue
 		if (!empty($ous)) {
 			foreach ($ous as $ou) {
 				$ou_id = $ou->ou;
-				$uname = $ou->description;
 				$info = $openldap->getRoles($dc, $ou_id);
 				if (!empty($info)) {
 					foreach ($info as $i) {
