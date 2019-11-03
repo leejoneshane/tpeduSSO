@@ -14,9 +14,9 @@ class CreateGsuiteTable extends Migration
     public function up()
     {
         Schema::create('gsuite', function (Blueprint $table) {
-            $table->string('idno')->unique();
+            $table->string('idno')->index();
             $table->string('gmail')->unique();
-            $table->tinyInteger('primary')->default(0)->index();
+            $table->tinyInteger('primary')->default(0);
             $table->timestamps();
         });
     }
