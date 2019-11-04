@@ -72,10 +72,10 @@ trait SamlAuth
      * @param  \Illuminate\Http\Request  $request
      * @return void
      */    
-    public function handleSamlLoginRequest($request) {
+    public function handleSamlLoginRequest(Request $request) {
         // Store RelayState to session if provided
         if(!empty($request->input('RelayState'))){
-            session()->put('RelayState', $request->input('RelayState'));
+            $request->session()->put('RelayState', $request->input('RelayState'));
         }
         // Handle SamlRequest if provided, otherwise just exit
         if (isset($request->SAMLRequest)) {
@@ -137,7 +137,7 @@ trait SamlAuth
             ->setSignature(new \LightSaml\Model\XmlDSig\SignatureWriter($certificate, $privateKey))
         ;
 
-        $this->addRelayStateToResponse($response);
+        $this->addRelayStateToResponse($request, $response);
 
         // We are responding with both the email and the username as attributes
         // TODO: Add here other attributes, e.g. groups / roles / permissions
@@ -233,11 +233,11 @@ trait SamlAuth
     /**
      * @param $response
      */
-    protected function addRelayStateToResponse($response)
+    protected function addRelayStateToResponse($request, $response)
     {
-        if (session()->has('RelayState')) {
-            $response->setRelayState(session()->get('RelayState'));
-            session()->remove('RelayState');
+        if ($request->session()->has('RelayState')) {
+            $response->setRelayState($request->session()->pull('RelayState'));
+//            session()->remove('RelayState');
         }
     }
 }
