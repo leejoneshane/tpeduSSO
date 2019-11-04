@@ -237,7 +237,6 @@ trait SamlAuth
     {
         if ($request->session()->has('RelayState')) {
             $response->setRelayState($request->session()->pull('RelayState'));
-//            session()->remove('RelayState');
         }
     }
 }
