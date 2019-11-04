@@ -789,15 +789,15 @@ class SyncController extends Controller
 		$subjects = $http->js_getSubjects($sid);
 		if (!$subjects) return ["無法從校務行政系統取得所有科目，請稍後再同步！"];
 		$org_subjects = $openldap->getSubjects($dc);
-		for ($i=0;$i<count($org_subjects);$i++) {
-			if (!in_array($org_subjects[$i]['description'], $subjects)) {
-				$entry = $openldap->getSubjectEntry($dc, $org_subjects[$i]['tpSubject']);
+		foreach ($org_subjects as $i => $subj) {
+			if (!in_array($subj['description'], $subjects)) {
+				$entry = $openldap->getSubjectEntry($dc, $subj['tpSubject']);
 				$result = $openldap->deleteEntry($entry);
 				if ($result) {
 					array_splice($org_subjects, $i, 1);
-					$messages[] = "subject=". $org_subjects[$i]['tpSubject'] ." 已經刪除！";
+					$messages[] = "subject=". $subj['tpSubject'] ." 已經刪除！";
 				} else {
-					$messages[] = "subject=". $org_subjects[$i]['tpSubject'] ." 已經不再使用，但無法刪除：". $http->error();
+					$messages[] = "subject=". $subj['tpSubject'] ." 已經不再使用，但無法刪除：". $http->error();
 				}
 			}
 		}
