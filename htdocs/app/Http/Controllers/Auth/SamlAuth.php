@@ -74,8 +74,8 @@ trait SamlAuth
      */    
     public function handleSamlLoginRequest(Request $request) {
         // Store RelayState to session if provided
-        if(!empty($request->input('RelayState'))){
-            $request->session()->put('RelayState', $request->input('RelayState'));
+        if (!empty($request->input('RelayState'))) {
+            session(['RelayState' => $request->RelayState]);
         }
         // Handle SamlRequest if provided, otherwise just exit
         if (isset($request->SAMLRequest)) {
@@ -89,7 +89,7 @@ trait SamlAuth
             $authnRequest = new \LightSaml\Model\Protocol\AuthnRequest();
             $authnRequest->deserialize($deserializationContext->getDocument()->firstChild, $deserializationContext);
             // Generate the saml response (saml authentication attempt)
-            $this->buildSamlResponse($authnRequest, $request);
+            $this->buildSamlResponse($authnRequest);
         }
     }
 
@@ -101,7 +101,7 @@ trait SamlAuth
      * @see https://www.lightsaml.com/LightSAML-Core/Cookbook/How-to-make-Response/
      * @see https://imbringingsyntaxback.com/implementing-a-saml-idp-with-laravel/
      */
-    protected function buildSamlResponse($authnRequest, $request)
+    protected function buildSamlResponse($authnRequest)
     {
         // Get corresponding destination and issuer configuration from SAML config file for assertion URL
         // Note: Simplest way to determine the correct assertion URL is a short debug output on first run
@@ -137,7 +137,7 @@ trait SamlAuth
             ->setSignature(new \LightSaml\Model\XmlDSig\SignatureWriter($certificate, $privateKey))
         ;
 
-        $this->addRelayStateToResponse($request, $response);
+        $this->addRelayStateToResponse($response);
 
         // We are responding with both the email and the username as attributes
         // TODO: Add here other attributes, e.g. groups / roles / permissions
@@ -146,8 +146,8 @@ trait SamlAuth
             $user  = \Auth::user();
             $email = $user->primary_gmail();
             $name  = $user->name;
-//            if (config('saml.forward_roles'))
-//                $roles = $user->roles->pluck('name')->all();
+            if (config('saml.forward_roles'))
+                $roles = $user->roles->pluck('name')->all();
         }
         
         // Generate the SAML assertion for the response xml object
@@ -233,10 +233,11 @@ trait SamlAuth
     /**
      * @param $response
      */
-    protected function addRelayStateToResponse($request, $response)
+    protected function addRelayStateToResponse($response)
     {
-        if ($request->session()->has('RelayState')) {
-            $response->setRelayState($request->session()->pull('RelayState'));
+        if ($relay = session('RelayState')) {
+            $response->setRelayState($relay);
+            Log::debug($relay);
         }
     }
 }
