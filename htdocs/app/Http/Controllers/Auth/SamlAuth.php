@@ -1,6 +1,6 @@
 <?php
 
-namespace KingStarter\LaravelSaml\Http\Traits;
+namespace App\Http\Controllers\Auth;
 
 use Storage;
 use Illuminate\Http\Request;
