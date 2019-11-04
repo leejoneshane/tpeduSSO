@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Log;
 use Auth;
 use App\User;
 use Config;
@@ -29,12 +30,13 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+		Log::info(print_r($request->user()));
         return view('home');
     }
     
-    public function showProfileForm()
+    public function showProfileForm(Request $request)
     {
 		return view('auth.profile', [ 'user' => Auth::user() ]);
     }
