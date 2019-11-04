@@ -84,8 +84,7 @@ class LdapServiceProvider extends ServiceProvider
 		if ($resource) {
 	    	$entry = ldap_first_entry(self::$ldap_read, $resource);
 			if (!$entry) return false;
-			$id = ldap_get_values(self::$ldap_read, $entry, 'cn');
-			return $id[0];
+			return $idno;
 		}
         return false;
     }

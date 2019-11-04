@@ -54,7 +54,11 @@ trait AuthenticatesUsers
 	    	}
 		}
 
-        $idno = $openldap->checkAccount($username);
+        if (substr($username,0,3) == 'cn=') {
+            $idno = $openldap->checkIdno($username);
+        } else {
+            $idno = $openldap->checkAccount($username);
+        }
         if (!$idno) return redirect()->back()->with("error","查無此使用者帳號！");
         $status = $openldap->checkStatus($idno);
         if ($status == 'inactive') return redirect()->back()->with("error","很抱歉，您已經被管理員停權！");
