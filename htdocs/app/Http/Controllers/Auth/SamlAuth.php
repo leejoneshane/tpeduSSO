@@ -237,7 +237,6 @@ trait SamlAuth
     {
         if ($relay = session('RelayState')) {
             $response->setRelayState($relay);
-            Log::debug($relay);
         }
     }
 }
