@@ -30,13 +30,12 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-		Log::info(print_r($request->user()));
         return view('home');
     }
     
-    public function showProfileForm(Request $request)
+    public function showProfileForm()
     {
 		return view('auth.profile', [ 'user' => Auth::user() ]);
     }

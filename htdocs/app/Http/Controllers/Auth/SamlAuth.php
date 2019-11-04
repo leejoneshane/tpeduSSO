@@ -146,11 +146,8 @@ trait SamlAuth
             $user  = \Auth::user();
             $email = $user->primary_gmail();
             $name  = $user->name;
-            if (config('saml.forward_roles'))
-                $roles = $user->roles->pluck('name')->all();
-        }else {
-            $email = $user->primary_gmail();
-            $name = 'Place Holder';
+//            if (config('saml.forward_roles'))
+//                $roles = $user->roles->pluck('name')->all();
         }
         
         // Generate the SAML assertion for the response xml object
