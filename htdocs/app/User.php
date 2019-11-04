@@ -45,7 +45,7 @@ class User extends Authenticatable
 
 	public function primary_gmail()
 	{
-		$mail = $this->gmails()->where('primary', 1)->get();
+		$mail = $this->gmails()->where('primary', 1)->first();
 		if ($mail) return $mail->gmail;
     	return false;
 	}
