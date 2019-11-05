@@ -42,7 +42,7 @@ class SimsServiceProvider extends ServiceProvider
     public function hs_send($url)
     {
         //get token
-        $response = self::$oauth_hs->request('POST', Config::get('sims.hs.token'), [
+        $response = self::$oauth_hs->request('GET', Config::get('sims.hs.token'), [
             'form_params' => [
                 'account' => Config::get('sims.hs.oauth_account'),
                 'password' => Config::get('sims.hs.oauth_password'),
@@ -53,7 +53,7 @@ class SimsServiceProvider extends ServiceProvider
         $json = json_decode((string) $response->getBody());
         $token = $json->token;
 
-        $data = self::$oauth_hs->request('POST', $url, [
+        $data = self::$oauth_hs->request('GET', $url, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $token,
                 'Accept' => 'application/json',
