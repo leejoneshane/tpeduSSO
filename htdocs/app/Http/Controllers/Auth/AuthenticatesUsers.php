@@ -161,7 +161,7 @@ trait AuthenticatesUsers
         $data = $openldap->getUserData($entry, 'mail');
         if (!isset($data['mail']) || empty($data['mail'])) return redirect()->route('profile');
         
-        if (Auth::check() && isset($request['SAMLRequest']) && $user->primary_gmail()) {
+        if (Auth::check() && isset($request['SAMLRequest']) && $user->nameID()) {
             $this->handleSamlLoginRequest($request);
         }
     }

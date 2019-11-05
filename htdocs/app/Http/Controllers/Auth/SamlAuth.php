@@ -152,7 +152,7 @@ trait SamlAuth
         $roles = array();
         if (\Auth::check()) {
             $user   = \Auth::user();
-            $nameID = $user->primary_gmail(); //$this->getNameId($user, $authnRequest);
+            $nameID = $user->nameID();
             $email  = $user->primary_gmail();
             $name   = $user->name;
             if (config('saml.forward_roles')) {
@@ -173,7 +173,7 @@ trait SamlAuth
                 (new \LightSaml\Model\Assertion\Subject())
                         ->setNameID(new \LightSaml\Model\Assertion\NameID(
                             $nameID,
-                            \LightSaml\SamlConstants::NAME_ID_FORMAT_EMAIL
+                            \LightSaml\SamlConstants::NAME_ID_FORMAT_UNSPECIFIED
                         ))
                     ->addSubjectConfirmation(
                         (new \LightSaml\Model\Assertion\SubjectConfirmation())
@@ -255,15 +255,4 @@ trait SamlAuth
         }
     }
 
-    /**
-     * Get the NameID attribute to be used.
-     * @param  User $user
-     * @param  \Illuminate\Http\Request  $request
-     * @return string
-     */
-    protected function getNameId($user, $authnRequest)
-    {
-        $nameIdAttribute = config('saml.sp.'.base64_encode($authnRequest->getAssertionConsumerServiceURL()).'.nameID', 'email');
-        return $user->{$nameIdAttribute};
-    }
 }

@@ -20,7 +20,7 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if (Auth::check() && isset($request['SAMLRequest']) && Auth::user()->primary_gmail()) {  
+        if (Auth::check() && isset($request['SAMLRequest']) && Auth::user()->nameID()) {  
             $this->handleSamlLoginRequest($request);
         }
         if (Auth::guard($guard)->check()) {

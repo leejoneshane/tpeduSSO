@@ -50,6 +50,13 @@ class User extends Authenticatable
     	return false;
 	}
 
+	public function nameID()
+	{
+		$mail = $this->primary_gmail;
+		if ($mail) return substr($mail, 0, -13);
+    	return false;
+	}
+
     public function getLdapAttribute()
     {
 		$openldap = new LdapServiceProvider();
