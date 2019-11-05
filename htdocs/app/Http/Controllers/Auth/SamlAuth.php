@@ -186,32 +186,17 @@ trait SamlAuth
                            )
                     )
             )
-                ->setConditions(
-                    (new \LightSaml\Model\Assertion\Conditions())
-                        ->setNotBefore(new \DateTime())
-                        ->setNotOnOrAfter(new \DateTime('+1 MINUTE'))
-                        ->addItem(
-                            new \LightSaml\Model\Assertion\AudienceRestriction([
-                                config(
-                                    'saml.sp.'.base64_encode($authnRequest->getAssertionConsumerServiceURL()).'.audience_restriction',
-                                    $authnRequest->getAssertionConsumerServiceURL()
-                                )])
-                        )
-                )
-            ->addItem(
-                (new \LightSaml\Model\Assertion\AttributeStatement())
-                    ->addAttribute(new \LightSaml\Model\Assertion\Attribute(
-                        \LightSaml\ClaimTypes::EMAIL_ADDRESS,
-                        $email
-                    ))
-                    ->addAttribute(new \LightSaml\Model\Assertion\Attribute(
-                        \LightSaml\ClaimTypes::COMMON_NAME,
-                        $name
-                    ))
-                    ->addAttribute(new \LightSaml\Model\Assertion\Attribute(
-                        \LightSaml\ClaimTypes::ROLE,
-                        $roles
-                    ))
+            ->setConditions(
+                (new \LightSaml\Model\Assertion\Conditions())
+                    ->setNotBefore(new \DateTime())
+                    ->setNotOnOrAfter(new \DateTime('+1 MINUTE'))
+                    ->addItem(
+                        new \LightSaml\Model\Assertion\AudienceRestriction([
+                            config(
+                                'saml.sp.'.base64_encode($authnRequest->getAssertionConsumerServiceURL()).'.audience_restriction',
+                                $authnRequest->getAssertionConsumerServiceURL()
+                            )])
+                    )
             )
             ->addItem(
                 (new \LightSaml\Model\Assertion\AuthnStatement())
