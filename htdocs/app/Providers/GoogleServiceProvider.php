@@ -2,6 +2,7 @@
 namespace App\Providers;
 
 use Config;
+use App\User;
 use Illuminate\Support\ServiceProvider;
 
 class GoogleServiceProvider extends ServiceProvider
@@ -36,22 +37,20 @@ class GoogleServiceProvider extends ServiceProvider
 		return $this->directory->users->get($email);
 	}
 
-	public function createUser($uname, $familyName, $givenName, $fullName, $orgpath, $password)
+	public function createUser(User $user)
 	{
-		$user = new \Google_Service_Directory_User();
+		$gsuite_user = new \Google_Service_Directory_User();
 		$names = new \Google_Service_Directory_UserName();
-		$user->setKind("admin#directory#user");
-		$user->setChangePasswordAtNextLogin(false);
-		$user->setPrimaryEmail($uname.'@'. Config::get('saml.email_domain'));
-		$user->setIsAdmin(false);
-		$names->setFamilyName($familyName);
-		$names->setGivenName($givenName);
-		$names->setFullName($fullName);
-		$user->setName($names);
-		$user->setOrgUnitPath($orgpath);
-		$user->setPassword($password);
-		//$user->setOrgUnitPath('/');
-		return $this->directory->users->insert($user);
+		$gsuite_user->setKind("admin#directory#user");
+		$gsuite_user->setChangePasswordAtNextLogin(false);
+		$gsuite_user->setPrimaryEmail($user->primary_gmail());
+		$gsuite_user->setIsAdmin(false);
+		$names->setFamilyName($user->ldap['sn']);
+		$names->setGivenName($user->ldap['givenName']);
+		$names->setFullName($user->name);
+		$gsuite_user->setName($names);
+		$gsuite_user->setPassword($user->password);
+		return $this->directory->users->insert($gsuite_user);
 	}
 
 	public function createUserAlias($email, $alias)
