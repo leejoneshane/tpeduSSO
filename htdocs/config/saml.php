@@ -71,10 +71,10 @@ return [
          */
         'aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS9hL21zLnRwLmVkdS50dy9hY3M=' => [        
             // The destination is the consuming SAML URL. This might be a SamlAuthController receiving the SAML response.  
-            'destination' => 'https://accounts.google.com/a/ms.tp.edu.tw/acs',
+            'destination' => 'https://www.google.com/a/ms.tp.edu.tw/acs',
             // Issuer could be anything, mostly it makes sense to pass the metadata URL
-            'issuer' => 'google.com/a/ms.tp.edu.tw',
-            //'nameID' => 'idno',
+            'issuer' => 'google.com',
+            'nameID' => 'idno',
             
             // OPTIONAL: Use a specific audience restriction value when creating the SAMLRequest object.
             //           Default value is the assertion consumer service URL (the base64 encoded SP url). 
