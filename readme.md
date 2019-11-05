@@ -54,15 +54,15 @@ docker-compose up -d
 * __MAIL_PASSWORD: password__ 不可省略，外部郵件伺服器的寄信密碼。
 * __MAIL_ENCRYPTION: tls__ 不可省略，外部郵件伺服器的所使用的加密協定，可能為 ssl 或 tls。
 * __SAML_MAIL: ms.tp.edu.tw__ 不可省略，gmail 服務的領域名稱，將附加在使用者 uid 後面。
-* __PS_CLIENT_ID: __ 不可省略，國小校務行政系統介接參數。
-* __PS_CLIENT_SECRET: __ 不可省略，國小校務行政系統介接參數。
-* __PS_APISERVER: __ 不可省略，國小校務行政系統 Data API URL。
-* __JS_CLIENT_ID: __ 不可省略，國高中校務行政系統介接參數。
-* __JS_CLIENT_SECRET: __ 不可省略，國高中校務行政系統介接參數。
-* __JS_APISERVER: __ 不可省略，國高中校務行政系統 Data API URL。
-* __HS_ACCOUNT: __ 不可省略，高職校務行政系統介接參數。
-* __HS_PASSWORD: __ 不可省略，高職校務行政系統介接參數。
-* __HS_APISERVER: __ 不可省略，高職校務行政系統 Data API URL。
+* __PS_CLIENT_ID:__ 不可省略，國小校務行政系統介接參數。
+* __PS_CLIENT_SECRET:__ 不可省略，國小校務行政系統介接參數。
+* __PS_APISERVER:__ 不可省略，國小校務行政系統 Data API URL。
+* __JS_CLIENT_ID:__ 不可省略，國高中校務行政系統介接參數。
+* __JS_CLIENT_SECRET:__ 不可省略，國高中校務行政系統介接參數。
+* __JS_APISERVER:__ 不可省略，國高中校務行政系統 Data API URL。
+* __HS_ACCOUNT:__ 不可省略，高職校務行政系統介接參數。
+* __HS_PASSWORD:__ 不可省略，高職校務行政系統介接參數。
+* __HS_APISERVER:__ 不可省略，高職校務行政系統 Data API URL。
 
 ## 關於 docker
 
