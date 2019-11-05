@@ -52,7 +52,7 @@ class User extends Authenticatable
 
 	public function nameID()
 	{
-		$mail = $this->primary_gmail;
+		$mail = $this->primary_gmail();
 		if ($mail) return substr($mail, 0, -13);
     	return false;
 	}
