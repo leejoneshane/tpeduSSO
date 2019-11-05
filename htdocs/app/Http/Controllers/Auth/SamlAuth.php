@@ -152,7 +152,7 @@ trait SamlAuth
         $roles = array();
         if (\Auth::check()) {
             $user   = \Auth::user();
-            $nameID = $user->primary_gmail(); //$this->getNameId($user, $authnRequest);
+            $nameID = $this->getNameId($user, $authnRequest);
             $email  = $user->primary_gmail();
             $name   = $user->name;
             if (config('saml.forward_roles')) {
