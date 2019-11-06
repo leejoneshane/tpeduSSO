@@ -74,7 +74,7 @@ return [
             'destination' => 'https://www.google.com/a/ms.tp.edu.tw/acs',
             // Issuer could be anything, mostly it makes sense to pass the metadata URL
             'issuer' => 'google.com',
-            'nameID' => 'idno',
+            //'nameID' => 'idno',
             
             // OPTIONAL: Use a specific audience restriction value when creating the SAMLRequest object.
             //           Default value is the assertion consumer service URL (the base64 encoded SP url). 
