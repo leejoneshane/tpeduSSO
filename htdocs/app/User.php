@@ -43,17 +43,10 @@ class User extends Authenticatable
     	return $this->hasMany('App\Gsuite', 'idno', 'idno');
 	}
 
-	public function primary_gmail()
+	public function nameID()
 	{
 		$mail = $this->gmails()->where('primary', 1)->first();
 		if ($mail) return $mail->gmail;
-    	return false;
-	}
-
-	public function nameID()
-	{
-		$mail = $this->primary_gmail();
-		if ($mail) return substr($mail, 0, -13);
     	return false;
 	}
 
