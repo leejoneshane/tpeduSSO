@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Auth;
 use Storage;
 use Illuminate\Http\Request;
 use LightSaml\Model\Protocol\Response as Response;
@@ -149,19 +150,8 @@ trait SamlAuth
 
         // We are responding with both the email and the username as attributes
         // TODO: Add here other attributes, e.g. groups / roles / permissions
-        $roles = array();
-        if (\Auth::check()) {
-            $user   = \Auth::user();
-            $nameID = $user->nameID();
-            $email  = $user->primary_gmail();
-            $name   = $user->name;
-            if (config('saml.forward_roles')) {
-                $roles = $user->roles->pluck('name')->all();
-            }
-        } else {
-            $email = $request['email'];
-            $name  = 'Place Holder';
-        }
+        $user   = Auth::user();
+        $nameID = $user->nameID();
         
         // Generate the SAML assertion for the response xml object
         $assertion
