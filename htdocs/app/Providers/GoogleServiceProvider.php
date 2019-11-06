@@ -13,6 +13,7 @@ class GoogleServiceProvider extends ServiceProvider
 
     function __construct() {
 		$this->client = new \Google_Client();
+		$this->client->useApplicationDefaultCredentials();
 		$this->client->setApplicationName(Config::get('google.application_name'));
 		$this->client->setScopes(Config::get('google.scopes'));
 		$this->client->setAuthConfig(Config::get('google.service_auth_file'));
@@ -41,15 +42,42 @@ class GoogleServiceProvider extends ServiceProvider
 	{
 		$gsuite_user = new \Google_Service_Directory_User();
 		$names = new \Google_Service_Directory_UserName();
+		$gender = new \Google_Service_Directory_UserGender();
+		$phone = new \Google_Service_Directory_UserPhone();
 		$gsuite_user->setKind("admin#directory#user");
 		$gsuite_user->setChangePasswordAtNextLogin(false);
-		$gsuite_user->setPrimaryEmail($user->primary_gmail());
+		$gsuite_user->setAgreedToTerms(true);
+		$gsuite_user->setPrimaryEmail($user->nameID() . '@' . Config::get('saml.email_domain'));
+		if ($user->email) $gsuite_user->setRecoveryEmail($user->email);
+		if ($user->mobile) {
+			$phone->setPrimary(true);
+			$phone->setType('mobile');
+			$phone->setValue($user->mobile);
+			$phones[] = $phone;
+			$gsuite_user->setPhones($phones);
+		}
 		$gsuite_user->setIsAdmin(false);
 		$names->setFamilyName($user->ldap['sn']);
 		$names->setGivenName($user->ldap['givenName']);
 		$names->setFullName($user->name);
 		$gsuite_user->setName($names);
+		switch ($user->ldap['gender']) {
+			case 0:
+				$gender->setType('unknow');
+				break;
+			case 1:
+				$gender->setType('male');
+				break;
+			case 2:
+				$gender->setType('female');
+				break;
+			case 9:
+				$gender->setType('other');			
+				break;
+		}
+		$gsuite_user->setGender($gender);
 		$gsuite_user->setPassword($user->password);
+		$gsuite_user->setHashFunction('crypt');
 		return $this->directory->users->insert($gsuite_user);
 	}
 
