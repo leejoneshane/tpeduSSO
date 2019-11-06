@@ -45,9 +45,9 @@ class User extends Authenticatable
 
 	public function nameID()
 	{
-		$mail = $this->gmails()->where('primary', 1)->first();
-		if ($mail) return $mail->gmail;
-    	return false;
+		$gsuite = $this->gmails()->where('primary', 1)->first();
+		if ($gsuite) return $gsuite->nameID;
+    	        return false;
 	}
 
     public function getLdapAttribute()
