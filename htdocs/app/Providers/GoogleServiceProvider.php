@@ -3,6 +3,7 @@ namespace App\Providers;
 
 use Config;
 use App\User;
+use App\Gsuite;
 use Illuminate\Support\ServiceProvider;
 
 class GoogleServiceProvider extends ServiceProvider
@@ -47,7 +48,24 @@ class GoogleServiceProvider extends ServiceProvider
 		$gsuite_user->setKind("admin#directory#user");
 		$gsuite_user->setChangePasswordAtNextLogin(false);
 		$gsuite_user->setAgreedToTerms(true);
-		$gsuite_user->setPrimaryEmail($user->nameID() . '@' . Config::get('saml.email_domain'));
+		$accounts = array();
+		if (is_array($user->ldap['uid'])) {
+			$accounts = $user->ldap['uid'];
+		} else {
+			$accounts[] = $user->ldap['uid'];
+		}
+		for ($i=0;$i<count($accounts);$i++) {
+			if (is_numeric($accounts[$i])) {
+				unset($accounts[$i]);
+				continue;
+			}
+			if (strpos($accounts[$i], '@')) {
+				unset($accounts[$i]);
+				continue;
+			}
+		}
+		$nameID = array_values($accounts)[0];
+		$gsuite_user->setPrimaryEmail($nameID .'@'. Config::get('saml.email_domain'));
 		if ($user->email) $gsuite_user->setRecoveryEmail($user->email);
 		if ($user->mobile) {
 			$phone->setPrimary(true);
@@ -78,7 +96,14 @@ class GoogleServiceProvider extends ServiceProvider
 		$gsuite_user->setGender($gender);
 		$gsuite_user->setPassword($user->password);
 		$gsuite_user->setHashFunction('crypt');
-		return $this->directory->users->insert($gsuite_user);
+		$result = $this->directory->users->insert($gsuite_user);
+		if ($result) {
+			$gsuite = new Gsuite();
+			$gsuite->idno = $user->idno;
+			$gsuite->nameID = $nameID;
+			$gsuite->primary = 1;
+			$gsuite->save();
+		}
 	}
 
 	public function createUserAlias($email, $alias)
