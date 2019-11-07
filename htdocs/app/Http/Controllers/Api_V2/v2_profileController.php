@@ -21,7 +21,12 @@ class v2_profileController extends Controller
 		$request->session()->flush();
 		$request->session()->regenerate();
 		Cookie::queue(Cookie::forget('laravel_session', 'laravel_token'));
-        return "<script>history.go(-1);</script>";
+		if ($request->has('redirect')) {
+			$url = $request->get('redirect');
+			return "<script>location='$url';</script>";
+		} else {
+			return "<script>history.go(-1);</script>";
+		}
     }
 
     public function me(Request $request)
