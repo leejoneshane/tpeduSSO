@@ -2145,6 +2145,15 @@ class SchoolController extends Controller
 				$admins[] = $admin;
 			}
 		}
+		$data = $openldap->findUsers("tpAdminSchools=$dc");
+		foreach ($data as $user) {
+			if (!in_array($user['cn'], $ids)) {
+				$admin = new \stdClass;
+				$admin->idno = $user['cn'];
+				$admin->name = $user['displayName'];
+				$admins[] = $admin;
+			}
+		}
 		return view('admin.schooladminwithsidebar', [ 'admins' => $admins, 'dc' => $dc, 'sims' => $sims ]);
     }
 
