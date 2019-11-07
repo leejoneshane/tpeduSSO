@@ -2158,6 +2158,7 @@ class SchoolController extends Controller
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getOrgEntry($dc);
 		$data = $openldap->getOrgData($entry, "tpAdministrator");
+		$ids = array();
 		$admins = array();
 		if (array_key_exists('tpAdministrator', $data)) {
 		    if (is_array($data['tpAdministrator'])) {
@@ -2169,6 +2170,15 @@ class SchoolController extends Controller
 				$admin = new \stdClass;
 				$admin->idno = $idno;
 				$admin->name = $openldap->getUserName($idno);
+				$admins[] = $admin;
+			}
+		}
+		$data = $openldap->findUsers("tpAdminSchools=$dc");
+		foreach ($data as $user) {
+			if (!in_array($user['cn'], $ids)) {
+				$admin = new \stdClass;
+				$admin->idno = $user['cn'];
+				$admin->name = $user['displayName'];
 				$admins[] = $admin;
 			}
 		}
