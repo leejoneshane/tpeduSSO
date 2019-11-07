@@ -22,6 +22,8 @@ class profileController extends Controller
 		$request->session()->flush();
 		$request->session()->regenerate();
 		Cookie::queue(Cookie::forget('laravel_session', 'laravel_token'));
+		$url = $request->url()->previous();
+		if (strpos($url, 'mail.google.com') > 0) return redirect()->away('https://mail.google.com/mail/u/0/?logout');
         return "<script>history.go(-1);</script>";
 	}
 
