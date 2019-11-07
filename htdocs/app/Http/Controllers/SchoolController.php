@@ -2131,6 +2131,7 @@ class SchoolController extends Controller
 		$data = $openldap->getOrgData($school, "tpSims");
 		$sims = '';
 		if (array_key_exists('tpSims', $data)) $sims = $data['tpSims'];
+		$ids = array();
 		$admins = array();
 		if (array_key_exists('tpAdministrator', $data)) {
 		    if (is_array($data['tpAdministrator'])) {
