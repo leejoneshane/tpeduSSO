@@ -101,7 +101,7 @@ class GoogleServiceProvider extends ServiceProvider
 			$gsuite = new Gsuite();
 			$gsuite->idno = $user->idno;
 			$gsuite->nameID = $nameID;
-			$gsuite->primary = 1;
+			$gsuite->primary = true;
 			$gsuite->save();
 		}
 	}
@@ -113,7 +113,7 @@ class GoogleServiceProvider extends ServiceProvider
 		return $this->directory->users_aliases->insert($email,$email_alias);
 	}
 
-	public function findUserAlias($email)
+	public function listUserAliases($email)
 	{
 		return $this->directory->users_aliases->listUsersAliases($email);
 	}
@@ -133,7 +133,7 @@ class GoogleServiceProvider extends ServiceProvider
 		return $this->directory->members->listMembers($groupId);
 	}
 
-	public function groupAddMembers($groupId, $members)
+	public function addMembers($groupId, $members)
 	{
 		$users = array();
 		foreach ($members as $m) {
