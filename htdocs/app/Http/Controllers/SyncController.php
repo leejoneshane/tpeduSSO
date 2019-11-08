@@ -2058,9 +2058,11 @@ class SyncController extends Controller
 			$data = $openldap->getOus($dc, '教學班級');
 			$grades = array();
 			$classes = array();
-			foreach ($data as $class) {
-				if (!in_array($class->grade, $grades)) $grades[] = $class->grade;
-				$classes[] = $class;
+			if ($data) {
+				foreach ($data as $class) {
+					if (!in_array($class->grade, $grades)) $grades[] = $class->grade;
+					$classes[] = $class;
+				}
 			}
 			return view('admin.syncstudent', [ 'sims' => 'bridge', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'grades' => $grades, 'classes' => $classes, 'dc' => $dc ]);	
 		}	

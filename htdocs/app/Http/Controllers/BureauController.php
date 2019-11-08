@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Config;
 use Validator;
 use Auth;
-use DB;
 use Illuminate\Http\Request;
 use App\User;
 use App\Providers\LdapServiceProvider;
@@ -179,7 +178,6 @@ class BureauController extends Controller
     		$json = json_decode($content);
     		if (!$json)
 				return back()->with("error", "檔案剖析失敗，請檢查 JSON 格式是否正確？");
-			$rule = new idno;
 			$teachers = array();
 			if (is_array($json)) { //批量匯入
 				$teachers = $json;
@@ -283,6 +281,7 @@ class BureauController extends Controller
 	    			$entry["tpSeat"] = $person->seat;
 					if (!in_array($person->class, $classes)) {
 						$oclass = new \stdClass;
+						$oclass->dc = $person->o;
 						$oclass->id = $person->class;
 						$classname = $person->classtitle;
 						if (empty($classname)) $classname = $person->class;
@@ -426,12 +425,12 @@ class BureauController extends Controller
 			if (!empty($classes)) {
 				foreach($classes as $oclass) {
 					$info = array();
-					$info['dn'] = "ou=$oclass->id,dc=$dc,".Config::get('ldap.rdn'); 
+					$info['dn'] = "ou=$oclass->id,dc=$oclass->dc,".Config::get('ldap.rdn'); 
 					$info["objectClass"] = "organizationalUnit";
 					$info["ou"] = $oclass->id;
 					$info["businessCategory"] = '教學班級';
 					$info["description"] = $oclass->name;
-					$ou_result = $openldap->getOuEntry($dc, $oclass->id);
+					$ou_result = $openldap->getOuEntry($oclass->dc, $oclass->id);
 					if (!$ou_result) $openldap->createEntry($info);
 				}
 			}
@@ -1044,7 +1043,7 @@ class BureauController extends Controller
 
     public function bureauOrgEditForm(Request $request, $dc = '')
     {
-		$sims = [ 'alle' => '全誼', 'oneplus' => '巨耀' ];
+		$sims = [ 'alle' => '全誼', 'oneplus' => '巨耀', 'bridge' => '虹橋' ];
 		$category = [ '幼兒園', '國民小學', '國民中學', '高中', '高職', '大專院校', '特殊教育', '主管機關' ];
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 		$openldap = new LdapServiceProvider();
@@ -1363,7 +1362,7 @@ class BureauController extends Controller
 
     public function bureauAdminForm(Request $request)
     {
-		$admins = DB::table('users')->where('is_admin', 1)->get();
+		$admins = User::where('is_admin', 1)->get();
 		return view('admin.bureauadmin', [ 'admins' => $admins ]);
     }
 
@@ -1380,9 +1379,9 @@ class BureauController extends Controller
 				return back()->withInput()->with("error","您輸入的身分證字號，不存在於系統！");
 	    	}
 	    
-			$admin = DB::table('users')->where('idno', $request->get('new-admin'))->first();	
+			$admin = User::where('idno', $request->get('new-admin'))->first();	
 	    	if ($admin) {
-	    		DB::table('users')->where('id', $admin->id)->update(['is_admin' => 1]);
+	    		User::where('id', $admin->id)->update(['is_admin' => 1]);
 				return back()->withInput()->with("success", "已經為您新增局端管理員！");
 			} else {
 				return back()->withInput()->with("error", "尚未登入的人員無法設定為管理員！");
@@ -1393,9 +1392,9 @@ class BureauController extends Controller
     public function delBureauAdmin(Request $request)
     {
 		if ($request->has('delete-admin')) {
-			$admin = DB::table('users')->where('idno', $request->get('delete-admin'))->first();	
+			$admin = User::where('idno', $request->get('delete-admin'))->first();	
 	    	if ($admin) {
-	    		DB::table('users')->where('id', $admin->id)->update(['is_admin' => 0]);
+	    		User::where('id', $admin->id)->update(['is_admin' => 0]);
 				return back()->with("success", "已經為您移除局端管理員！");
 			} else {
 				return back()->with("error", "找不到管理員，是否已經刪除了呢？");
