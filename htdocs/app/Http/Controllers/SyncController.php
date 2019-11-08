@@ -333,7 +333,7 @@ class SyncController extends Controller
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
-		$filter = "(&(st=$area)(tpSims=oneplus))";
+		$filter = "(&(st=$area)(tpSims=bridge))";
 		$openldap = new LdapServiceProvider();
 		$schools = $openldap->getOrgs($filter);
 		$dc = $request->get('dc');
@@ -482,7 +482,7 @@ class SyncController extends Controller
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
-		$filter = "(&(st=$area)(tpSims=oneplus))";
+		$filter = "(&(st=$area)(tpSims=bridge))";
 		$openldap = new LdapServiceProvider();
 		$schools = $openldap->getOrgs($filter);
 		$dc = $request->get('dc');
@@ -707,7 +707,7 @@ class SyncController extends Controller
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
-		$filter = "(&(st=$area)(tpSims=oneplus))";
+		$filter = "(&(st=$area)(tpSims=bridge))";
 		$openldap = new LdapServiceProvider();
 		$schools = $openldap->getOrgs($filter);
 		$dc = $request->get('dc');
@@ -922,7 +922,7 @@ class SyncController extends Controller
 		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
-		$filter = "(&(st=$area)(tpSims=oneplus))";
+		$filter = "(&(st=$area)(tpSims=bridge))";
 		$openldap = new LdapServiceProvider();
 		$schools = $openldap->getOrgs($filter);
 		$dc = $request->get('dc');
@@ -2273,9 +2273,11 @@ class SyncController extends Controller
 			$data = $openldap->getOus($dc, '教學班級');
 			$grades = array();
 			$classes = array();
-			foreach ($data as $class) {
-				if (!in_array($class->grade, $grades)) $grades[] = $class->grade;
-				$classes[] = $class;
+			if ($data) {
+				foreach ($data as $class) {
+					if (!in_array($class->grade, $grades)) $grades[] = $class->grade;
+					$classes[] = $class;
+				}
 			}
 			return view('admin.syncstudent', [ 'sims' => 'oneplus', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'grades' => $grades, 'classes' => $classes, 'dc' => $dc ]);
 		}	
@@ -2491,9 +2493,11 @@ class SyncController extends Controller
 			$data = $openldap->getOus($dc, '教學班級');
 			$grades = array();
 			$classes = array();
-			foreach ($data as $class) {
-				if (!in_array($class->grade, $grades)) $grades[] = $class->grade;
-				$classes[] = $class;
+			if ($data) {
+				foreach ($data as $class) {
+					if (!in_array($class->grade, $grades)) $grades[] = $class->grade;
+					$classes[] = $class;
+				}
 			}
 			return view('admin.syncstudent', [ 'sims' => 'alle', 'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'grades' => $grades, 'classes' => $classes ]);
 		}	
