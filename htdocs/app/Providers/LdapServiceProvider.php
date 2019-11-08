@@ -905,15 +905,17 @@ class LdapServiceProvider extends ServiceProvider
 			}
 			foreach ($classes as $class_pair) {
 				$a = explode(',' , $class_pair);
-				$o = $a[0];
-				$class = $a[1];
-				$subject = '';
-				if (isset($a[2])) $subject = $a[2];
-				$tclass[] = "$o,$class,$subject";
-				$obj = new \stdClass();
-				$obj->key = $class_pair;
-				$obj->name = $this->getOuTitle($o, $class).$this->getSubjectTitle($o, $subject);
-				$userinfo['teachClass'][$o][] = $obj; 
+				if (count($a) == 3) {
+					$o = $a[0];
+					$class = $a[1];
+					$subject = '';
+					if (isset($a[2])) $subject = $a[2];
+					$tclass[] = "$o,$class,$subject";
+					$obj = new \stdClass();
+					$obj->key = $class_pair;
+					$obj->name = $this->getOuTitle($o, $class).$this->getSubjectTitle($o, $subject);
+					$userinfo['teachClass'][$o][] = $obj; 
+				}
 			}
 			$userinfo['tpTeachClass'] = $tclass;
 		}
