@@ -903,6 +903,7 @@ class LdapServiceProvider extends ServiceProvider
 			} else {
 				$classes[] = $userinfo['tpTeachClass'];
 			}
+			$tclass = array();
 			foreach ($classes as $class_pair) {
 				$a = explode(',' , $class_pair);
 				if (count($a) == 3) {
