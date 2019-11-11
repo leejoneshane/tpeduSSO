@@ -9,7 +9,6 @@
         "appstract/laravel-opcache": "^2.0",
         "fideloper/proxy": "^4.0",
         "google/apiclient": "^2.0",
-        "pulkitjalan/google-apiclient": "^3.0",
         "guzzlehttp/guzzle": "^6.3",
         "kingstarter/laravel-saml": "dev-master",
         "laravel/framework": "5.7.*",
