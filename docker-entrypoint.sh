@@ -18,7 +18,6 @@ else
   php artisan telescope:install
 fi
 
-restore
 php artisan clear
 php artisan cache:clear
 php artisan view:clear
