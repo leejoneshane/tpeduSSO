@@ -188,31 +188,13 @@ class SimsServiceProvider extends ServiceProvider
     public function hs_getUnits($sid)
     {
         if (empty($sid)) return false;
-        $units = array();
-        $data = $this->hs_call('units_info', ["sid" => $sid]);
-		if ($data) {
-			foreach ($data as $unit) {
-				$units[$unit->ou] = $unit->name;
-			}
-            return $units;
-		} else {
-            return false;
-        }
+        return $this->hs_call('units_info', ["sid" => $sid]);
     }
 
     public function js_getUnits($sid)
     {
         if (empty($sid)) return false;
-        $units = array();
-        $data = $this->js_call('units_info', ["sid" => $sid]);
-		if ($data) {
-			foreach ($data as $unit) {
-				$units[$unit->ou] = $unit->name;
-			}
-            return $units;
-		} else {
-            return false;
-        }
+        return $this->js_call('units_info', ["sid" => $sid]);
     }
 
     public function hs_getRoles($sid, $unit = '')
@@ -227,10 +209,10 @@ class SimsServiceProvider extends ServiceProvider
         foreach ($units as $ou => $name) {
             $data = $this->hs_call('roles_info', [ "sid" => $sid, "ou" => $ou ]);
             usleep(100);
-            if ($data) $roles = array_merge($roles, [ $ou => $data ]);
+            if ($data) $roles = array_merge($roles, $data);
         }
 		if (!empty($roles)) return $roles;
-		else return false;
+		return false;
     }
 
     public function js_getRoles($sid, $unit = '')
@@ -245,10 +227,10 @@ class SimsServiceProvider extends ServiceProvider
         foreach ($units as $ou => $name) {
             $data = $this->js_call('roles_info', [ "sid" => $sid, "ou" => $ou ]);
             usleep(100);
-            if ($data) $roles = array_merge($roles, [ $ou => $data ]);
+            if ($data) $roles = array_merge($roles, $data);
         }
 		if (!empty($roles)) return $roles;
-		else return false;
+		return false;
     }
 
     public function hs_getClasses($sid)

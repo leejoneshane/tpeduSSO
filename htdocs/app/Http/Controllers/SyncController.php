@@ -372,13 +372,50 @@ class SyncController extends Controller
 					$info['businessCategory']='行政部門';
 					$info['ou'] = $unit->ou;
 					$info['description'] = $unit->name;
-					$info['dn'] = "ou=".$info['ou'].",dc=$dc,".Config::get('ldap.rdn');
+					$info['dn'] = "ou=".$unit->ou.",dc=$dc,".Config::get('ldap.rdn');
 					$result = $openldap->createEntry($info);
 					if ($result) {
 						$messages[] = "ou=". $unit->ou ." 已經為您建立行政部門，單位名稱為：". $unit->name;
 					} else {
 						$messages[] = "ou=". $unit->ou ." 行政部門建立失敗：". $openldap->error();
 					}
+				}
+				$org_roles = $openldap->getRoles($dc, $unit->ou);
+				$roles = $http->hs_getRoles($sid, $unit->ou);
+				foreach ($roles as $role) {
+					for ($i=0;$i<count($org_roles);$i++) {
+						if ($role->cn == $org_roles[$i]->cn) array_splice($org_roles, $i, 1);
+					}
+					$role_entry = $openldap->getRoleEntry($dc, $unit->ou, $role->cn);
+					if ($role_entry) {
+						$result = $openldap->updateData($role_entry, [ 'description' => $role->name ]);
+						if ($result) {
+							$messages[] = "cn=". $role->cn ." 已將單位職稱變更為：". $role->name;
+						} else {
+							$messages[] = "cn=". $role->cn ." 無法變更單位職稱：". $openldap->error();
+						}
+					} else {
+						$info = array();
+						$info['objectClass'] = array('organizationalRole');
+						$info['cn'] = $role->cn;
+						$info['description'] = $role->name;
+						$info['dn'] = "cn=".$role->cn.",ou=".$unit->ou.",dc=$dc,".Config::get('ldap.rdn');
+						$result = $openldap->createEntry($info);
+						if ($result) {
+							$messages[] = "cn=". $role->cn ." 已經為您建立單位職稱，職稱為：". $role->name;
+						} else {
+							$messages[] = "cn=". $role->cn ." 單位職稱建立失敗：". $openldap->error();
+						}
+					}
+					foreach ($org_roles as $org_role) {
+						$role_entry = $openldap->getRoleEntry($dc, $unit->ou, $org_role->cn);
+						$result = $openldap->deleteEntry($role_entry);
+						if ($result) {
+							$messages[] = "cn=". $org_role->cn ." 已經為您刪除單位職稱，職稱為：". $org_role->description;
+						} else {
+							$messages[] = "cn=". $org_role->cn ." 單位職稱刪除失敗：". $openldap->error();
+						}
+					}			
 				}
 			}
 			foreach ($org_units as $org_unit) {
@@ -389,7 +426,7 @@ class SyncController extends Controller
 				} else {
 					$messages[] = "ou=". $org_unit->ou ." 行政部門刪除失敗：". $openldap->error();
 				}
-			}
+			}			
 			$messages[] = "同步完成！";
 		} else {
 			$messages[] = "無法同步行政部門資訊：". $http->error();
@@ -438,13 +475,50 @@ class SyncController extends Controller
 					$info['businessCategory']='行政部門';
 					$info['ou'] = $unit->ou;
 					$info['description'] = $unit->name;
-					$info['dn'] = "ou=".$info['ou'].",dc=$dc,".Config::get('ldap.rdn');
+					$info['dn'] = "ou=".$unit->ou.",dc=$dc,".Config::get('ldap.rdn');
 					$result = $openldap->createEntry($info);
 					if ($result) {
 						$messages[] = "ou=". $unit->ou ." 已經為您建立行政部門，單位名稱為：". $unit->name;
 					} else {
 						$messages[] = "ou=". $unit->ou ." 行政部門建立失敗：". $openldap->error();
 					}
+				}
+				$org_roles = $openldap->getRoles($dc, $unit->ou);
+				$roles = $http->js_getRoles($sid, $unit->ou);
+				foreach ($roles as $role) {
+					for ($i=0;$i<count($org_roles);$i++) {
+						if ($role->cn == $org_roles[$i]->cn) array_splice($org_roles, $i, 1);
+					}
+					$role_entry = $openldap->getRoleEntry($dc, $unit->ou, $role->cn);
+					if ($role_entry) {
+						$result = $openldap->updateData($role_entry, [ 'description' => $role->name ]);
+						if ($result) {
+							$messages[] = "cn=". $role->cn ." 已將單位職稱變更為：". $role->name;
+						} else {
+							$messages[] = "cn=". $role->cn ." 無法變更單位職稱：". $openldap->error();
+						}
+					} else {
+						$info = array();
+						$info['objectClass'] = array('organizationalRole');
+						$info['cn'] = $role->cn;
+						$info['description'] = $role->name;
+						$info['dn'] = "cn=".$role->cn.",ou=".$unit->ou.",dc=$dc,".Config::get('ldap.rdn');
+						$result = $openldap->createEntry($info);
+						if ($result) {
+							$messages[] = "cn=". $role->cn ." 已經為您建立單位職稱，職稱為：". $role->name;
+						} else {
+							$messages[] = "cn=". $role->cn ." 單位職稱建立失敗：". $openldap->error();
+						}
+					}
+					foreach ($org_roles as $org_role) {
+						$role_entry = $openldap->getRoleEntry($dc, $unit->ou, $org_role->cn);
+						$result = $openldap->deleteEntry($role_entry);
+						if ($result) {
+							$messages[] = "cn=". $org_role->cn ." 已經為您刪除單位職稱，職稱為：". $org_role->description;
+						} else {
+							$messages[] = "cn=". $org_role->cn ." 單位職稱刪除失敗：". $openldap->error();
+						}
+					}			
 				}
 			}
 			foreach ($org_units as $org_unit) {
@@ -455,7 +529,7 @@ class SyncController extends Controller
 				} else {
 					$messages[] = "ou=". $org_unit->ou ." 行政部門刪除失敗：". $openldap->error();
 				}
-			}
+			}			
 			$messages[] = "同步完成！";
 		} else {
 			$messages[] = "無法同步行政部門資訊：". $http->error();
