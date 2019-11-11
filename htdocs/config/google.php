@@ -20,12 +20,20 @@ return [
     'client_secret' => env('GOOGLE_CLIENT_SECRET', ''),
     'redirect_uri' => env('GOOGLE_REDIRECT', ''),
     'scopes' => [
+        "https://www.googleapis.com/auth/admin.directory.user",
+        "https://www.googleapis.com/auth/admin.directory.user.alias",
+        "https://www.googleapis.com/auth/admin.directory.group",
+        "https://www.googleapis.com/auth/admin.directory.group.member",
+        "https://www.googleapis.com/auth/classroom.courses",
+        "https://www.googleapis.com/auth/classroom.rosters",
+/*
         \Google_Service_Directory::ADMIN_DIRECTORY_USER,
         \Google_Service_Directory::ADMIN_DIRECTORY_USER_ALIAS,
         \Google_Service_Directory::ADMIN_DIRECTORY_GROUP,
         \Google_Service_Directory::ADMIN_DIRECTORY_GROUP_MEMBER,
         \Google_Service_Classroom::CLASSROOM_COURSES,
         \Google_Service_Classroom::CLASSROOM_ROSTERS,
+*/
     ],
     'access_type' => 'online',
     'approval_prompt' => 'auto',
