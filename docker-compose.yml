@@ -6,23 +6,6 @@ services:
     hostname: ldap
     restart: always
     
-  radius:
-    image: leejoneshane/tpedusso:freeradius
-    container_name: radius
-    environment:
-      LDAP_HOST: ldap://openldap
-      LDAP_ROOTDN: cn=admin,dc=tp,dc=edu,dc=tw
-      LDAP_ROOTPWD: test
-      LDAP_BASEDN: ou=account,dc=tp,dc=edu,dc=tw
-      SECRET: tpeduaaa
-      PROXY_TO_HOST: 163.21.249.130
-      PROXY_SECRET: tpeduaaa
-    restart: always
-    ports:
-      - "1812:1812/udp"
-    links:
-      - openldap:openldap
-    
   ldapadmin:
     image: leejoneshane/tpedusso:phpldapadmin
     container_name: ldapadmin
