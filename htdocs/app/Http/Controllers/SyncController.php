@@ -69,6 +69,9 @@ class SyncController extends Controller
 			case 'roles_info':
 				$result = $http->hs_call($my_field, [ 'sid' => $sid, 'ou' => $ou ]);
 				break;
+			case 'teachers_in_class':
+				$result = $http->hs_call($my_field, [ 'sid' => $sid, 'clsid' => $clsid ]);
+				break;
 			case 'students_in_class':
 				$result = $http->hs_call($my_field, [ 'sid' => $sid, 'clsid' => $clsid ]);
 				break;

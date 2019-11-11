@@ -67,6 +67,7 @@ return [
         'subjects_info' => 'school/{sid}/subject',
         'classes_info' => 'school/{sid}/class',
         'roles_info' => 'school/{sid}/unit/{ou}',
+        'teachers_in_class' => 'school/{sid}/class/{clsid}/teachers',
         'students_in_class' => 'school/{sid}/class/{clsid}/students',
         'person_info' => 'school/{sid}/people/{idno}',
         'person_change' => 'school/{sid}/people/changed/{year-month}',

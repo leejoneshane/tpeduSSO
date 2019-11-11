@@ -35,6 +35,7 @@
 					<option value="subjects_info" {{ $my_field == 'subjects_info' ? 'selected' : '' }}>科目列表</option>
 					<option value="teachers_info" {{ $my_field == 'teachers_info' ? 'selected' : '' }}>所有教師列表</option>
 					<option value="roles_info" {{ $my_field == 'roles_info' ? 'selected' : '' }}>各部門職稱列表</option>
+					<option value="teachers_in_class" {{ $my_field == 'teachers_in_class' ? 'selected' : '' }}>班級教師列表</option>
 					<option value="students_in_class" {{ $my_field == 'students_in_class' ? 'selected' : '' }}>班級學生列表</option>
 					<option value="person_info" {{ $my_field == 'person_info' ? 'selected' : '' }}>個人資料</option>
 					<option value="person_change" {{ $my_field == 'person_change' ? 'selected' : '' }}>人員異動月報表</option>
@@ -73,6 +74,7 @@
 						case 'roles_info':
 							fields = "ou";
 							break;
+						case 'teachers_in_class':
 						case 'students_in_class':
 							fields = "clsid";
 							break;
