@@ -17,10 +17,12 @@ class v2_resourceController extends Controller
 		$psr = (new \Lcobucci\JWT\Parser())->parse($token);
 		$token_id = $psr->getClaim('jti');
 		$token = Token::where('id', $token_id)->get();
-		$user = $token->user();
+		$user = $token->user;
 
 		$validate = array();
-		$validate['user'] = $user->uuid;
+		if (isset($user->uuid)) $validate['user'] = $user->uuid;
+		$validate['personal'] = false;
+		if (!empty($token->name)) $validate['personal'] = true;
 		$validate['client_id'] = $token->client_id;
 		$validate['scopes'] = $token->scopes;
 
