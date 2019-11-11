@@ -16,16 +16,20 @@ class v2_resourceController extends Controller
     {
 		$psr = (new \Lcobucci\JWT\Parser())->parse($token);
 		$token_id = $psr->getClaim('jti');
-		$token = Token::where('id', $token_id)->get();
-		$user = $token->user;
-
-		$validate = array();
-		if (isset($user->uuid)) $validate['user'] = $user->uuid;
-		$validate['personal'] = false;
-		if (!empty($token->name)) $validate['personal'] = true;
-		$validate['client_id'] = $token->client_id;
-		$validate['scopes'] = $token->scopes;
-
-		return response()->json($validate);
+		$token = Token::find($token_id);
+		if (!$token) {
+			return response()->json(['error' => 'The token is invliad!'], 404);
+		} elseif ($token->revoked) {
+			return response()->json(['error' => 'The token is revoked!'], 410);
+		} else {
+			$user = $token->user;
+			$validate = array();
+			if (isset($user->uuid)) $validate['user'] = $user->uuid;
+			$validate['personal'] = false;
+			if (!empty($token->name)) $validate['personal'] = true;
+			$validate['client_id'] = $token->client_id;
+			$validate['scopes'] = $token->scopes;
+			return response()->json($validate);
+		}
 	}
 }
