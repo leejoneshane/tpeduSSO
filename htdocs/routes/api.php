@@ -53,7 +53,6 @@ Route::group(['middleware' => 'client:school'], function () {
 
 Route::group(['prefix' => 'v2'], function () {
     Route::group(['middleware' => 'auth:api'], function () {
-        Route::get('validate', 'Api_V2\v2_profileController@valid_token');
         Route::get('logout', 'Api_V2\v2_profileController@logout');
         Route::get('me', 'Api_V2\v2_profileController@me')->middleware('scope:me');
         Route::get('email', 'Api_V2\v2_profileController@email')->middleware('scope:email');
@@ -70,6 +69,7 @@ Route::group(['prefix' => 'v2'], function () {
     });
 
     Route::group(['middleware' => 'clientid:admin'], function () {
+        Route::get('validate/{token}', 'Api_V2\v2_resourceController@valid_token');
         Route::patch('admin/school/{dc}', 'Api_V2\v2_schoolController@sp_updateSchool');
         Route::post('admin/people', 'Api_V2\v2_schoolController@sp_peopleAdd');
         Route::patch('admin/people/{uuid}', 'Api_V2\v2_schoolController@sp_peopleUpdate');

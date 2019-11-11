@@ -11,10 +11,6 @@ use Illuminate\Http\Response;
 
 class v2_profileController extends Controller
 {
-	public function valid_token(Request $request)
-    {
-		return response()->json(['data' => 'Token is valid!']);
-	}
 
     public function logout(Request $request)
     {
