@@ -1,4 +1,4 @@
-FROM alpine:3.7
+FROM alpine
 
 ENV TZ Asia/Taipei
 ENV DOMAIN ldap.tp.edu.tw
@@ -33,13 +33,12 @@ WORKDIR /var/www/localhost/htdocs
 
 RUN chmod 755 /usr/local/bin/* \
     && apk update \
-    && apk add --no-cache bash sudo git zip mc curl certbot acme-client openssl ca-certificates findutils openldap-clients \
-                          mysql-client nodejs apache2 apache2-ssl python php7-pdo php7-bcmath php7-apache2 php7-ldap php7-xmlwriter \
-                          php7-opcache php7-curl php7-openssl php7-json php7-phar php7-dom php7-mysqlnd php7-pdo_mysql \
-                          php7-iconv php7-mcrypt php7-ctype php7-xml php7-mbstring php7-tokenizer php7-session php7-fileinfo \
-                          php7-zlib php7-zip php7-gd php7-pcntl php7-posix supervisor \
+    && apk add --no-cache bash sudo git zip mc curl openssl ca-certificates findutils openldap-clients mysql-client nodejs apache2 \
+                          apache2-ssl python php7-pdo php7-bcmath php7-apache2 php7-ldap php7-xmlwriter php7-opcache php7-curl \
+                          php7-openssl php7-json php7-phar php7-dom php7-mysqlnd php7-pdo_mysql php7-iconv php7-mcrypt php7-ctype \
+                          php7-xml php7-mbstring php7-tokenizer php7-session php7-fileinfo php7-zlib php7-zip php7-gd php7-pcntl \
+                          php7-posix supervisor \
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
-    && mkdir /run/apache2 \
     && mkdir /etc/supervisor.d \
     && sed -ri \
            -e 's!^DocumentRoot "/var/www/localhost/htdocs"$!DocumentRoot "/var/www/localhost/htdocs/public"!g' \

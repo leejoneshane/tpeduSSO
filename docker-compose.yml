@@ -32,12 +32,13 @@ services:
   laravel:
     image: leejoneshane/tpedusso
     container_name: laravel
+    hostname: ldap.tp.edu.tw
     volumes:
       - ./htdocs:/var/www/localhost/htdocs
     environment:
       APP_DEBUG: 'true'
       APP_KEY: 'base64:fx/bpfXs+pQ3j7eeZP5gkqWxBtbhUpaqELdpQeeP/N8='
-      DOMAIN: ldap.tp.edu.tw
+      SESSION_SECURE_COOKIE: 'false'
       CACHE_DRIVER: redis
       SESSION_DRIVER: redis
       SESSION_CONNECTION: session

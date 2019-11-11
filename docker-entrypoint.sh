@@ -20,8 +20,9 @@ fi
 
 php artisan clear
 php artisan cache:clear
-php artisan view:clear
+php artisan opcache:clear
 php artisan view:cache
 php artisan route:cache
+php artisan config:cache
 rm -rf /run/apache2/httpd.pid
 supervisord -n -c /etc/supervisord.conf

@@ -895,9 +895,9 @@ cn: A123456789
 userPassword: {SSHA}98N8Ea6JLe2MxOUHwXNWyO7mJ5PM0IIW
 uid: meps123456789
 o: meps
-ou: dept04
-title: role015
-tpTeachClass: 101
+ou: meps,dept04
+title: meps,dept04,role015
+tpTeachClass: meps,101,
 info:: eyJzaWQiOjM1MzYwNCwicm9sZSI6IuaVmeW4qyJ9
 employeeType:: 5pWZ5bir
 givenName: 帳號 
