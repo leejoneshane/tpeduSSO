@@ -20,12 +20,14 @@ return [
     'client_secret' => env('GOOGLE_CLIENT_SECRET', ''),
     'redirect_uri' => env('GOOGLE_REDIRECT', ''),
     'scopes' => [
+/*
         \Google_Service_Directory::ADMIN_DIRECTORY_USER,
         \Google_Service_Directory::ADMIN_DIRECTORY_USER_ALIAS,
         \Google_Service_Directory::ADMIN_DIRECTORY_GROUP,
         \Google_Service_Directory::ADMIN_DIRECTORY_GROUP_MEMBER,
         \Google_Service_Classroom::CLASSROOM_COURSES,
         \Google_Service_Classroom::CLASSROOM_ROSTERS,
+*/
     ],
     'access_type' => 'online',
     'approval_prompt' => 'auto',
