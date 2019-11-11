@@ -29,10 +29,10 @@ docker-compose up -d
 
 若要讓系統實際上線服務，請務必修改環境變數，在 docker-compose.yml 檔案中，請設定以下參數：
 
-* __DOMAIN: ldap.tp.edu.tw__ 可省略，用來設定 nginx 伺服器的 FQDN。
-* __MAIL: your@gmail.com__ 可省略，用來設定 nginx 伺服器的管理員信箱。
 * __APP_DEBUG: true__ 可省略，預設為 false，除錯功能的開關。
 * __APP_URL: https://ldap.tp.edu.tw__ 可省略，預設值同前，若為其他縣市請務必修改。
+* __FORCE_SCHEME: http__ 可省略，將伺服器網址全部修改成指定的 scheme，只能設定 http 或 https。
+* __SESSION_SECURE_COOKIE: 'false'__ 可省略，只接受瀏覽器透過 https 回傳 cookie，可增加安全性。
 * __CACHE_DRIVER: redis__ 不可省略，可以使用 redis 或 file 作為網站快取。
 * __SESSION_DRIVER: redis__ 不可省略，可以使用 redis 或 file 作為連線快取。
 * __SESSION_CONNECTION: session__ 不可省略，指定連線 session 要儲存在哪一個 redis 資料庫。
