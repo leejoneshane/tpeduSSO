@@ -165,7 +165,7 @@ trait AuthenticatesUsers
             if ($user->nameID()) {
                 $this->handleSamlLoginRequest($request);
             } else {
-                return redirect()->route('home')->with('status','很抱歉，您的帳號尚未同步到 G-Suite，請稍候再登入 G-Suite 服務！');
+                return redirect('/')->with('status','很抱歉，您的帳號尚未同步到 G-Suite，請稍候再登入 G-Suite 服務！');
             }
         }
     }
