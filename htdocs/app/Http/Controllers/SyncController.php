@@ -1121,7 +1121,7 @@ class SyncController extends Controller
 						$info['givenName'] = $name[1];
 						$info['displayName'] = $data['name'];
 						if (!empty($data['gender'])) $info['gender'] = (int) $data['gender'];
-						if (!empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'];
+						if (!empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'].'000000Z';
 						if (!empty($data['register'])) $info['registeredAddress'] = $data['register'];
 						if (!empty($data['mail'])) {
 							$validator = Validator::make(
@@ -1133,7 +1133,7 @@ class SyncController extends Controller
 						if ($result) {
 							$messages[] = "cn=". $idno .",name=". $data['name'] ." 資料及帳號更新完成！";
 						} else {
-							$messages[] = "cn=". $idno .",name=". $data['name'] ." 無法更新教師資料：". print_r($info);// . $openldap->error();
+							$messages[] = "cn=". $idno .",name=". $data['name'] ." 無法更新教師資料：". $openldap->error();
 						}
 					} else {
 						$account = array();
@@ -1186,7 +1186,7 @@ class SyncController extends Controller
 						$info['givenName'] = $name[1];
 						$info['displayName'] = $data['name'];
 						if (!empty($data['gender'])) $info['gender'] = (int) $data['gender'];
-						if (!empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'];
+						if (!empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'].'000000Z';
 						if (!empty($data['register'])) $info['registeredAddress'] = $data['register'];
 						if (!empty($data['mail'])) {
 							$validator = Validator::make(
