@@ -1109,10 +1109,10 @@ class SyncController extends Controller
 							}
 						}
 						$info = array();
-						$info['o'] = array_values(array_unique($orgs));
-						$info['ou'] = array_values(array_unique($units));
-						$info['title'] = array_values(array_unique($roles));
-						$info['info'] = array_values(array_unique($educloud));
+						if (!empty($orgs)) $info['o'] = array_values(array_unique($orgs));
+						if (!empty($units)) $info['ou'] = array_values(array_unique($units));
+						if (!empty($roles)) $info['title'] = array_values(array_unique($roles));
+						if (!empty($educloud)) $info['info'] = array_values(array_unique($educloud));
 						if (!empty($assign)) $info['tpTeachClass'] = array_values(array_unique($assign));
 						$info['inetUserStatus'] = 'active';
 						$info['employeeType'] = $data['type'];
@@ -1175,8 +1175,8 @@ class SyncController extends Controller
 						$info["uid"] = $account["uid"];
 						$info["userPassword"] = $account["userPassword"];
 						$info['o'] = $dc;
-						$info['ou'] = array_values(array_unique($units));
-						$info['title'] = array_values(array_unique($roles));
+						if (!empty($units)) $info['ou'] = array_values(array_unique($units));
+						if (!empty($roles)) $info['title'] = array_values(array_unique($roles));
 						$info['info'] = json_encode(array("sid" => $sid, "role" => $data['type']), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 						if (!empty($assign)) $info['tpTeachClass'] = array_values(array_unique($assign));
 						$info['inetUserStatus'] = 'active';
