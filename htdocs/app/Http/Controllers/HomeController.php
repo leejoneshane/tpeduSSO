@@ -24,11 +24,33 @@ class HomeController extends Controller
     public function index(Request $request)
     {
 		$user = Auth::user();
-		$openldap = new LdapServiceProvider();
-		$uid = $openldap->getUserAccounts($user->idno);
+		$accounts = array();
+		if (is_array($user->ldap['uid'])) {
+			$accounts = $user->ldap['uid'];
+		} else {
+			$accounts[] = $user->ldap['uid'];
+		}
+		for ($i=0;$i<count($accounts);$i++) {
+			if (is_numeric($accounts[$i])) {
+				unset($accounts[$i]);
+				continue;
+			}
+			if (strpos($accounts[$i], '@')) {
+				unset($accounts[$i]);
+				continue;
+			}
+		}
 		$gsuite = $user->nameID();
 		$account_ready = true;
-		if (strpos($uid[0], $user->ldap['o']) > 0) $account_ready = false;
+		$orgs = array();
+		if (is_array($user->ldap['o'])) {
+			$orgs = $user->ldap['o'];
+		} else {
+			$orgs[] = $user->ldap['o'];
+		}
+		foreach ($orgs as $dc) {
+			if (strpos($account[0], $dc) > 0) $account_ready = false;
+		}
 		$gsuite_ready = false;
 		if ($gsuite) $gsuite_ready = true;
 		$create_gsuite = false;

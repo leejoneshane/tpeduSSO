@@ -1133,7 +1133,7 @@ class SyncController extends Controller
 						if ($result) {
 							$messages[] = "cn=". $idno .",name=". $data['name'] ." 資料及帳號更新完成！";
 						} else {
-							$messages[] = "cn=". $idno .",name=". $data['name'] ." 無法更新教師資料：". $openldap->error();
+							$messages[] = "cn=". $idno .",name=". $data['name'] ." 無法更新教師資料：". print_r($info);// . $openldap->error();
 						}
 					} else {
 						$account = array();
