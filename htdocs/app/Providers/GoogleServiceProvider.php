@@ -103,7 +103,9 @@ class GoogleServiceProvider extends ServiceProvider
 			$gsuite->nameID = $nameID;
 			$gsuite->primary = true;
 			$gsuite->save();
+			return true;
 		}
+		return false;
 	}
 
 	public function createUserAlias($email, $alias)

@@ -9,6 +9,7 @@ use Config;
 use Notification;
 use Illuminate\Http\Request;
 use App\Providers\LdapServiceProvider;
+use App\Providers\GoogleServiceProvider;
 use App\Rules\idno;
 use App\Notifications\AccountChangeNotification;
 use App\Notifications\PasswordChangeNotification;
@@ -205,6 +206,18 @@ class HomeController extends Controller
 			if (isset($data['mail'])) Notification::route('mail', $data['mail'])->notify(new PasswordChangeNotification($new));
 		}
 		return redirect('login')->with("success","密碼變更成功，請重新登入！");
+    }
+
+	public function syncToGsuite(Request $request)
+    {
+		$user = Auth::user();
+		$google = new GoogleServiceProvider();
+		$result = $google->createUser($user);
+		if ($result) {
+			return redirect()->back()->with("status","G-Suite 帳號同步完成！");
+		} else {
+			return redirect()->back()->with("status","G-Suite 帳號同步失敗！");
+		}
     }
 
 }

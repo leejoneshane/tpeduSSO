@@ -44,7 +44,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/', 'HomeController@index')->name('home');
     Route::get('profile', 'HomeController@showProfileForm');
     Route::post('profile', 'HomeController@changeProfile')->name('profile');
-    Route::get('oauth', 'oauthController@index')->name('oauth');
+	Route::get('oauth', 'oauthController@index')->name('oauth');
+	Route::get('gsuite/sync', 'HomeController@syncToGsuite')->name('createGsuite');
 });
 
 Route::group(['prefix' => 'sync', 'middleware' => 'auth.admin'], function () {
