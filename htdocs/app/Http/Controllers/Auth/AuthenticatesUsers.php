@@ -161,8 +161,12 @@ trait AuthenticatesUsers
         $data = $openldap->getUserData($entry, 'mail');
         if (!isset($data['mail']) || empty($data['mail'])) return redirect()->route('profile');
         
-        if (Auth::check() && isset($request['SAMLRequest']) && $user->nameID()) {
-            $this->handleSamlLoginRequest($request);
+        if (Auth::check() && isset($request['SAMLRequest'])) {
+            if ($user->nameID()) {
+                $this->handleSamlLoginRequest($request);
+            } else {
+                return redirect()->route('home')->with('error','很抱歉，您的帳號尚未同步到 G-Suite，請稍候再登入 G-Suite 服務！');
+            }
         }
     }
 
