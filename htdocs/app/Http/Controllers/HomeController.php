@@ -48,8 +48,13 @@ class HomeController extends Controller
 		} else {
 			$orgs[] = $user->ldap['o'];
 		}
-		foreach ($orgs as $dc) {
-			if (strpos($accounts[0], $dc) > 0) $account_ready = false;
+		if (empty($accounts)) {
+			$account_ready = false;
+		} else {
+			$accounts = array_values($accounts);
+			foreach ($orgs as $dc) {
+				if (strpos($accounts[0], $dc) > 0) $account_ready = false;
+			}
 		}
 		$gsuite_ready = false;
 		if ($gsuite) $gsuite_ready = true;

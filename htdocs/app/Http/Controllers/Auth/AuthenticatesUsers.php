@@ -15,7 +15,7 @@ trait AuthenticatesUsers
     use RedirectsUsers, ThrottlesLogins, SamlAuth;
 
     protected $maxAttempts = 5;
-    protected $decayMinutes = 60;
+    protected $decayMinutes = 15;
 
     /**
      * Show the application's login form.
@@ -165,7 +165,7 @@ trait AuthenticatesUsers
             if ($user->nameID()) {
                 $this->handleSamlLoginRequest($request);
             } else {
-                return redirect('/')->with('status','很抱歉，您的帳號尚未同步到 G-Suite，請稍候再登入 G-Suite 服務！');
+                session(['status' => '很抱歉，您的帳號尚未同步到 G-Suite，請稍候再登入 G-Suite 服務！']);
             }
         }
     }
