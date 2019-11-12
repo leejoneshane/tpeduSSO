@@ -977,9 +977,9 @@ class LdapServiceProvider extends ServiceProvider
 		$this->administrator();
 		$fields = array_filter($fields);
 		$dn = @ldap_get_dn(self::$ldap_read, $entry);
-		$attrs = @ldap_get_attributes(self::$ldap_read, $entry);
-		foreach ($fields as $k => $field) {
-			if (in_array($k, $attrs) && in_array($field, $attrs[$k])) unset($fields[$k]);
+		foreach ($fields as $field => $value) {
+			$values = @ldap_get_values(self::$ldap_read, $entry, $field);
+			if (in_array($value, $values)) unset($fields[$field]);
 		}
 		if (!empty($fields)) {
 			$value = @ldap_mod_add(self::$ldap_write, $dn, $fields);
