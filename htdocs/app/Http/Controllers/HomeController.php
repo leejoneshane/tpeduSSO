@@ -33,6 +33,7 @@ class HomeController extends Controller
 		if ($gsuite) $gsuite_ready = true;
 		$create_gsuite = false;
 		if (!$gsuite_ready && $account_ready) $create_gsuite = true;
+		$gmail = '';
 		if ($gsuite_ready) $gmail = $gsuite .'@'. Config::get('saml.email_domain');
         return view('home', [ 'account_ready' => $account_ready, 'create_gsuite' => $create_gsuite, 'gsuite_ready' => $gsuite_ready, 'gsuite' => $gmail ]);
     }
