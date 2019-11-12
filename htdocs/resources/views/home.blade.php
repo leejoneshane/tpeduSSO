@@ -14,7 +14,21 @@
                         </div>
                     @endif
 
-                    您已經登入系統！
+                    您已經登入系統！<br>
+                    @if (!$account_ready)
+                    注意：您使用的預設帳號在您畢業（或離職）後會自動刪除，請務必修改為自訂帳號才能長久保留使用！
+                    @elseif ($create_gsuite)
+                    要把您現在使用的帳號設定成您的 G-Suite 帳號嗎？設定完成後，請使用 {{$gsuite}} 收發電子郵件。<br>
+                    <ul>
+                        <li>郵箱網址為 <a href="https://mail.google.com/a/ms.tp.edu.tw">https://mail.google.com/a/ms.tp.edu.tw</a></li>
+                        <li>雲端硬碟為 <a href="https://drive.google.com/a/ms.tp.edu.tw">https://drive.google.com/a/ms.tp.edu.tw</a></li>
+                    </ul>
+                    @elseif ($gsuite_ready)
+                    <ul>
+                        <li>郵箱網址為 <a href="https://mail.google.com/a/ms.tp.edu.tw">https://mail.google.com/a/ms.tp.edu.tw</a></li>
+                        <li>雲端硬碟為 <a href="https://drive.google.com/a/ms.tp.edu.tw">https://drive.google.com/a/ms.tp.edu.tw</a></li>
+                    </ul>
+                    @endif
                 </div>
             </div>
         </div>

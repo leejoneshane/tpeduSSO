@@ -16,7 +16,7 @@
 			{{ session('success') }}
 		    </div>
 		@endif
-		<p>注意：為了避免帳號遭到盜用，請勿繼續使用預設帳號與預設密碼！</p>
+		<p>注意：為了避免帳號遭到盜用，請勿繼續使用預設密碼！</p>
 		<form class="form-horizontal" method="POST" action="{{ route('changePassword') }}">
 		    {{ csrf_field() }}
 		    <div class="form-group{{ $errors->has('new-password') ? ' has-error' : '' }}">

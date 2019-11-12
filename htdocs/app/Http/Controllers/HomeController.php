@@ -15,27 +15,29 @@ use App\Notifications\PasswordChangeNotification;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-//        $this->middleware('auth');
-    }
 
     /**
      * Show the application dashboard.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('home');
+		$user = Auth::user();
+		$openldap = new LdapServiceProvider();
+		$uid = $openldap->getUserAccounts($user->idno);
+		$gsuite = $user->nameID();
+		$account_ready = true;
+		if (strpos($uid[0], $user->ldap['o']) > 0) $account_ready = false;
+		$gsuite_ready = false;
+		if ($gsuite) $gsuite_ready = true;
+		$create_gsuite = false;
+		if (!$gsuite_ready && $account_ready) $create_gsuite = true;
+		if ($gsuite_ready) $gmail = $gsuite .'@'. Config::get('saml.email_domain');
+        return view('home', [ 'account_ready' => $account_ready, 'create_gsuite' => $create_gsuite, 'gsuite_ready' => $gsuite_ready, 'gsuite' => $gmail ]);
     }
     
-    public function showProfileForm()
+    public function showProfileForm(Request $request)
     {
 		return view('auth.profile', [ 'user' => Auth::user() ]);
     }
@@ -87,7 +89,7 @@ class HomeController extends Controller
 		return back()->withInput()->with("success","您的個人資料設定已經儲存！");
     }
 
-    public function showChangeAccountForm()
+    public function showChangeAccountForm(Request $request)
     {
 		return view('auth.changeaccount');
     }
@@ -116,37 +118,24 @@ class HomeController extends Controller
 		if (empty($accounts)) {
 			$openldap->addAccount($entry, $new, "自建帳號");
 			if (Auth::check()) {
-//				$user->uname = $new;
-//				$user->save();
 				if (!empty($user->email)) $user->notify(new PasswordChangeNotification($new));
 			} else {
-//				$user = User::where('idno', $idno)->first();
-//				if ($user) {
-//					$user->uname = $new;
-//					$user->save();
-//				}
 				if (isset($data['mail'])) Notification::route('mail', $data['mail'])->notify(new AccountChangeNotification($new));
 			}
 			return back()->withInput()->with("success","帳號建立成功！");
 		} else {
 			$openldap->renameAccount($entry, $new);
 			if (Auth::check()) {
-//				$user->uname = $new;
-//				$user->save();
 				if (!empty($user->email)) $user->notify(new PasswordChangeNotification($new));
 			} else {
-//				$user = User::where('idno', $idno)->first();
-//				if ($user) {
-//					$user->uname = $new;
-//					$user->save();
-//				}
+//	建立 gmail alias 尚未設計
 				if (isset($data['mail'])) Notification::route('mail', $data['mail'])->notify(new AccountChangeNotification($new));
 			}
 			return redirect('login')->with("success","帳號變更成功，請重新登入！");
 		}
     }
 
-    public function showChangePasswordForm()
+    public function showChangePasswordForm(Request $request)
     {
 		return view('auth.changepassword');
     }
@@ -165,6 +154,8 @@ class HomeController extends Controller
 		$data = $openldap->getUserData($entry);
 		if ($openldap->userLogin("cn=$idno", $new))
 	    	return back()->withInput()->with("error","新密碼不可以跟舊的密碼相同，請重新想一個新密碼再試一次！");
+		if (($openldap->getUserAccounts($idno))[0] == $new)
+	    	return back()->withInput()->with("error","新密碼不可以跟帳號相同，請重新想一個新密碼再試一次！");
 		$validatedData = $request->validate([
 			'new-password' => 'required|string|min:6|confirmed',
 		]);

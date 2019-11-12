@@ -16,7 +16,7 @@
 			{{ session('success') }}
 		    </div>
 		@endif
-		<p>注意：為了避免帳號遭到盜用，請勿繼續使用預設帳號與預設密碼！</p>
+		<p>注意：您使用的預設帳號在您畢業（或離職）後會自動刪除，請務必修改為自訂帳號才能長久保留使用！</p>
 		<form class="form-horizontal" method="POST" action="{{ route('changeAccount') }}">
 		    {{ csrf_field() }}
 		    <div class="form-group{{ $errors->has('new-account') ? ' has-error' : '' }}">
