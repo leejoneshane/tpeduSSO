@@ -25,6 +25,7 @@ class HomeController extends Controller
     public function index(Request $request)
     {
 		$user = Auth::user();
+		$openldap = new LdapServiceProvider();
 		$accounts = array();
 		if (is_array($user->ldap['uid'])) {
 			$accounts = $user->ldap['uid'];
@@ -43,19 +44,11 @@ class HomeController extends Controller
 		}
 		$gsuite = $user->nameID();
 		$account_ready = true;
-		$orgs = array();
-		if (is_array($user->ldap['o'])) {
-			$orgs = $user->ldap['o'];
-		} else {
-			$orgs[] = $user->ldap['o'];
-		}
 		if (empty($accounts)) {
 			$account_ready = false;
 		} else {
-			$accounts = array_values($accounts);
-			foreach ($orgs as $dc) {
-				if (strpos($accounts[0], $dc) > 0) $account_ready = false;
-			}
+			$account = (array_values($accounts))[0];
+			if (preg_match("/^([a-z]+)[0-9]+/", $account, $matches) && $openldap->checkSchool($matches[1])) $account_ready = false;
 		}
 		$gsuite_ready = false;
 		if ($gsuite) $gsuite_ready = true;

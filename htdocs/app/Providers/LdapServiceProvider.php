@@ -89,6 +89,19 @@ class LdapServiceProvider extends ServiceProvider
         return false;
     }
 
+    public function checkSchool($dc)
+    {
+		if (empty($dc)) return false;
+		$this->administrator();
+		$resource = @ldap_list(self::$ldap_read, Config::get('ldap.rdn'), "dc=$dc");
+		if ($resource) {
+	    	$entry = ldap_first_entry(self::$ldap_read, $resource);
+			if (!$entry) return false;
+			return true;
+		}
+		return false;
+    }
+
     public function checkSchoolAdmin($dc)
     {
 		if (empty($dc)) return false;
