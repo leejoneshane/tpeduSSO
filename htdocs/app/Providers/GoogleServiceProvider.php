@@ -27,19 +27,12 @@ class GoogleServiceProvider extends ServiceProvider
         }
 	}
 	
-	public function listUsers($filter)
-	{
-		$result = $this->directory->users->listUsers(array( 'query' => $filter));
-		if (!empty($result) && array_key_exists('users',$result)) return $result->users;
-		return null;
-	}
-
 	public function getUser($email)
 	{
 		return $this->directory->users->get($email);
 	}
 
-	public function createUser(User $user)
+	public function sync(User $user)
 	{
 		$gsuite_user = new \Google_Service_Directory_User();
 		$names = new \Google_Service_Directory_UserName();
@@ -65,7 +58,8 @@ class GoogleServiceProvider extends ServiceProvider
 			}
 		}
 		$nameID = (array_values($accounts))[0];
-		$gsuite_user->setPrimaryEmail($nameID .'@'. Config::get('saml.email_domain'));
+		$gmail = $nameID .'@'. Config::get('saml.email_domain');
+		$gsuite_user->setPrimaryEmail($gmail);
 		if ($user->email) $gsuite_user->setRecoveryEmail($user->email);
 		if ($user->mobile) {
 			$phone->setPrimary(true);
@@ -96,16 +90,28 @@ class GoogleServiceProvider extends ServiceProvider
 		$gsuite_user->setGender($gender);
 		$gsuite_user->setPassword($user->password);
 		$gsuite_user->setHashFunction('crypt');
-		$result = $this->directory->users->insert($gsuite_user);
-		if ($result) {
-			$gsuite = new Gsuite();
-			$gsuite->idno = $user->idno;
-			$gsuite->nameID = $nameID;
-			$gsuite->primary = true;
-			$gsuite->save();
-			return true;
+		$avaliable = $this->getUser($gmail);
+		if ($avaliable) {
+			$result = $this->directory->users->update($gsuite_user);
+		} else {
+			$result = $this->directory->users->insert($gsuite_user);
+			if ($result) {
+				$gsuite = new Gsuite();
+				$gsuite->idno = $user->idno;
+				$gsuite->nameID = $nameID;
+				$gsuite->primary = true;
+				$gsuite->save();
+				return true;
+			}
 		}
 		return false;
+	}
+
+	public function listUsers($filter)
+	{
+		$result = $this->directory->users->listUsers(array( 'query' => $filter));
+		if (!empty($result) && array_key_exists('users',$result)) return $result->users;
+		return null;
 	}
 
 	public function createUserAlias($email, $alias)
