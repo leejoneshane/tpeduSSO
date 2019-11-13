@@ -57,7 +57,7 @@ class GoogleServiceProvider extends ServiceProvider
 				continue;
 			}
 		}
-		$nameID = (array_values($accounts))[0];
+		$nameID = strtolower((array_values($accounts))[0]);
 		$gmail = $nameID .'@'. Config::get('saml.email_domain');
 		$gsuite_user->setPrimaryEmail($gmail);
 		if ($user->email) $gsuite_user->setRecoveryEmail($user->email);

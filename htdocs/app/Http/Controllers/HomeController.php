@@ -47,7 +47,7 @@ class HomeController extends Controller
 		if (empty($accounts)) {
 			$account_ready = false;
 		} else {
-			$account = (array_values($accounts))[0];
+			$account = strtolower((array_values($accounts))[0]);
 			if (preg_match("/^([a-z]+)[0-9]+/", $account, $matches) && $openldap->checkSchool($matches[1])) $account_ready = false;
 		}
 		$gsuite_ready = false;
