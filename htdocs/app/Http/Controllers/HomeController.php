@@ -55,7 +55,7 @@ class HomeController extends Controller
 		$create_gsuite = false;
 		if (!$gsuite_ready && $account_ready) {
 			$create_gsuite = true;
-			$gsuite = $accounts[0];
+			$gsuite = $account;
 		}
 		$gmail = '';
 		if (!empty($gsuite)) $gmail = $gsuite .'@'. Config::get('saml.email_domain');
