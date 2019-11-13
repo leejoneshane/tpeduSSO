@@ -27,19 +27,21 @@ class HomeController extends Controller
 		$user = Auth::user();
 		$openldap = new LdapServiceProvider();
 		$accounts = array();
-		if (is_array($user->ldap['uid'])) {
-			$accounts = $user->ldap['uid'];
-		} else {
-			$accounts[] = $user->ldap['uid'];
-		}
-		for ($i=0;$i<count($accounts);$i++) {
-			if (is_numeric($accounts[$i])) {
-				unset($accounts[$i]);
-				continue;
+		if (isset($user->ldap['uid'])) {
+			if (is_array($user->ldap['uid'])) {
+				$accounts = $user->ldap['uid'];
+			} else {
+				$accounts[] = $user->ldap['uid'];
 			}
-			if (strpos($accounts[$i], '@')) {
-				unset($accounts[$i]);
-				continue;
+			for ($i=0;$i<count($accounts);$i++) {
+				if (is_numeric($accounts[$i])) {
+					unset($accounts[$i]);
+					continue;
+				}
+				if (strpos($accounts[$i], '@')) {
+					unset($accounts[$i]);
+					continue;
+				}
 			}
 		}
 		$gsuite = $user->nameID();
