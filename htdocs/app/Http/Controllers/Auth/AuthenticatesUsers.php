@@ -66,6 +66,7 @@ trait AuthenticatesUsers
         if (substr($username,-9) == substr($idno, -9)) {
             if ($openldap->authenticate($username,$password)) {
                 $request->session()->put('idno', $idno);
+                if ($password == substr($idno, -6)) $request->session()->put('mustChangePW', true);
                 return redirect()->route('changeAccount');
             }
         }

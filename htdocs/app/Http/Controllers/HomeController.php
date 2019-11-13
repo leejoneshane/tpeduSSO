@@ -129,7 +129,7 @@ class HomeController extends Controller
 		  $idno = $request->session()->get('idno');
 		}
 		$validatedData = $request->validate([
-			'new-account' => 'required|alpha_num|min:6|confirmed',
+			'new-account' => 'required|alpha_num|min:6',
 		]);
 		$new = $request->get('new-account');
 		$openldap = new LdapServiceProvider();
@@ -142,6 +142,7 @@ class HomeController extends Controller
 		$entry = $openldap->getUserEntry($idno);
 		$data = $openldap->getUserData($entry, 'mail');
 		if (empty($accounts)) {
+			//	建立 gmail account 尚未設計
 			$openldap->addAccount($entry, $new, "自建帳號");
 			if (Auth::check()) {
 				if (!empty($user->email)) $user->notify(new PasswordChangeNotification($new));
@@ -150,14 +151,21 @@ class HomeController extends Controller
 			}
 			return back()->withInput()->with("success","帳號建立成功！");
 		} else {
+			//	建立 gmail alias 尚未設計
 			$openldap->renameAccount($entry, $new);
 			if (Auth::check()) {
 				if (!empty($user->email)) $user->notify(new PasswordChangeNotification($new));
 			} else {
-//	建立 gmail alias 尚未設計
 				if (isset($data['mail'])) Notification::route('mail', $data['mail'])->notify(new AccountChangeNotification($new));
 			}
-			return redirect('login')->with("success","帳號變更成功，請重新登入！");
+			$mustChangePW = $request->session()->pull('mustChangePW', false);
+			if ($mustChangePW) {
+				$request->session()->put('idno', $idno);
+				return redirect()->route('changePassword')->with("success","帳號變更成功，要先修改密碼才能執行後續作業！");
+			} else {
+				$request->session()->invalidate();
+				return redirect('login')->with("success","帳號變更成功，請重新登入！");
+			}
 		}
     }
 
@@ -200,6 +208,7 @@ class HomeController extends Controller
 			}
 			if (isset($data['mail'])) Notification::route('mail', $data['mail'])->notify(new PasswordChangeNotification($new));
 		}
+		$request->session()->invalidate();
 		return redirect('login')->with("success","密碼變更成功，請重新登入！");
     }
 

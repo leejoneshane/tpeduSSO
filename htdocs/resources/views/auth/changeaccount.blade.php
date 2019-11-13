@@ -22,7 +22,7 @@
 		    <div class="form-group{{ $errors->has('new-account') ? ' has-error' : '' }}">
 			<label for="new-account" class="col-md-8 control-label">新帳號</label>
 			<div class="col-md-8">
-			    <input id="new-account" type="password" class="form-control" name="new-account" required>
+			    <input id="new-account" type="text" class="form-control" name="new-account" required>
 			    @if ($errors->has('new-account'))
 			    <span class="help-block">
 				<strong>{{ $errors->first('new-account') }}</strong>
@@ -30,14 +30,6 @@
 			    @endif
 			</div>
 		    </div>
-
-		    <div class="form-group">
-			<label for="new-account-confirm" class="col-md-8 control-label">請再輸入一次新帳號</label>
-			<div class="col-md-8">
-			    <input id="new-account-confirm" type="password" class="form-control" name="new-account_confirmation" required>
-			</div>
-		    </div>
-
 		    <div class="form-group">
 			<div class="col-md-8 col-md-offset-4">
 			    <button type="submit" class="btn btn-primary">
