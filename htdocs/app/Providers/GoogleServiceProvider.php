@@ -1,6 +1,7 @@
 <?php
 namespace App\Providers;
 
+use Log;
 use Config;
 use App\User;
 use App\Gsuite;
@@ -14,17 +15,12 @@ class GoogleServiceProvider extends ServiceProvider
 
     function __construct() {
 		$this->client = new \Google_Client();
-		$this->client->useApplicationDefaultCredentials();
+		$this->client->setAuthConfig(Config::get('google.service_auth_file'));
 		$this->client->setApplicationName(Config::get('google.application_name'));
 		$this->client->setScopes(Config::get('google.scopes'));
-		$this->client->setAuthConfig(Config::get('google.service_auth_file'));
 		$this->client->setSubject(Config::get('google.admin'));
         $this->directory = new \Google_Service_Directory($this->client);
 		$this->classroom = new \Google_Service_Classroom($this->client);
-		
-        if ($this->client->getAuth()->isAccessTokenExpired()) {
-          $this->client->getAuth()->fetchAccessTokenWithRefreshToken();
-        }
 	}
 	
 	public function getUser($email)
@@ -41,25 +37,30 @@ class GoogleServiceProvider extends ServiceProvider
 		$gsuite_user->setKind("admin#directory#user");
 		$gsuite_user->setChangePasswordAtNextLogin(false);
 		$gsuite_user->setAgreedToTerms(true);
-		$accounts = array();
-		if (is_array($user->ldap['uid'])) {
-			$accounts = $user->ldap['uid'];
-		} else {
-			$accounts[] = $user->ldap['uid'];
-		}
-		for ($i=0;$i<count($accounts);$i++) {
-			if (is_numeric($accounts[$i])) {
-				unset($accounts[$i]);
-				continue;
+		$new_user = false;
+		if (!$user->nameID()) {
+			$new_user = true;
+			$accounts = array();
+			if (is_array($user->ldap['uid'])) {
+				$accounts = $user->ldap['uid'];
+			} else {
+				$accounts[] = $user->ldap['uid'];
 			}
-			if (strpos($accounts[$i], '@')) {
-				unset($accounts[$i]);
-				continue;
+			for ($i=0;$i<count($accounts);$i++) {
+				if (is_numeric($accounts[$i])) {
+					unset($accounts[$i]);
+					continue;
+				}
+				if (strpos($accounts[$i], '@')) {
+					unset($accounts[$i]);
+					continue;
+				}
 			}
+			$nameID = strtolower((array_values($accounts))[0]);
+			$gmail = $nameID .'@'. Config::get('saml.email_domain');
+			$gsuite_user->setPrimaryEmail($gmail);
+			$gsuite_user->setIsAdmin(false);
 		}
-		$nameID = strtolower((array_values($accounts))[0]);
-		$gmail = $nameID .'@'. Config::get('saml.email_domain');
-		$gsuite_user->setPrimaryEmail($gmail);
 		if ($user->email) $gsuite_user->setRecoveryEmail($user->email);
 		if ($user->mobile) {
 			$phone->setPrimary(true);
@@ -68,7 +69,6 @@ class GoogleServiceProvider extends ServiceProvider
 			$phones[] = $phone;
 			$gsuite_user->setPhones($phones);
 		}
-		$gsuite_user->setIsAdmin(false);
 		$names->setFamilyName($user->ldap['sn']);
 		$names->setGivenName($user->ldap['givenName']);
 		$names->setFullName($user->name);
@@ -90,8 +90,7 @@ class GoogleServiceProvider extends ServiceProvider
 		$gsuite_user->setGender($gender);
 		$gsuite_user->setPassword($user->password);
 		$gsuite_user->setHashFunction('crypt');
-		$avaliable = $this->getUser($gmail);
-		if ($avaliable) {
+		if (!$new_user) {
 			$result = $this->directory->users->update($gsuite_user);
 		} else {
 			$result = $this->directory->users->insert($gsuite_user);
@@ -109,7 +108,7 @@ class GoogleServiceProvider extends ServiceProvider
 
 	public function listUsers($filter)
 	{
-		$result = $this->directory->users->listUsers(array( 'query' => $filter));
+		$result = $this->directory->users->listUsers(array( 'domain' => 'ms.tp.edu.tw', 'query' => $filter));
 		if (!empty($result) && array_key_exists('users',$result)) return $result->users;
 		return null;
 	}

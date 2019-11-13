@@ -47,7 +47,7 @@ class User extends Authenticatable
 	{
 		$gsuite = $this->gmails()->where('primary', 1)->first();
 		if ($gsuite) return $gsuite->nameID;
-    	        return false;
+    	return false;
 	}
 
     public function getLdapAttribute()
