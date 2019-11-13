@@ -25,7 +25,7 @@ class GoogleServiceProvider extends ServiceProvider
 	
 	public function getUser($email)
 	{
-		return $this->directory->users->get($email);
+		return $this->directory->users->get($email, array('domain' =>  Config::get('saml.email_domain')));
 	}
 
 	public function sync(User $user)
@@ -110,7 +110,7 @@ class GoogleServiceProvider extends ServiceProvider
 
 	public function listUsers($filter)
 	{
-		$result = $this->directory->users->listUsers(array( 'domain' => 'ms.tp.edu.tw', 'query' => $filter));
+		$result = $this->directory->users->listUsers(array( 'domain' => Config::get('saml.email_domain'), 'query' => $filter));
 		if (!empty($result) && array_key_exists('users',$result)) return $result->users;
 		return null;
 	}
