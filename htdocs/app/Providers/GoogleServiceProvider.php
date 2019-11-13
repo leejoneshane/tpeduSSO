@@ -52,7 +52,7 @@ class GoogleServiceProvider extends ServiceProvider
 				unset($accounts[$i]);
 				continue;
 			}
-			if (strpos($accounts[$i], '@')) {
+			if (strpos($accounts[$i], '@') >= 0) {
 				unset($accounts[$i]);
 				continue;
 			}
