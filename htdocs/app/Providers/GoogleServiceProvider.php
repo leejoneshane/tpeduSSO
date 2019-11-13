@@ -38,7 +38,9 @@ class GoogleServiceProvider extends ServiceProvider
 		$gsuite_user->setChangePasswordAtNextLogin(false);
 		$gsuite_user->setAgreedToTerms(true);
 		$new_user = false;
-		if (!$user->nameID()) {
+		if ($user->nameID()) {
+			$gmail = $user->nameID() .'@'. Config::get('saml.email_domain');
+		} else {
 			$new_user = true;
 			$accounts = array();
 			if (is_array($user->ldap['uid'])) {
@@ -91,7 +93,7 @@ class GoogleServiceProvider extends ServiceProvider
 		$gsuite_user->setPassword($user->password);
 		$gsuite_user->setHashFunction('crypt');
 		if (!$new_user) {
-			$result = $this->directory->users->update($gsuite_user);
+			$result = $this->directory->users->update($gmail, $gsuite_user);
 		} else {
 			$result = $this->directory->users->insert($gsuite_user);
 			if ($result) {
