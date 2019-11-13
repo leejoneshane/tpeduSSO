@@ -178,8 +178,9 @@ class HomeController extends Controller
 		$entry = $openldap->getUserEntry($idno);
 		$data = $openldap->getUserData($entry);
 		if ($openldap->userLogin("cn=$idno", $new))
-	    	return back()->withInput()->with("error","新密碼不可以跟舊的密碼相同，請重新想一個新密碼再試一次！");
-		if (($openldap->getUserAccounts($idno))[0] == $new)
+			return back()->withInput()->with("error","新密碼不可以跟舊的密碼相同，請重新想一個新密碼再試一次！");
+		$accounts = $openldap->getUserAccounts($idno); 
+		if (!empty($accounts) && $accounts[0] == $new)
 	    	return back()->withInput()->with("error","新密碼不可以跟帳號相同，請重新想一個新密碼再試一次！");
 		$validatedData = $request->validate([
 			'new-password' => 'required|string|min:6|confirmed',
