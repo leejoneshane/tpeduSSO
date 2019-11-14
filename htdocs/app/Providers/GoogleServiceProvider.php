@@ -63,7 +63,6 @@ class GoogleServiceProvider extends ServiceProvider
 			$nameID = strtolower((array_values($accounts))[0]);
 			$gmail = $nameID .'@'. Config::get('saml.email_domain');
 			$gsuite_user->setPrimaryEmail($gmail);
-			$gsuite_user->setIsAdmin(false);
 			$gsuite_user->setPassword($user->uuid);
 			$gsuite_user->setId($user->uuid);
 		}
@@ -94,6 +93,7 @@ class GoogleServiceProvider extends ServiceProvider
 				break;
 		}
 		$gsuite_user->setGender($gender);
+		$gsuite_user->setIsAdmin($user->is_admin ? true : false);
 		// Google is not support bcrypt yet!! so we can't sync password to g-suite!
 		// $gsuite_user->setPassword($user->password);
 		// $gsuite_user->setHashFunction('crypt');
