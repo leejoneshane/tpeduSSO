@@ -19,7 +19,7 @@ class GoogleServiceProvider extends ServiceProvider
 		$this->client->setApplicationName(Config::get('google.application_name'));
 		$this->client->setScopes(Config::get('google.scopes'));
 		$this->client->setSubject(Config::get('google.admin'));
-        $this->directory = new \Google_Service_Directory($this->client);
+		$this->directory = new \Google_Service_Directory($this->client);
 		$this->classroom = new \Google_Service_Classroom($this->client);
 	}
 	
@@ -90,10 +90,11 @@ class GoogleServiceProvider extends ServiceProvider
 				break;
 		}
 		$gsuite_user->setGender($gender);
-		$gsuite_user->setPassword($user->password);
-		$gsuite_user->setHashFunction('crypt');
+//		$gsuite_user->setPassword($user->password);
+//		$gsuite_user->setHashFunction('crypt');
 		if (!$new_user) {
 			$result = $this->directory->users->update($gmail, $gsuite_user);
+			if ($result) return true;
 		} else {
 			$result = $this->directory->users->insert($gsuite_user);
 			if ($result) {
