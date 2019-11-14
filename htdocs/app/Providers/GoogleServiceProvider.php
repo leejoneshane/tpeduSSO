@@ -22,10 +22,12 @@ class GoogleServiceProvider extends ServiceProvider
 		$this->directory = new \Google_Service_Directory($this->client);
 		$this->classroom = new \Google_Service_Classroom($this->client);
 	}
-	
-	public function getUser($email)
+
+	// userKey may be $user->uuid or $user->nameID() or their gmail address.(nameID with saml.email_domain)
+	public function getUser($userKey)
 	{
-		return $this->directory->users->get($email, array('domain' =>  Config::get('saml.email_domain')));
+		if (!strpos($userKey, '@')) $userKey .= '@'. Config::get('saml.email_domain');
+		return $this->directory->users->get($userKey);
 	}
 
 	public function sync(User $user)
@@ -62,6 +64,8 @@ class GoogleServiceProvider extends ServiceProvider
 			$gmail = $nameID .'@'. Config::get('saml.email_domain');
 			$gsuite_user->setPrimaryEmail($gmail);
 			$gsuite_user->setIsAdmin(false);
+			$gsuite_user->setPassword($user->uuid);
+			$gsuite_user->setId($user->uuid);
 		}
 		if ($user->email) $gsuite_user->setRecoveryEmail($user->email);
 		if ($user->mobile) {
@@ -90,8 +94,9 @@ class GoogleServiceProvider extends ServiceProvider
 				break;
 		}
 		$gsuite_user->setGender($gender);
-//		$gsuite_user->setPassword($user->password);
-//		$gsuite_user->setHashFunction('crypt');
+		// Google is not support bcrypt yet!! so we can't sync password to g-suite!
+		// $gsuite_user->setPassword($user->password);
+		// $gsuite_user->setHashFunction('crypt');
 		if (!$new_user) {
 			$result = $this->directory->users->update($gmail, $gsuite_user);
 			if ($result) return true;

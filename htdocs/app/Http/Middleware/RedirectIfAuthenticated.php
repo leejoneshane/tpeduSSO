@@ -20,11 +20,15 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if (Auth::check() && isset($request['SAMLRequest']) && Auth::user()->nameID()) {  
-            $this->handleSamlLoginRequest($request);
-        }
         if (Auth::guard($guard)->check()) {
-            return redirect('/');
+            if (isset($request['SAMLRequest'])) {
+                if (Auth::user()->nameID()) {  
+                    $this->handleSamlLoginRequest($request);
+                } else {
+                    return redirect()->route('home')->with('status', '很抱歉，您的帳號尚未同步到 G-Suite，請稍候再登入 G-Suite 服務！');
+                }
+            }
+            return redirect()->route('home');
         }
 
         return $next($request);

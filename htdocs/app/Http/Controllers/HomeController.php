@@ -61,7 +61,6 @@ class HomeController extends Controller
 		}
 		$gmail = '';
 		if (!empty($gsuite)) $gmail = $gsuite .'@'. Config::get('saml.email_domain');
-		$request->session()->reflash();
         return view('home', [ 'account_ready' => $account_ready, 'create_gsuite' => $create_gsuite, 'gsuite_ready' => $gsuite_ready, 'gsuite' => $gmail ]);
     }
     
@@ -218,6 +217,7 @@ class HomeController extends Controller
     {
 		$user = Auth::user();
 		$google = new GoogleServiceProvider();
+		$result = $google->getUser($user->nameID .'@'. Config::get('google.email_domain'));
 		$result = $google->sync($user);
 		if ($result) {
 			return redirect()->back()->with("status","G-Suite 帳號同步完成！");
