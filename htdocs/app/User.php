@@ -129,4 +129,38 @@ class User extends Authenticatable
 		    return $user;
 		}	
     }
+
+	public function account()
+    {
+		$accounts = array();
+		if (isset($this->ldap['uid'])) {
+			if (is_array($this->ldap['uid'])) {
+				$accounts = $this->ldap['uid'];
+			} else {
+				$accounts[] = $this->ldap['uid'];
+			}
+			for ($i=0;$i<count($accounts);$i++) {
+				if (is_numeric($accounts[$i])) {
+					unset($accounts[$i]);
+					continue;
+				}
+				if (strpos($accounts[$i], '@')) {
+					unset($accounts[$i]);
+					continue;
+				}
+			}
+			$account = strtolower((array_values($accounts))[0]);
+			return $account;
+		}
+		return false;
+    }
+
+    public function is_default_account()
+    {
+		$openldap = new LdapServiceProvider();
+		$account = $this->account();
+		if ($account && preg_match("/^([a-z]+)[0-9]+/", $account, $matches) && $openldap->checkSchool($matches[1])) return true;
+		return false;
+    }
+
 }

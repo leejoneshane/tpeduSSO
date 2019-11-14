@@ -26,31 +26,11 @@ class HomeController extends Controller
     {
 		$user = Auth::user();
 		$openldap = new LdapServiceProvider();
-		$accounts = array();
-		if (isset($user->ldap['uid'])) {
-			if (is_array($user->ldap['uid'])) {
-				$accounts = $user->ldap['uid'];
-			} else {
-				$accounts[] = $user->ldap['uid'];
-			}
-			for ($i=0;$i<count($accounts);$i++) {
-				if (is_numeric($accounts[$i])) {
-					unset($accounts[$i]);
-					continue;
-				}
-				if (strpos($accounts[$i], '@')) {
-					unset($accounts[$i]);
-					continue;
-				}
-			}
-		}
+		$account = $user->account();
 		$gsuite = $user->nameID();
 		$account_ready = true;
-		if (empty($accounts)) {
+		if (empty($account) || $user->is_default_account()) {
 			$account_ready = false;
-		} else {
-			$account = strtolower((array_values($accounts))[0]);
-			if (preg_match("/^([a-z]+)[0-9]+/", $account, $matches) && $openldap->checkSchool($matches[1])) $account_ready = false;
 		}
 		$gsuite_ready = false;
 		if ($gsuite) $gsuite_ready = true;
@@ -217,7 +197,6 @@ class HomeController extends Controller
     {
 		$user = Auth::user();
 		$google = new GoogleServiceProvider();
-		$result = $google->getUser($user->nameID .'@'. Config::get('google.email_domain'));
 		$result = $google->sync($user);
 		if ($result) {
 			return back()->with("status","G-Suite 帳號同步完成！");
