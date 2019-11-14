@@ -23,7 +23,7 @@ class GoogleServiceProvider extends ServiceProvider
 		$this->classroom = new \Google_Service_Classroom($this->client);
 	}
 
-	// userKey may be $user->uuid or $user->nameID() or their gmail address.(nameID with saml.email_domain)
+	// userKey may be $user->nameID() or their gmail address.(nameID with saml.email_domain)
 	public function getUser($userKey)
 	{
 		if (!strpos($userKey, '@')) $userKey .= '@'. Config::get('saml.email_domain');
@@ -64,7 +64,6 @@ class GoogleServiceProvider extends ServiceProvider
 			$gmail = $nameID .'@'. Config::get('saml.email_domain');
 			$gsuite_user->setPrimaryEmail($gmail);
 			$gsuite_user->setPassword($user->uuid);
-			$gsuite_user->setId($user->uuid);
 		}
 		if ($user->email) $gsuite_user->setRecoveryEmail($user->email);
 		if ($user->mobile) {
