@@ -21,6 +21,8 @@ return [
     'redirect_uri' => env('GOOGLE_REDIRECT', ''),
     'scopes' => [
 /*
+        "https://www.googleapis.com/auth/admin.directory.orgunit",
+        "https://www.googleapis.com/auth/admin.directory.rolemanagement",
         "https://www.googleapis.com/auth/admin.directory.user",
         "https://www.googleapis.com/auth/admin.directory.user.alias",
         "https://www.googleapis.com/auth/admin.directory.group",
@@ -28,6 +30,8 @@ return [
         "https://www.googleapis.com/auth/classroom.courses",
         "https://www.googleapis.com/auth/classroom.rosters",
 */
+        \Google_Service_Directory::ADMIN_DIRECTORY_ORGUNIT,
+        \Google_Service_Directory::ADMIN_DIRECTORY_ROLEMANAGEMENT,
         \Google_Service_Directory::ADMIN_DIRECTORY_USER,
         \Google_Service_Directory::ADMIN_DIRECTORY_USER_ALIAS,
         \Google_Service_Directory::ADMIN_DIRECTORY_GROUP,
