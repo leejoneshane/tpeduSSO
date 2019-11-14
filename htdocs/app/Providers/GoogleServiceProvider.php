@@ -44,26 +44,14 @@ class GoogleServiceProvider extends ServiceProvider
 			$gmail = $user->nameID() .'@'. Config::get('saml.email_domain');
 		} else {
 			$new_user = true;
-			$accounts = array();
-			if (is_array($user->ldap['uid'])) {
-				$accounts = $user->ldap['uid'];
+			$nameID = $user->account();
+			if (!empty($nameID) && !$user->is_default_account()) {
+				$gmail = $nameID .'@'. Config::get('saml.email_domain');
+				$gsuite_user->setPrimaryEmail($gmail);
+				$gsuite_user->setPassword($user->uuid);
 			} else {
-				$accounts[] = $user->ldap['uid'];
+				return false;
 			}
-			for ($i=0;$i<count($accounts);$i++) {
-				if (is_numeric($accounts[$i])) {
-					unset($accounts[$i]);
-					continue;
-				}
-				if (strpos($accounts[$i], '@')) {
-					unset($accounts[$i]);
-					continue;
-				}
-			}
-			$nameID = strtolower((array_values($accounts))[0]);
-			$gmail = $nameID .'@'. Config::get('saml.email_domain');
-			$gsuite_user->setPrimaryEmail($gmail);
-			$gsuite_user->setPassword($user->uuid);
 		}
 		if ($user->email) $gsuite_user->setRecoveryEmail($user->email);
 		if ($user->mobile) {
