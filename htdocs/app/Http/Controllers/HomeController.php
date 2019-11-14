@@ -220,9 +220,9 @@ class HomeController extends Controller
 		$result = $google->getUser($user->nameID .'@'. Config::get('google.email_domain'));
 		$result = $google->sync($user);
 		if ($result) {
-			return redirect()->back()->with("status","G-Suite 帳號同步完成！");
+			return back()->with("status","G-Suite 帳號同步完成！");
 		} else {
-			return redirect()->back()->with("status","G-Suite 帳號同步失敗！");
+			return back()->with("status","G-Suite 帳號同步失敗！");
 		}
     }
 

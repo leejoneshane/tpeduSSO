@@ -44,13 +44,13 @@ trait AuthenticatesUsers
 		$password = $request->get('password');
 		if (substr($username,0,3) == 'dc=') {
 	    	if (!$openldap->checkSchoolAdmin($username))
-				return redirect()->back()->with("error","學校代號不存在！");
+				return back()->with("error","學校代號不存在！");
 	    	if ($openldap->schoolLogin($username, $password)) {
 				$dc = substr($username,3);
 				$request->session()->put('dc', $dc);
 				return redirect()->route('schoolAdmin');
 	    	} else {
-				return redirect()->back()->with("error","學校管理密碼不正確！");
+				return back()->with("error","學校管理密碼不正確！");
 	    	}
 		}
 
@@ -59,10 +59,10 @@ trait AuthenticatesUsers
         } else {
             $idno = $openldap->checkAccount($username);
         }
-        if (!$idno) return redirect()->back()->with("error","查無此使用者帳號！");
+        if (!$idno) return back()->with("error","查無此使用者帳號！");
         $status = $openldap->checkStatus($idno);
-        if ($status == 'inactive') return redirect()->back()->with("error","很抱歉，您已經被管理員停權！");
-        if ($status == 'deleted') return redirect()->back()->with("error","很抱歉，您已經被管理員刪除！");
+        if ($status == 'inactive') return back()->with("error","很抱歉，您已經被管理員停權！");
+        if ($status == 'deleted') return back()->with("error","很抱歉，您已經被管理員刪除！");
         if (substr($username,-9) == substr($idno, -9)) {
             if ($openldap->authenticate($username,$password)) {
                 $request->session()->put('idno', $idno);
@@ -156,19 +156,16 @@ trait AuthenticatesUsers
      */
     protected function authenticated(Request $request, $user)
     {
-        $idno = $request->get('idno');
-        $openldap = new LdapServiceProvider();
-        $entry = $openldap->getUserEntry($idno);
-        $data = $openldap->getUserData($entry, 'mail');
-        if (!isset($data['mail']) || empty($data['mail'])) return redirect()->route('profile');
-        
-        if (Auth::check() && isset($request['SAMLRequest'])) {
-            if ($user->nameID()) {
-                $this->handleSamlLoginRequest($request);
-            } else {
-                return redirect()->route('home')->with('status', '很抱歉，您的帳號尚未同步到 G-Suite，請稍候再登入 G-Suite 服務！');
+        if (Auth::check()) {
+            if (isset($request['SAMLRequest'])) {
+                if ($user->nameID()) {
+                    $this->handleSamlLoginRequest($request);
+                } else {
+                    return redirect('/')->with('status', '很抱歉，您的帳號尚未同步到 G-Suite，請稍候再登入 G-Suite 服務！');
+                }
             }
-        }
+            if (!isset($user->email) || empty($user->email)) return redirect()->route('profile');
+        }     
     }
 
     /**
