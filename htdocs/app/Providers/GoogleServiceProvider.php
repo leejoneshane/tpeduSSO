@@ -217,7 +217,7 @@ class GoogleServiceProvider extends ServiceProvider
 		}
 		return false;
 	}
-
+/*
 	public function listUsers($filter)
 	{
 		$result = $this->directory->users->listUsers(array( 'domain' => Config::get('saml.email_domain'), 'query' => $filter));
@@ -332,4 +332,5 @@ class GoogleServiceProvider extends ServiceProvider
 		}
 		return $users;
 	}
+*/
 }
