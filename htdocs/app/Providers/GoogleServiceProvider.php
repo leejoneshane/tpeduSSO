@@ -23,27 +23,103 @@ class GoogleServiceProvider extends ServiceProvider
 		$this->classroom = new \Google_Service_Classroom($this->client);
 	}
 
+	public function getOrgUnit($orgPath)
+	{
+		try {
+			return $this->directory->orgunits->get('my_customer', $orgPath);
+		} catch (Exception $e) {
+			Log::debug('Caught exception: '.  $e->getMessage() ."\n");
+			return false;
+		}
+	}
+
+	public function createOrgUnit($orgPath, $orgName)
+	{
+		$org_unit = new \Google_Service_Directory_OrgUnit();
+		$org_unit->setOrgUnitPath($orgPath);
+		$org_unit->setDescription($orgName);
+		try {
+			return $this->directory->orgunits->insert('my_customer', $org_unit);
+		} catch (Exception $e) {
+			Log::debug('Caught exception: '.  $e->getMessage() ."\n");
+			return false;
+		}
+	}
+
+	public function updateOrgUnit($orgPath, $orgName)
+	{
+		$org_unit = new \Google_Service_Directory_OrgUnit();
+		$org_unit->setOrgUnitPath($orgPath);
+		$org_unit->setDescription($orgName);
+		try {
+			return $this->directory->orgunits->update('my_customer', $orgPath, $org_unit);
+		} catch (Exception $e) {
+			Log::debug('Caught exception: '.  $e->getMessage() ."\n");
+			return false;
+		}
+	}
+
+	public function delegatedAdmin($userID, $orgID)
+	{
+		$roleID = '10283934923358215';
+		$role_assign = new \Google_Service_Directory_RoleAssignment();
+		$role_assign->setScopeType('ORG_UNIT');
+		$role_assign->setOrgUnitId($orgID);
+		$role_assign->setRoleId($roleID);
+		$role_assign->setAssignedTo($userID);
+		try {
+			return $this->directory->roleAssignments->insert('my_customer', $role_assign);
+		} catch (Exception $e) {
+			Log::debug('Caught exception: '.  $e->getMessage() ."\n");
+			return false;
+		}
+	}
+
 	// userKey may be $user->nameID() or their gmail address.(nameID with saml.email_domain)
 	public function getUser($userKey)
 	{
 		if (!strpos($userKey, '@')) $userKey .= '@'. Config::get('saml.email_domain');
-		return $this->directory->users->get($userKey);
+		try {
+			return $this->directory->users->get($userKey);
+		} catch (Exception $e) {
+			Log::debug('Caught exception: '.  $e->getMessage() ."\n");
+			return false;
+		}
+	}
+
+	public function createUser($userObj)
+	{
+		try {
+			return $this->directory->users->insert($userObj);
+		} catch (Exception $e) {
+			Log::debug('Caught exception: '.  $e->getMessage() ."\n");
+			return false;
+		}
+	}
+
+	public function updateUser($userKey, $userObj)
+	{
+		try {
+			return $this->directory->users->update($userKey, $userObj);
+		} catch (Exception $e) {
+			Log::debug('Caught exception: '.  $e->getMessage() ."\n");
+			return false;
+		}
 	}
 
 	public function sync(User $user)
 	{
-		$gsuite_user = new \Google_Service_Directory_User();
-		$names = new \Google_Service_Directory_UserName();
-		$gender = new \Google_Service_Directory_UserGender();
-		$phone = new \Google_Service_Directory_UserPhone();
-		$gsuite_user->setKind("admin#directory#user");
-		$gsuite_user->setChangePasswordAtNextLogin(false);
-		$gsuite_user->setAgreedToTerms(true);
 		$new_user = false;
 		if ($user->nameID()) {
 			$gmail = $user->nameID() .'@'. Config::get('saml.email_domain');
-		} else {
-			$new_user = true;
+			$gsuite_user = $this->getUser($gmail);
+			if (!$gsuite_user) $new_user = true;
+		} else $new_user = true;
+		if ($new_user) {
+			$gsuite_user = new \Google_Service_Directory_User();
+			$gsuite_user->setKind("admin#directory#user");
+			$gsuite_user->setChangePasswordAtNextLogin(false);
+			$gsuite_user->setAgreedToTerms(true);
 			$nameID = $user->account();
 			if (!empty($nameID) && !$user->is_default_account()) {
 				$gmail = $nameID .'@'. Config::get('saml.email_domain');
@@ -54,6 +130,7 @@ class GoogleServiceProvider extends ServiceProvider
 			}
 		}
 		if ($user->email) $gsuite_user->setRecoveryEmail($user->email);
+		$phone = new \Google_Service_Directory_UserPhone();
 		if ($user->mobile) {
 			$phone->setPrimary(true);
 			$phone->setType('mobile');
@@ -61,10 +138,12 @@ class GoogleServiceProvider extends ServiceProvider
 			$phones[] = $phone;
 			$gsuite_user->setPhones($phones);
 		}
+		$names = new \Google_Service_Directory_UserName();
 		$names->setFamilyName($user->ldap['sn']);
 		$names->setGivenName($user->ldap['givenName']);
 		$names->setFullName($user->name);
 		$gsuite_user->setName($names);
+		$gender = new \Google_Service_Directory_UserGender();
 		switch ($user->ldap['gender']) {
 			case 0:
 				$gender->setType('unknow');
@@ -76,27 +155,65 @@ class GoogleServiceProvider extends ServiceProvider
 				$gender->setType('female');
 				break;
 			case 9:
-				$gender->setType('other');			
+				$gender->setType('other');
 				break;
 		}
 		$gsuite_user->setGender($gender);
 		$gsuite_user->setIsAdmin($user->is_admin ? true : false);
+		if (!empty($user->ldap['o'])) {
+			$orgs = array();
+			$orgIds = array();
+			if (is_array($user->ldap['o'])) {
+				$orgs = $user->ldap['o'];
+			} else {
+				$orgs[] = $user->ldap['o'];
+			}
+			if (is_array($user->ldap['adminSchools'])) {
+				$orgs = array_values(array_unique(array_merge($orgs, $user->ldap['adminSchools'])));
+			}
+			foreach ($orgs as $org) {
+				$org_name = $user->ldap['school'][$org];
+				$org_unit = $this->getOrgUnit('/'.$org);
+				if (!$org_unit) {
+					$org_unit = $this->createOrgUnit('/'.$org, $org_name);
+					if (!$org_unit) return false;
+				}
+				$orgIds[$org] = $org_unit->getOrgUnitId();
+			}
+			if ($user->ldap['employeeType'] == '學生') {
+				if (!$this->getOrgUnit('/'. $orgs[0] .'/students')) {
+					if (!$this->createOrgUnit('/'. $orgs[0] .'/students', '學生')) return false;
+				}
+				$gsuite_user->setOrgUnitPath('/'. $orgs[0] .'/students');
+			} else {
+				foreach ($orgs as $org) {
+					$gsuite_user->setOrgUnitPath('/'.$org);
+				}
+			}
+		}
 		// Google is not support bcrypt yet!! so we can't sync password to g-suite!
 		// $gsuite_user->setPassword($user->password);
 		// $gsuite_user->setHashFunction('crypt');
 		if (!$new_user) {
-			$result = $this->directory->users->update($gmail, $gsuite_user);
-			if ($result) return true;
+			$result = $this->updateUser($gmail, $gsuite_user);
 		} else {
-			$result = $this->directory->users->insert($gsuite_user);
-			if ($result) {
+			if ($result = $this->createUser($gsuite_user)) {
 				$gsuite = new Gsuite();
 				$gsuite->idno = $user->idno;
 				$gsuite->nameID = $nameID;
 				$gsuite->primary = true;
 				$gsuite->save();
-				return true;
 			}
+		}
+		if ($result) {
+			if (is_array($user->ldap['adminSchools'])) {			
+				$userID = $result->getId();
+				foreach ($user->ldap['adminSchools'] as $org) {
+					$orgID = $orgIds[$org];
+					$this->delegatedAdmin($userID, $orgID);
+				}
+			}
+			return true;
 		}
 		return false;
 	}
