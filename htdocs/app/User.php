@@ -149,8 +149,10 @@ class User extends Authenticatable
 					continue;
 				}
 			}
-			$account = strtolower((array_values($accounts))[0]);
-			return $account;
+			if (!empty($accounts)) {
+				$account = strtolower((array_values($accounts))[0]);
+				return $account;
+			}
 		}
 		return false;
     }
