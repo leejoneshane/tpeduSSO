@@ -23,6 +23,17 @@ class GoogleServiceProvider extends ServiceProvider
 		$this->classroom = new \Google_Service_Classroom($this->client);
 	}
 
+	public function listOrgUnits()
+	{
+		try {
+			$result = $this->directory->orgunits->listOrgunits('my_customer');
+			return $result->getOrganizationUnits();
+		} catch (\Google_Service_Exception $e) {
+			Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			return false;
+		}
+	}
+
 	public function getOrgUnit($orgPath)
 	{
 		try {
@@ -59,6 +70,16 @@ class GoogleServiceProvider extends ServiceProvider
 		}
 	}
 
+	public function deleteOrgUnit($orgPath)
+	{
+		try {
+			return $this->directory->orgunits->delete('my_customer', $orgPath);
+		} catch (\Google_Service_Exception $e) {
+			Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			return false;
+		}
+	}
+
 	public function delegatedAdmin($userID, $orgID)
 	{
 		$roleID = '10283934923358215';
@@ -69,6 +90,17 @@ class GoogleServiceProvider extends ServiceProvider
 		$role_assign->setAssignedTo($userID);
 		try {
 			return $this->directory->roleAssignments->insert('my_customer', $role_assign);
+		} catch (\Google_Service_Exception $e) {
+			Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			return false;
+		}
+	}
+
+	public function findUsers($filter)
+	{
+		try {
+			$result = $this->directory->users->listUsers(array( 'domain' => Config::get('saml.email_domain'), 'query' => $filter));
+			return $result->getUsers();
 		} catch (\Google_Service_Exception $e) {
 			Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
 			return false;
@@ -101,6 +133,17 @@ class GoogleServiceProvider extends ServiceProvider
 	{
 		try {
 			return $this->directory->users->update($userKey, $userObj);
+		} catch (\Google_Service_Exception $e) {
+			Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			return false;
+		}
+	}
+
+	public function deleteUser($userKey)
+	{
+		if (!strpos($userKey, '@')) $userKey .= '@'. Config::get('saml.email_domain');
+		try {
+			return $this->directory->users->delete($userKey);
 		} catch (\Google_Service_Exception $e) {
 			Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
 			return false;
@@ -173,18 +216,18 @@ class GoogleServiceProvider extends ServiceProvider
 			}
 			foreach ($orgs as $org) {
 				$org_name = $user->ldap['school'][$org];
-				$org_unit = $this->getOrgUnit('/'.$org);
+				$org_unit = $this->getOrgUnit($org);
 				if (!$org_unit) {
-					$org_unit = $this->createOrgUnit('/'.$org, $org_name);
+					$org_unit = $this->createOrgUnit($org, $org_name);
 					if (!$org_unit) return false;
 				}
 				$orgIds[$org] = $org_unit->getOrgUnitId();
 			}
 			if ($user->ldap['employeeType'] == '學生') {
-				if (!$this->getOrgUnit('/'. $orgs[0] .'/students')) {
-					if (!$this->createOrgUnit('/'. $orgs[0] .'/students', '學生')) return false;
+				if (!$this->getOrgUnit($orgs[0] .'/students')) {
+					if (!$this->createOrgUnit($orgs[0] .'/students', '學生')) return false;
 				}
-				$gsuite_user->setOrgUnitPath('/'. $orgs[0] .'/students');
+				$gsuite_user->setOrgUnitPath($orgs[0] .'/students');
 			} else {
 				foreach ($orgs as $org) {
 					$gsuite_user->setOrgUnitPath('/'.$org);
@@ -218,13 +261,6 @@ class GoogleServiceProvider extends ServiceProvider
 		return false;
 	}
 /*
-	public function listUsers($filter)
-	{
-		$result = $this->directory->users->listUsers(array( 'domain' => Config::get('saml.email_domain'), 'query' => $filter));
-		if (!empty($result) && array_key_exists('users',$result)) return $result->users;
-		return null;
-	}
-
 	public function createUserAlias($email, $alias)
 	{
 		$email_alias = new \Google_Service_Directory_Alias();
