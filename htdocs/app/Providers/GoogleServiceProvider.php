@@ -221,13 +221,13 @@ class GoogleServiceProvider extends ServiceProvider
 					$org_unit = $this->createOrgUnit($org, $org_name);
 					if (!$org_unit) return false;
 				}
-				$orgIds[$org] = $org_unit->getOrgUnitId();
+				$orgIds[$org] = substr($org_unit->getOrgUnitId(), 3);
 			}
 			if ($user->ldap['employeeType'] == '學生') {
 				if (!$this->getOrgUnit($orgs[0] .'/students')) {
 					if (!$this->createOrgUnit($orgs[0] .'/students', '學生')) return false;
 				}
-				$gsuite_user->setOrgUnitPath($orgs[0] .'/students');
+				$gsuite_user->setOrgUnitPath('/'. $orgs[0] .'/students');
 			} else {
 				foreach ($orgs as $org) {
 					$gsuite_user->setOrgUnitPath('/'.$org);
