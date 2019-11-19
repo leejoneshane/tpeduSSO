@@ -165,9 +165,9 @@ class LdapServiceProvider extends ServiceProvider
     	if (empty($idno)) return false;
 		$this->administrator();
 		$entry = $this->getUserEntry($idno);
-		$data = $this->getUserData($entry, 'inetUserStatus');
+		$data = $this->getUserData($entry, ['inetUserStatus', 'o']);
 		if ($data) {
-			if ($data['inetUserStatus'] == 'inactive') return 'inactive';
+			if (empty($data['o']) || $data['inetUserStatus'] == 'inactive') return 'inactive';
 			if ($data['inetUserStatus'] == 'deleted') return 'deleted';
 			return 'active';
 		}
