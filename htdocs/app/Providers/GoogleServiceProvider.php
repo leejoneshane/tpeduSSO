@@ -44,12 +44,12 @@ class GoogleServiceProvider extends ServiceProvider
 		}
 	}
 
-	public function createOrgUnit($orgPath, $orgName)
+	public function createOrgUnit($orgPath, $orgName, $orgDescription)
 	{
 		$org_unit = new \Google_Service_Directory_OrgUnit();
-		$org_unit->setName($orgPath);
-		$org_unit->setDescription($orgName);
-		$org_unit->setParentOrgUnitPath('/');
+		$org_unit->setName($orgName);
+		$org_unit->setDescription($orgDescription);
+		$org_unit->setParentOrgUnitPath($orgPath);
 		try {
 			return $this->directory->orgunits->insert('my_customer', $org_unit);
 		} catch (\Google_Service_Exception $e) {
@@ -214,17 +214,17 @@ class GoogleServiceProvider extends ServiceProvider
 				$orgs = array_values(array_unique(array_merge($orgs, $user->ldap['adminSchools'])));
 			}
 			foreach ($orgs as $org) {
-				$org_name = $user->ldap['school'][$org];
+				$org_title = $user->ldap['school'][$org];
 				$org_unit = $this->getOrgUnit($org);
 				if (!$org_unit) {
-					$org_unit = $this->createOrgUnit($org, $org_name);
+					$org_unit = $this->createOrgUnit('/', $org, $org_title);
 					if (!$org_unit) return false;
 				}
 				$orgIds[$org] = substr($org_unit->getOrgUnitId(), 3);
 			}
 			if ($user->ldap['employeeType'] == '學生') {
 				if (!$this->getOrgUnit($orgs[0] .'/students')) {
-					if (!$this->createOrgUnit($orgs[0] .'/students', '學生')) return false;
+					if (!$this->createOrgUnit('/'.$orgs[0], 'students', '學生')) return false;
 				}
 				$gsuite_user->setOrgUnitPath('/'. $orgs[0] .'/students');
 			} else {
