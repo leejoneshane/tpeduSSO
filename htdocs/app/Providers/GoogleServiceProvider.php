@@ -29,7 +29,7 @@ class GoogleServiceProvider extends ServiceProvider
 			$result = $this->directory->orgunits->listOrgunits('my_customer');
 			return $result->getOrganizationUnits();
 		} catch (\Google_Service_Exception $e) {
-			Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
 			return false;
 		}
 	}
@@ -39,7 +39,7 @@ class GoogleServiceProvider extends ServiceProvider
 		try {
 			return $this->directory->orgunits->get('my_customer', $orgPath);
 		} catch (\Google_Service_Exception $e) {
-			Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
 			return false;
 		}
 	}
@@ -52,7 +52,7 @@ class GoogleServiceProvider extends ServiceProvider
 		try {
 			return $this->directory->orgunits->insert('my_customer', $org_unit);
 		} catch (\Google_Service_Exception $e) {
-			Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
 			return false;
 		}
 	}
@@ -65,7 +65,7 @@ class GoogleServiceProvider extends ServiceProvider
 		try {
 			return $this->directory->orgunits->update('my_customer', $orgPath, $org_unit);
 		} catch (\Google_Service_Exception $e) {
-			Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
 			return false;
 		}
 	}
@@ -75,7 +75,7 @@ class GoogleServiceProvider extends ServiceProvider
 		try {
 			return $this->directory->orgunits->delete('my_customer', $orgPath);
 		} catch (\Google_Service_Exception $e) {
-			Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
 			return false;
 		}
 	}
@@ -91,7 +91,7 @@ class GoogleServiceProvider extends ServiceProvider
 		try {
 			return $this->directory->roleAssignments->insert('my_customer', $role_assign);
 		} catch (\Google_Service_Exception $e) {
-			Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
 			return false;
 		}
 	}
@@ -102,7 +102,7 @@ class GoogleServiceProvider extends ServiceProvider
 			$result = $this->directory->users->listUsers(array( 'domain' => Config::get('saml.email_domain'), 'query' => $filter));
 			return $result->getUsers();
 		} catch (\Google_Service_Exception $e) {
-			Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
 			return false;
 		}
 	}
@@ -114,7 +114,7 @@ class GoogleServiceProvider extends ServiceProvider
 		try {
 			return $this->directory->users->get($userKey);
 		} catch (\Google_Service_Exception $e) {
-			Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
 			return false;
 		}
 	}
@@ -124,7 +124,7 @@ class GoogleServiceProvider extends ServiceProvider
 		try {
 			return $this->directory->users->insert($userObj);
 		} catch (\Google_Service_Exception $e) {
-			Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
 			return false;
 		}
 	}
@@ -134,7 +134,7 @@ class GoogleServiceProvider extends ServiceProvider
 		try {
 			return $this->directory->users->update($userKey, $userObj);
 		} catch (\Google_Service_Exception $e) {
-			Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
 			return false;
 		}
 	}
@@ -145,7 +145,7 @@ class GoogleServiceProvider extends ServiceProvider
 		try {
 			return $this->directory->users->delete($userKey);
 		} catch (\Google_Service_Exception $e) {
-			Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
 			return false;
 		}
 	}
