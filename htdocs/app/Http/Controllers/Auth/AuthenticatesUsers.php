@@ -60,10 +60,9 @@ trait AuthenticatesUsers
             $idno = $openldap->checkAccount($username);
         }
         if (!$idno) return back()->with("error","查無此使用者帳號！");
-	$user_entry = $openldap->getUserEntry($idno);
-	$user_data = $openldap->getUserData($user_entry);
-	if (empty($user_data['o']) || $user_data['inetUserStatus'] == 'inactive') return back()->with("error","很抱歉，您已經被管理員停權！");
-        if ($user_data['inetUserStatus'] == 'deleted') return back()->with("error","很抱歉，您已經被管理員刪除！");
+	$status = $openldap->checkStatus($idno);
+	if ($status == 'inactive') return back()->with("error","很抱歉，您已經被管理員停權！");
+        if ($status == 'deleted') return back()->with("error","很抱歉，您已經被管理員刪除！");
         if (substr($username,-9) == substr($idno, -9)) {
             if ($openldap->authenticate($username,$password)) {
                 $request->session()->put('idno', $idno);
