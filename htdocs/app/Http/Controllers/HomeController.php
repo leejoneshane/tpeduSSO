@@ -199,9 +199,9 @@ class HomeController extends Controller
 		$google = new GoogleServiceProvider();
 		$result = $google->sync($user);
 		if ($result) {
-			return back()->with("status","G-Suite 帳號同步完成！");
+			return redirect('/')->with("status","G-Suite 帳號同步完成！");
 		} else {
-			return back()->with("status","G-Suite 帳號同步失敗！");
+			return redirect('/')->with("status","G-Suite 帳號同步失敗！");
 		}
     }
 

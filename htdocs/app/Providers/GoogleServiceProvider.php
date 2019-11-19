@@ -47,8 +47,9 @@ class GoogleServiceProvider extends ServiceProvider
 	public function createOrgUnit($orgPath, $orgName)
 	{
 		$org_unit = new \Google_Service_Directory_OrgUnit();
-		$org_unit->setOrgUnitPath($orgPath);
+		$org_unit->setName($orgPath);
 		$org_unit->setDescription($orgName);
+		$org_unit->setParentOrgUnitPath('/');
 		try {
 			return $this->directory->orgunits->insert('my_customer', $org_unit);
 		} catch (\Google_Service_Exception $e) {
@@ -60,7 +61,6 @@ class GoogleServiceProvider extends ServiceProvider
 	public function updateOrgUnit($orgPath, $orgName)
 	{
 		$org_unit = new \Google_Service_Directory_OrgUnit();
-		$org_unit->setOrgUnitPath($orgPath);
 		$org_unit->setDescription($orgName);
 		try {
 			return $this->directory->orgunits->update('my_customer', $orgPath, $org_unit);
@@ -160,7 +160,6 @@ class GoogleServiceProvider extends ServiceProvider
 		} else $new_user = true;
 		if ($new_user) {
 			$gsuite_user = new \Google_Service_Directory_User();
-			$gsuite_user->setKind("admin#directory#user");
 			$gsuite_user->setChangePasswordAtNextLogin(false);
 			$gsuite_user->setAgreedToTerms(true);
 			$nameID = $user->account();
