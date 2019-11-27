@@ -228,14 +228,12 @@ class GoogleServiceProvider extends ServiceProvider
 				}
 				$gsuite_user->setOrgUnitPath('/'. $orgs[0] .'/students');
 			} else {
-				foreach ($orgs as $org) {
-					$gsuite_user->setOrgUnitPath('/'.$org);
-				}
+				$gsuite_user->setOrgUnitPath('/'.$orgs[0]);
 			}
 		}
 		// Google is not support bcrypt yet!! so we can't sync password to g-suite!
 		// $gsuite_user->setPassword($user->password);
-		// $gsuite_user->setHashFunction('crypt');
+		// $gsuite_user->setHashFunction('bcrypt');
 		if (!$new_user) {
 			$result = $this->updateUser($gmail, $gsuite_user);
 		} else {
