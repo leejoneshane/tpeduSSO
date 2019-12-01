@@ -1280,16 +1280,18 @@ class SyncController extends Controller
 						} else {
 							$uids[] = $original['uid'];
 						}
+						$flag = false;
 						foreach ($uids as $uid) {
-							if (substr($uid,strlen($dc)) == $dc) {
+							if (strpos($uid,$dc)) {
+								$flag = true;
 								$new_uids = array_diff($uids, [$uid]);
-								$info['uid'] = array_values($new_uids);
 								$acc = $openldap->getAccountEntry($uid);
 								$openldap->deleteEntry($acc);
 							}
 						}
 					}
 					$info = array();
+					if ($flag) $info['uid'] = array_values($new_uids);
 					$info['o'] = array_values($orgs);
 					$info['ou'] = array_values($units);
 					$info['title'] = array_values($roles);
@@ -1591,16 +1593,18 @@ class SyncController extends Controller
 						} else {
 							$uids[] = $original['uid'];
 						}
+						$flag = false;
 						foreach ($uids as $uid) {
-							if (substr($uid,strlen($dc)) == $dc) {
+							if (strpos($uid,$dc)) {
+								$flag = true;
 								$new_uids = array_diff($uids, [$uid]);
-								$info['uid'] = array_values($new_uids);
 								$acc = $openldap->getAccountEntry($uid);
 								$openldap->deleteEntry($acc);
 							}
 						}
 					}
 					$info = array();
+					if ($flag) $info['uid'] = array_values($new_uids);
 					$info['o'] = array_values($orgs);
 					$info['ou'] = array_values($units);
 					$info['title'] = array_values($roles);
@@ -1953,16 +1957,18 @@ class SyncController extends Controller
 						} else {
 							$uids[] = $original['uid'];
 						}
+						$flag = false;
 						foreach ($uids as $uid) {
-							if (substr($uid,strlen($dc)) == $dc) {
+							if (strpos($uid,$dc)) {
+								$flag = true;
 								$new_uids = array_diff($uids, [$uid]);
-								$info['uid'] = array_values($new_uids);
 								$acc = $openldap->getAccountEntry($uid);
 								$openldap->deleteEntry($acc);
 							}
 						}
 					}
 					$info = array();
+					if ($flag) $info['uid'] = array_values($new_uids);
 					$info['o'] = array_values($orgs);
 					$info['ou'] = array_values($units);
 					$info['title'] = array_values($roles);
@@ -2167,7 +2173,29 @@ class SyncController extends Controller
 				$data = $http->hs_getPerson($sid, $idno);
 				$user_entry = $openldap->getUserEntry($idno);
 				if ($user_entry) {
-					$result = $openldap->updateAccounts($user_entry, [ $dc.$data['stdno'] ]);
+					$ldap_data =  $openldap->getUserData($user_entry);
+					$accounts = array();
+					if (isset($ldap_data['uid'])) {
+						if (is_array($ldap_data['uid'])) {
+							$accounts = $ldap_data['uid'];
+						} else {
+							$accounts[] = $ldap_data['uid'];
+						}
+						$has_default = false;
+						foreach ($accounts as $k => $acc) {
+							if (preg_match("/^([a-z]+)[0-9]+/", $acc, $matches) && $openldap->checkSchool($matches[1])) {
+								unset($accounts[$k]);
+								$has_default = true;
+							}
+						}
+						if ($has_default) {
+							$accounts = array_values($accounts);
+							$accounts[] = $dc.$data['stdno'];
+						}
+					} else {
+						$accounts[] = $dc.$data['stdno'];
+					}
+					$result = $openldap->updateAccounts($user_entry, $accounts);
 					if (!$result) {
 						$messages[] = "cn=". $idno .",stdno=". $data['stdno'] .",name=". $data['name'] . "因為帳號無法更新，學生同步失敗！".$openldap->error();
 						continue;
@@ -2382,7 +2410,29 @@ class SyncController extends Controller
 				$data = $http->js_getPerson($sid, $idno);
 				$user_entry = $openldap->getUserEntry($idno);
 				if ($user_entry) {
-					$result = $openldap->updateAccounts($user_entry, [ $dc.$data['stdno'] ]);
+					$ldap_data =  $openldap->getUserData($user_entry);
+					$accounts = array();
+					if (isset($ldap_data['uid'])) {
+						if (is_array($ldap_data['uid'])) {
+							$accounts = $ldap_data['uid'];
+						} else {
+							$accounts[] = $ldap_data['uid'];
+						}
+						$has_default = false;
+						foreach ($accounts as $k => $acc) {
+							if (preg_match("/^([a-z]+)[0-9]+/", $acc, $matches) && $openldap->checkSchool($matches[1])) {
+								unset($accounts[$k]);
+								$has_default = true;
+							}
+						}
+						if ($has_default) {
+							$accounts = array_values($accounts);
+							$accounts[] = $dc.$data['stdno'];
+						}
+					} else {
+						$accounts[] = $dc.$data['stdno'];
+					}
+					$result = $openldap->updateAccounts($user_entry, $accounts);
 					if (!$result) {
 						$messages[] = "cn=". $idno .",stdno=". $data['stdno'] .",name=". $data['name'] . "因為帳號無法更新，學生同步失敗！".$openldap->error();
 						continue;
@@ -2602,7 +2652,29 @@ class SyncController extends Controller
 					}
 					$user_entry = $openldap->getUserEntry($idno);
 					if ($user_entry) {
-						$result = $openldap->updateAccounts($user_entry, [ $dc.$stdno ]);
+						$ldap_data =  $openldap->getUserData($user_entry);
+						$accounts = array();
+						if (isset($ldap_data['uid'])) {
+							if (is_array($ldap_data['uid'])) {
+								$accounts = $ldap_data['uid'];
+							} else {
+								$accounts[] = $ldap_data['uid'];
+							}
+							$has_default = false;
+							foreach ($accounts as $k => $acc) {
+								if (preg_match("/^([a-z]+)[0-9]+/", $acc, $matches) && $openldap->checkSchool($matches[1])) {
+									unset($accounts[$k]);
+									$has_default = true;
+								}
+							}
+							if ($has_default) {
+								$accounts = array_values($accounts);
+								$accounts[] = $dc.$stdno;
+							}
+						} else {
+							$accounts[] = $dc.$stdno;
+						}
+						$result = $openldap->updateAccounts($user_entry, $accounts);
 						if (!$result) {
 							$messages[] = "cn=". $idno .",stdno=". $stdno .",name=". $data['name'] . "因為帳號無法更新，學生同步失敗！".$openldap->error();
 							continue;
