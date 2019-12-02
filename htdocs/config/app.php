@@ -23,6 +23,12 @@ return [
     //第一次密碼有效天數(day) 0 表示不啟用
     'firstPasswordChangeDay' => 3 ,
 
+    //QR-CODE有效期
+    'parentsQRCodeExpireDays' => 5 ,
+
+    //外部登入建立帳號有效期
+    'parentsSocialiteAccountDays' => 7 ,
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
