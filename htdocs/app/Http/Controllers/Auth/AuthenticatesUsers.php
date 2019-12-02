@@ -65,19 +65,76 @@ trait AuthenticatesUsers
         $status = $openldap->checkStatus($idno);
         if ($status == 'inactive') return redirect()->back()->with("error","很抱歉，您已經被管理員停權！");
         if ($status == 'deleted') return redirect()->back()->with("error","很抱歉，您已經被管理員刪除！");
-        if (substr($username,-9) == substr($idno, -9)) {
-            if ($openldap->authenticate($username,$password)) {
-                $request->session()->put('idno', $idno);
-                if ($password == substr($idno, -6)) $request->session()->put('mustChangePW', true);
-                return redirect()->route('changeAccount');
+
+        $attemptLogin=false;
+        if ($this->attemptLogin($request)) {
+            $attemptLogin=true;
+
+            if (Auth::check()) {
+                $user = Auth::user();
+                $idno = $user->idno;
+            }
+
+            //確認是否預設密碼有超過使用期限
+            $firstPasswordChangeDay = Config::get('app.firstPasswordChangeDay');
+            if($firstPasswordChangeDay > 0) {
+                if ($password == substr($idno, -6)) {
+                    $accountEntry = $openldap->getAccountEntry($username);
+                    if ($accountEntry) {
+                        $accountData = $openldap->getAccountData($accountEntry);
+                        $dt='';
+                        if(isset($accountData['createTimestamp'])) $dt = subStr($accountData['createTimestamp'],0,8);                        
+
+						//20191115密碼有效期移到people裡的initials
+						$entry = $openldap->getUserEntry($idno);
+						$result = $openldap->getUserData($entry, ['initials']);
+						if($result && array_key_exists('initials',$result)){
+							$d = \DateTime::createFromFormat('Ymd', $result['initials']);
+							if($d && $d->format('Ymd') == $result['initials'])
+								$dt = $result['initials'];
+						}
+
+                        if(((strtotime(date('Ymd'))-strtotime($dt))/(60*60*24)) > $firstPasswordChangeDay) {
+                            $this->guard()->logout();
+                            return redirect()->back()->with("error","很抱歉，您預設密碼已經超過有效期限，請老師重新設定您的密碼！");
+                        }    
+                     }   
+                    
+                }    
+                
+            }
+            $c=$firstPasswordChangeDay > 0? 1:2;
+            $employeeTypeData=$openldap->getEmployeeType($idno);
+            if(is_array($employeeTypeData)) {
+                $employeeType = $employeeTypeData;
+            } else {
+                $employeeType[] = $employeeTypeData;
+            }
+
+			if (substr($username,-9) == substr($idno, -9)) {
+				if ($openldap->authenticate($username,$password)) {
+					$request->session()->put('idno', $idno);
+					$request->session()->put('username', $username);
+					$this->guard()->logout();
+					return redirect()->route('changeAccount')->with("success","您要先設定新帳號才能執行後續作業！");
+				}
+			}
+
+            //全都要執行第一次改密碼
+            if ($password == substr($idno, -6)) {
+                if ($openldap->authenticate($username,$password)) {
+                    $request->session()->put('idno', $idno);
+                    $this->guard()->logout();
+                    return redirect()->route('changePassword')->with("success","要先修改密碼才能執行後續作業！");
+				}
+			}
+
+            //Scan QRcode 
+            if($request->session()->has('qrcodeObject')) {
+                return app('App\Http\Controllers\HomeController')->connectChildQrcode($request);
             }
         }
-        if ($password == substr($idno, -6)) {
-            if ($openldap->authenticate($username,$password)) {
-                $request->session()->put('idno', $idno);
-                return redirect()->route('changePassword');
-            }
-        }
+
 
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
@@ -87,10 +144,8 @@ trait AuthenticatesUsers
             $this->fireLockoutEvent($request);
             return $this->sendLockoutResponse($request);
         }
-        if ($this->attemptLogin($request)) {
-            //Scan QRcode 
-            if($request->session()->has('qrcodeObject'))
-                return app('App\Http\Controllers\HomeController')->connectChildQrcode($request);
+        if($attemptLogin) {
+        //if ($this->attemptLogin($request)) {
             return $this->sendLoginResponse($request);
         }
         // If the login attempt was unsuccessful we will increment the number of attempts
@@ -288,48 +343,45 @@ trait AuthenticatesUsers
         $data = DB::table('oauth_socialite_account')->where('oauth_id',$socialite->id)->where('source',$source)->first();
         if($data) {
             //防呆查詢是否LDAP有無此使用者 
-            if ($openldap->checkIdno($data->idno)==false)
+            //if ($openldap->checkIdno($data->idno)==false)
+			$info = \App\ParentsInfo::where('cn',$data->idno)->first();
+			if(empty($info))
                 return redirect()->back()->with("error","該社群帳號綁定的使用者已不存在，請洽系統管理人員！")->withInput();
-            // 有在DB(綁定)之中就Login認證通過...
-            $entry = $openldap->getUserEntry($data->idno);
-            $user = new \App\User();
-            if ($entry) {
-                $dataLdap = $openldap->getUserData($entry);
-                $user->idno = $dataLdap['cn'];
-                if (isset($dataLdap['uid'])) {
-                    if (is_array($dataLdap['uid'])) {
-                        $user->uname = $dataLdap['uid'][0];
-                    } else {
-                        $user->uname = $dataLdap['uid'];
-                    }
-                }
-                $user->name = $dataLdap['displayName'];
-                $user->uuid = $dataLdap['entryUUID'];
-                $user->email = $socialite->email;
-                $user->password = $user->idno."password"; //\Hash::make($user->idno."password");
 
-                Auth::login($user);
-                if (Auth::attempt(['username' => 'cn='.$user->idno,'password' => $user->idno."password"])) {
-                    //導至首頁
-                    if(Auth::check()) {
-                        //Scan QRcode 
-                        if($request->session()->has('qrcodeObject')) {
-                            return app('App\Http\Controllers\HomeController')->connectChildQrcode($request);
-                        } else {
-                            return redirect()->intended($this->redirectPath());
-                        }
-                    } else {
-                        return redirect()->route('login')->with('error','社群帳號登入失敗，請洽系統管理人員!');  
-                    } 
-                } else {
-                    return redirect()->route('login')->with('error','社群帳號登入驗證失敗，請洽系統管理人員!'); 
-                }
-            } else {
-                //不可能發生 防呆  
-                $error="noRole";
-                return redirect()->route('login')->with('error','社群帳號與LDAP驗證失敗，請洽系統管理人員!'); 
-            }  
+            $user = new \App\User();
+			$user->idno = $info->cn;
+			/*
+			if (isset($dataLdap['uid'])) {
+				if (is_array($dataLdap['uid'])) {
+					$user->uname = $dataLdap['uid'][0];
+				} else {
+					$user->uname = $dataLdap['uid'];
+				}
+			}
+			*/
+			$user->name = $info->display_name;
+			$user->uuid = $info->uuid;
+			$user->email = $info->mail;
+			$user->password = $info->idno."password"; //\Hash::make($user->idno."password");
+
+			Auth::login($user);
+			if (Auth::attempt(['username' => $user->idno,'password' => $user->idno."password"])) {
+				//導至首頁
+				if(Auth::check()) {
+					//Scan QRcode 
+					if($request->session()->has('qrcodeObject')) {
+						return app('App\Http\Controllers\HomeController')->connectChildQrcode($request);
+					} else {
+						return redirect()->intended($this->redirectPath());
+					}
+				} else {
+					return redirect()->route('login')->with('error','社群帳號登入失敗，請洽系統管理人員!');  
+				} 
+			} else {
+				return redirect()->route('login')->with('error','社群帳號登入驗證失敗，請洽系統管理人員!'); 
+			}
         } else {
+			$request->session()->forget('policyYn');
             $request->session()->put('socialite_cache', $socialite);
             $request->session()->put('source_cache', $source);
             return redirect()->route('registerThird');
@@ -338,6 +390,11 @@ trait AuthenticatesUsers
 
     public function registerThird(Request $request)
     {
+		$policyYn = $request->get('policyYn');
+		if($policyYn != 'Y')
+			$policyYn = 'N';
+		$request->session()->put('policyYn',$policyYn);
+
         $attributes = [
             'idno' => '身分字號',
             'displayName' => '姓名',
@@ -349,45 +406,57 @@ trait AuthenticatesUsers
             'idno' =>  ['required', new idno()],
             'displayName' => 'required|string',
             'email' => 'required|email',
-            'mobile' => 'nullable|digits:10|numeric',
+            'mobile' => 'required|digits:10|numeric',
         ],[],$attributes);
           
         $openldap = new LdapServiceProvider();
 
+		//檢查身分證是否存在於LDAP或MYSQL裡
+		$flag = $openldap->checkIdno($request->idno);
+		if(empty($flag))
+			$flag = \App\ParentsInfo::where('cn',$request->idno)->first();
+
         //先去核對目前LDAP 無此使用者帳號 (cn=account) 才能建立 
-        if ($openldap->checkIdno($request->idno)==false) {
+        if (empty($flag)) {
             //檢查Email 手機 有無重覆 (目前Users 有限唯一 因為有功能可以利用它們當帳號)
             if(!empty($request->email)) {
-              $checkEmail = DB::table('users')->where('email',$request->email)->first();
-              if($checkEmail) {
-                return redirect()->back()->with("error","該eMail信箱已於本系統有帳號使用或已綁定其它社群帳號，請修改您的Email，謝謝！")->withInput();
-              }
-            } 
-            if(!empty($request->mobile)) {
+				$checkEmail = DB::table('users')->where('email',$request->email)->first();
+				if($checkEmail)
+					return redirect()->back()->with("error","該eMail信箱已於本系統有帳號使用或已綁定其它社群帳號，請修改您的Email，謝謝！")->withInput();
+
+				//再判斷是否LDAP 有使用這Email
+				$flag = $openldap->emailAvailable($request->idno, $request->email);
+				if($flag)
+					$flag = empty(\App\ParentsInfo::where('mail',$request->email)->first());
+				if(empty($flag))
+					return redirect()->back()->with("error","您輸入的電子郵件已經被別人使用，請您重新輸入一次！");
+			}
+
+			if(!empty($request->mobile)) {
                 $checkMobile = DB::table('users')->where('mobile',$request->mobile)->first();
-                if($checkEmail) {
-                  return redirect()->back()->with("error","該電話號碼箱已於本系統有帳號使用或已綁定其它社群帳號，請修改您的電話號碼，謝謝！")->withInput();
-                }
-              }          
-          //無-建立LDAP 使用者 (cn=people)
-            $info = array();
-            $info['dn'] = "cn=$request->idno,".Config::get('ldap.userdn');
-            $info['objectClass'] = array('tpeduPerson', 'inetUser');
-            $info['cn'] = $request->idno;
-            $info["uid"] = $request->email;
-            $info["userPassword"] =$request->idno."password";
-            $info['o'] = '';
-            $info['ou'] = '';
-            $info['title'] = '';
-            $info['info'] = '';
-            $info['inetUserStatus'] = 'active';
-            $info['employeeType'] = '家長';
+                if($checkEmail)
+					return redirect()->back()->with("error","該電話號碼箱已於本系統有帳號使用或已綁定其它社群帳號，請修改您的電話號碼，謝謝！")->withInput();
+
+                //再判斷是否LDAP 有使用這手機 防呆
+				$flag = $openldap->mobileAvailable($request->idno, $request->mobile);
+				if($flag)
+					$flag = empty(\App\ParentsInfo::where('mobile',$request->mobile)->first());
+                if(empty($flag))
+				    return redirect()->back()->with("error","您輸入的手機號碼已經被別人使用，請您重新輸入一次！");
+			}
+
             $name = $this->guess_name($request->displayName);
-            $info['sn'] = $name[0];
-            $info['givenName'] = $name[1];
-            $info['displayName'] = $request->displayName;
-            $info['mail'] =$request->email;
-            $result = $openldap->createEntry($info);
+			//無-建立LDAP 使用者 (cn=people)
+			$par = new \App\ParentsInfo();
+			$par->uuid = \Guid::create();
+			$par->cn = $request->idno;
+			$par->user_status = 'active';
+			$par->sn = $name[0];
+			$par->given_name = $name[1];
+			$par->display_name = $request->displayName;
+			$par->mail = $request->email;
+			$par->mobile = $request->mobile;
+			$par->save();
 
             $data = DB::table('oauth_socialite_account')->where('oauth_id',$request->id)->where('source',$request->sourceFrom)->first();
  
@@ -399,59 +468,57 @@ trait AuthenticatesUsers
                 $oauthUser->email=$request->email;
                 $oauthUser->source=$request->sourceFrom;
                 $oauthUser->save();
-            } 
-            //進行自動登入
-                $entry = $openldap->getUserEntry($request->idno);
-                $user = new \App\User();
-                    if ($entry) {
-                        $data = $openldap->getUserData($entry);
-                        $user->idno = $request->idno;
-                        if (isset($data['uid'])) {
-                            if (is_array($data['uid'])) {
-                                $user->uname = $data['uid'][0];
-                            } else {
-                                $user->uname = $data['uid'];
-                            }
-                        }
-                        $user->name = $data['displayName'];
-                        $user->uuid = $data['entryUUID'];
-                    } else {
-                        //不可能會進到這裡才對 防呆
-                        $user->name = $request->displayName;
-                        $user->uuid = $request->idno;
-                    }  
-            
-                //登入
-                Auth::login($user);
-                if (Auth::attempt(['username' => 'cn='.$request->idno,'password' => $request->idno."password"])) {
-                    //導至首頁
-                    if(Auth::check()) {
-                        //Scan QRcode 
-                        if($request->session()->has('qrcodeObject')) {
-                            return app('App\Http\Controllers\HomeController')->connectChildQrcode($request);
-                        } else {
-                            return redirect()->intended($this->redirectPath());
-                        }
-                    } else {
-                        return redirect()->route('login')->with('error','社群帳號無法登入');  
-                    } 
-                } else {
-                    return redirect()->route('login')->with('error','社群帳號驗證失敗'); 
-                }
-        
-        
-            } else {   //有-Back Error (有帳號不允許建立)  
-          return redirect()->back()->with("error","該身分證字號已於本系統有帳號使用或已綁定其它社群帳號，請利用右上方的登入使用其它帳號登入，謝謝！")->withInput();
+            }
+
+			//進行自動登入
+			$user = new \App\User();
+			$user->idno = $par->cn;
+			$user->uname = $par->mail;
+			$user->name = $par->display_name;
+			$user->uuid = $par->uuid;
+			$user->email = $par->mail;
+			$user->password = $user->idno."password";
+
+			//登入
+			Auth::login($user);
+			if (Auth::attempt(['username' => $user->idno,'password' => $user->idno."password"])) {
+				//導至首頁
+				if(Auth::check()) {
+					//Scan QRcode 
+					if($request->session()->has('qrcodeObject')) {
+						return app('App\Http\Controllers\HomeController')->connectChildQrcode($request);
+					} else {
+						return redirect()->intended($this->redirectPath());
+					}
+				} else {
+					return redirect()->route('login')->with('error','社群帳號無法登入');  
+				} 
+			} else {
+				return redirect()->route('login')->with('error','社群帳號驗證失敗'); 
+			}
+		} else {
+			//有-Back Error (有帳號不允許建立)  
+			return redirect()->back()->with("error","該身分證字號已於本系統有帳號使用或已綁定其它社群帳號，請利用右上方的登入使用其它帳號登入，謝謝！")->withInput();
         }
     }
 
     public function showRegisterThirdForm(Request $request)
     {
         $so2=$request->session()->get('socialite_cache');
+		if(!$so2)
+			return redirect()->route('login');
+
+		$policy = '';
+		$POLICY_PATH = storage_path('policies/parents_service');
+		if(file_exists($POLICY_PATH))
+			$policy = file_get_contents($POLICY_PATH);
+
         $source2=$request->session()->get('source_cache');
-        return view('auth.registerthird', [ 'source'=>$source2,'socialite' => $so2 ]);
+		$limitDays = Config::get('app.parentsSocialiteAccountDays');
+
+        return view('auth.registerthird', [ 'source'=>$source2,'limitDays' => $limitDays,'socialite' => $so2,'policy' => $policy,'policyYn' => $request->session()->get('policyYn','N') ]);
     }
-    
+
     function guess_name($myname) {
 		$len = mb_strlen($myname, "UTF-8");
 		if ($len > 3) {
@@ -459,6 +526,5 @@ trait AuthenticatesUsers
 		} else {
 			return array(mb_substr($myname, 0, 1, "UTF-8"), mb_substr($myname, 1, null, "UTF-8"));
 		}
-	}	
-    
+	}
 }
