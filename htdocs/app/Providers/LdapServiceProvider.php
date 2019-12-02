@@ -359,7 +359,7 @@ class LdapServiceProvider extends ServiceProvider
 				$ou->description = $info['description'];
 				if ($info['businessCategory'] == '教學班級') {
 					$ou->grade = $info['grade'];
-					$ou->teacher = $info['tpTutor'];
+					$ou->tutor = $info['tpTutor'];
 				}
 				$ous[] = $ou;
 			} while ($entry=ldap_next_entry(self::$ldap_read, $entry));
