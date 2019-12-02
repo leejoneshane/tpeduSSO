@@ -16,9 +16,9 @@ class CreateStudentParentDataTable extends Migration
         Schema::create('student_parent_data', function (Blueprint $table) {
             $table->increments('id');
 						$table->string('school_id',10);
-						$table->string('student_id',20);
+						//$table->string('student_id',20);
 						$table->string('student_idno',20);
-						$table->string('student_birthday',10)->nullable();
+						//$table->string('student_birthday',10)->nullable();
 						$table->string('parent_idno',20)->nullable();
 						$table->string('parent_name',20);
 						$table->string('parent_relation',20)->nullable();
