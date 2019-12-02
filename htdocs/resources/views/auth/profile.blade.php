@@ -59,6 +59,7 @@
             		    @endif
             		</div>
                     </div>
+					@if(!$user->onlyRole('家長'))
             	    <div class="form-group row">
             		<div class="col-md-6 offset-md-4">
             		    <div class="checkbox">
@@ -68,6 +69,7 @@
             		    </div>
             		</div>
                     </div>
+					@endif
             	    <div class="form-group row">
             		<label for="mobile" class="col-md-4 col-form-label text-md-right">手機號碼</label>
             		<div class="col-md-6">
@@ -79,6 +81,7 @@
             		    @endif
             		</div>
                     </div>
+					@if(!$user->onlyRole('家長'))
             	    <div class="form-group row">
             		<div class="col-md-6 offset-md-4">
             		    <div class="checkbox">
@@ -88,6 +91,7 @@
             		    </div>
             		</div>
                     </div>
+					@endif
                     @if (!empty($user->ldap['employeeType']) && $user->ldap['employeeType'] == '教師')
                 		@if (isset($user->ldap['school']))
 							@foreach ($user->ldap['school'] as $o => $sch)
