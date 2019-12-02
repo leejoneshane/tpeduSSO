@@ -167,10 +167,16 @@ class LdapServiceProvider extends ServiceProvider
     	if (empty($idno)) return false;
 		$this->administrator();
 		$entry = $this->getUserEntry($idno);
-		$data = $this->getUserData($entry, 'employeeType');
-		if ($data) {
-			return $data['employeeType'] ;
+		if($entry){
+			$data = $this->getUserData($entry, 'employeeType');
+			if ($data && array_key_exists('employeeType',$data))
+				return $data['employeeType'];
+		}else{
+			$data = \App\ParentsInfo::where('cn',$idno)->first();
+			if(!empty($data))
+				return '家長';
 		}
+
 		return '';
     }
 
