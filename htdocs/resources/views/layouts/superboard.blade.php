@@ -48,6 +48,9 @@
                 <li {{ (Request::is('bureau/usagerecord') ? 'class=active' : '') }}>
                     <a href="{{ route('bureau.usagerecord') }}"><i class="fa fa-list-alt fa-fw"></i>系統作業日誌查詢</a>
                 </li>
+                <li {{ (Request::is('bureau/parentspolicies') ? 'class=active' : '') }}>
+                    <a href="{{ route('bureau.parentspolicies') }}"><i class="fa fa-receipt fa-fw"></i></i>家長服務條款聲明內容維護</a>
+                </li>
             </ul>
         </nav>
 @stop

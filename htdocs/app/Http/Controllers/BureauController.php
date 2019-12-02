@@ -778,15 +778,18 @@ class BureauController extends Controller
 
 	public function bureauOauthScopeAccessLogForm(Request $request)
 	{
-		$a = [];
+		$b = [];
 		foreach (Thirdapp::all() as $t)
-			$a[$t->id] = $t->entry;
+			if(ctype_digit($t->key) && !array_key_exists($t->key,$b))
+				$b[$t->key] = $t->entry;
 
-		$data = ['data' => OauthScopeAccessLog::orderBy('id','desc')->get()];
+		$data = OauthScopeAccessLog::orderBy('id','desc')->paginate(20)->toArray();
 
-		foreach ($data['data'] as $t)
-			if(array_key_exists($t->system_id, $a))
-				$t->entry = $a[$t->system_id];
+		for($i=0;$i<count($data['data']);$i++){
+			$data['data'][$i]['entry'] = 
+				array_key_exists($data['data'][$i]['system_id'], $b)?
+					$b[$data['data'][$i]['system_id']]:'';
+		}
 		$request->flash();
 
 		return view('admin.bureauOauthScopeAccessLog', $data);
@@ -833,24 +836,68 @@ class BureauController extends Controller
 			$data = $data->whereIn('system_id', $ary);
 		}
 
-		$data = $data->orderBy('id','desc')->get();
+		$data = $data->orderBy('id','desc')->paginate(20)->toArray();
 		$request->flash();
 
 		$b = [];
 		foreach (Thirdapp::all() as $t)
-			$b[$t->id] = $t->entry;
+			if(ctype_digit($t->key) && !array_key_exists($t->key,$b))
+				$b[$t->key] = $t->entry;
 
-		foreach ($data as $t)
-			if(array_key_exists($t->system_id, $b))
-				$t->entry = $b[$t->system_id];
+		for($i=0;$i<count($data['data']);$i++){
+			$data['data'][$i]['entry'] = 
+				array_key_exists($data['data'][$i]['system_id'], $b)?
+					$b[$data['data'][$i]['system_id']]:'';
+		}
 
-		return view('admin.bureauOauthScopeAccessLog', ['data' => $data]);
+		return view('admin.bureauOauthScopeAccessLog', $data);
+	}
+
+	public function parentspoliciesForm(Request $request)
+	{
+		$html = '';
+		$POLICY_PATH = storage_path('policies/parents_service');
+		if(file_exists($POLICY_PATH)){
+			$html = file_get_contents($POLICY_PATH);
+			//foreach(file($POLICY_PATH) as $line){
+			//	$html .= $line.PHP_EOL;
+			//}
+		}
+
+		return view('admin.bureauparentspolicies', ['html' => $html]);
+	}
+
+	public function parentspolicies(Request $request)
+	{
+		if ($request->hasFile('file')) {
+			$file = $request->file('file');
+			if ($file->isValid()) {
+				$a = file_get_contents($file);
+
+				if(mb_detect_encoding($a) !== 'UTF-8')
+					$b = mb_convert_encoding($a,"utf-8","big5");
+
+				if(isset($b) && $a != $b){
+					$myfile = fopen(storage_path('policies/parents_service'), "w");
+					fwrite($myfile, $b);
+					fclose($myfile);
+				}else{
+					$file->move(storage_path('policies'), 'parents_service');
+				}
+
+				return back()->with("success", "上傳成功！");
+			}else{
+				return back()->with("error", "檔案上傳失敗！");
+			}
+		}else{
+			return back()->with("error", "請選擇上傳文件！");
+		}
 	}
 
 	public function bureauUsagerecordForm(Request $request)
 	{
 		$request->flash();
-		return view('admin.bureauusagerecord', ['data' => Usagerecord::orderBy('id','desc')->get()]);
+		return view('admin.bureauusagerecord', Usagerecord::orderBy('id','desc')->paginate(20));
 	}
 
 	public function bureauUsagerecord(Request $request)
@@ -912,10 +959,10 @@ class BureauController extends Controller
 			$c['note'] = $note;
 		}
 
-		$data = Usagerecord::where($a)->orderBy('id','desc')->get();
+		$data = Usagerecord::where($a)->orderBy('id','desc')->paginate(20);
 		$request->flash();
 
-		return view('admin.bureauusagerecord', ['data' => $data]);//back()->withInput()->with(['data' => $data]);
+		return view('admin.bureauusagerecord', $data);//back()->withInput()->with(['data' => $data]);
 	}
 
     public function updateBureauTeacher(Request $request, $uuid)
@@ -1269,13 +1316,6 @@ class BureauController extends Controller
 		$info['userPassword'] = $openldap->make_ssha_password(substr($idno,-6));
 
 		if (array_key_exists('uid', $data) && !empty($data['uid'])) {
-			//設定密碼還原後的有效期
-			$fp = Config::get('app.firstPasswordChangeDay');
-			if(ctype_digit(''.$fp) && $fp > 0){
-				$dt = Carbon::now()->addDays($fp)->format('Ymd');
-				$info['description'] = '<DEFAULT_PW_CREATEDATE>'.$dt.'</DEFAULT_PW_CREATEDATE>';
-			}
-
 			if (is_array($data['uid'])) {
 				foreach ($data['uid'] as $account) {
 					$account_entry = $openldap->getAccountEntry($account);
@@ -1299,7 +1339,14 @@ class BureauController extends Controller
 			$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
 			$openldap->createEntry($account);
 			$info["uid"] = $account["uid"];
-		}	
+		}
+
+		//設定密碼還原後的有效期
+		//20191115密碼有效期移到people裡的initials
+		$fp = Config::get('app.firstPasswordChangeDay');
+		if(ctype_digit(''.$fp) && $fp > 0)
+			$info['initials'] = Carbon::now()->addDays($fp)->format('Ymd');
+
 		$result = $openldap->updateData($entry, $info);
 		if ($result) {
 			$user = User::where('idno', $idno)->first();

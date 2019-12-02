@@ -28,16 +28,23 @@
 	<div class="row">
 		<div class="panel panel-default">	  
 			<div class="panel-heading" style="overflow: hidden;">
-				<div style="float: right;margin-top: 3px;">
-					<button type="button" class="btn btn-success" style="margin-left: 4px;" onclick="$('#query').submit();">查詢</button>
+				<div style="float: right;margin-left: 10px;">
+					<button type="button" class="btn btn-success" onclick="$('#query').submit();">查詢</button>
 				</div>
-				<div style="float: left;">
+				<div style="float: right;margin-top: 4px;">
+					<span>共有&nbsp;{{$total}}&nbsp;筆</span>
+					@if($total > 0)
+					<span>，目前顯示第&nbsp;{{$from}}&nbsp;～&nbsp;{{$to}}&nbsp;筆</span>
+					@endif
+				</div>
+				<div style="float: left;margin-top: 2px;">
 					作業日誌期間：
 					<input type="text" name="dt1" value="{{ old('dt1') }}" maxlength="10" style="width: 100px;" placeholder="yyyymmdd"/>
 					<span class="span-calendar add-on"><i class="glyphicon glyphicon-calendar"></i></span>
 					～
 					<input type="text" name="dt2" value="{{ old('dt2') }}" maxlength="10" style="width: 100px;" placeholder="yyyymmdd"/>
 					<span class="span-calendar add-on"><i class="glyphicon glyphicon-calendar"></i></span>
+					<input type="hidden" id="page" name="page" />
 				</div>
 			</div>
 			<div class="panel-body">
@@ -87,6 +94,47 @@
 					@endif
 					</tbody>
 				</table>
+				<div>
+					<nav aria-label="Page navigation">
+						<ul class="pagination justify-content-center" style="justify-content: center;display: flex;">
+							<!-- first -->
+							@if($last_page > 3)
+							@if($current_page == 1)
+							<li class="page-item disabled"><a class="page-link">最前頁</a>
+							@else
+							<li class="page-item"><a class="page-link" style="cursor: pointer;" onclick="doQuery(1)">最前頁</a>
+							@endif
+							</li>
+							@endif
+							<!-- next 5 -->
+							@if($current_page > 3)
+							<li class="page-item"><a class="page-link" style="cursor: pointer;" onclick="doQuery({{ $current_page-5 > 1?($current_page-5):1 }})">...</a></li>
+							@endif
+							<!-- jump -2 to +2 -->
+							@for ($i=($current_page<3?1:($current_page-2));$i<=($last_page-$current_page>2?($current_page+2):$last_page);$i++)
+							@if($i == $current_page)
+							<li class="page-item active"><a class="page-link">{{ $i }}</a>
+							@else
+							<li class="page-item"><a class="page-link" style="cursor: pointer;" onclick="doQuery({{ $i }})">{{ $i }}</a>
+							@endif
+							</li>
+							@endfor
+							<!-- previous 5 -->
+							@if($last_page - $current_page > 2)
+							<li class="page-item"><a class="page-link" style="cursor: pointer;" onclick="doQuery({{ $current_page+5 < $last_page?($current_page+5):$last_page }})">...</a></li>
+							@endif
+							<!-- latest -->
+							@if($last_page > 3)
+							@if($current_page == $last_page)
+							<li class="page-item disabled"><a class="page-link">最末頁</a>
+							@else
+							<li class="page-item"><a class="page-link" style="cursor: pointer;" onclick="return doQuery({{ $last_page }})">最末頁</a>
+							@endif
+							</li>
+							@endif
+						</ul>
+					</nav>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -104,4 +152,14 @@
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+	function doQuery(p) {
+		if(!$(this).parent().hasClass('disabled')){
+			$("#page").val(p);
+			$('#query').submit();
+		}
+
+		return false;
+	}
+</script>
 @endsection
