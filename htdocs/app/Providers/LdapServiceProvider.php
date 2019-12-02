@@ -358,9 +358,8 @@ class LdapServiceProvider extends ServiceProvider
 				$ou->ou = $info['ou'];
 				$ou->description = $info['description'];
 				if ($info['businessCategory'] == '教學班級') {
-					$ou->grade = substr($info['ou'], 0, 1);
-					$teacher = $this->findUsers("(&(o=$dc)(tpTutorClass=".$info['ou']."))", 'cn');
-					if ($teacher) $ou->teacher = $teacher[0]['cn'];
+					$ou->grade = $info['grade'];
+					$ou->teacher = $info['tpTutor'];
 				}
 				$ous[] = $ou;
 			} while ($entry=ldap_next_entry(self::$ldap_read, $entry));
@@ -408,16 +407,17 @@ class LdapServiceProvider extends ServiceProvider
 			}
 		}
 		if ($info['businessCategory'] == '教學班級') {
+			$info['grade'] = substr($info['ou'], 0, 1);
 			$dn=ldap_get_dn(self::$ldap_read,$entry);
 			$augs=explode(',', $dn);
 			$o=explode('=', $augs[1]);
 			$filter='(&(o='.$o[1].')(tpTutorClass='.$info['ou'].'))';
-			$teacher=$this->findUsers($filter,'entryUUID');
-			if ($teacher) {
-				foreach ($teacher as $t) {
-					$info['tpTutor']=$t['entryUUID'];
-				}
+			$tutors=$this->findUsers($filter,'entryUUID');
+			$teachers=array();
+			foreach ($tutors as $t) {
+				$teachers[]=$t['entryUUID'];
 			}
+			$info['tpTutor']=$teachers;
 		}
 		return $info;
 	}
