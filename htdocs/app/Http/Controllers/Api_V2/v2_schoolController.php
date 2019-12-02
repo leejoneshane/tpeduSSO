@@ -972,7 +972,7 @@ class v2_schoolController extends Controller
 				if(count($obj) > 0){
 					$subjkey = $dc.','.$obj['class'].','.$obj['subject'];
 					if(array_key_exists($obj['subject'],$subjs)) $obj['description'] = $subjs[$obj['subject']];
-					if(array_key_exists($subjkey,$csids)) $obj['description'] = $csids[$subjkey];
+					if(array_key_exists($subjkey,$csids)) $obj['roomid'] = $csids[$subjkey];
 					$json[] = $obj;
 				}
             }
@@ -994,9 +994,9 @@ class v2_schoolController extends Controller
 
 		$idnos = [];
 		$stds = [];
-		$stdData = $openldap->findUsers("(&(o=$dc)(employeeType=學生)(tpClass=$cid)(inetUserStatus=active))", ["o", "cn", "tpSeat", "displayName"]);
+		$stdData = $openldap->findUsers("(&(o=$dc)(employeeType=學生)(tpClass=$cid)(inetUserStatus=active))", ["o", "cn", "tpSeat", "displayName", "employeeNumber"]);
 		foreach($stdData as $s){
-			$stds[$s['cn']] = ['seat' => $s['tpSeat'], 'sname' => $s['displayName']];
+			$stds[$s['cn']] = ['seat' => $s['tpSeat'], 'sname' => $s['displayName'], 'stdno' => $s['employeeNumber']];
 			array_push($idnos,$s['cn']);
 		}
 
@@ -1010,13 +1010,14 @@ class v2_schoolController extends Controller
 				$idno = $p->student_idno;
 				$seat = str_pad($stds[$idno]['seat'],2,'0',STR_PAD_LEFT);
 				array_push($names, $idno.'_'.$p->parent_name);
-				$obj = ['sidno' => $idno, 'seat' => $stds[$idno]['seat'], 'sname' => $stds[$idno]['sname'], 'pname' => $p->parent_name, 'relation' => $p->parent_relation, 'linked' => ($p->status == '1'?'Y':'N')];
+				$obj = ['stdno' => $stds[$idno]['stdno'], 'seat' => $stds[$idno]['seat'], 'sname' => $stds[$idno]['sname'], 'pname' => $p->parent_name, 'relation' => $p->parent_relation, 'linked' => ($p->status == '1'?'Y':'N')];
 				if(!array_key_exists($seat,$sort)){
 					$sort[$seat] = [$obj];
 				}else array_push($sort[$seat],$obj);
 			}
 
 			//取得所有學生未連結的家長
+			/*
 			$pars = \App\StudentParentData::whereIn('student_idno', $idnos)->get();
 			foreach ($pars as $p){
 				$idno = $p->student_idno;
@@ -1028,6 +1029,7 @@ class v2_schoolController extends Controller
 					}else array_push($sort[$seat],$obj);
 				}
 			}
+			*/
 
 			ksort($sort);
 
