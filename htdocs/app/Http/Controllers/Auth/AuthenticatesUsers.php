@@ -164,7 +164,7 @@ trait AuthenticatesUsers
                     return redirect('/')->with('status', '很抱歉，您的帳號尚未同步到 G-Suite，請稍候再登入 G-Suite 服務！');
                 }
             }
-            if (!isset($user->email) || empty($user->email)) return redirect()->route('profile');
+//            if (!isset($user->email) || empty($user->email)) return redirect()->route('profile');
         }     
     }
 

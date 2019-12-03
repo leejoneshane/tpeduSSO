@@ -25,6 +25,8 @@ class HomeController extends Controller
     public function index(Request $request)
     {
 		$user = Auth::user();
+		if (!isset($user->email) || empty($user->email)) return redirect()->route('profile');
+
 		$openldap = new LdapServiceProvider();
 		$account = $user->account();
 		$gsuite = $user->nameID();
