@@ -50,7 +50,7 @@ class CheckClientCredentialsWithClientId
         }
 
         $client_id = $psr->getAttribute('oauth_client_id');
-        if (in_array($client_id, Config::get('app.prerogative')) {
+        if (in_array($client_id, Config::get('app.prerogative'))) {
             return $next($request);
         } else {
             return response('Forbidden.', 403);
