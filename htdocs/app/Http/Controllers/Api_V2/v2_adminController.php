@@ -44,13 +44,13 @@ class v2_adminController extends Controller
 			'name' => 'required|string',
 			'type' => 'required|string',
 			'area' => 'required|string',
+			'uno' => 'required|string|size:6',
 			'fax' => 'nullable|string',
 			'tel' => 'nullable|string',
 			'postal' => 'nullable|digits_between:3,5',
 			'address' => 'nullable|string',
 			'mbox' => 'nullable|digits:3',
 			'www' => 'nullable|url',
-			'uno' => 'nullable|string|size:6',
 			'ipv4' => new ipv4cidr,
 			'ipv6' => new ipv6cidr,
 		]);
@@ -62,13 +62,13 @@ class v2_adminController extends Controller
 		$schoolinfo['businessCategory'] = $request->get('type');
         $schoolinfo['st'] = $request->get('area');
 		$schoolinfo['description'] = $request->get('name');
+		$schoolinfo['tpUniformNumbers'] = $request->get('uno');
 		if (!empty($request->get('fax'))) $schoolinfo['facsimileTelephoneNumber'] = $request->get('fax');
 		if (!empty($request->get('tel'))) $schoolinfo['telephoneNumber'] = $request->get('tel');
 		if (!empty($request->get('postal'))) $schoolinfo['postalCode'] = $request->get('postal');
 		if (!empty($request->get('address'))) $schoolinfo['street'] = $request->get('address');
 		if (!empty($request->get('mbox'))) $schoolinfo['postOfficeBox'] = $request->get('mbox');
 		if (!empty($request->get('www'))) $schoolinfo['wWWHomePage'] = $request->get('www');
-		if (!empty($request->get('uno'))) $schoolinfo['tpUniformNumbers'] = $request->get('uno');
 		if (!empty($request->get('ipv4'))) $schoolinfo['tpIpv4'] = $request->get('ipv4');
 		if (!empty($request->get('ipv6'))) $schoolinfo['tpIpv6'] = $request->get('ipv6');
 		if (!empty($request->get('admins'))) $schoolinfo['tpAdministrator'] = $request->get('admins');
@@ -124,7 +124,7 @@ class v2_adminController extends Controller
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
-	public function peopleRemove(Request $request, $dc)
+	public function schoolRemove(Request $request, $dc)
     {
         $openldap = new LdapServiceProvider();
         $entry = $openldap->getOrgEntry($dc);
@@ -134,6 +134,48 @@ class v2_adminController extends Controller
 		    return response()->json([ 'success' => '指定的教育機構已經刪除'], 410);
 		else
 		    return response()->json([ 'error' => '指定的教育機構刪除失敗：' . $openldap->error() ], 500);
+    }
+
+    public function peopleSearch(Request $request)
+    {
+		$openldap = new LdapServiceProvider();
+        $org = $request->get('o');
+        if ($org) $condition[] = "(o=$org)";
+        $role = $request->get('role');
+        if ($role) $condition[] = "(employeeType=$role)";
+        $idno = $request->get('idno');
+        if ($idno) $condition[] = "(cn=$idno)";
+        $uid = $request->get('uid');
+        if ($uid) $condition[] = "(uid=$uid)";
+        $sysid = $request->get('sysid');
+        if ($sysid) $condition[] = "(employeeNumber=$sysid)";
+        $gender = $request->get('gender');
+        if ($gender) $condition[] = "(gender=$gender)";
+        $name = $request->get('name');
+        if ($name) $condition[] = "(displayName=*$name*)";
+        $email = $request->get('email');
+        if ($email) $condition[] = "(mail=*$email*)";
+        $tel = $request->get('tel');
+        if ($tel) $condition[] = "(|(mobile=$tel)(telephoneNumber=$tel))";
+        if (count($condition) > 1) {
+            $filter = '(&';
+            foreach ($condition as $c) {
+                $filter .= $c;
+            }
+            $filter .= '(inetUserStatus=active))';
+            $people = $openldap->findUsers($filter, "entryUUID");
+            $json = array();
+            if ($people)
+	    	    foreach ($people as $one) {
+	        	    $json[] = $one['entryUUID'];
+		        }
+            if ($json)
+                return json_encode($json, JSON_UNESCAPED_UNICODE);
+            else
+                return response()->json([ 'error' => "找不到符合條件的人員"], 404);
+        } else {
+            return response()->json([ 'error' => '請提供搜尋條件'], 500);
+        }
     }
 
     public function peopleAdd(Request $request)

@@ -10,21 +10,24 @@
 			"name": "專案授權",
 			"item": [
 				{
-					"name": "取得科目列表",
+					"name": "專案驗證",
 					"request": {
-						"method": "GET",
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
 						"header": [
 							{
-								"key": "Accept",
+								"key": "Content-Type",
 								"value": "application/json"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\n\"grant_type\": \"client_credentials\",\n\"client_id\": 27,\n\"client_secret\": \"your_project_secret\",\n\"scope\": \"school\"\n}"
 						},
 						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/subject",
+							"raw": "https://ldap.tp.edu.tw/oauth/token",
 							"protocol": "https",
 							"host": [
 								"ldap",
@@ -33,231 +36,12 @@
 								"tw"
 							],
 							"path": [
-								"api",
-								"v2",
-								"school",
-								"{{dc}}",
-								"subject"
+								"oauth",
+								"token"
 							]
-						},
-						"description": "科目列表包含以下資料欄位：\n* tpSubject: 科目代號\n* tpSubjectDomain: 所屬教學領域\n* description: 科目全名"
-					},
-					"response": [
-						{
-							"name": "取得科目列表",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/school/{{dc}}/subject",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"school",
-										"{{dc}}",
-										"subject"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 00:25:48 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "1329"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "58"
-								}
-							],
-							"cookie": [],
-							"body": "[{\"subject\":\"subj01\",\"domain\":\"語文\",\"description\":\"國語\"},{\"subject\":\"subj02\",\"domain\":\"語文\",\"description\":\"英語\"},{\"subject\":\"subj03\",\"domain\":\"語文\",\"description\":\"本土語言\"},{\"subject\":\"subj04\",\"domain\":\"健康與體育\",\"description\":\"健體體育\"},{\"subject\":\"subj05\",\"domain\":\"健康與體育\",\"description\":\"健體健康\"},{\"subject\":\"subj06\",\"domain\":\"數學\",\"description\":\"數學\"},{\"subject\":\"subj07\",\"domain\":\"生活\",\"description\":\"生活自然\"},{\"subject\":\"subj08\",\"domain\":\"生活\",\"description\":\"生活社會\"},{\"subject\":\"subj09\",\"domain\":\"生活\",\"description\":\"生活音樂\"},{\"subject\":\"subj10\",\"domain\":\"生活\",\"description\":\"生活美勞\"},{\"subject\":\"subj11\",\"domain\":\"綜合活動\",\"description\":\"綜合活動\"},{\"subject\":\"subj12\",\"domain\":\"彈性課程\",\"description\":\"彈性閱讀\"},{\"subject\":\"subj13\",\"domain\":\"彈性課程\",\"description\":\"書法與圖資\"},{\"subject\":\"subj14\",\"domain\":\"社會\",\"description\":\"社會\"},{\"subject\":\"subj15\",\"domain\":\"自然科學\",\"description\":\"自然與生科\"},{\"subject\":\"subj16\",\"domain\":\"彈性課程\",\"description\":\"彈性資訊\"},{\"subject\":\"subj17\",\"domain\":\"藝術\",\"description\":\"藝術美勞\"},{\"subject\":\"subj18\",\"domain\":\"藝術\",\"description\":\"藝術音樂\"},{\"subject\":\"subj19\",\"domain\":\"彈性課程\",\"description\":\"分組活動\"}]"
 						}
-					]
-				},
-				{
-					"name": "取得班級學生列表",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/class/{{class}}/students",
-							"protocol": "https",
-							"host": [
-								"ldap",
-								"tp",
-								"edu",
-								"tw"
-							],
-							"path": [
-								"api",
-								"v2",
-								"school",
-								"{{dc}}",
-								"class",
-								"{{class}}",
-								"students"
-							]
-						},
-						"description": "回應資料為 UUID 陣列"
 					},
-					"response": [
-						{
-							"name": "取得班級學生列表",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/school/{{dc}}/class/{{class}}/students",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"school",
-										"{{dc}}",
-										"class",
-										"{{class}}",
-										"students"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 00:26:47 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "2341"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "58"
-								}
-							],
-							"cookie": [],
-							"body": "[\"27253410-06e0-1038-960f-e52b910af178\",\"27355e1c-06e0-1038-9631-e52b910af178\",\"2736c9dc-06e0-1038-9634-e52b910af178\",\"274fe804-06e0-1038-9669-e52b910af178\",\"2759b032-06e0-1038-967e-e52b910af178\",\"276bedf6-06e0-1038-96a5-e52b910af178\",\"276f4e92-06e0-1038-96ac-e52b910af178\",\"277a23d0-06e0-1038-96c3-e52b910af178\",\"27d4d1fe-06e0-1038-9769-e52b910af178\",\"27d86b7a-06e0-1038-9770-e52b910af178\",\"28015800-06e0-1038-97c6-e52b910af178\",\"2f1d1f98-06e0-1038-83fa-e52b910af178\",\"2f353218-06e0-1038-8428-e52b910af178\",\"2f4078ee-06e0-1038-843e-e52b910af178\",\"2f46084a-06e0-1038-8449-e52b910af178\",\"2f50544e-06e0-1038-845d-e52b910af178\",\"2f50ec7e-06e0-1038-845e-e52b910af178\",\"39ac6946-06e0-1038-964c-e52b910af178\",\"44fdabc0-06e0-1038-89be-e52b910af178\",\"6357148a-06e0-1038-9f4c-e52b910af178\",\"638e4c66-06e0-1038-9fa2-e52b910af178\",\"8acbe0c2-06e0-1038-8370-e52b910af178\",\"9498f798-06e0-1038-968c-e52b910af178\",\"94c7276c-06e0-1038-96e7-e52b910af178\",\"94d9e6ae-06e0-1038-9707-e52b910af178\",\"9523c6f2-06e0-1038-9796-e52b910af178\",\"97498dea-06e0-1038-9bdf-e52b910af178\",\"d64390fe-06e0-1038-84cb-e52b910af178\",\"e503e846-06e0-1038-9f76-e52b910af178\",\"e521058e-06e0-1038-9fbb-e52b910af178\",\"e52b7532-06e0-1038-9fd4-e52b910af178\",\"e54dd2d0-06e0-1038-8025-e52b910af178\",\"e54e4030-06e0-1038-8026-e52b910af178\",\"e569c652-06e0-1038-8065-e52b910af178\",\"e58312d8-06e0-1038-809f-e52b910af178\",\"e58d388a-06e0-1038-80b7-e52b910af178\",\"e5a605fe-06e0-1038-80f1-e52b910af178\",\"e5bb63d6-06e0-1038-8124-e52b910af178\",\"e60f723c-06e0-1038-81f4-e52b910af178\",\"1434dbb6-06e1-1038-9957-e52b910af178\",\"25f48f40-06e1-1038-9996-e52b910af178\",\"271c2f22-06e1-1038-9c47-e52b910af178\",\"3a4252ca-06e1-1038-8381-e52b910af178\",\"3a8c40c4-06e1-1038-842d-e52b910af178\",\"44563bb4-06e1-1038-9a18-e52b910af178\",\"4459e142-06e1-1038-9a20-e52b910af178\",\"44800dd6-06e1-1038-9a7c-e52b910af178\",\"44953788-06e1-1038-9aae-e52b910af178\",\"658c6f60-06e1-1038-8406-e52b910af178\",\"a00247b4-06e1-1038-8ea6-e52b910af178\",\"a2e18b70-06e1-1038-94c7-e52b910af178\",\"a4bd2558-06e1-1038-9907-e52b910af178\",\"a4cff58e-06e1-1038-9932-e52b910af178\",\"a4e44098-06e1-1038-9962-e52b910af178\",\"a509f662-06e1-1038-99be-e52b910af178\",\"d0490872-06e1-1038-87ba-e52b910af178\",\"d349a6bc-06e1-1038-8cec-e52b910af178\",\"d8a85676-06e1-1038-970c-e52b910af178\",\"da88348e-06e1-1038-9b61-e52b910af178\",\"f3717aaa-06e1-1038-8c36-e52b910af178\"]"
-						}
-					]
+					"response": []
 				},
 				{
 					"name": "取得學校列表",
@@ -269,10 +53,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://ldap.tp.edu.tw/api/v2/school",
 							"protocol": "https",
@@ -290,96 +70,10 @@
 						},
 						"description": "學校列表包含以下資料欄位：\n* o: 機關學校之系統代號\n* st: 所在行政區\n* tpUniformNumbers: 全國教育機關學校統一編號\n* description: 機關學校之全銜"
 					},
-					"response": [
-						{
-							"name": "取得學校列表",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/school",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"school"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 00:24:15 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Transfer-Encoding",
-									"value": "chunked"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "59"
-								}
-							],
-							"cookie": [],
-							"body": "[{\"o\":\"bureau\",\"st\":\"信義區\",\"tpUniformNumbers\":\"399999\",\"description\":\"臺北市政府教育局\"},{\"o\":\"meps\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353604\",\"description\":\"臺北市中正區國語實驗國民小學\"},{\"o\":\"ck\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353301\",\"description\":\"臺北市立建國高級中學\"},{\"o\":\"fg\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353303\",\"description\":\"臺北市立第一女子高級中學\"},{\"o\":\"hs\",\"st\":\"大安區\",\"tpUniformNumbers\":\"330301\",\"description\":\"國立臺灣師大附中國中部\"},{\"o\":\"sfh\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"401302\",\"description\":\"台北市私立方濟中學\"},{\"o\":\"tsh\",\"st\":\"中山區\",\"tpUniformNumbers\":\"341302\",\"description\":\"台北市私立大同高級中學\"},{\"o\":\"baps\",\"st\":\"信義區\",\"tpUniformNumbers\":\"323609\",\"description\":\"臺北市信義區博愛國民小學\"},{\"o\":\"bhps\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403602\",\"description\":\"臺北市內湖區碧湖國民小學\"},{\"o\":\"bish\",\"st\":\"大同區\",\"tpUniformNumbers\":\"361301\",\"description\":\"臺北市天主教靜修女子高級中學\"},{\"o\":\"bjes\",\"st\":\"中山區\",\"tpUniformNumbers\":\"343611\",\"description\":\"臺北市中山區濱江國民小學\"},{\"o\":\"bjjh\",\"st\":\"中山區\",\"tpUniformNumbers\":\"343507\",\"description\":\"臺北市立濱江國民中學\"},{\"o\":\"bjps\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383611\",\"description\":\"臺北市博嘉實驗國民小學\"},{\"o\":\"bles\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413611\",\"description\":\"臺北市士林區百齡國民小學\"},{\"o\":\"blsh\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413302\",\"description\":\"臺北市立百齡高級中學\"},{\"o\":\"cajh\",\"st\":\"中山區\",\"tpUniformNumbers\":\"343502\",\"description\":\"臺北市立長安國民中學\"},{\"o\":\"caps\",\"st\":\"中山區\",\"tpUniformNumbers\":\"343603\",\"description\":\"臺北市中山區長安國民小學\"},{\"o\":\"cchs\",\"st\":\"大同區\",\"tpUniformNumbers\":\"363507\",\"description\":\"臺北市立重慶國民中學\"},{\"o\":\"ccjh\",\"st\":\"南港區\",\"tpUniformNumbers\":\"393501\",\"description\":\"臺北市立誠正國民中學\"},{\"o\":\"ccps\",\"st\":\"中山區\",\"tpUniformNumbers\":\"343604\",\"description\":\"臺北市中山區長春國民小學\"},{\"o\":\"ccsh\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423302\",\"description\":\"臺北市立中正高級中學\"},{\"o\":\"cdjh\",\"st\":\"南港區\",\"tpUniformNumbers\":\"393503\",\"description\":\"臺北市立成德國民中學\"},{\"o\":\"ches\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353607\",\"description\":\"臺北市中正區忠孝國民小學\"},{\"o\":\"chhs\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383507\",\"description\":\"臺北市立景興國民中學\"},{\"o\":\"chjh\",\"st\":\"大同區\",\"tpUniformNumbers\":\"363502\",\"description\":\"臺北市立忠孝國民中學\"},{\"o\":\"chps\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383607\",\"description\":\"臺北市文山區景興國民小學\"},{\"o\":\"cips\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353603\",\"description\":\"臺北市中正區忠義國民小學\"},{\"o\":\"cjps\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423606\",\"description\":\"臺北市北投區清江國民小學\"},{\"o\":\"cksh\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353302\",\"description\":\"臺北市立成功高級中學\"},{\"o\":\"clps\",\"st\":\"中山區\",\"tpUniformNumbers\":\"343608\",\"description\":\"臺北市中山區吉林國民小學\"},{\"o\":\"cmes\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383601\",\"description\":\"臺北市文山區景美國民小學\"},{\"o\":\"cmjh\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383504\",\"description\":\"臺北市立景美國民中學\"},{\"o\":\"cnps\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383612\",\"description\":\"臺北市文山區指南國民小學\"},{\"o\":\"csjh\",\"st\":\"松山區\",\"tpUniformNumbers\":\"313501\",\"description\":\"臺北市立介壽國民中學\"},{\"o\":\"csps\",\"st\":\"中山區\",\"tpUniformNumbers\":\"343601\",\"description\":\"臺北市中山區中山國民小學\"},{\"o\":\"ctps\",\"st\":\"南港區\",\"tpUniformNumbers\":\"393604\",\"description\":\"臺北市南港區成德國民小學\"},{\"o\":\"cups\",\"st\":\"大安區\",\"tpUniformNumbers\":\"333606\",\"description\":\"臺北市大安區金華國民小學\"},{\"o\":\"cyhs\",\"st\":\"大同區\",\"tpUniformNumbers\":\"363302\",\"description\":\"臺北市立成淵高級中學\"},{\"o\":\"cyps\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423607\",\"description\":\"臺北市北投區泉源國民小學\"},{\"o\":\"dcsh\",\"st\":\"中山區\",\"tpUniformNumbers\":\"343303\",\"description\":\"臺北市立大直高級中學\"},{\"o\":\"dfps\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403604\",\"description\":\"臺北市內湖區東湖國民小學\"},{\"o\":\"dhjh\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403505\",\"description\":\"臺北市立東湖國民中學\"},{\"o\":\"dhps\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403611\",\"description\":\"臺北市內湖區大湖國民小學\"},{\"o\":\"djes\",\"st\":\"中山區\",\"tpUniformNumbers\":\"343606\",\"description\":\"臺北市中山區大佳國民小學\"},{\"o\":\"dlps\",\"st\":\"大同區\",\"tpUniformNumbers\":\"363607\",\"description\":\"臺北市大同區大龍國民小學\"},{\"o\":\"dtps\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423608\",\"description\":\"臺北市北投區大屯國民小學\"},{\"o\":\"esut\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353608\",\"description\":\"臺北市立大學附設實驗國民小學\"},{\"o\":\"fajh\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413506\",\"description\":\"臺北市福安國民中學\"},{\"o\":\"fdps\",\"st\":\"信義區\",\"tpUniformNumbers\":\"323607\",\"description\":\"臺北市信義區福德國民小學\"},{\"o\":\"fhjh\",\"st\":\"大安區\",\"tpUniformNumbers\":\"331304\",\"description\":\"臺北市私立復興實驗高中國中部\"},{\"o\":\"fhps\",\"st\":\"萬華區\",\"tpUniformNumbers\":\"373611\",\"description\":\"臺北市萬華區福星國民小學\"},{\"o\":\"fhsh\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423301\",\"description\":\"臺北市立復興高級中學\"},{\"o\":\"flps\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413603\",\"description\":\"臺北市士林區福林國民小學\"},{\"o\":\"gges\",\"st\":\"大安區\",\"tpUniformNumbers\":\"333609\",\"description\":\"臺北市大安區公館國民小學\"},{\"o\":\"gjjh\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413505\",\"description\":\"臺北市立格致國民中學\"},{\"o\":\"gtes\",\"st\":\"大安區\",\"tpUniformNumbers\":\"333607\",\"description\":\"臺北市大安區古亭國民小學\"},{\"o\":\"haps\",\"st\":\"大安區\",\"tpUniformNumbers\":\"333603\",\"description\":\"臺北市大安區幸安國民小學\"},{\"o\":\"hces\",\"st\":\"萬華區\",\"tpUniformNumbers\":\"373607\",\"description\":\"臺北市萬華區華江國民小學\"},{\"o\":\"hcsh\",\"tpUniformNumbers\":\"373301\",\"description\":\"臺北市立華江高級中學\"},{\"o\":\"hdps\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383603\",\"description\":\"臺北市文山區興德國民小學\"},{\"o\":\"hfjh\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383505\",\"description\":\"臺北市立興福國民中學\"},{\"o\":\"hhhs\",\"st\":\"士林區\",\"tpUniformNumbers\":\"411601\",\"description\":\"臺北市私立華興小學\"},{\"o\":\"hhjh\",\"st\":\"中山區\",\"tpUniformNumbers\":\"343505\",\"description\":\"臺北市立新興國民中學\"},{\"o\":\"hhps\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383618\",\"description\":\"臺北市文山區興華國民小學\"},{\"o\":\"hlps\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383605\",\"description\":\"臺北市文山區興隆國民小學\"},{\"o\":\"hmes\",\"st\":\"萬華區\",\"tpUniformNumbers\":\"373608\",\"description\":\"臺北市萬華區西門國民小學\"},{\"o\":\"hmjh\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423502\",\"description\":\"臺北市立新民國民中學\"},{\"o\":\"hmps\",\"st\":\"大安區\",\"tpUniformNumbers\":\"331603\",\"description\":\"臺北市私立新民國民小學\"},{\"o\":\"hops\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413609\",\"description\":\"臺北市士林區溪山國民小學\"},{\"o\":\"hpsh\",\"st\":\"大安區\",\"tpUniformNumbers\":\"333301\",\"description\":\"臺北市立和平高級中學\"},{\"o\":\"hrps\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413613\",\"description\":\"臺北市士林區葫蘆國民小學\"},{\"o\":\"hses\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423609\",\"description\":\"臺北市北投區湖山國民小學\"},{\"o\":\"hsjh\",\"st\":\"大安區\",\"tpUniformNumbers\":\"333506\",\"description\":\"臺北市立懷生國民中學\"},{\"o\":\"hsps\",\"st\":\"南港區\",\"tpUniformNumbers\":\"393605\",\"description\":\"臺北市南港區胡適國民小學\"},{\"o\":\"hssh\",\"st\":\"松山區\",\"tpUniformNumbers\":\"313301\",\"description\":\"臺北市立西松高級中學\"},{\"o\":\"htes\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423605\",\"description\":\"臺北市北投區湖田國民小學\"},{\"o\":\"htjh\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353504\",\"description\":\"臺北市立弘道國民中學\"},{\"o\":\"htps\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353602\",\"description\":\"臺北市中正區河堤國民小學\"},{\"o\":\"hups\",\"st\":\"萬華區\",\"tpUniformNumbers\":\"373605\",\"description\":\"臺北市萬華區西園國民小學\"},{\"o\":\"hyps\",\"st\":\"信義區\",\"tpUniformNumbers\":\"323601\",\"description\":\"臺北市信義區興雅國民小學\"},{\"o\":\"jajh\",\"st\":\"大安區\",\"tpUniformNumbers\":\"333501\",\"description\":\"臺北市立仁愛國民中學\"},{\"o\":\"japs\",\"st\":\"大安區\",\"tpUniformNumbers\":\"333605\",\"description\":\"臺北市大安區仁愛國民小學\"},{\"o\":\"jcjh\",\"st\":\"大同區\",\"tpUniformNumbers\":\"363501\",\"description\":\"臺北市立建成國民中學\"},{\"o\":\"jcps\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383606\",\"description\":\"臺北市文山區志清國民小學\"},{\"o\":\"jjes\",\"st\":\"中山區\",\"tpUniformNumbers\":\"343602\",\"description\":\"臺北市中山區中正國民小學\"},{\"o\":\"jkes\",\"st\":\"松山區\",\"tpUniformNumbers\":\"313609\",\"description\":\"臺北市松山區健康國民小學\"},{\"o\":\"jnps\",\"st\":\"大安區\",\"tpUniformNumbers\":\"333604\",\"description\":\"臺北市大安區建安國民小學\"},{\"o\":\"jsjh\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413504\",\"description\":\"臺北市立至善國民中學\"},{\"o\":\"jtes\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413608\",\"description\":\"臺北市士林區劍潭國民小學\"},{\"o\":\"jwsh\",\"st\":\"文山區\",\"tpUniformNumbers\":\"381305\",\"description\":\"臺北市私立景文高級中學\"},{\"o\":\"kdps\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423604\",\"description\":\"臺北市北投區關渡國民小學\"},{\"o\":\"kfps\",\"st\":\"信義區\",\"tpUniformNumbers\":\"323603\",\"description\":\"臺北市信義區光復國民小學\"},{\"o\":\"kjes\",\"st\":\"萬華區\",\"tpUniformNumbers\":\"371601\",\"description\":\"臺北市私立光仁國民小學\"},{\"o\":\"klps\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403606\",\"description\":\"臺北市內湖區康寧國民小學\"},{\"o\":\"ksjh\",\"st\":\"北投區\",\"tpUniformNumbers\":\"421303\",\"description\":\"臺北市奎山實驗高級中等學校\"},{\"o\":\"ktjh\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353502\",\"description\":\"臺北市立古亭國民中學\"},{\"o\":\"laes\",\"st\":\"大安區\",\"tpUniformNumbers\":\"333601\",\"description\":\"臺北市大安區龍安國民小學\"},{\"o\":\"lcjh\",\"st\":\"大同區\",\"tpUniformNumbers\":\"363506\",\"description\":\"台北市立蘭州國民中學\"},{\"o\":\"lhes\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403613\",\"description\":\"臺北市內湖區麗湖國民小學\"},{\"o\":\"lkjh\",\"st\":\"信義區\",\"tpUniformNumbers\":\"323504\",\"description\":\"臺北市瑠公國民中學\"},{\"o\":\"lmjh\",\"st\":\"大安區\",\"tpUniformNumbers\":\"333508\",\"description\":\"臺北市立龍門國民中學\"},{\"o\":\"lnes\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423613\",\"description\":\"臺北市北投區立農國民小學\"},{\"o\":\"lnps\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403608\",\"description\":\"臺北市內湖區麗山國民小學\"},{\"o\":\"lrsh\",\"st\":\"萬華區\",\"tpUniformNumbers\":\"371301\",\"description\":\"臺北市私立立人高級中學\"},{\"o\":\"lses\",\"st\":\"萬華區\",\"tpUniformNumbers\":\"373610\",\"description\":\"臺北市萬華區龍山國民小學\"},{\"o\":\"lsjh\",\"st\":\"萬華區\",\"tpUniformNumbers\":\"373505\",\"description\":\"臺北市立龍山國民中學\"},{\"o\":\"lsps\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383615\",\"description\":\"臺北市文山區力行國民小學\"},{\"o\":\"lssh\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403302\",\"description\":\"臺北市立麗山高級中學\"},{\"o\":\"lyjh\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413502\",\"description\":\"臺北市立蘭雅國民中學\"},{\"o\":\"lyps\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413618\",\"description\":\"臺北市士林區蘭雅國民小學\"},{\"o\":\"mces\",\"st\":\"松山區\",\"tpUniformNumbers\":\"313607\",\"description\":\"臺北市松山區民族國民小學\"},{\"o\":\"mdes\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423614\",\"description\":\"臺北市北投區明德國民小學\"},{\"o\":\"mdjh\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423503\",\"description\":\"臺北市立明德國民中學\"},{\"o\":\"mdps\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383613\",\"description\":\"臺北市文山區明道國民小學\"},{\"o\":\"mhjh\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403506\",\"description\":\"臺北市立明湖國民中學\"},{\"o\":\"mhps\",\"st\":\"大安區\",\"tpUniformNumbers\":\"333608\",\"description\":\"臺北市大安區銘傳國民小學\"},{\"o\":\"mjes\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383608\",\"description\":\"臺北市文山區木柵國民小學\"},{\"o\":\"mlsh\",\"st\":\"大同區\",\"tpUniformNumbers\":\"363301\",\"description\":\"臺北市立明倫高級中學\"},{\"o\":\"mqes\",\"st\":\"松山區\",\"tpUniformNumbers\":\"313606\",\"description\":\"臺北市松山區民權國民小學\"},{\"o\":\"mqjh\",\"st\":\"大同區\",\"tpUniformNumbers\":\"363504\",\"description\":\"臺北市立民權國民中學\"},{\"o\":\"msjh\",\"st\":\"松山區\",\"tpUniformNumbers\":\"313502\",\"description\":\"臺北市立民生國民中學\"},{\"o\":\"msps\",\"st\":\"松山區\",\"tpUniformNumbers\":\"313605\",\"description\":\"臺北市松山區民生國民小學\"},{\"o\":\"mtjh\",\"st\":\"大安區\",\"tpUniformNumbers\":\"333507\",\"description\":\"臺北市立民族國民中學\"},{\"o\":\"nhes\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403601\",\"description\":\"臺北市內湖區內湖國民小學\"},{\"o\":\"nhjh\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403501\",\"description\":\"臺北市立內湖國民中學\"},{\"o\":\"nhps\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403612\",\"description\":\"臺北市內湖區南湖國民小學\"},{\"o\":\"nhsh\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403301\",\"description\":\"臺北市立內湖高級中學\"},{\"o\":\"nihs\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403401\",\"description\":\"臺北市立內湖高級工業職業學校\"},{\"o\":\"nkps\",\"st\":\"南港區\",\"tpUniformNumbers\":\"393601\",\"description\":\"臺北市南港區南港國民小學\"},{\"o\":\"nksh\",\"st\":\"南港區\",\"tpUniformNumbers\":\"393301\",\"description\":\"臺北市立南港高級中學\"},{\"o\":\"nmes\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353605\",\"description\":\"臺北市中正區南門國民小學\"},{\"o\":\"nmjh\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353503\",\"description\":\"臺北市立南門國民中學\"},{\"o\":\"pajh\",\"st\":\"中山區\",\"tpUniformNumbers\":\"343504\",\"description\":\"臺北市立北安國民中學\"},{\"o\":\"pcjh\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383503\",\"description\":\"台北市立北政國民中學\"},{\"o\":\"pdps\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413610\",\"description\":\"臺北市士林區平等國民小學\"},{\"o\":\"plps\",\"st\":\"大同區\",\"tpUniformNumbers\":\"363601\",\"description\":\"臺北市大同區蓬萊國民小學\"},{\"o\":\"ptes\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423601\",\"description\":\"臺北市北投區北投國民小學\"},{\"o\":\"ptjh\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423501\",\"description\":\"臺北市立北投國民中學\"},{\"o\":\"saes\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383619\",\"description\":\"臺北市文山區辛亥國民小學\"},{\"o\":\"sdps\",\"st\":\"南港區\",\"tpUniformNumbers\":\"393607\",\"description\":\"臺北市南港區修德國民小學\"},{\"o\":\"shes\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403609\",\"description\":\"臺北市內湖區新湖國民小學\"},{\"o\":\"shps\",\"st\":\"信義區\",\"tpUniformNumbers\":\"323604\",\"description\":\"臺北市信義區三興國民小學\"},{\"o\":\"sjjh\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383502\",\"description\":\"臺北市立實踐國民中學\"},{\"o\":\"skps\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383604\",\"description\":\"臺北市文山區溪口國民小學\"},{\"o\":\"sles\",\"st\":\"大同區\",\"tpUniformNumbers\":\"363605\",\"description\":\"臺北市大同區雙蓮國民小學\"},{\"o\":\"sljh\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413501\",\"description\":\"臺北市立士林國民中學\"},{\"o\":\"slps\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413601\",\"description\":\"臺北市士林區士林國民小學\"},{\"o\":\"smjh\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403503\",\"description\":\"臺北市立三民國民中學\"},{\"o\":\"smps\",\"st\":\"松山區\",\"tpUniformNumbers\":\"313608\",\"description\":\"臺北市松山區三民國民小學\"},{\"o\":\"snes\",\"st\":\"大安區\",\"tpUniformNumbers\":\"333610\",\"description\":\"臺北市大安區新生國民小學\"},{\"o\":\"soes\",\"st\":\"萬華區\",\"tpUniformNumbers\":\"373601\",\"description\":\"臺北市萬華區新和國民小學\"},{\"o\":\"spjh\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423505\",\"description\":\"臺北市立石牌國民中學\"},{\"o\":\"spps\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423603\",\"description\":\"臺北市北投區石牌國民小學\"},{\"o\":\"sses\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413612\",\"description\":\"臺北市士林區雙溪國民小學\"},{\"o\":\"ssps\",\"st\":\"松山區\",\"tpUniformNumbers\":\"313601\",\"description\":\"臺北市松山區松山國民小學\"},{\"o\":\"sssh\",\"st\":\"信義區\",\"tpUniformNumbers\":\"323301\",\"description\":\"臺北市立松山高級中學\"},{\"o\":\"ssvs\",\"st\":\"信義區\",\"tpUniformNumbers\":\"323401\",\"description\":\"臺北市立松山高級商業家事職業學校\"},{\"o\":\"stes\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413602\",\"description\":\"臺北市士林區士東國民小學\"},{\"o\":\"stps\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413605\",\"description\":\"臺北市士林區社子國民小學\"},{\"o\":\"sups\",\"st\":\"松山區\",\"tpUniformNumbers\":\"313602\",\"description\":\"臺北市松山區西松國民小學\"},{\"o\":\"syes\",\"st\":\"信義區\",\"tpUniformNumbers\":\"323605\",\"description\":\"臺北市信義區信義國民小學\"},{\"o\":\"syps\",\"st\":\"萬華區\",\"tpUniformNumbers\":\"373602\",\"description\":\"臺北市萬華區雙園國民小學\"},{\"o\":\"taes\",\"st\":\"大安區\",\"tpUniformNumbers\":\"333602\",\"description\":\"臺北市大安區大安國民小學\"},{\"o\":\"tajh\",\"st\":\"大安區\",\"tpUniformNumbers\":\"333502\",\"description\":\"臺北市立大安國民中學\"},{\"o\":\"tcsh\",\"st\":\"文山區\",\"tpUniformNumbers\":\"381303\",\"description\":\"臺北市私立大誠高中\"},{\"o\":\"thes\",\"st\":\"南港區\",\"tpUniformNumbers\":\"393606\",\"description\":\"臺北市南港區東新國民小學\"},{\"o\":\"thjh\",\"st\":\"松山區\",\"tpUniformNumbers\":\"313505\",\"description\":\"臺北市敦化國民中學\"},{\"o\":\"thps\",\"st\":\"松山區\",\"tpUniformNumbers\":\"313604\",\"description\":\"臺北市松山區敦化國民小學\"},{\"o\":\"thsh\",\"st\":\"文山區\",\"tpUniformNumbers\":\"381304\",\"description\":\"台北市私立再興中學\"},{\"o\":\"thvs\",\"st\":\"北投區\",\"tpUniformNumbers\":\"421404\",\"description\":\"台北市私立惇敘高級工商職業學校\"},{\"o\":\"tjps\",\"st\":\"大同區\",\"tpUniformNumbers\":\"363609\",\"description\":\"臺北市大同區大橋國民小學\"},{\"o\":\"tlps\",\"st\":\"萬華區\",\"tpUniformNumbers\":\"373604\",\"description\":\"臺北市萬華區大理國民小學\"},{\"o\":\"tlsh\",\"st\":\"萬華區\",\"tpUniformNumbers\":\"373302\",\"description\":\"臺北市大理高級中學\"},{\"o\":\"tmes\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403603\",\"description\":\"臺北市內湖區潭美國民小學\"},{\"o\":\"tmjh\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413508\",\"description\":\"台北市立天母國民中學\"},{\"o\":\"tmps\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353606\",\"description\":\"臺北市中正區東門國民小學\"},{\"o\":\"tpes\",\"st\":\"大同區\",\"tpUniformNumbers\":\"363603\",\"description\":\"臺北市大同區太平國民小學\"},{\"o\":\"tpsh\",\"st\":\"士林區\",\"tpUniformNumbers\":\"411301\",\"description\":\"臺北市立泰北高級高中\"},{\"o\":\"tshs\",\"st\":\"文山區\",\"tpUniformNumbers\":\"381301\",\"description\":\"臺北市私立東山高級中學\"},{\"o\":\"tsps\",\"st\":\"文山區\",\"tpUniformNumbers\":\"381603\",\"description\":\"臺北市私立再興小學\"},{\"o\":\"ttps\",\"st\":\"大同區\",\"tpUniformNumbers\":\"363606\",\"description\":\"臺北市大同區大同國民小學\"},{\"o\":\"ttsh\",\"st\":\"中山區\",\"tpUniformNumbers\":\"343302\",\"description\":\"臺北市立大同高級中學\"},{\"o\":\"tyes\",\"st\":\"萬華區\",\"tpUniformNumbers\":\"373603\",\"description\":\"臺北市萬華區東園國民小學\"},{\"o\":\"tyjh\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423504\",\"description\":\"臺北市立桃源國民中學\"},{\"o\":\"tzes\",\"st\":\"中山區\",\"tpUniformNumbers\":\"343605\",\"description\":\"臺北市中山區大直國民小學\"},{\"o\":\"wces\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413616\",\"description\":\"臺北市士林區文昌國民小學\"},{\"o\":\"wcps\",\"st\":\"中山區\",\"tpUniformNumbers\":\"343607\",\"description\":\"臺北市中山區五常國民小學\"},{\"o\":\"wfes\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383614\",\"description\":\"臺北市文山區萬芳國民小學\"},{\"o\":\"wfps\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383617\",\"description\":\"臺北市文山區萬福國民小學\"},{\"o\":\"wfsh\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383302\",\"description\":\"臺北市立萬芳高級中學\"},{\"o\":\"whps\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423616\",\"description\":\"臺北市北投區文化國民小學\"},{\"o\":\"wkps\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383602\",\"description\":\"臺北市文山區武功國民小學\"},{\"o\":\"wles\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423611\",\"description\":\"臺北市北投區文林國民小學\"},{\"o\":\"wses\",\"st\":\"中山區\",\"tpUniformNumbers\":\"343609\",\"description\":\"臺北市中山區懷生國民小學\"},{\"o\":\"wsps\",\"st\":\"信義區\",\"tpUniformNumbers\":\"323606\",\"description\":\"臺北市信義區吳興國民小學\"},{\"o\":\"wtps\",\"st\":\"萬華區\",\"tpUniformNumbers\":\"373606\",\"description\":\"臺北市萬華區萬大國民小學\"},{\"o\":\"wxes\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383616\",\"description\":\"臺北市文山區萬興國民小學\"},{\"o\":\"yaes\",\"st\":\"中山區\",\"tpUniformNumbers\":\"343610\",\"description\":\"臺北市中山區永安國民小學\"},{\"o\":\"yces\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353601\",\"description\":\"臺北市中正區螢橋國民小學\"},{\"o\":\"ycjh\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353501\",\"description\":\"臺北市立螢橋國民中學\"},{\"o\":\"ycps\",\"st\":\"信義區\",\"tpUniformNumbers\":\"323602\",\"description\":\"臺北市信義區永春國民小學\"},{\"o\":\"ycsh\",\"tpUniformNumbers\":\"323302\",\"description\":\"臺北市立永春高級中學\"},{\"o\":\"yfes\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423612\",\"description\":\"臺北市北投區義方國民小學\"},{\"o\":\"yhes\",\"st\":\"南港區\",\"tpUniformNumbers\":\"393603\",\"description\":\"臺北市南港區玉成國民小學\"},{\"o\":\"yhps\",\"st\":\"信義區\",\"tpUniformNumbers\":\"323608\",\"description\":\"臺北市信義區永吉國民小學\"},{\"o\":\"yjjh\",\"st\":\"信義區\",\"tpUniformNumbers\":\"323503\",\"description\":\"臺北市立永吉國民中學\"},{\"o\":\"yjps\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383609\",\"description\":\"臺北市文山區永建國民小學\"},{\"o\":\"ylps\",\"st\":\"大同區\",\"tpUniformNumbers\":\"363604\",\"description\":\"臺北市大同區永樂國民小學\"},{\"o\":\"ymps\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413604\",\"description\":\"臺北市士林區陽明山國民小學\"},{\"o\":\"ymsh\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413301\",\"description\":\"臺北市立陽明高級中學\"},{\"o\":\"ynes\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413614\",\"description\":\"臺北市士林區雨農國民小學\"},{\"o\":\"yphs\",\"st\":\"大安區\",\"tpUniformNumbers\":\"331301\",\"description\":\"臺北市私立延平中學(國中)\"},{\"o\":\"ypps\",\"st\":\"大同區\",\"tpUniformNumbers\":\"363608\",\"description\":\"臺北市大同區延平國民小學\"},{\"o\":\"yses\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413606\",\"description\":\"臺北市士林區雨聲國民小學\"},{\"o\":\"ysps\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423602\",\"description\":\"臺北市北投區逸仙國民小學\"},{\"o\":\"zhps\",\"st\":\"大同區\",\"tpUniformNumbers\":\"363602\",\"description\":\"臺北市大同區日新國民小學\"},{\"o\":\"zjps\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383610\",\"description\":\"臺北市文山區實踐國民小學\"},{\"o\":\"zlsh\",\"st\":\"松山區\",\"tpUniformNumbers\":\"313302\",\"description\":\"臺北市立中崙高級中學\"},{\"o\":\"zsps\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413617\",\"description\":\"臺北市士林區芝山國民小學\"},{\"o\":\"zzes\",\"st\":\"南港區\",\"tpUniformNumbers\":\"393602\",\"description\":\"臺北市南港區舊莊國民小學\"},{\"o\":\"ccjhs\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353505\",\"description\":\"臺北市立中正國民中學\"},{\"o\":\"chahs\",\"st\":\"文山區\",\"tpUniformNumbers\":\"380301\",\"description\":\"國立政治大學附屬高級中學\"},{\"o\":\"chjhs\",\"st\":\"文山區\",\"tpUniformNumbers\":\"381601\",\"description\":\"臺北市私立靜心小學\"},{\"o\":\"chwjh\",\"st\":\"大安區\",\"tpUniformNumbers\":\"333505\",\"description\":\"臺北市立金華國民中學\"},{\"o\":\"cmgsh\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383301\",\"description\":\"臺北市立景美女子高級中學\"},{\"o\":\"cogsh\",\"st\":\"大安區\",\"tpUniformNumbers\":\"331302\",\"description\":\"臺北市私立金甌女子高級中學\"},{\"o\":\"csghs\",\"st\":\"中山區\",\"tpUniformNumbers\":\"343301\",\"description\":\"臺北市立中山女子高級中學\"},{\"o\":\"csjhs\",\"st\":\"松山區\",\"tpUniformNumbers\":\"313504\",\"description\":\"臺北市中山國民中學\"},{\"o\":\"fhjhs\",\"st\":\"大安區\",\"tpUniformNumbers\":\"333504\",\"description\":\"臺北市立芳和實驗國民中學\"},{\"o\":\"hhups\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403605\",\"description\":\"臺北市內湖區西湖國民小學\"},{\"o\":\"hpees\",\"st\":\"大安區\",\"tpUniformNumbers\":\"333611\",\"description\":\"臺北市和平實驗國民小學\"},{\"o\":\"ktjhs\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423506\",\"description\":\"臺北市立關渡國民中學\"},{\"o\":\"lsjhs\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403502\",\"description\":\"臺北市立麗山國民中學\"},{\"o\":\"mcjhs\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383501\",\"description\":\"臺北市立木柵國民中學\"},{\"o\":\"mhups\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403607\",\"description\":\"臺北市內湖區明湖國民小學\"},{\"o\":\"nhush\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403303\",\"description\":\"臺北市立南湖高級中學\"},{\"o\":\"sfgsh\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"401301\",\"description\":\"臺北市私立文德女子高級中學\"},{\"o\":\"syajh\",\"st\":\"信義區\",\"tpUniformNumbers\":\"323502\",\"description\":\"臺北市立興雅國民中學\"},{\"o\":\"syijh\",\"st\":\"信義區\",\"tpUniformNumbers\":\"323505\",\"description\":\"臺北市立信義國民中學\"},{\"o\":\"syjhs\",\"st\":\"萬華區\",\"tpUniformNumbers\":\"373503\",\"description\":\"臺北市立雙園國民中學\"},{\"o\":\"syups\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413619\",\"description\":\"臺北市士林區三玉國民小學\"},{\"o\":\"tlsps\",\"st\":\"萬華區\",\"tpUniformNumbers\":\"373609\",\"description\":\"臺北市萬華區老松國民小學\"},{\"o\":\"tmups\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413615\",\"description\":\"臺北市士林區天母國民小學\"},{\"o\":\"trgsh\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"401303\",\"description\":\"臺北市私立達人女子高級中學\"},{\"o\":\"tyues\",\"st\":\"北投區\",\"tpUniformNumbers\":\"423610\",\"description\":\"臺北市北投區桃源國民小學\"},{\"o\":\"wcjhs\",\"st\":\"中山區\",\"tpUniformNumbers\":\"343506\",\"description\":\"臺北市立五常國民中學\"},{\"o\":\"whjhs\",\"st\":\"萬華區\",\"tpUniformNumbers\":\"373501\",\"description\":\"臺北市立萬華國民中學\"},{\"o\":\"whups\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403610\",\"description\":\"臺北市內湖區文湖國民小學\"},{\"o\":\"wlgsh\",\"st\":\"士林區\",\"tpUniformNumbers\":\"411302\",\"description\":\"台北市私立衛理女子高級中學\"},{\"o\":\"xhjhs\",\"st\":\"內湖區\",\"tpUniformNumbers\":\"403504\",\"description\":\"臺北市立西湖國民中學\"},{\"o\":\"yucsh\",\"st\":\"南港區\",\"tpUniformNumbers\":\"393302\",\"description\":\"臺北市立育成高級中學\"},{\"o\":\"esnccu\",\"st\":\"文山區\",\"tpUniformNumbers\":\"380601\",\"description\":\"國立政治大學附設實驗國民小學\"},{\"o\":\"fhjhps\",\"st\":\"大安區\",\"tpUniformNumbers\":\"331601\",\"description\":\"臺北市私立復興國民小學\"},{\"o\":\"fuanps\",\"st\":\"士林區\",\"tpUniformNumbers\":\"413607\",\"description\":\"臺北市士林區富安國民小學\"},{\"o\":\"ksjhps\",\"st\":\"北投區\",\"tpUniformNumbers\":\"421303\",\"description\":\"臺北市私立奎山中學附小\"},{\"o\":\"ljjhhs\",\"st\":\"大安區\",\"tpUniformNumbers\":\"331502\",\"description\":\"私立立人國際國民中小學國中部\"},{\"o\":\"ljjhps\",\"st\":\"大安區\",\"tpUniformNumbers\":\"331602\",\"description\":\"臺北市私立立人國際國民中小學\"},{\"o\":\"mjcskg\",\"st\":\"文山區\",\"tpUniformNumbers\":\"381602\",\"description\":\"臺北市私立中山小學\"},{\"o\":\"zlshjh\",\"st\":\"松山區\",\"tpUniformNumbers\":\"313302\",\"description\":\"臺北市中崙高中附設國中\"},{\"o\":\"ntueees\",\"st\":\"大安區\",\"tpUniformNumbers\":\"330601\",\"description\":\"國立台北教育大學附設實驗國民小學\"}]"
-						}
-					]
+					"response": []
 				},
 				{
-					"name": "取得班級授課科目列表",
+					"name": "取得指定學校資料",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -388,12 +82,38 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/class/{{class}}/subjects",
+							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"school",
+								"{{dc}}"
+							]
+						},
+						"description": "學校基本資料包含以下資料欄位：\n* o: 機關學校系統代碼\n* businessCategory: 隸屬學程\n* st: 所在行政區\n* description: 機關學校全銜\n* facsimileTelephoneNumber: 傳真號碼\n* telephoneNumber: 電話號碼\n* postalCode: 郵遞區號\n* street: 郵遞地址\n* postOfficeBox: 教育局聯絡箱編號\n* wWWHomePage: 官方網站\n* tpUniformNumbers: 全國教育機關學校統一編號\n* tpIpv4: IPv4 網址範圍\n* tpIpv6: IPv6 網址範圍"
+					},
+					"response": []
+				},
+				{
+					"name": "取得教師列表",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/teachers",
 							"protocol": "https",
 							"host": [
 								"ldap",
@@ -406,107 +126,15 @@
 								"v2",
 								"school",
 								"{{dc}}",
-								"class",
-								"{{class}}",
-								"subjects"
+								"teachers"
 							]
 						},
-						"description": "回應資料為科目代號陣列"
+						"description": "回應資料為 UUID 陣列"
 					},
-					"response": [
-						{
-							"name": "取得班級授課科目列表",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/school/{{dc}}/class/{{class}}/subjects",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"school",
-										"{{dc}}",
-										"class",
-										"{{class}}",
-										"subjects"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 06:58:11 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "10"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "58"
-								}
-							],
-							"cookie": [],
-							"body": "[\"subj16\"]"
-						}
-					]
+					"response": []
 				},
 				{
-					"name": "取得指定班級資料",
+					"name": "取得處室列表",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -515,12 +143,8 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/class/{{class}}",
+							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/ou",
 							"protocol": "https",
 							"host": [
 								"ldap",
@@ -533,105 +157,15 @@
 								"v2",
 								"school",
 								"{{dc}}",
-								"class",
-								"{{class}}"
+								"ou"
 							]
 						},
-						"description": "班級基本資料包含以下資料欄位：\n* ou: 組織單位代號\n* businessCategory: 組織單位類型\n* description: 班級名稱"
+						"description": "處室列表包含以下資料欄位：\n* ou: 組織單位代號\n* description: 單位名稱"
 					},
-					"response": [
-						{
-							"name": "取得指定班級資料",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/school/{{dc}}/class/{{class}}",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"school",
-										"{{dc}}",
-										"class",
-										"{{class}}"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 00:26:18 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "75"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "55"
-								}
-							],
-							"cookie": [],
-							"body": "{\"ou\":\"601\",\"businessCategory\":\"教學班級\",\"description\":\"六年一班\"}"
-						}
-					]
+					"response": []
 				},
 				{
-					"name": "取得指定科目授課班級列表",
+					"name": "取得指定處室資料",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -640,12 +174,8 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/subject/{{subj}}/classes",
+							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/ou/{{ou}}",
 							"protocol": "https",
 							"host": [
 								"ldap",
@@ -658,104 +188,79 @@
 								"v2",
 								"school",
 								"{{dc}}",
-								"subject",
-								"{{subj}}",
-								"classes"
+								"ou",
+								"{{ou}}"
 							]
 						},
-						"description": "回應資料為班級代號陣列"
+						"description": "處室基本資料包含以下資料欄位：\n* ou: 組織單位代號\n* businessCategory: 組織單位類型\n* description: 單位名稱"
 					},
-					"response": [
-						{
-							"name": "取得指定科目授課班級列表",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/school/{{dc}}/subject/{{subj}}/classes",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"school",
-										"{{dc}}",
-										"subject",
-										"{{subj}}",
-										"classes"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 06:57:14 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "61"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "58"
-								}
+					"response": []
+				},
+				{
+					"name": "取得處室在職人員列表",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/ou/{{ou}}/teachers",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
 							],
-							"cookie": [],
-							"body": "[\"509\",\"510\",\"603\",\"604\",\"605\",\"606\",\"607\",\"608\",\"609\",\"610\"]"
-						}
-					]
+							"path": [
+								"api",
+								"v2",
+								"school",
+								"{{dc}}",
+								"ou",
+								"{{ou}}",
+								"teachers"
+							]
+						},
+						"description": "回應資料為 UUID 陣列"
+					},
+					"response": []
+				},
+				{
+					"name": "取得處室職務列表",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/ou/{{ou}}/role",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"school",
+								"{{dc}}",
+								"ou",
+								"{{ou}}",
+								"role"
+							]
+						},
+						"description": "職務列表包含以下資料欄位：\n* cn: 職務代號\n* description: 職稱"
+					},
+					"response": []
 				},
 				{
 					"name": "取得指定職務資料",
@@ -767,10 +272,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/ou/{{ou}}/role/{{role}}",
 							"protocol": "https",
@@ -793,98 +294,7 @@
 						},
 						"description": "職務基本資料包含以下資料欄位：\n* ou: 隸屬部門代號\n* cn: 職務代號\n* description: 職稱"
 					},
-					"response": [
-						{
-							"name": "取得指定職務資料",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/school/{{dc}}/ou/{{ou}}/role/{{role}}",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"school",
-										"{{dc}}",
-										"ou",
-										"{{ou}}",
-										"role",
-										"{{role}}"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 00:25:37 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "62"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "59"
-								}
-							],
-							"cookie": [],
-							"body": "{\"ou\":\"dept02\",\"cn\":\"roleC17\",\"description\":\"系統管理師\"}"
-						}
-					]
+					"response": []
 				},
 				{
 					"name": "取得職務在職人員列表",
@@ -896,10 +306,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/ou/{{ou}}/role/{{role}}/teachers",
 							"protocol": "https",
@@ -923,102 +329,10 @@
 						},
 						"description": "回應資料為 UUID 陣列"
 					},
-					"response": [
-						{
-							"name": "取得職務在職人員列表",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/school/{{dc}}/ou/{{ou}}/role/{{role}}/teachers",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"school",
-										"{{dc}}",
-										"ou",
-										"{{ou}}",
-										"role",
-										"{{role}}",
-										"teachers"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 05:02:05 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "40"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "59"
-								}
-							],
-							"cookie": [],
-							"body": "[\"080327de-06e2-1038-9451-e52b910af178\"]"
-						}
-					]
+					"response": []
 				},
 				{
-					"name": "取得處室列表",
+					"name": "取得科目列表",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -1027,12 +341,8 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/ou",
+							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/subject",
 							"protocol": "https",
 							"host": [
 								"ldap",
@@ -1045,100 +355,44 @@
 								"v2",
 								"school",
 								"{{dc}}",
-								"ou"
+								"subject"
 							]
 						},
-						"description": "處室列表包含以下資料欄位：\n* ou: 組織單位代號\n* description: 單位名稱"
+						"description": "科目列表包含以下資料欄位：\n* tpSubject: 科目代號\n* tpSubjectDomain: 所屬教學領域\n* description: 科目全名"
 					},
-					"response": [
-						{
-							"name": "取得處室列表",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/school/{{dc}}/ou",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"school",
-										"{{dc}}",
-										"ou"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 00:23:07 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "511"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "59"
-								}
+					"response": []
+				},
+				{
+					"name": "取得指定科目資料",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/subject/{{subj}}",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
 							],
-							"cookie": [],
-							"body": "[{\"ou\":\"dept01\",\"description\":\"校長室\"},{\"ou\":\"dept02\",\"description\":\"教務處\"},{\"ou\":\"dept03\",\"description\":\"學務處\"},{\"ou\":\"dept04\",\"description\":\"總務處\"},{\"ou\":\"dept05\",\"description\":\"輔導室\"},{\"ou\":\"dept06\",\"description\":\"級任導師\"},{\"ou\":\"dept07\",\"description\":\"科任教師\"},{\"ou\":\"dept08\",\"description\":\"幼稚園\"},{\"ou\":\"dept10\",\"description\":\"人事室\"},{\"ou\":\"dept11\",\"description\":\"會計室\"},{\"ou\":\"dept12\",\"description\":\"圖書室\"},{\"ou\":\"dept14\",\"description\":\"研究處\"}]"
-						}
-					]
+							"path": [
+								"api",
+								"v2",
+								"school",
+								"{{dc}}",
+								"subject",
+								"{{subj}}"
+							]
+						},
+						"description": "科目基本資料包含以下資料欄位：\n* tpSubject: 科目代號\n* tpSubjectDomain: 所屬教學領域\n* description: 科目全名"
+					},
+					"response": []
 				},
 				{
 					"name": "取得指定科目任教\b老師列表",
@@ -1150,10 +404,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/subject/{{subj}}/teachers",
 							"protocol": "https",
@@ -1175,386 +425,10 @@
 						},
 						"description": "回應資料為 UUID 陣列"
 					},
-					"response": [
-						{
-							"name": "取得指定科目任教\b老師列表",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/school/{{dc}}/subject/{{subj}}/teachers",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"school",
-										"{{dc}}",
-										"subject",
-										"{{subj}}",
-										"teachers"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 06:56:33 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "40"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "59"
-								}
-							],
-							"cookie": [],
-							"body": "[\"080327de-06e2-1038-9451-e52b910af178\"]"
-						}
-					]
-				},
-				{
-					"name": "取得指定處室資料",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/ou/{{ou}}",
-							"protocol": "https",
-							"host": [
-								"ldap",
-								"tp",
-								"edu",
-								"tw"
-							],
-							"path": [
-								"api",
-								"v2",
-								"school",
-								"{{dc}}",
-								"ou",
-								"{{ou}}"
-							]
-						},
-						"description": "處室基本資料包含以下資料欄位：\n* ou: 組織單位代號\n* businessCategory: 組織單位類型\n* description: 單位名稱"
-					},
-					"response": [
-						{
-							"name": "取得指定處室資料",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/school/{{dc}}/ou/{{ou}}",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"school",
-										"{{dc}}",
-										"ou",
-										"{{ou}}"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 01:47:12 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "75"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "57"
-								}
-							],
-							"cookie": [],
-							"body": "{\"ou\":\"dept02\",\"businessCategory\":\"行政部門\",\"description\":\"教務處\"}"
-						}
-					]
-				},
-				{
-					"name": "取得處室在職人員列表",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/ou/{{ou}}/teachers",
-							"protocol": "https",
-							"host": [
-								"ldap",
-								"tp",
-								"edu",
-								"tw"
-							],
-							"path": [
-								"api",
-								"v2",
-								"school",
-								"{{dc}}",
-								"ou",
-								"{{ou}}",
-								"teachers"
-							]
-						},
-						"description": "回應資料為 UUID 陣列"
-					},
-					"response": [
-						{
-							"name": "取得處室在職人員列表",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/school/{{dc}}/ou/{{ou}}/teachers",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"school",
-										"{{dc}}",
-										"ou",
-										"{{ou}}",
-										"teachers"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 06:57:45 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "235"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "59"
-								}
-							],
-							"cookie": [],
-							"body": "[\"c7e54cf0-06e0-1038-8a13-e52b910af178\",\"7a8ed42a-06e1-1038-8c97-e52b910af178\",\"ae7a9774-06e1-1038-8e63-e52b910af178\",\"f96062fa-06e1-1038-97ce-e52b910af178\",\"080327de-06e2-1038-9451-e52b910af178\",\"1580ef7c-06e2-1038-8d9a-e52b910af178\"]"
-						}
-					]
-				},
-				{
-					"name": "專案驗證",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\"grant_type\": \"client_credentials\",\n\"client_id\": your_project_id,\n\"client_secret\": \"your_project_secret\",\n\"scope\": \"school\"\n}"
-						},
-						"url": {
-							"raw": "https://ldap.tp.edu.tw/oauth/token",
-							"protocol": "https",
-							"host": [
-								"ldap",
-								"tp",
-								"edu",
-								"tw"
-							],
-							"path": [
-								"oauth",
-								"token"
-							]
-						}
-					},
 					"response": []
 				},
 				{
-					"name": "取得指定科目資料",
+					"name": "取得指定科目授課班級列表",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -1563,12 +437,8 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/subject/{{subj}}",
+							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/subject/{{subj}}/classes",
 							"protocol": "https",
 							"host": [
 								"ldap",
@@ -1582,101 +452,13 @@
 								"school",
 								"{{dc}}",
 								"subject",
-								"{{subj}}"
+								"{{subj}}",
+								"classes"
 							]
 						},
-						"description": "科目基本資料包含以下資料欄位：\n* tpSubject: 科目代號\n* tpSubjectDomain: 所屬教學領域\n* description: 科目全名"
+						"description": "回應資料為班級代號陣列"
 					},
-					"response": [
-						{
-							"name": "取得指定科目資料",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/school/{{dc}}/subject/{{subj}}",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"school",
-										"{{dc}}",
-										"subject",
-										"{{subj}}"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 04:55:38 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "84"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "59"
-								}
-							],
-							"cookie": [],
-							"body": "{\"tpSubject\":\"subj16\",\"tpSubjectDomain\":\"彈性課程\",\"description\":\"彈性資訊\"}"
-						}
-					]
+					"response": []
 				},
 				{
 					"name": "取得班級列表",
@@ -1688,10 +470,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/class",
 							"protocol": "https",
@@ -1711,98 +489,10 @@
 						},
 						"description": "班級列表包含以下資料欄位：\n* ou: 組織單位代號\n* description: 班級名稱\n* grade: 年級"
 					},
-					"response": [
-						{
-							"name": "取得班級列表",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/school/{{dc}}/class",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"school",
-										"{{dc}}",
-										"class"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 00:26:08 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "3025"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "56"
-								}
-							],
-							"cookie": [],
-							"body": "[{\"ou\":\"101\",\"description\":\"一年一班\",\"grade\":\"1\"},{\"ou\":\"102\",\"description\":\"一年二班\",\"grade\":\"1\"},{\"ou\":\"103\",\"description\":\"一年三班\",\"grade\":\"1\"},{\"ou\":\"104\",\"description\":\"一年四班\",\"grade\":\"1\"},{\"ou\":\"105\",\"description\":\"一年五班\",\"grade\":\"1\"},{\"ou\":\"106\",\"description\":\"一年六班\",\"grade\":\"1\"},{\"ou\":\"107\",\"description\":\"一年七班\",\"grade\":\"1\"},{\"ou\":\"108\",\"description\":\"一年八班\",\"grade\":\"1\"},{\"ou\":\"109\",\"description\":\"一年九班\",\"grade\":\"1\"},{\"ou\":\"201\",\"description\":\"二年一班\",\"grade\":\"2\"},{\"ou\":\"202\",\"description\":\"二年二班\",\"grade\":\"2\"},{\"ou\":\"203\",\"description\":\"二年三班\",\"grade\":\"2\"},{\"ou\":\"204\",\"description\":\"二年四班\",\"grade\":\"2\"},{\"ou\":\"205\",\"description\":\"二年五班\",\"grade\":\"2\"},{\"ou\":\"206\",\"description\":\"二年六班\",\"grade\":\"2\"},{\"ou\":\"207\",\"description\":\"二年七班\",\"grade\":\"2\"},{\"ou\":\"208\",\"description\":\"二年八班\",\"grade\":\"2\"},{\"ou\":\"209\",\"description\":\"二年九班\",\"grade\":\"2\"},{\"ou\":\"301\",\"description\":\"三年一班\",\"grade\":\"3\"},{\"ou\":\"302\",\"description\":\"三年二班\",\"grade\":\"3\"},{\"ou\":\"303\",\"description\":\"三年三班\",\"grade\":\"3\"},{\"ou\":\"304\",\"description\":\"三年四班\",\"grade\":\"3\"},{\"ou\":\"305\",\"description\":\"三年五班\",\"grade\":\"3\"},{\"ou\":\"306\",\"description\":\"三年六班\",\"grade\":\"3\"},{\"ou\":\"307\",\"description\":\"三年七班\",\"grade\":\"3\"},{\"ou\":\"308\",\"description\":\"三年八班\",\"grade\":\"3\"},{\"ou\":\"309\",\"description\":\"三年九班\",\"grade\":\"3\"},{\"ou\":\"401\",\"description\":\"四年一班\",\"grade\":\"4\"},{\"ou\":\"402\",\"description\":\"四年二班\",\"grade\":\"4\"},{\"ou\":\"403\",\"description\":\"四年三班\",\"grade\":\"4\"},{\"ou\":\"404\",\"description\":\"四年四班\",\"grade\":\"4\"},{\"ou\":\"405\",\"description\":\"四年五班\",\"grade\":\"4\"},{\"ou\":\"406\",\"description\":\"四年六班\",\"grade\":\"4\"},{\"ou\":\"407\",\"description\":\"四年七班\",\"grade\":\"4\"},{\"ou\":\"408\",\"description\":\"四年八班\",\"grade\":\"4\"},{\"ou\":\"409\",\"description\":\"四年九班\",\"grade\":\"4\"},{\"ou\":\"501\",\"description\":\"五年一班\",\"grade\":\"5\"},{\"ou\":\"502\",\"description\":\"五年二班\",\"grade\":\"5\"},{\"ou\":\"503\",\"description\":\"五年三班\",\"grade\":\"5\"},{\"ou\":\"504\",\"description\":\"五年四班\",\"grade\":\"5\"},{\"ou\":\"505\",\"description\":\"五年五班\",\"grade\":\"5\"},{\"ou\":\"506\",\"description\":\"五年六班\",\"grade\":\"5\"},{\"ou\":\"507\",\"description\":\"五年七班\",\"grade\":\"5\"},{\"ou\":\"508\",\"description\":\"五年八班\",\"grade\":\"5\"},{\"ou\":\"509\",\"description\":\"五年九班\",\"grade\":\"5\"},{\"ou\":\"510\",\"description\":\"五年十班\",\"grade\":\"5\"},{\"ou\":\"601\",\"description\":\"六年一班\",\"grade\":\"6\"},{\"ou\":\"602\",\"description\":\"六年二班\",\"grade\":\"6\"},{\"ou\":\"603\",\"description\":\"六年三班\",\"grade\":\"6\"},{\"ou\":\"604\",\"description\":\"六年四班\",\"grade\":\"6\"},{\"ou\":\"605\",\"description\":\"六年五班\",\"grade\":\"6\"},{\"ou\":\"606\",\"description\":\"六年六班\",\"grade\":\"6\"},{\"ou\":\"607\",\"description\":\"六年七班\",\"grade\":\"6\"},{\"ou\":\"608\",\"description\":\"六年八班\",\"grade\":\"6\"},{\"ou\":\"609\",\"description\":\"六年九班\",\"grade\":\"6\"},{\"ou\":\"610\",\"description\":\"六年十班\",\"grade\":\"6\"}]"
-						}
-					]
+					"response": []
 				},
 				{
-					"name": "取得處室職務列表",
+					"name": "取得指定班級資料",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -1811,12 +501,8 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/ou/{{ou}}/role",
+							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/class/{{class}}",
 							"protocol": "https",
 							"host": [
 								"ldap",
@@ -1829,104 +515,79 @@
 								"v2",
 								"school",
 								"{{dc}}",
-								"ou",
-								"{{ou}}",
-								"role"
+								"class",
+								"{{class}}"
 							]
 						},
-						"description": "職務列表包含以下資料欄位：\n* cn: 職務代號\n* description: 職稱"
+						"description": "班級基本資料包含以下資料欄位：\n* ou: 組織單位代號\n* businessCategory: 組織單位類型\n* description: 班級名稱"
 					},
-					"response": [
-						{
-							"name": "取得處室職稱列表",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/school/{{dc}}/ou/{{ou}}/role",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"school",
-										"{{dc}}",
-										"ou",
-										"{{ou}}",
-										"role"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 00:25:09 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "568"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "57"
-								}
+					"response": []
+				},
+				{
+					"name": "取得班級學生列表",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/class/{{class}}/students",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
 							],
-							"cookie": [],
-							"body": "[{\"cn\":\"role002\",\"description\":\"教務處主任\"},{\"cn\":\"role003\",\"description\":\"教學組長\"},{\"cn\":\"role005\",\"description\":\"資訊組長\"},{\"cn\":\"role006\",\"description\":\"設備組長\"},{\"cn\":\"role036\",\"description\":\"教務處幹事\"},{\"cn\":\"roleC05\",\"description\":\"課程組長\"},{\"cn\":\"roleC09\",\"description\":\"圖書室幹事\"},{\"cn\":\"roleC10\",\"description\":\"圖書室流通\"},{\"cn\":\"roleC15\",\"description\":\"增置教師\"},{\"cn\":\"roleC17\",\"description\":\"系統管理師\"},{\"cn\":\"roleC53\",\"description\":\"書法教師\"},{\"cn\":\"roleC54\",\"description\":\"圖書教師\"}]"
-						}
-					]
+							"path": [
+								"api",
+								"v2",
+								"school",
+								"{{dc}}",
+								"class",
+								"{{class}}",
+								"students"
+							]
+						},
+						"description": "回應資料為 UUID 陣列"
+					},
+					"response": []
+				},
+				{
+					"name": "取得班級授課科目列表",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/class/{{class}}/subjects",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"school",
+								"{{dc}}",
+								"class",
+								"{{class}}",
+								"subjects"
+							]
+						},
+						"description": "回應資料為科目代號陣列"
+					},
+					"response": []
 				},
 				{
 					"name": "取得班級任教教師列表",
@@ -1938,10 +599,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/class/{{class}}/teachers",
 							"protocol": "https",
@@ -1963,341 +620,7 @@
 						},
 						"description": "回應資料為 UUID 陣列"
 					},
-					"response": [
-						{
-							"name": "取得班級任教教師列表",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/school/{{dc}}/class/{{class}}/teachers",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"school",
-										"{{dc}}",
-										"class",
-										"{{class}}",
-										"teachers"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 00:26:39 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "79"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "59"
-								}
-							],
-							"cookie": [],
-							"body": "[\"b19fd540-06e1-1038-9471-e52b910af178\",\"01dee9b0-06e2-1038-883d-e52b910af178\"]"
-						}
-					]
-				},
-				{
-					"name": "取得指定學校資料",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}",
-							"protocol": "https",
-							"host": [
-								"ldap",
-								"tp",
-								"edu",
-								"tw"
-							],
-							"path": [
-								"api",
-								"v2",
-								"school",
-								"{{dc}}"
-							]
-						},
-						"description": "學校基本資料包含以下資料欄位：\n* o: 機關學校系統代碼\n* businessCategory: 隸屬學程\n* st: 所在行政區\n* description: 機關學校全銜\n* facsimileTelephoneNumber: 傳真號碼\n* telephoneNumber: 電話號碼\n* postalCode: 郵遞區號\n* street: 郵遞地址\n* postOfficeBox: 教育局聯絡箱編號\n* wWWHomePage: 官方網站\n* tpUniformNumbers: 全國教育機關學校統一編號\n* tpIpv4: IPv4 網址範圍\n* tpIpv6: IPv6 網址範圍"
-					},
-					"response": [
-						{
-							"name": "取得指定學校資料",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/school/{{dc}}",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"school",
-										"{{dc}}"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 23:52:37 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "415"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "59"
-								}
-							],
-							"cookie": [],
-							"body": "{\"o\":\"meps\",\"businessCategory\":\"國民小學\",\"st\":\"中正區\",\"description\":\"臺北市中正區國語實驗國民小學\",\"facsimileTelephoneNumber\":\"(02)23093736\",\"telephoneNumber\":\"(02)23033555\",\"postalCode\":\"100\",\"street\":\"臺北市中正區南海路58號\",\"postOfficeBox\":\"043\",\"wWWHomePage\":\"http:\\/\\/www.meps.tp.edu.tw\\/\",\"tpUniformNumbers\":\"353604\",\"tpIpv4\":\"163.21.228.0\\/24\",\"tpIpv6\":\"2001:288:12ce::\\/48\"}"
-						}
-					]
-				},
-				{
-					"name": "取得教師列表",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/teachers",
-							"protocol": "https",
-							"host": [
-								"ldap",
-								"tp",
-								"edu",
-								"tw"
-							],
-							"path": [
-								"api",
-								"v2",
-								"school",
-								"{{dc}}",
-								"teachers"
-							]
-						},
-						"description": "回應資料為 UUID 陣列"
-					},
-					"response": [
-						{
-							"name": "取得教師列表",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/school/{{dc}}/teachers",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"school",
-										"{{dc}}",
-										"teachers"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 04:14:41 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "6787"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "59"
-								}
-							],
-							"cookie": [],
-							"body": "[\"09d00818-06e0-1038-820d-e52b910af178\",\"0a2e5102-06e0-1038-82d9-e52b910af178\",\"0a380f3a-06e0-1038-82ee-e52b910af178\",\"0a6c650a-06e0-1038-835e-e52b910af178\",\"0a73f892-06e0-1038-836e-e52b910af178\",\"0a765ace-06e0-1038-8373-e52b910af178\",\"0beb8a1e-06e0-1038-8661-e52b910af178\",\"0d0c56f8-06e0-1038-8873-e52b910af178\",\"b9f293a0-06e0-1038-8c56-e52b910af178\",\"bf9b2038-06e0-1038-98ba-e52b910af178\",\"bfe6e720-06e0-1038-9954-e52b910af178\",\"bff475a2-06e0-1038-9972-e52b910af178\",\"c045cb5a-06e0-1038-9a22-e52b910af178\",\"c0688fc8-06e0-1038-9a68-e52b910af178\",\"c085451e-06e0-1038-9aa5-e52b910af178\",\"c0af9512-06e0-1038-9b05-e52b910af178\",\"c0e048e2-06e0-1038-9b67-e52b910af178\",\"c0eb91b6-06e0-1038-9b7c-e52b910af178\",\"c1235b1e-06e0-1038-9bf5-e52b910af178\",\"c1290e56-06e0-1038-9c02-e52b910af178\",\"c12dc180-06e0-1038-9c0c-e52b910af178\",\"c13ac20e-06e0-1038-9c28-e52b910af178\",\"c13f5436-06e0-1038-9c33-e52b910af178\",\"c1635dfe-06e0-1038-9c7d-e52b910af178\",\"c1f4b02e-06e0-1038-9d91-e52b910af178\",\"c1fa0268-06e0-1038-9d9c-e52b910af178\",\"c24b7e72-06e0-1038-9e41-e52b910af178\",\"c26edd4a-06e0-1038-9e8f-e52b910af178\",\"c28fe760-06e0-1038-9ed5-e52b910af178\",\"c36224a0-06e0-1038-8097-e52b910af178\",\"c3aa2700-06e0-1038-8132-e52b910af178\",\"c500ad68-06e0-1038-83ea-e52b910af178\",\"c56b1630-06e0-1038-84c7-e52b910af178\",\"c6018bf6-06e0-1038-8608-e52b910af178\",\"c66f4b78-06e0-1038-86f8-e52b910af178\",\"c69aa8c2-06e0-1038-8753-e52b910af178\",\"c69c41be-06e0-1038-8756-e52b910af178\",\"c6b6082e-06e0-1038-8791-e52b910af178\",\"c7e54cf0-06e0-1038-8a13-e52b910af178\",\"c8407a9e-06e0-1038-8acb-e52b910af178\",\"c8553f92-06e0-1038-8af9-e52b910af178\",\"c8698290-06e0-1038-8b29-e52b910af178\",\"c86cf79a-06e0-1038-8b31-e52b910af178\",\"c8c379da-06e0-1038-8bdf-e52b910af178\",\"ca7a0d20-06e0-1038-8f3e-e52b910af178\",\"cb813ca2-06e0-1038-914b-e52b910af178\",\"68860d52-06e1-1038-8a98-e52b910af178\",\"688c7ac0-06e1-1038-8aa5-e52b910af178\",\"6a22d79e-06e1-1038-8ddf-e52b910af178\",\"6a33df80-06e1-1038-8dff-e52b910af178\",\"6a7ef47a-06e1-1038-8e98-e52b910af178\",\"6ff491d0-06e1-1038-986d-e52b910af178\",\"700905f2-06e1-1038-9896-e52b910af178\",\"7043fbc6-06e1-1038-9910-e52b910af178\",\"70de2070-06e1-1038-9a3c-e52b910af178\",\"75f0dee0-06e1-1038-838e-e52b910af178\",\"77390d4a-06e1-1038-860c-e52b910af178\",\"791fba0a-06e1-1038-89bd-e52b910af178\",\"7a4257b2-06e1-1038-8c0e-e52b910af178\",\"7a8ed42a-06e1-1038-8c97-e52b910af178\",\"7a961104-06e1-1038-8ca7-e52b910af178\",\"7ae95706-06e1-1038-8d52-e52b910af178\",\"7c5ebc2a-06e1-1038-9046-e52b910af178\",\"7cb4bc38-06e1-1038-90f2-e52b910af178\",\"7cde472e-06e1-1038-9148-e52b910af178\",\"7d05cdb2-06e1-1038-9193-e52b910af178\",\"7d2603c0-06e1-1038-91d2-e52b910af178\",\"7d983c42-06e1-1038-92a9-e52b910af178\",\"7e1e6646-06e1-1038-93ae-e52b910af178\",\"7e1f4d22-06e1-1038-93b0-e52b910af178\",\"7e679942-06e1-1038-943c-e52b910af178\",\"ac707430-06e1-1038-8a6c-e52b910af178\",\"ac945c38-06e1-1038-8ab3-e52b910af178\",\"ad0b7a34-06e1-1038-8b9d-e52b910af178\",\"ad6dfd26-06e1-1038-8c62-e52b910af178\",\"adea1938-06e1-1038-8d54-e52b910af178\",\"ae25bbfa-06e1-1038-8dc1-e52b910af178\",\"ae62867a-06e1-1038-8e36-e52b910af178\",\"ae780de2-06e1-1038-8e5d-e52b910af178\",\"ae7a9774-06e1-1038-8e63-e52b910af178\",\"ae7db008-06e1-1038-8e69-e52b910af178\",\"aea1c484-06e1-1038-8eaf-e52b910af178\",\"b058bb52-06e1-1038-91f0-e52b910af178\",\"b0937382-06e1-1038-925d-e52b910af178\",\"b112b37c-06e1-1038-935c-e52b910af178\",\"b12925f8-06e1-1038-938b-e52b910af178\",\"b16bb3aa-06e1-1038-9406-e52b910af178\",\"b1840e46-06e1-1038-9437-e52b910af178\",\"b1921b08-06e1-1038-9456-e52b910af178\",\"b19e0616-06e1-1038-946e-e52b910af178\",\"b19fd540-06e1-1038-9471-e52b910af178\",\"b225d4b0-06e1-1038-958a-e52b910af178\",\"b3127572-06e1-1038-9741-e52b910af178\",\"b321a6be-06e1-1038-9760-e52b910af178\",\"b37f70dc-06e1-1038-9817-e52b910af178\",\"e47c9c00-06e1-1038-9056-e52b910af178\",\"e6a051d4-06e1-1038-9475-e52b910af178\",\"ec4f7006-06e1-1038-9f2e-e52b910af178\",\"ec9d81a6-06e1-1038-9fbf-e52b910af178\",\"ed1cbc0a-06e1-1038-80bd-e52b910af178\",\"f2148fc6-06e1-1038-89dd-e52b910af178\",\"f2e99216-06e1-1038-8b56-e52b910af178\",\"f3f4bdfc-06e1-1038-8d58-e52b910af178\",\"f4231e90-06e1-1038-8db1-e52b910af178\",\"f45aa004-06e1-1038-8e1d-e52b910af178\",\"f5fd0942-06e1-1038-9160-e52b910af178\",\"f775057c-06e1-1038-9428-e52b910af178\",\"f7a98202-06e1-1038-948d-e52b910af178\",\"f96062fa-06e1-1038-97ce-e52b910af178\",\"f989fa20-06e1-1038-981b-e52b910af178\",\"fb1ad90e-06e1-1038-9b10-e52b910af178\",\"fb36d56e-06e1-1038-9b46-e52b910af178\",\"fc157a9e-06e1-1038-9d02-e52b910af178\",\"fc1deb7a-06e1-1038-9d11-e52b910af178\",\"fd6602e2-06e1-1038-9f64-e52b910af178\",\"fe5724ec-06e1-1038-8140-e52b910af178\",\"ffc7ee4c-06e1-1038-8421-e52b910af178\",\"00239760-06e2-1038-84d4-e52b910af178\",\"005284d0-06e2-1038-8533-e52b910af178\",\"01cc094e-06e2-1038-8818-e52b910af178\",\"01cc8a72-06e2-1038-8819-e52b910af178\",\"01dee9b0-06e2-1038-883d-e52b910af178\",\"02540bf0-06e2-1038-892a-e52b910af178\",\"026db690-06e2-1038-8960-e52b910af178\",\"0274fce8-06e2-1038-896e-e52b910af178\",\"02a1a1ee-06e2-1038-89c8-e52b910af178\",\"02da507a-06e2-1038-8a36-e52b910af178\",\"02db2ed2-06e2-1038-8a38-e52b910af178\",\"03421ae8-06e2-1038-8b00-e52b910af178\",\"03a280fe-06e2-1038-8bb7-e52b910af178\",\"0442b9c0-06e2-1038-8cde-e52b910af178\",\"080327de-06e2-1038-9451-e52b910af178\",\"08523fae-06e2-1038-94e4-e52b910af178\",\"09bff408-06e2-1038-9790-e52b910af178\",\"0b50ca5e-06e2-1038-9a87-e52b910af178\",\"0b6f1c8e-06e2-1038-9abf-e52b910af178\",\"0d2379b2-06e2-1038-9dbd-e52b910af178\",\"0d705ab6-06e2-1038-9e50-e52b910af178\",\"0f2485a8-06e2-1038-8184-e52b910af178\",\"0f6a2c66-06e2-1038-81f5-e52b910af178\",\"0f6cffcc-06e2-1038-81fa-e52b910af178\",\"0fa35720-06e2-1038-8266-e52b910af178\",\"0faf1420-06e2-1038-827e-e52b910af178\",\"0fd25d0e-06e2-1038-82c7-e52b910af178\",\"12de8784-06e2-1038-8899-e52b910af178\",\"131317e2-06e2-1038-88fb-e52b910af178\",\"131ceef2-06e2-1038-890e-e52b910af178\",\"133a1676-06e2-1038-8943-e52b910af178\",\"1368b3dc-06e2-1038-899d-e52b910af178\",\"13b6593e-06e2-1038-8a37-e52b910af178\",\"13bf6966-06e2-1038-8a49-e52b910af178\",\"13dff21c-06e2-1038-8a85-e52b910af178\",\"143b3910-06e2-1038-8b3c-e52b910af178\",\"1580ef7c-06e2-1038-8d9a-e52b910af178\",\"166a7fde-06e2-1038-8f42-e52b910af178\",\"1681626c-06e2-1038-8f6b-e52b910af178\",\"1699f502-06e2-1038-8f9b-e52b910af178\",\"16e27a02-06e2-1038-902d-e52b910af178\",\"1708e502-06e2-1038-907a-e52b910af178\",\"171be594-06e2-1038-90a2-e52b910af178\",\"186a3036-06e2-1038-9315-e52b910af178\",\"19da7c5a-06e2-1038-95f1-e52b910af178\",\"19e1f69c-06e2-1038-9600-e52b910af178\",\"1a5fa696-06e2-1038-96da-e52b910af178\",\"1a8c7f4a-06e2-1038-9734-e52b910af178\",\"1ade0982-06e2-1038-97d9-e52b910af178\",\"1ba77cb8-06e2-1038-9962-e52b910af178\",\"1ba86b6e-06e2-1038-9964-e52b910af178\",\"1e66cee0-06e2-1038-9e99-e52b910af178\",\"1ee6e33c-06e2-1038-9f8a-e52b910af178\",\"1fccb0a6-06e2-1038-8156-e52b910af178\",\"20d3bae4-06e2-1038-8342-e52b910af178\",\"21494a16-06e2-1038-8404-e52b910af178\",\"2237fe36-06e2-1038-85d8-e52b910af178\"]"
-						}
-					]
+					"response": []
 				},
 				{
 					"name": "搜尋學校 sid",
@@ -2309,10 +632,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://ldap.tp.edu.tw/api/v2/school?sid={{sid}}",
 							"protocol": "https",
@@ -2336,100 +655,7 @@
 						},
 						"description": "學校列表包含以下資料欄位：\n* o: 機關學校之系統代號\n* st: 所在行政區\n* tpUniformNumbers: 全國教育機關學校統一編號\n* description: 機關學校之全銜"
 					},
-					"response": [
-						{
-							"name": "搜尋學校 sid",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/v2/school?sid=353604",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"v2",
-										"school"
-									],
-									"query": [
-										{
-											"key": "sid",
-											"value": "353604"
-										}
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Mon, 12 Nov 2018 02:59:00 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "118"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "59"
-								}
-							],
-							"cookie": [],
-							"body": "[{\"o\":\"meps\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353604\",\"description\":\"臺北市中正區國語實驗國民小學\"}]"
-						}
-					]
+					"response": []
 				},
 				{
 					"name": "搜尋學校\b行政區",
@@ -2441,10 +667,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://ldap.tp.edu.tw/api/v2/school?area=中正區",
 							"protocol": "https",
@@ -2468,100 +690,7 @@
 						},
 						"description": "學校列表包含以下資料欄位：\n* o: 機關學校之系統代號\n* st: 所在行政區\n* tpUniformNumbers: 全國教育機關學校統一編號\n* description: 機關學校之全銜"
 					},
-					"response": [
-						{
-							"name": "搜尋學校\b行政區",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/v2/school?area=中正區",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"v2",
-										"school"
-									],
-									"query": [
-										{
-											"key": "area",
-											"value": "中正區"
-										}
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Mon, 12 Nov 2018 03:01:32 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "1864"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "59"
-								}
-							],
-							"cookie": [],
-							"body": "[{\"o\":\"meps\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353604\",\"description\":\"臺北市中正區國語實驗國民小學\"},{\"o\":\"ck\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353301\",\"description\":\"臺北市立建國高級中學\"},{\"o\":\"fg\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353303\",\"description\":\"臺北市立第一女子高級中學\"},{\"o\":\"ches\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353607\",\"description\":\"臺北市中正區忠孝國民小學\"},{\"o\":\"cips\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353603\",\"description\":\"臺北市中正區忠義國民小學\"},{\"o\":\"cksh\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353302\",\"description\":\"臺北市立成功高級中學\"},{\"o\":\"esut\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353608\",\"description\":\"臺北市立大學附設實驗國民小學\"},{\"o\":\"htjh\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353504\",\"description\":\"臺北市立弘道國民中學\"},{\"o\":\"htps\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353602\",\"description\":\"臺北市中正區河堤國民小學\"},{\"o\":\"ktjh\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353502\",\"description\":\"臺北市立古亭國民中學\"},{\"o\":\"nmes\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353605\",\"description\":\"臺北市中正區南門國民小學\"},{\"o\":\"nmjh\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353503\",\"description\":\"臺北市立南門國民中學\"},{\"o\":\"tmps\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353606\",\"description\":\"臺北市中正區東門國民小學\"},{\"o\":\"yces\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353601\",\"description\":\"臺北市中正區螢橋國民小學\"},{\"o\":\"ycjh\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353501\",\"description\":\"臺北市立螢橋國民中學\"},{\"o\":\"ccjhs\",\"st\":\"中正區\",\"tpUniformNumbers\":\"353505\",\"description\":\"臺北市立中正國民中學\"},{\"o\":\"knvs\",\"st\":\"中正區\",\"tpUniformNumbers\":\"351402\",\"description\":\"台北市私立開南高級商工職業學校\"}]"
-						}
-					]
+					"response": []
 				},
 				{
 					"name": "搜尋學校\b名稱",
@@ -2573,10 +702,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://ldap.tp.edu.tw/api/v2/school?name=博",
 							"protocol": "https",
@@ -2600,100 +725,7 @@
 						},
 						"description": "學校列表包含以下資料欄位：\n* o: 機關學校之系統代號\n* st: 所在行政區\n* tpUniformNumbers: 全國教育機關學校統一編號\n* description: 機關學校之全銜"
 					},
-					"response": [
-						{
-							"name": "搜尋學校\b名稱",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/v2/school?name=博",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"v2",
-										"school"
-									],
-									"query": [
-										{
-											"key": "name",
-											"value": "博"
-										}
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Mon, 12 Nov 2018 03:25:34 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "220"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "59"
-								}
-							],
-							"cookie": [],
-							"body": "[{\"o\":\"baps\",\"st\":\"信義區\",\"tpUniformNumbers\":\"323609\",\"description\":\"臺北市信義區博愛國民小學\"},{\"o\":\"bjps\",\"st\":\"文山區\",\"tpUniformNumbers\":\"383611\",\"description\":\"臺北市博嘉實驗國民小學\"}]"
-						}
-					]
+					"response": []
 				},
 				{
 					"name": "搜尋人員身分證字號",
@@ -2705,10 +737,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/people?idno=P121658036",
 							"protocol": "https",
@@ -2734,95 +762,7 @@
 						},
 						"description": "回應資料為 UUID 陣列"
 					},
-					"response": [
-						{
-							"name": "取得教師列表",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/school/{{dc}}/teachers",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"school",
-										"{{dc}}",
-										"teachers"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 04:14:41 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "6787"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "59"
-								}
-							],
-							"cookie": [],
-							"body": "[\"09d00818-06e0-1038-820d-e52b910af178\",\"0a2e5102-06e0-1038-82d9-e52b910af178\",\"0a380f3a-06e0-1038-82ee-e52b910af178\",\"0a6c650a-06e0-1038-835e-e52b910af178\",\"0a73f892-06e0-1038-836e-e52b910af178\",\"0a765ace-06e0-1038-8373-e52b910af178\",\"0beb8a1e-06e0-1038-8661-e52b910af178\",\"0d0c56f8-06e0-1038-8873-e52b910af178\",\"b9f293a0-06e0-1038-8c56-e52b910af178\",\"bf9b2038-06e0-1038-98ba-e52b910af178\",\"bfe6e720-06e0-1038-9954-e52b910af178\",\"bff475a2-06e0-1038-9972-e52b910af178\",\"c045cb5a-06e0-1038-9a22-e52b910af178\",\"c0688fc8-06e0-1038-9a68-e52b910af178\",\"c085451e-06e0-1038-9aa5-e52b910af178\",\"c0af9512-06e0-1038-9b05-e52b910af178\",\"c0e048e2-06e0-1038-9b67-e52b910af178\",\"c0eb91b6-06e0-1038-9b7c-e52b910af178\",\"c1235b1e-06e0-1038-9bf5-e52b910af178\",\"c1290e56-06e0-1038-9c02-e52b910af178\",\"c12dc180-06e0-1038-9c0c-e52b910af178\",\"c13ac20e-06e0-1038-9c28-e52b910af178\",\"c13f5436-06e0-1038-9c33-e52b910af178\",\"c1635dfe-06e0-1038-9c7d-e52b910af178\",\"c1f4b02e-06e0-1038-9d91-e52b910af178\",\"c1fa0268-06e0-1038-9d9c-e52b910af178\",\"c24b7e72-06e0-1038-9e41-e52b910af178\",\"c26edd4a-06e0-1038-9e8f-e52b910af178\",\"c28fe760-06e0-1038-9ed5-e52b910af178\",\"c36224a0-06e0-1038-8097-e52b910af178\",\"c3aa2700-06e0-1038-8132-e52b910af178\",\"c500ad68-06e0-1038-83ea-e52b910af178\",\"c56b1630-06e0-1038-84c7-e52b910af178\",\"c6018bf6-06e0-1038-8608-e52b910af178\",\"c66f4b78-06e0-1038-86f8-e52b910af178\",\"c69aa8c2-06e0-1038-8753-e52b910af178\",\"c69c41be-06e0-1038-8756-e52b910af178\",\"c6b6082e-06e0-1038-8791-e52b910af178\",\"c7e54cf0-06e0-1038-8a13-e52b910af178\",\"c8407a9e-06e0-1038-8acb-e52b910af178\",\"c8553f92-06e0-1038-8af9-e52b910af178\",\"c8698290-06e0-1038-8b29-e52b910af178\",\"c86cf79a-06e0-1038-8b31-e52b910af178\",\"c8c379da-06e0-1038-8bdf-e52b910af178\",\"ca7a0d20-06e0-1038-8f3e-e52b910af178\",\"cb813ca2-06e0-1038-914b-e52b910af178\",\"68860d52-06e1-1038-8a98-e52b910af178\",\"688c7ac0-06e1-1038-8aa5-e52b910af178\",\"6a22d79e-06e1-1038-8ddf-e52b910af178\",\"6a33df80-06e1-1038-8dff-e52b910af178\",\"6a7ef47a-06e1-1038-8e98-e52b910af178\",\"6ff491d0-06e1-1038-986d-e52b910af178\",\"700905f2-06e1-1038-9896-e52b910af178\",\"7043fbc6-06e1-1038-9910-e52b910af178\",\"70de2070-06e1-1038-9a3c-e52b910af178\",\"75f0dee0-06e1-1038-838e-e52b910af178\",\"77390d4a-06e1-1038-860c-e52b910af178\",\"791fba0a-06e1-1038-89bd-e52b910af178\",\"7a4257b2-06e1-1038-8c0e-e52b910af178\",\"7a8ed42a-06e1-1038-8c97-e52b910af178\",\"7a961104-06e1-1038-8ca7-e52b910af178\",\"7ae95706-06e1-1038-8d52-e52b910af178\",\"7c5ebc2a-06e1-1038-9046-e52b910af178\",\"7cb4bc38-06e1-1038-90f2-e52b910af178\",\"7cde472e-06e1-1038-9148-e52b910af178\",\"7d05cdb2-06e1-1038-9193-e52b910af178\",\"7d2603c0-06e1-1038-91d2-e52b910af178\",\"7d983c42-06e1-1038-92a9-e52b910af178\",\"7e1e6646-06e1-1038-93ae-e52b910af178\",\"7e1f4d22-06e1-1038-93b0-e52b910af178\",\"7e679942-06e1-1038-943c-e52b910af178\",\"ac707430-06e1-1038-8a6c-e52b910af178\",\"ac945c38-06e1-1038-8ab3-e52b910af178\",\"ad0b7a34-06e1-1038-8b9d-e52b910af178\",\"ad6dfd26-06e1-1038-8c62-e52b910af178\",\"adea1938-06e1-1038-8d54-e52b910af178\",\"ae25bbfa-06e1-1038-8dc1-e52b910af178\",\"ae62867a-06e1-1038-8e36-e52b910af178\",\"ae780de2-06e1-1038-8e5d-e52b910af178\",\"ae7a9774-06e1-1038-8e63-e52b910af178\",\"ae7db008-06e1-1038-8e69-e52b910af178\",\"aea1c484-06e1-1038-8eaf-e52b910af178\",\"b058bb52-06e1-1038-91f0-e52b910af178\",\"b0937382-06e1-1038-925d-e52b910af178\",\"b112b37c-06e1-1038-935c-e52b910af178\",\"b12925f8-06e1-1038-938b-e52b910af178\",\"b16bb3aa-06e1-1038-9406-e52b910af178\",\"b1840e46-06e1-1038-9437-e52b910af178\",\"b1921b08-06e1-1038-9456-e52b910af178\",\"b19e0616-06e1-1038-946e-e52b910af178\",\"b19fd540-06e1-1038-9471-e52b910af178\",\"b225d4b0-06e1-1038-958a-e52b910af178\",\"b3127572-06e1-1038-9741-e52b910af178\",\"b321a6be-06e1-1038-9760-e52b910af178\",\"b37f70dc-06e1-1038-9817-e52b910af178\",\"e47c9c00-06e1-1038-9056-e52b910af178\",\"e6a051d4-06e1-1038-9475-e52b910af178\",\"ec4f7006-06e1-1038-9f2e-e52b910af178\",\"ec9d81a6-06e1-1038-9fbf-e52b910af178\",\"ed1cbc0a-06e1-1038-80bd-e52b910af178\",\"f2148fc6-06e1-1038-89dd-e52b910af178\",\"f2e99216-06e1-1038-8b56-e52b910af178\",\"f3f4bdfc-06e1-1038-8d58-e52b910af178\",\"f4231e90-06e1-1038-8db1-e52b910af178\",\"f45aa004-06e1-1038-8e1d-e52b910af178\",\"f5fd0942-06e1-1038-9160-e52b910af178\",\"f775057c-06e1-1038-9428-e52b910af178\",\"f7a98202-06e1-1038-948d-e52b910af178\",\"f96062fa-06e1-1038-97ce-e52b910af178\",\"f989fa20-06e1-1038-981b-e52b910af178\",\"fb1ad90e-06e1-1038-9b10-e52b910af178\",\"fb36d56e-06e1-1038-9b46-e52b910af178\",\"fc157a9e-06e1-1038-9d02-e52b910af178\",\"fc1deb7a-06e1-1038-9d11-e52b910af178\",\"fd6602e2-06e1-1038-9f64-e52b910af178\",\"fe5724ec-06e1-1038-8140-e52b910af178\",\"ffc7ee4c-06e1-1038-8421-e52b910af178\",\"00239760-06e2-1038-84d4-e52b910af178\",\"005284d0-06e2-1038-8533-e52b910af178\",\"01cc094e-06e2-1038-8818-e52b910af178\",\"01cc8a72-06e2-1038-8819-e52b910af178\",\"01dee9b0-06e2-1038-883d-e52b910af178\",\"02540bf0-06e2-1038-892a-e52b910af178\",\"026db690-06e2-1038-8960-e52b910af178\",\"0274fce8-06e2-1038-896e-e52b910af178\",\"02a1a1ee-06e2-1038-89c8-e52b910af178\",\"02da507a-06e2-1038-8a36-e52b910af178\",\"02db2ed2-06e2-1038-8a38-e52b910af178\",\"03421ae8-06e2-1038-8b00-e52b910af178\",\"03a280fe-06e2-1038-8bb7-e52b910af178\",\"0442b9c0-06e2-1038-8cde-e52b910af178\",\"080327de-06e2-1038-9451-e52b910af178\",\"08523fae-06e2-1038-94e4-e52b910af178\",\"09bff408-06e2-1038-9790-e52b910af178\",\"0b50ca5e-06e2-1038-9a87-e52b910af178\",\"0b6f1c8e-06e2-1038-9abf-e52b910af178\",\"0d2379b2-06e2-1038-9dbd-e52b910af178\",\"0d705ab6-06e2-1038-9e50-e52b910af178\",\"0f2485a8-06e2-1038-8184-e52b910af178\",\"0f6a2c66-06e2-1038-81f5-e52b910af178\",\"0f6cffcc-06e2-1038-81fa-e52b910af178\",\"0fa35720-06e2-1038-8266-e52b910af178\",\"0faf1420-06e2-1038-827e-e52b910af178\",\"0fd25d0e-06e2-1038-82c7-e52b910af178\",\"12de8784-06e2-1038-8899-e52b910af178\",\"131317e2-06e2-1038-88fb-e52b910af178\",\"131ceef2-06e2-1038-890e-e52b910af178\",\"133a1676-06e2-1038-8943-e52b910af178\",\"1368b3dc-06e2-1038-899d-e52b910af178\",\"13b6593e-06e2-1038-8a37-e52b910af178\",\"13bf6966-06e2-1038-8a49-e52b910af178\",\"13dff21c-06e2-1038-8a85-e52b910af178\",\"143b3910-06e2-1038-8b3c-e52b910af178\",\"1580ef7c-06e2-1038-8d9a-e52b910af178\",\"166a7fde-06e2-1038-8f42-e52b910af178\",\"1681626c-06e2-1038-8f6b-e52b910af178\",\"1699f502-06e2-1038-8f9b-e52b910af178\",\"16e27a02-06e2-1038-902d-e52b910af178\",\"1708e502-06e2-1038-907a-e52b910af178\",\"171be594-06e2-1038-90a2-e52b910af178\",\"186a3036-06e2-1038-9315-e52b910af178\",\"19da7c5a-06e2-1038-95f1-e52b910af178\",\"19e1f69c-06e2-1038-9600-e52b910af178\",\"1a5fa696-06e2-1038-96da-e52b910af178\",\"1a8c7f4a-06e2-1038-9734-e52b910af178\",\"1ade0982-06e2-1038-97d9-e52b910af178\",\"1ba77cb8-06e2-1038-9962-e52b910af178\",\"1ba86b6e-06e2-1038-9964-e52b910af178\",\"1e66cee0-06e2-1038-9e99-e52b910af178\",\"1ee6e33c-06e2-1038-9f8a-e52b910af178\",\"1fccb0a6-06e2-1038-8156-e52b910af178\",\"20d3bae4-06e2-1038-8342-e52b910af178\",\"21494a16-06e2-1038-8404-e52b910af178\",\"2237fe36-06e2-1038-85d8-e52b910af178\"]"
-						}
-					]
+					"response": []
 				},
 				{
 					"name": "搜尋學生學號",
@@ -2834,12 +774,8 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/people?role=學生&sysid=102100",
+							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/people?type=學生&sysid=107001",
 							"protocol": "https",
 							"host": [
 								"ldap",
@@ -2856,117 +792,18 @@
 							],
 							"query": [
 								{
-									"key": "role",
+									"key": "type",
 									"value": "學生"
 								},
 								{
 									"key": "sysid",
-									"value": "102100"
+									"value": "107001"
 								}
 							]
 						},
 						"description": "回應資料為 UUID 陣列"
 					},
-					"response": [
-						{
-							"name": "搜尋學生學號",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/people?role=學生&sysid=102100",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"v2",
-										"school",
-										"{{dc}}",
-										"people"
-									],
-									"query": [
-										{
-											"key": "role",
-											"value": "學生"
-										},
-										{
-											"key": "sysid",
-											"value": "102100"
-										}
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Mon, 12 Nov 2018 03:34:38 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "40"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "59"
-								}
-							],
-							"cookie": [],
-							"body": "[\"2ecc6bac-06e0-1038-8359-e52b910af178\"]"
-						}
-					]
+					"response": []
 				},
 				{
 					"name": "複合搜尋",
@@ -2978,10 +815,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/people?type=教師&name=李&gender=1&tel=0988265068&email=gmail.com",
 							"protocol": "https",
@@ -3023,134 +856,13 @@
 						},
 						"description": "回應資料為 UUID 陣列"
 					},
-					"response": [
-						{
-							"name": "複合搜尋",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/people?type=教師&name=李&gender=1&tel=0988265068&email=gmail.com",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"v2",
-										"school",
-										"{{dc}}",
-										"people"
-									],
-									"query": [
-										{
-											"key": "type",
-											"value": "教師"
-										},
-										{
-											"key": "name",
-											"value": "李"
-										},
-										{
-											"key": "gender",
-											"value": "1"
-										},
-										{
-											"key": "tel",
-											"value": "0988265068"
-										},
-										{
-											"key": "email",
-											"value": "gmail.com"
-										}
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Mon, 12 Nov 2018 05:19:37 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "40"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "59"
-								}
-							],
-							"cookie": [],
-							"body": "[\"080327de-06e2-1038-9451-e52b910af178\"]"
-						}
-					]
+					"response": []
 				}
 			],
 			"description": "使用專案授權可以讀取學校端所產生之各種公開資訊，專案授權授權需先註冊介接專案並取得專案代號和專案密碼，傳送 POST 請求以便取得存取權杖。詳細欄位格式請參考以下說明。",
 			"auth": {
 				"type": "oauth2",
 				"oauth2": [
-					{
-						"key": "accessToken",
-						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImVkNzY2YTg0MTYwNWE4NjFiODRkOTg3MTQ3Y2UzZTFlNDNkOGRkNWM4ODk3MGM3MGVkYjQwNDk1M2FjYzA2NDk3NTQyNzc1MzYyZjlhY2VlIn0.eyJhdWQiOiIyNyIsImp0aSI6ImVkNzY2YTg0MTYwNWE4NjFiODRkOTg3MTQ3Y2UzZTFlNDNkOGRkNWM4ODk3MGM3MGVkYjQwNDk1M2FjYzA2NDk3NTQyNzc1MzYyZjlhY2VlIiwiaWF0IjoxNTQxOTg3ODQ1LCJuYmYiOjE1NDE5ODc4NDUsImV4cCI6MTU0MjA3NDI0NSwic3ViIjoiIiwic2NvcGVzIjpbInNjaG9vbCJdfQ.ZyI9IZQhgb-zfYuO_wGQAxOld7WGJYSWLvf6tQYYL-Ai8xLt1k2CFKLDqs3g-QVHygkWRRIW2iDgXIwGgCqawlk6HOe3qtud1fzA6gQ0EHuBrWcD8X2S_fJ1htV6i_nSPU3nPiekRDm32RTz-tdueDRZ-Ana-ozICDKTUEeNoIuS3cwj6hCRm85ghbF6C3WrVZtKjjGn-MiH8MC140fnXCYJCDkjk1AhIL25qdeHw1VBYdt09UJkZgU9D_-muaFVmnGmfeGwOgt7GxYu1ygOo-vF3oXWvnS2UrKKW0zTzKW_eaWw8Ac6x38qLILfLoY4Iolh2dl90r7w1M4kUMSXt4nwylZAdFyaKPgnZe8Kl2H6AASMD82MnYQTLiRg03nv3Pf7cZC72671vtiJdPdOGmW9XxszJx81-IsWXjdnemF7eaj7gLrb8rPa3nwrNfKrGihiJTgrgxRgD-HDdEZ1GNEDNCd2Caf2uW16qZpOlJiFGZockKM1Nn741S1aiEFICt0Pr-ADFDAMo5YvTm61tqecnKo0WM57h0i471gu-wom2FAKt1lJqn3DdOZthsalBobTNtFxRDGxoHeTureIeL9PGuqsXzPhUjOgysXCPCGv1T0kpaRCSjVc19OB8pCNZ4hGt2lAiX7KNn73mVBXVlbvAvhsK57KSvMNyjFHYYo",
-						"type": "string"
-					},
-					{
-						"key": "tokenType",
-						"value": "Bearer",
-						"type": "string"
-					},
 					{
 						"key": "addTokenTo",
 						"value": "header",
@@ -3179,247 +891,12 @@
 						]
 					}
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "個資授權",
 			"item": [
-				{
-					"name": "取得登入者的電子郵件",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/email",
-							"protocol": "https",
-							"host": [
-								"ldap",
-								"tp",
-								"edu",
-								"tw"
-							],
-							"path": [
-								"api",
-								"v2",
-								"email"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "取得登入者的電子郵件",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/email",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"email"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 06:44:55 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								},
-								{
-									"key": "Content-Length",
-									"value": "34"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "59"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"email\": \"leejoneshane@gmail.com\"\n}"
-						}
-					]
-				},
-				{
-					"name": "取得登入者身份識別資訊",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/profile",
-							"protocol": "https",
-							"host": [
-								"ldap",
-								"tp",
-								"edu",
-								"tw"
-							],
-							"path": [
-								"api",
-								"v2",
-								"profile"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "取得登入者身份識別資訊",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/profile",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"profile"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 06:45:24 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "454"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "56"
-								}
-							],
-							"cookie": [],
-							"body": "{\"role\":\"教師\",\"gender\":\"1\",\"birthDate\":\"19690118\",\"o\":\"meps\",\"organization\":\"臺北市中正區國語實驗國民小學\",\"unit\":\"教務處\",\"title\":\"系統管理師\",\"teachClass\":[\"五年九班彈性資訊\",\"五年十班彈性資訊\",\"六年三班彈性資訊\",\"六年四班彈性資訊\",\"六年五班彈性資訊\",\"六年六班彈性資訊\",\"六年七班彈性資訊\",\"六年八班彈性資訊\",\"六年九班彈性資訊\",\"六年十班彈性資訊\"]}"
-						}
-					]
-				},
 				{
 					"name": "導向到登入頁面",
 					"request": {
@@ -3428,10 +905,6 @@
 						},
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://ldap.tp.edu.tw/oauth/authorize?client_id=27&redirect_uri=https://app.getpostman.com/oauth2/callback&response_type=code&scope=*",
 							"protocol": "https",
@@ -3465,220 +938,7 @@
 							]
 						}
 					},
-					"response": [
-						{
-							"name": "導向到登入頁面",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/oauth/authorize?client_id=27&redirect_uri=https://app.getpostman.com/oauth2/callback&response_type=code&scope=*",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"oauth",
-										"authorize"
-									],
-									"query": [
-										{
-											"key": "client_id",
-											"value": "27"
-										},
-										{
-											"key": "redirect_uri",
-											"value": "https://app.getpostman.com/oauth2/callback"
-										},
-										{
-											"key": "response_type",
-											"value": "code"
-										},
-										{
-											"key": "scope",
-											"value": "*"
-										}
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 06:25:10 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "4396"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "Set-Cookie",
-									"value": "XSRF-TOKEN=eyJpdiI6IjdzcGxic3NnUEpaVTdHbnJ4bnk3NGc9PSIsInZhbHVlIjoiYXRZNXF0S01qUk9lY2YzaW92TWp2aFRaVHBPRFRvN0VvKytlTlpCeUpLeGFZcFB4WDBUWjRDQ01jRTNGVHFSdyIsIm1hYyI6ImJkZmE2Y2I3OGZkZWU1MjBjN2U4YTQwMGFhMzFhMjEzZTY4ZjU5NWEyYzFmMGFjNDMxMDJmN2Q1YWZhZWZkZjMifQ%3D%3D; expires=Wed, 07-Nov-2018 08:25:10 GMT; Max-Age=7200; path=/"
-								},
-								{
-									"key": "Set-Cookie",
-									"value": "laravel_session=eyJpdiI6IjdwM04zM1c4QXlZR2NZWXc0MnhDMUE9PSIsInZhbHVlIjoiQTYxK3ZlK0xxV2pyU0hJbEd2dDE4UzNOQVM0YVdCOXRwREhaTnd6VVJ5XC9TQmJXTis2bXRJeHVxbnp4Q1J4VnMiLCJtYWMiOiIxZmI1Y2Q2NDExOWYxYjYzMzY4MGVhNmNiOWFhODg0OTA2ZDI5NTI2ODEyNDE1Mzk2NzAyODc3OWM0NWRkMWZlIn0%3D; path=/; httponly"
-								}
-							],
-							"cookie": [],
-							"body": "<!DOCTYPE html>\n<html lang=\"tw\">\n    <head>\n        <meta charset=\"utf-8\">\n        <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n        <!-- CSRF Token -->\n        <meta name=\"csrf-token\" content=\"dUIwt4MmA6aQxyI4xiBtaSSfWeVv3erTyXqzaBXP\">\n        <title>臺北市教育人員單一身份驗證服務</title>\n        <!-- Styles -->\n        <link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css?family=Roboto:400,100,300,500\">\n        <link href=\"https://ldap.tp.edu.tw/css/bootstrap.min.css\" rel=\"stylesheet\">\n        <link href=\"https://ldap.tp.edu.tw/css/form-elements.css\" rel=\"stylesheet\">\n        <link href=\"https://ldap.tp.edu.tw/css/style.css\" rel=\"stylesheet\">\n        <link rel=\"shortcut icon\" href=\"https://ldap.tp.edu.tw/favicon.ico\">\n    </head>\n    <body>\n        <div id=\"top-content\">\n            <div class=\"inner-bg\">\n                <main class=\"container\">\n                    <div class=\"row\">\n                        <div class=\"col-sm-8 col-sm-offset-2 text shadow\">\n                            <img src=\"https://ldap.tp.edu.tw/img/TaipeiEduLogo.png\" class=\"img-fluid logo\" alt=\"Responsive image\">\n                            <h1>\n                                <strong>\n                                    <font style=\"color:white\">臺北市政府教育局</font>\n                                </strong>\n                            </h1>\n                            <div class=\"description\">\n                                <p>\n                                    <strong>\n                                        <font style=\"color:white;font-size:24pt;\">單一身分驗證服務</font>\n                                    </strong>\n                                </p>\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"row\">\n                        <div class=\"col-sm-4 col-sm-offset-4 form-box\">\n                            <div class=\"form-top\">\n                                <div class=\"form-top-left\">\n                                    <h3>歡迎使用</h3>\n                                    <p>請輸入您的使用者名稱與密碼：</p>\n                                </div>\n                                <div class=\"form-top-right\">\n                                    <i class=\"fa fa-lock\"></i>\n                                </div>\n                            </div>\n                            <div class=\"form-bottom\">\n                                <form role=\"form\" method=\"POST\" action=\"https://ldap.tp.edu.tw/login\" class=\"login-form\" data-stage=\"DataStore1\">\n                                    <input type=\"hidden\" name=\"_token\" value=\"dUIwt4MmA6aQxyI4xiBtaSSfWeVv3erTyXqzaBXP\">\n                                    <div class=\"form-group\">\n                                        <label for=\"username\" class=\"sr-only\">登入名稱</label>\n                                        <input id=\"username\" type=\"text\" placeholder=\"自訂帳號、電子郵件或手機號碼...\" class=\"form-username form-control\" name=\"username\" value=\"\" required autofocus>\n                                    \n                                    </div>\n                                    <div class=\"form-group\">\n                                        <label for=\"password\" class=\"sr-only\">登入密碼</label>\n                                        <input id=\"password\" type=\"password\" placeholder=\"密碼...\" class=\"form-password form-control\" name=\"password\" required>\n                                    \n                                    </div>\n                                    <div class=\"form-group\">\n                                        <div class=\"col-sm-6 pull-left\">\n                                            <input type=\"checkbox\" name=\"remember\" > 記住我\n                                            <br>\n                                            <!--p>網頁設計：臺北市福星國小　黃永銘</p-->\n            \t    \n                                        </div>\n                                        <a class=\"btn-link pull-right\" href=\"https://ldap.tp.edu.tw/password/reset\">忘記帳號、密碼？</a>\n                                    </div>\n                                    <button type=\"submit\" index=\"0\" role=\"button\" class=\"btn\">登入</button>\n                                </form>\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"row\">\n                        <div class=\"col-sm-6 col-sm-offset-3 credits\">\n                            <p>臺北市政府教育局</p>\n                            <p>地址：臺北市信義區市府路1號8樓</p>\n                            <p>電話：1999（外縣市請撥02-27208889）#1234</p>\n                            <p>信箱：\n                                <a href=\"mailto:edu_ict.19@mail.taipei.gov.tw\" target=\"_top\">edu_ict.19@mail.taipei.gov.tw</a>\n                            </p>\n                            <!--<p>網頁版型設計：<a href=\"http://www.fhps.tp.edu.tw\" title=\"臺北市福星國小\">臺北市福星國小</a> 黃永銘</p>-->\n    \n                        </div>\n                    </div>\n                </main>\n            </div>\n        </div>\n        <!-- Scripts -->\n        <script src=\"//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js\"></script>\n        <script src=\"//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js\"></script>\n        <script src=\"//cdnjs.cloudflare.com/ajax/libs/jquery-backstretch/2.0.4/jquery.backstretch.min.js\"></script>\n        <script src=\"//cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js\"></script>\n        <script src=\"https://ldap.tp.edu.tw/js/scripts.js\"></script>\n        <!--[if lt IE 10]>\n        <script src=\"//cdnjs.cloudflare.com/ajax/libs/jquery-placeholder/2.3.1/jquery.placeholder.min.js\"></script>\n        <![endif]-->\n    </body>\n</html>"
-						}
-					]
-				},
-				{
-					"name": "取得登入者的姓名與電子郵件",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/me",
-							"protocol": "https",
-							"host": [
-								"ldap",
-								"tp",
-								"edu",
-								"tw"
-							],
-							"path": [
-								"api",
-								"v2",
-								"me"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "取得登入者的姓名與電子郵件",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/me",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"me"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 06:45:04 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								},
-								{
-									"key": "Content-Length",
-									"value": "62"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "58"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"name\": \"李忠憲\",\n    \"email\": \"leejoneshane@gmail.com\"\n}"
-						}
-					]
+					"response": []
 				},
 				{
 					"name": "驗證碼交換金鑰",
@@ -3754,6 +1014,90 @@
 					"response": []
 				},
 				{
+					"name": "取得登入者的電子郵件",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/email",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得登入者的姓名與電子郵件",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/me",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得登入者身分證字號",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/idno",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"idno"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "取得登入者一般資訊",
 					"request": {
 						"method": "GET",
@@ -3763,10 +1107,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://ldap.tp.edu.tw/api/v2/user",
 							"protocol": "https",
@@ -3783,93 +1123,35 @@
 							]
 						}
 					},
-					"response": [
-						{
-							"name": "取得登入者一般資訊",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/user",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"user"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 06:42:30 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "178"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "58"
-								}
+					"response": []
+				},
+				{
+					"name": "取得登入者身份識別資訊",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/profile",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
 							],
-							"cookie": [],
-							"body": "{\"role\":\"教師\",\"uuid\":\"080327de-06e2-1038-9451-e52b910af178\",\"name\":\"李忠憲\",\"email\":\"leejoneshane@gmail.com\",\"email_login\":false,\"mobile\":\"0988265068\",\"mobile_login\":false}"
+							"path": [
+								"api",
+								"v2",
+								"profile"
+							]
 						}
-					]
+					},
+					"response": []
 				},
 				{
 					"name": "變更登入者資訊",
@@ -3902,35 +1184,6 @@
 								"api",
 								"v2",
 								"user"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "登出使用者",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/logout",
-							"protocol": "https",
-							"host": [
-								"ldap",
-								"tp",
-								"edu",
-								"tw"
-							],
-							"path": [
-								"api",
-								"logout"
 							]
 						}
 					},
@@ -3973,21 +1226,15 @@
 					"response": []
 				},
 				{
-					"name": "取得登入者身分證字號",
+					"name": "登出使用者",
 					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
+						"auth": {
+							"type": "noauth"
 						},
+						"method": "GET",
+						"header": [],
 						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/idno",
+							"raw": "https://ldap.tp.edu.tw/api/v2/logout",
 							"protocol": "https",
 							"host": [
 								"ldap",
@@ -3998,275 +1245,17 @@
 							"path": [
 								"api",
 								"v2",
-								"idno"
+								"logout"
 							]
 						}
 					},
-					"response": [
-						{
-							"name": "取得登入者身分證字號",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/idno",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"idno"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 06:45:12 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "21"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "57"
-								}
-							],
-							"cookie": [],
-							"body": "{\"idno\":\"P121658036\"}"
-						}
-					]
-				},
-				{
-					"name": "使用者登入",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
-							},
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "_token",
-									"value": "CbtOp3leSbNFdlRpBQq2RfQ5oxGjrjfkwh0k68CQ",
-									"type": "text"
-								},
-								{
-									"key": "username",
-									"value": "shane",
-									"type": "text"
-								},
-								{
-									"key": "password",
-									"value": "qdb\\PDC@735065",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "https://ldap.tp.edu.tw/login",
-							"protocol": "https",
-							"host": [
-								"ldap",
-								"tp",
-								"edu",
-								"tw"
-							],
-							"path": [
-								"login"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "使用者登入",
-							"originalRequest": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"value": "application/x-www-form-urlencoded",
-										"type": "text"
-									},
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "formdata",
-									"formdata": [
-										{
-											"key": "_token",
-											"value": "dUIwt4MmA6aQxyI4xiBtaSSfWeVv3erTyXqzaBXP",
-											"type": "text"
-										},
-										{
-											"key": "username",
-											"value": "shane",
-											"type": "text"
-										},
-										{
-											"key": "password",
-											"value": "qdb\\PDC@735065",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/login",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"login"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Wed, 07 Nov 2018 06:30:53 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "2869"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "Set-Cookie",
-									"value": "laravel_token=eyJpdiI6IlBKdXNwWnhUVUpNMmxHNDQ5VE9RMmc9PSIsInZhbHVlIjoielVsUnJVemVBMFoyQ3ZrNGFSZCtqSG42RHBxUTNTRXY0YnhUcjcwXC9UdGM2QXJ6XC9EbmVcL2JwZ01TS2ZvQTlqZ2hNeEJjZ3pYXC8weEQ5MmlEWlNpQklna1lkNVV2cDZQM3Z2ZFVyTlJyeHpReEZxSFl2TEprelZCTjdNQ1VUZXNLMWpQSklHUnREaFwvRkFmOVo2NXVyWHBrbXdCdWdrampUSkFNWmpZWFhLXC9wdEJoS2w2ZTBDUURzWUJ2YmRTWE5ac2VIZStJam5RK2MxUXVRR3R1ZU1kWG41bnU2U05hZlZEYmFJRG80a1pTNVFkQ093Vzdna2VrTmJVVFRCWkJ4OCIsIm1hYyI6ImYzYjQwNWRlMDI5YjkyMmY1MDk3Yjc1MmFhNjg2OTExYmNjMzVjZjNmM2UxYzA1M2JhNDJiYTAzYTMxNDhmM2IifQ%3D%3D; expires=Wed, 07-Nov-2018 08:30:53 GMT; Max-Age=7200; path=/; httponly"
-								},
-								{
-									"key": "Set-Cookie",
-									"value": "XSRF-TOKEN=eyJpdiI6ImxCcmJJdGJHbWtWQ0hORk1NVGJBN1E9PSIsInZhbHVlIjoiN2VLcFRWMnJ3b1R5d2tCcTRicHNkeHpIZkdEOFNNOVZzRzVlSElGeXZpdE56WWl2NVNtbUtOUEY2TlRBUkloOCIsIm1hYyI6ImRkZWU5Mjc2NTU2ZDZjNDVhM2JiMjc5MzYzN2IzOWJiNzliMjY1MmE1ZjY3MmFkZGMwM2E2NmE3YTYxNTZjMDYifQ%3D%3D; expires=Wed, 07-Nov-2018 08:30:53 GMT; Max-Age=7200; path=/"
-								},
-								{
-									"key": "Set-Cookie",
-									"value": "laravel_session=eyJpdiI6InA4a1B1KzVSUzNhcm9Yc05ySUI4WUE9PSIsInZhbHVlIjoiSm5MU3plWUZoTzdMbzdzTXJEb0E5dG5oUzU5UUZMZEljdktEQ05RXC9DWWZcL0hEWU9pSlhlSlBUNFBnd0tZTTE4IiwibWFjIjoiNmQwN2QxYTkwZmZjZWQxNWVlMmU5MzlkMGQ0MGJmMjFjMDE5MWIzMzIwYjc3NTFjMGRiODgyZDAxYWZmZTBiMCJ9; path=/; httponly"
-								}
-							],
-							"cookie": [],
-							"body": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n        <title>臺北市教育人員單一身份驗證服務 - 授權</title>\n        <!-- Styles -->\n        <link href=\"https://ldap.tp.edu.tw/css/app.css\" rel=\"stylesheet\">\n        <style>\n        .passport-authorize .container {\n            margin-top: 30px;\n        }\n\n        .passport-authorize .scopes {\n            margin-top: 20px;\n        }\n\n        .passport-authorize .buttons {\n            margin-top: 25px;\n            text-align: center;\n        }\n\n        .passport-authorize .btn {\n            width: 125px;\n        }\n\n        .passport-authorize .btn-approve {\n            margin-right: 15px;\n        }\n\n        .passport-authorize form {\n            display: inline;\n        }\n    </style>\n    </head>\n    <body class=\"passport-authorize\">\n        <div class=\"container\">\n            <div class=\"row justify-content-center\">\n                <div class=\"col-md-6\">\n                    <div class=\"card card-default\">\n                        <div class=\"card-header\">\n                        授權請求\n                    </div>\n                        <div class=\"card-body\">\n                            <!-- Introduction -->\n                            <p>\n                                <strong>POSTMAN 開發測試</strong> 請求您授權以便存取您的個人資訊。\n                            </p>\n                            <!-- Scope List -->\n                            <div class=\"buttons\">\n                                <!-- Authorize Button -->\n                                <form method=\"post\" action=\"https://ldap.tp.edu.tw/oauth/authorize\">\n                                    <input type=\"hidden\" name=\"_token\" value=\"tnY95SxAJzkYjGWMAEs8qwtSxRFFnlG8B6ygQhoY\">\n                                    <input type=\"hidden\" name=\"state\" value=\"\">\n                                    <input type=\"hidden\" name=\"client_id\" value=\"27\">\n                                    <button type=\"submit\" class=\"btn btn-success btn-approve\">同意</button>\n                                </form>\n                                <!-- Cancel Button -->\n                                <form method=\"post\" action=\"https://ldap.tp.edu.tw/oauth/authorize\">\n                                    <input type=\"hidden\" name=\"_token\" value=\"tnY95SxAJzkYjGWMAEs8qwtSxRFFnlG8B6ygQhoY\">\n                                    <input type=\"hidden\" name=\"_method\" value=\"DELETE\">\n                                    <input type=\"hidden\" name=\"state\" value=\"\">\n                                    <input type=\"hidden\" name=\"client_id\" value=\"27\">\n                                    <button class=\"btn btn-danger\">不同意</button>\n                                </form>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </body>\n</html>"
-						}
-					]
+					"response": []
 				}
 			],
 			"description": "個資授權主要用於單一簽入，如果個資當事人同意授權的話，甚至可以從介接的網站進行帳號、密碼管理。為了能提供單一簽入功能給目前常用的網站平台，因此設置了眾多資料範圍，例如：支援 OIDC 簽入的平台會讀取 me、支援社群網站登入的平台會讀取 email、原介接酷課雲的網站系統會讀取 idno、教育局採購之眾多教育應用網站則需要讀取 user 和 profile。如果要由第三方平台代管帳號密碼則會使用到 account。\n\n個資授權為使用者介入的授權，在第一次登入已完成介接的網站時，系統將會要求行使同意權，一旦同意後會留下同意紀錄，爾後的登入就無需再行使同意權。同意權的最長有效期限為 30 天，\b超過期限仍需要再次行使同意權，個資當事人隨時可以登入[服務網站](https://ldap.tp.edu.tw)取消已授與介接網站的同意權。\n\n要導入 SSO 的廠商須先申請介接專案，並透過 HTTP 轉址將使用者導向授權端點：oauth/authorize，使用者完成登入驗證並行使同意權後，系統將傳送授權碼到介接專案所指定的網址。介接網站可以將取得之授權碼傳送到權杖端點：oauth/token，向系統交換存取權杖。接下來便可透過權杖讀取所需的當事人個資。有關各個資料範圍可取得之資料及其定義，請詳閱以下說明：",
 			"auth": {
 				"type": "oauth2",
 				"oauth2": [
-					{
-						"key": "accessToken",
-						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImY1MGQzZDI0NjUzMWY3YzU5N2ZhODBjYjZiMGQ1YWRmODM1ODU3MDRhYzIyODMzMDY0YmEwM2I1ZTUxYjIwNjEwODc1N2FiZWE5MTBlNGE0In0.eyJhdWQiOiIyNyIsImp0aSI6ImY1MGQzZDI0NjUzMWY3YzU5N2ZhODBjYjZiMGQ1YWRmODM1ODU3MDRhYzIyODMzMDY0YmEwM2I1ZTUxYjIwNjEwODc1N2FiZWE5MTBlNGE0IiwiaWF0IjoxNTQyMDAwNjI3LCJuYmYiOjE1NDIwMDA2MjcsImV4cCI6MTU0MjA4NzAyNywic3ViIjoiMSIsInNjb3BlcyI6WyJtZSIsImVtYWlsIiwidXNlciIsInByb2ZpbGUiLCJpZG5vIiwiYWNjb3VudCJdfQ.jsMUJvvxxMXcBFOQAbKxNddsQFL3dvwuOMTgMdy_7IxZnq--8YsptgsjCOpMVGaYDdYi-96I5W4QMA8UfeXyfMZozgGdYKuXKN2LZRDOvbp-PaPH8bjR-aNL87YjBv5Nh5lrDQeDX7xiGNj-vgE-c5qVaemzT3S89yb0P-azk9wfMyPjd8FOhfpilZI6n2RQgXokTd83XrSAa_EtqjWCvL02V0jtlDUC78QbxnMq8V3uNd_zcM-PF5Lkyea2rQGqL8Y0QLMmyS8t7W8UaBG2e68r77bJoO8Ov7W47Z1OMnDGUgPFnUi32JZfPF4CWCw8J4kfXuOmF8FJgQtz12F_dX7aHhdLK2oGJ0gWLoQ6mVjHK5OW8USUZVLQuv67DQfsBhq5WhHeQqNWgaHd5EvFUF7Hic53URmmoOCm3OpuWbHrPbdObIXSNN8V-v0oUTP0UU3EZKiWWpRK4KGtf5I7pPqslrHeNjThuNSc9XW7Ty6mkCqvA0vlUjgpjxa-5J1x5G8RCw7eum_xq4siNXJYpAcYiodaFU1XFM_7S0ixrYdRXLEM5xJmad4UlEKkkBRq0Cqm2SPUQkTuXoYJmrryqFdc6GUalwxs7NiQ1yHFwW_Av1h5T7eFomWKk5qv64EsECAju6m9ipZ5z5A23WPKTYGYDaI0kzPP0kx9-RDWM48",
-						"type": "string"
-					},
-					{
-						"key": "tokenType",
-						"value": "Bearer",
-						"type": "string"
-					},
 					{
 						"key": "addTokenTo",
 						"value": "header",
@@ -4295,11 +1284,84 @@
 						]
 					}
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "代理授權",
 			"item": [
+				{
+					"name": "修改學校資訊",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fax\": \"new_fax\",\n  \"tel\": \"new_tel\",\n  \"ipv4\": \"new_ipv4\",\n  \"ipv6\": \"new_ipv6\",\n  \"admins\": [ \"admin1_idno\", \"admin2_idno\" ],\n  \"ous\": [\n  \t{ \"id\": \"dept01\", \"name\": \"校長室\", \"roles\": [{ \"role001\": \"校長\" }] }\n  \t],\n  \"subjects\": [\n  \t{ \"id\": \"subj001\", \"domain\": \"語文\", \"title\": \"國語\" }\n  \t],\n  \"classes\": [\n  \t{ \"101\": \"一年一班\" }, { \"102\": \"一年二班\" }\n  \t]\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"school",
+								"{{dc}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得學校人員資訊",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/people/{{uuid}}",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"school",
+								"{{dc}}",
+								"people",
+								"{{uuid}}"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "新增學校人員（教師）",
 					"request": {
@@ -4319,7 +1381,7 @@
 							"raw": "{\n\"idno\": \"A123456789\",\n\"password\": \"my_password\",\n\"type\": \"教師\",\n\"lastname\": \"姓\",\n\"firstname\": \"名字\",\n\"unit\": \"meps,dept002\",\n\"role\": \"meps,dept002,roleC17\",\n\"tclass\": \"meps,501,subj12\",\n\"memo\": \"特殊身份註記\",\n\"gender\": 1,\n\"birthdate\": \"19790208\",\n\"mail\": \"teacher@mail.xxps.tp.edu.tw\",\n\"mobile\": \"0911000001\",\n\"fax\": \"(02)23096737\",\n\"otel\": \"(02)23096737\",\n\"htel\": \"(02)23096737\",\n\"address\": \"臺北市中正區龍光里1鄰南海路58號\",\n\"conn_address\": \"臺北市南海路58號\",\n\"www\": \"http://stu.meps.tp.edu.tw/sean/\"\n}"
 						},
 						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/school/meps/people",
+							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/people",
 							"protocol": "https",
 							"host": [
 								"ldap",
@@ -4331,7 +1393,45 @@
 								"api",
 								"v2",
 								"school",
-								"meps",
+								"{{dc}}",
+								"people"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "新增學校人員（學生）",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"idno\": \"A123456789\",\n\"password\": \"my_password\",\n\"type\": \"學生\",\n\"lastname\": \"姓\",\n\"firstname\": \"名字\",\n\"stdno\": \"106001\",\n\"class\": \"101\",\n\"seat\": \"10\",\n\"memo\": \"特殊身份註記\",\n\"gender\": 1,\n\"birthdate\": \"19790208\",\n\"mail\": \"teacher@mail.xxps.tp.edu.tw\",\n\"mobile\": \"0911000001\",\n\"fax\": \"(02)23096737\",\n\"otel\": \"(02)23096737\",\n\"htel\": \"(02)23096737\",\n\"address\": \"臺北市中正區龍光里1鄰南海路58號\",\n\"conn_address\": \"臺北市南海路58號\",\n\"www\": \"http://stu.meps.tp.edu.tw/sean/\",\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/people",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"school",
+								"{{dc}}",
 								"people"
 							]
 						}
@@ -4357,7 +1457,7 @@
 							"raw": "{\n\"idno\": \"A123456789\",\n\"password\": \"my_password\",\n\"type\": \"教師\",\n\"lastname\": \"姓\",\n\"firstname\": \"名字\",\n\"unit\": \"meps,dept002\",\n\"role\": \"meps,dept002,roleC17\",\n\"tclass\": \"meps,501,subj12\",\n\"memo\": \"特殊身份註記\",\n\"gender\": 1,\n\"birthdate\": \"19790208\",\n\"mail\": \"teacher@mail.xxps.tp.edu.tw\",\n\"mobile\": \"0911000001\",\n\"fax\": \"(02)23096737\",\n\"otel\": \"(02)23096737\",\n\"htel\": \"(02)23096737\",\n\"address\": \"臺北市中正區龍光里1鄰南海路58號\",\n\"conn_address\": \"臺北市南海路58號\",\n\"www\": \"http://stu.meps.tp.edu.tw/sean/\"\n}"
 						},
 						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/school/meps/people/a4c4513a-a678-1037-955a-15429bf75900",
+							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/people/{{uuid}}",
 							"protocol": "https",
 							"host": [
 								"ldap",
@@ -4369,256 +1469,9 @@
 								"api",
 								"v2",
 								"school",
-								"meps",
+								"{{dc}}",
 								"people",
-								"a4c4513a-a678-1037-955a-15429bf75900"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "新增學校人員（學生）",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\"idno\": \"A123456789\",\n\"password\": \"my_password\",\n\"type\": \"學生\",\n\"lastname\": \"姓\",\n\"firstname\": \"名字\",\n\"stdno\": \"106001\",\n\"class\": \"101\",\n\"seat\": \"10\",\n\"memo\": \"特殊身份註記\",\n\"gender\": 1,\n\"birthdate\": \"19790208\",\n\"mail\": \"teacher@mail.xxps.tp.edu.tw\",\n\"mobile\": \"0911000001\",\n\"fax\": \"(02)23096737\",\n\"otel\": \"(02)23096737\",\n\"htel\": \"(02)23096737\",\n\"address\": \"臺北市中正區龍光里1鄰南海路58號\",\n\"conn_address\": \"臺北市南海路58號\",\n\"www\": \"http://stu.meps.tp.edu.tw/sean/\",\n}"
-						},
-						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/school/meps/people",
-							"protocol": "https",
-							"host": [
-								"ldap",
-								"tp",
-								"edu",
-								"tw"
-							],
-							"path": [
-								"api",
-								"v2",
-								"school",
-								"meps",
-								"people"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "取得學校人員資訊",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/school/meps/people/ae780de2-06e1-1038-8e5d-e52b910af178",
-							"protocol": "https",
-							"host": [
-								"ldap",
-								"tp",
-								"edu",
-								"tw"
-							],
-							"path": [
-								"api",
-								"v2",
-								"school",
-								"meps",
-								"people",
-								"ae780de2-06e1-1038-8e5d-e52b910af178"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "取得學校人員資訊",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									},
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "https://ldap.tp.edu.tw/api/v2/school/meps/people/ae780de2-06e1-1038-8e5d-e52b910af178",
-									"protocol": "https",
-									"host": [
-										"ldap",
-										"tp",
-										"edu",
-										"tw"
-									],
-									"path": [
-										"api",
-										"v2",
-										"school",
-										"meps",
-										"people",
-										"ae780de2-06e1-1038-8e5d-e52b910af178"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "html",
-							"header": [
-								{
-									"key": "Server",
-									"value": "nginx/1.15.5"
-								},
-								{
-									"key": "Date",
-									"value": "Mon, 12 Nov 2018 05:33:07 GMT"
-								},
-								{
-									"key": "Content-Type",
-									"value": "text/html; charset=UTF-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "838"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Vary",
-									"value": "Authorization"
-								},
-								{
-									"key": "X-Powered-By",
-									"value": "PHP/7.1.17"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "private, must-revalidate"
-								},
-								{
-									"key": "pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "expires",
-									"value": "-1"
-								},
-								{
-									"key": "X-RateLimit-Limit",
-									"value": "60"
-								},
-								{
-									"key": "X-RateLimit-Remaining",
-									"value": "59"
-								}
-							],
-							"cookie": [],
-							"body": "{\"entryUUID\":\"ae780de2-06e1-1038-8e5d-e52b910af178\",\"cn\":\"F222241978\",\"o\":\"meps\",\"ou\":\"meps,dept07\",\"uid\":\"meps222241978\",\"info\":\"{\\\"sid\\\":353604,\\\"role\\\":\\\"教師\\\"}\",\"title\":[\"meps,dept07,role022\"],\"gender\":\"2\",\"birthDate\":\"19671229000000Z\",\"sn\":\"余\",\"givenName\":\"芊\",\"displayName\":\"余芊\",\"employeeType\":\"教師\",\"tpTeachClass\":[\"meps,101,\",\"meps,102,\",\"meps,103,\",\"meps,306,\",\"meps,307,\",\"meps,308,\",\"meps,309,\"],\"inetUserStatus\":\"Active\",\"email_login\":false,\"mobile_login\":false,\"adminSchools\":false,\"school\":{\"meps\":\"臺北市中正區國語實驗國民小學\"},\"department\":{\"meps\":{\"dept07\":\"科任教師\"}},\"titleName\":{\"meps\":{\"role022\":\"科任教師\"}},\"teachClass\":{\"meps\":{\"101\":\"一年一班\",\"102\":\"一年二班\",\"103\":\"一年三班\",\"306\":\"三年六班\",\"307\":\"三年七班\",\"308\":\"三年八班\",\"309\":\"三年九班\"}}}"
-						}
-					]
-				},
-				{
-					"name": "修改學校資訊",
-					"request": {
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"fax\": \"new_fax\",\n  \"tel\": \"new_tel\",\n  \"ipv4\": \"new_ipv4\",\n  \"ipv6\": \"new_ipv6\",\n  \"admins\": [ \"admin1_idno\", \"admin2_idno\" ],\n  \"ous\": [\n  \t{ \"id\": \"dept01\", \"name\": \"校長室\", \"roles\": [{ \"role001\": \"校長\" }] }\n  \t],\n  \"subjects\": [\n  \t{ \"id\": \"subj001\", \"domain\": \"語文\", \"title\": \"國語\" }\n  \t],\n  \"classes\": [\n  \t{ \"101\": \"一年一班\" }, { \"102\": \"一年二班\" }\n  \t]\n}"
-						},
-						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/school/meps",
-							"protocol": "https",
-							"host": [
-								"ldap",
-								"tp",
-								"edu",
-								"tw"
-							],
-							"path": [
-								"api",
-								"v2",
-								"school",
-								"meps"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "刪除學校人員",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/school/meps/people/a4c4513a-a678-1037-955a-15429bf75900",
-							"protocol": "https",
-							"host": [
-								"ldap",
-								"tp",
-								"edu",
-								"tw"
-							],
-							"path": [
-								"api",
-								"v2",
-								"school",
-								"meps",
-								"people",
-								"a4c4513a-a678-1037-955a-15429bf75900"
+								"{{uuid}}"
 							]
 						}
 					},
@@ -4643,7 +1496,7 @@
 							"raw": "{\n\"idno\": \"A123456789\",\n\"password\": \"my_password\",\n\"type\": \"學生\",\n\"lastname\": \"姓\",\n\"firstname\": \"名字\",\n\"stdno\": \"106001\",\n\"class\": \"101\",\n\"seat\": \"10\",\n\"memo\": \"特殊身份註記\",\n\"gender\": 1,\n\"birthdate\": \"19790208\",\n\"mail\": \"teacher@mail.xxps.tp.edu.tw\",\n\"mobile\": \"0911000001\",\n\"fax\": \"(02)23096737\",\n\"otel\": \"(02)23096737\",\n\"htel\": \"(02)23096737\",\n\"address\": \"臺北市中正區龍光里1鄰南海路58號\",\n\"conn_address\": \"臺北市南海路58號\",\n\"www\": \"http://stu.meps.tp.edu.tw/sean/\",\n}"
 						},
 						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/school/meps/people/a4c4513a-a678-1037-955a-15429bf75900",
+							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/people/{{uuid}}",
 							"protocol": "https",
 							"host": [
 								"ldap",
@@ -4655,9 +1508,48 @@
 								"api",
 								"v2",
 								"school",
-								"meps",
+								"{{dc}}",
 								"people",
-								"a4c4513a-a678-1037-955a-15429bf75900"
+								"{{uuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "刪除學校人員",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/school/{{dc}}/people/{{uuid}}",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"school",
+								"{{dc}}",
+								"people",
+								"{{uuid}}"
 							]
 						}
 					},
@@ -4670,7 +1562,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjUyMWMzNTI3ZjI1YmEyZWQ0MGViOTI0NWRjNjU4YmFmMjk2Y2Y4ZmU0ZDc2YTc2ZTc5MzhjYTA0OWRiZDFmYzcxZTMwZGY3ZTZhMTJkNTE3In0.eyJhdWQiOiIxIiwianRpIjoiNTIxYzM1MjdmMjViYTJlZDQwZWI5MjQ1ZGM2NThiYWYyOTZjZjhmZTRkNzZhNzZlNzkzOGNhMDQ5ZGJkMWZjNzFlMzBkZjdlNmExMmQ1MTciLCJpYXQiOjE1NDE0NjcwOTUsIm5iZiI6MTU0MTQ2NzA5NSwiZXhwIjoxNTczMDAzMDk1LCJzdWIiOiIxIiwic2NvcGVzIjpbInNjaG9vbEFkbWluIl19.LG58BAIX_g61kgZodTYh-tuXsUf8Ts8yeu9sn2Fiy3kqdxHhZnkQgBhjNKwk94NQ4oYyvw2GxDrtN-VqlEUKUqHKQigj4Jj1gAk5dXscGsIqazIwOh5lV9wfIjqTdnR_CbOkQsgAYLUsbC5H8ibhD2k40z1A2tr8zGrh7A2MLz2Lh2Xm_K7gzxsbgU5Vn6-p1i6CzOuAVXEbDUPG2HQtcoOBWL_gJ1HfM-PbJH-_5XN_RYyupTi0KoSnQeqSxmlLYDXsBJ-FgyqotdepNuwMPj4l5TLgsPC-hVPxZJ8CP1PW5BSCW0iG5EgdEmn1W2qyR2hvQheFXhTI21b-JzEKlGypuuUvGbVei878sv1Jj1Xon08g2yDR1q-ayfDjnxLzBO4hpJIcH_c3B02ZI2E8w-obyv8GR9H2lYFKf88npMYa2q7RCjTo5XVtqUFhF7omsN4rDmN9vclpcfLRpP66xfeDz0Mx8bkN_941Vr_VLw2LQj3m_e8IgtZo-_FL-natmJGcYZYMT0V9bFZpsbjqw3RGqwqO9fEm3NGar6_MnMAqkEtyaHhF0eNjg8GvhAQ9HkLdpW-B_Q42mhg8x6BTWyrBtuKY4QBqUTbo4KjVh-DvetAkkQDQjrjnZIMr1q70egPsbQ4vknNIcxy8N-uBgPtel5ko7XMecBEFon2c6k8",
+						"value": "",
 						"type": "string"
 					}
 				]
@@ -4696,7 +1588,542 @@
 						]
 					}
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "特權專案",
+			"item": [
+				{
+					"name": "授權金鑰驗證",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/validate/{token}",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"validate",
+								"{token}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "新增學校",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"area\": \"文山區\",\n  \"type\": \"國民小學\",\n  \"o\": \"xxps\",\n  \"name\": \"臺北市虛擬國民小學\",\n  \"uno\": \"343101\",\n  \"mbox\": \"111\",\n  \"ous\": [\n  \t{ \"id\": \"dept01\", \"name\": \"校長室\", \"roles\": [{ \"role001\": \"校長\" }] }\n  \t],\n  \"subjects\": [\n  \t{ \"id\": \"subj001\", \"domain\": \"語文\", \"title\": \"國語\" }\n  \t],\n  \"classes\": [\n  \t{ \"101\": \"一年一班\" }, { \"102\": \"一年二班\" }\n  \t]\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/admin/school",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"school"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "修改學校資訊",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fax\": \"new_fax\",\n  \"tel\": \"new_tel\",\n  \"ipv4\": \"new_ipv4\",\n  \"ipv6\": \"new_ipv6\",\n  \"admins\": [ \"admin1_idno\", \"admin2_idno\" ],\n  \"ous\": [\n  \t{ \"id\": \"dept01\", \"name\": \"校長室\", \"roles\": [{ \"role001\": \"校長\" }] }\n  \t],\n  \"subjects\": [\n  \t{ \"id\": \"subj001\", \"domain\": \"語文\", \"title\": \"國語\" }\n  \t],\n  \"classes\": [\n  \t{ \"101\": \"一年一班\" }, { \"102\": \"一年二班\" }\n  \t]\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/admin/school/{{dc}}",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"school",
+								"{{dc}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "刪除學校",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fax\": \"new_fax\",\n  \"tel\": \"new_tel\",\n  \"ipv4\": \"new_ipv4\",\n  \"ipv6\": \"new_ipv6\",\n  \"admins\": [ \"admin1_idno\", \"admin2_idno\" ],\n  \"ous\": [\n  \t{ \"id\": \"dept01\", \"name\": \"校長室\", \"roles\": [{ \"role001\": \"校長\" }] }\n  \t],\n  \"subjects\": [\n  \t{ \"id\": \"subj001\", \"domain\": \"語文\", \"title\": \"國語\" }\n  \t],\n  \"classes\": [\n  \t{ \"101\": \"一年一班\" }, { \"102\": \"一年二班\" }\n  \t]\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/admin/school/{{dc}}",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"school",
+								"{{dc}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "搜尋人員身分證字號",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/admin/people?idno=P121658036",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"people"
+							],
+							"query": [
+								{
+									"key": "idno",
+									"value": "P121658036"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "搜尋學生學號",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/admin/people?sysid=107001",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"people"
+							],
+							"query": [
+								{
+									"key": "sysid",
+									"value": "107001"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "複合搜尋",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/admin/people?o=xxps&type=教師&name=李&gender=1&tel=0988265068&email=gmail.com",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"people"
+							],
+							"query": [
+								{
+									"key": "o",
+									"value": "xxps"
+								},
+								{
+									"key": "type",
+									"value": "教師"
+								},
+								{
+									"key": "name",
+									"value": "李"
+								},
+								{
+									"key": "gender",
+									"value": "1"
+								},
+								{
+									"key": "tel",
+									"value": "0988265068"
+								},
+								{
+									"key": "email",
+									"value": "gmail.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "取得學校人員資訊",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/admin/people/{{uuid}}",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"people",
+								"{{uuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "新增學校人員（教師）",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"o\": \"xxps\",\n\t\"idno\": \"A123456789\",\n\t\"password\": \"my_password\",\n\t\"type\": \"教師\",\n\t\"lastname\": \"姓\",\n\t\"firstname\": \"名字\",\n\t\"unit\": \"meps,dept002\",\n\t\"role\": \"meps,dept002,roleC17\",\n\t\"tclass\": \"meps,501,subj12\",\n\t\"memo\": \"特殊身份註記\",\n\t\"gender\": 1,\n\t\"birthdate\": \"19790208\",\n\t\"mail\": \"teacher@mail.xxps.tp.edu.tw\",\n\t\"mobile\": \"0911000001\",\n\t\"fax\": \"(02)23096737\",\n\t\"otel\": \"(02)23096737\",\n\t\"htel\": \"(02)23096737\",\n\t\"address\": \"臺北市中正區龍光里1鄰南海路58號\",\n\t\"conn_address\": \"臺北市南海路58號\",\n\t\"www\": \"http://stu.meps.tp.edu.tw/sean/\"\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/admin/people",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"people"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "新增學校人員（學生）",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"o\": \"xxps\",\n\t\"idno\": \"A123456789\",\n\t\"password\": \"my_password\",\n\t\"type\": \"學生\",\n\t\"lastname\": \"姓\",\n\t\"firstname\": \"名字\",\n\t\"stdno\": \"106001\",\n\t\"class\": \"101\",\n\t\"seat\": \"10\",\n\t\"memo\": \"特殊身份註記\",\n\t\"gender\": 1,\n\t\"birthdate\": \"19790208\",\n\t\"mail\": \"teacher@mail.xxps.tp.edu.tw\",\n\t\"mobile\": \"0911000001\",\n\t\"fax\": \"(02)23096737\",\n\t\"otel\": \"(02)23096737\",\n\t\"htel\": \"(02)23096737\",\n\t\"address\": \"臺北市中正區龍光里1鄰南海路58號\",\n\t\"conn_address\": \"臺北市南海路58號\",\n\t\"www\": \"http://stu.meps.tp.edu.tw/sean/\"\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/admin/people",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"people"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "修改學校人員（教師）",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"o\":\"xxps\",\n\t\"idno\": \"A123456789\",\n\t\"password\": \"my_password\",\n\t\"type\": \"教師\",\n\t\"lastname\": \"姓\",\n\t\"firstname\": \"名字\",\n\t\"unit\": \"meps,dept002\",\n\t\"role\": \"meps,dept002,roleC17\",\n\t\"tclass\": \"meps,501,subj12\",\n\t\"memo\": \"特殊身份註記\",\n\t\"gender\": 1,\n\t\"birthdate\": \"19790208\",\n\t\"mail\": \"teacher@mail.xxps.tp.edu.tw\",\n\t\"mobile\": \"0911000001\",\n\t\"fax\": \"(02)23096737\",\n\t\"otel\": \"(02)23096737\",\n\t\"htel\": \"(02)23096737\",\n\t\"address\": \"臺北市中正區龍光里1鄰南海路58號\",\n\t\"conn_address\": \"臺北市南海路58號\",\n\t\"www\": \"http://stu.meps.tp.edu.tw/sean/\"\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/admin/people/{{uuid}}",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"people",
+								"{{uuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "修改學校人員（學生）",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"o\":\"xxps\",\n\t\"idno\": \"A123456789\",\n\t\"password\": \"my_password\",\n\t\"type\": \"學生\",\n\t\"lastname\": \"姓\",\n\t\"firstname\": \"名字\",\n\t\"stdno\": \"106001\",\n\t\"class\": \"101\",\n\t\"seat\": \"10\",\n\t\"memo\": \"特殊身份註記\",\n\t\"gender\": 1,\n\t\"birthdate\": \"19790208\",\n\t\"mail\": \"teacher@mail.xxps.tp.edu.tw\",\n\t\"mobile\": \"0911000001\",\n\t\"fax\": \"(02)23096737\",\n\t\"otel\": \"(02)23096737\",\n\t\"htel\": \"(02)23096737\",\n\t\"address\": \"臺北市中正區龍光里1鄰南海路58號\",\n\t\"conn_address\": \"臺北市南海路58號\",\n\t\"www\": \"http://stu.meps.tp.edu.tw/sean/\"\n}"
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/admin/people/{{uid}}",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"people",
+								"{{uid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "刪除學校人員",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://ldap.tp.edu.tw/api/v2/admin/people/{{uid}}",
+							"protocol": "https",
+							"host": [
+								"ldap",
+								"tp",
+								"edu",
+								"tw"
+							],
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"people",
+								"{{uid}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "特權專案可以進行全域資料維護操作，例如：新增、刪除、修改學校或人員之資料，在提出專案介接申請時由教育局審核授權之，授權模式與專案授權相同。可提供之管理操作請詳閱下列說明：",
+			"auth": {
+				"type": "oauth2",
+				"oauth2": [
+					{
+						"key": "addTokenTo",
+						"value": "header",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ab9a5b94-dbd5-494b-9c45-1cd6f14fed41",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "2a1e1b1d-f410-4555-925e-06d2edaec91a",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
 		}
 	],
 	"event": [
@@ -4723,64 +2150,65 @@
 	],
 	"variable": [
 		{
-			"id": "53f233c4-4d4d-4029-8ce9-e9eb376ed040",
+			"id": "f3f7732c-cc32-4bfa-be62-58b9ddde6e4e",
 			"key": "dc",
 			"value": "meps",
 			"type": "string"
 		},
 		{
-			"id": "3cc2bdad-e418-4eb2-b3de-fe48d6104c92",
+			"id": "231715e1-8bb1-4e6f-bf82-f40727a98852",
 			"key": "ou",
 			"value": "dept02",
 			"type": "string"
 		},
 		{
-			"id": "597798b1-695b-4279-a4b7-a27d6dbdf4d8",
+			"id": "550c36b4-1b7e-4f7b-95cc-af84efa53e18",
 			"key": "role",
 			"value": "roleC17",
 			"type": "string"
 		},
 		{
-			"id": "b88fce68-ca0a-4478-80fa-2c3101bd0f42",
+			"id": "34140290-d39a-4c7a-ae5c-8f9ac54b4310",
 			"key": "subj",
 			"value": "subj16",
 			"type": "string"
 		},
 		{
-			"id": "10b2c140-10a2-4929-9f2b-5a0b620c83f3",
+			"id": "266e6749-4220-40e1-a067-7977bd2a3dad",
 			"key": "class",
 			"value": "605",
 			"type": "string"
 		},
 		{
-			"id": "cc2e87fa-b729-49c1-add2-ef3fc9a8ea81",
+			"id": "4f9f9d3b-bec1-4d70-a3ce-f236e0807437",
 			"key": "uuid",
 			"value": "a4c4513a-a678-1037-955a-15429bf75900",
 			"type": "string"
 		},
 		{
-			"id": "82374871-4d0a-47ad-b537-087518d27436",
+			"id": "a4163656-c8eb-4272-ac2f-627e5b8d1800",
 			"key": "id",
 			"value": "27",
 			"type": "string"
 		},
 		{
-			"id": "f1e89857-c6f4-470b-b038-4c4fc8b97a62",
+			"id": "dc9f237f-9f0f-4d55-9e6d-e2b0b45dccdc",
 			"key": "secret",
 			"value": "pOxhW7gZU74LeQRZfGkJbRpFsQnpc7SmonmbeUxS",
 			"type": "string"
 		},
 		{
-			"id": "148c5921-c6cb-4a78-9591-592c0edd1097",
+			"id": "20d211fb-c029-4aa8-90b6-0e6353500a08",
 			"key": "uri",
 			"value": "https://app.getpostman.com/oauth2/callback",
 			"type": "string"
 		},
 		{
-			"id": "3d52f077-747b-4c50-9483-8ad65f6b5026",
+			"id": "fa3b0665-330d-40e0-b96d-0861534f0fd9",
 			"key": "sid",
 			"value": "353604",
 			"type": "string"
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }
