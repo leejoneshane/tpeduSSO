@@ -70,7 +70,9 @@ Route::group(['prefix' => 'v2'], function () {
 
     Route::group(['middleware' => 'admin'], function () {
         Route::get('validate/{token}', 'Api_V2\v2_adminController@valid_token');
+        Route::post('admin/school', 'Api_V2\v2_adminController@schoolAdd');
         Route::patch('admin/school/{dc}', 'Api_V2\v2_adminController@schoolUpdate');
+        Route::delete('admin/school/{dc}', 'Api_V2\v2_adminController@schoolRemove');
         Route::get('admin/people', 'Api_V2\v2_adminController@peopleSearch');
         Route::post('admin/people', 'Api_V2\v2_adminController@peopleAdd');
         Route::patch('admin/people/{uuid}', 'Api_V2\v2_adminController@peopleUpdate');

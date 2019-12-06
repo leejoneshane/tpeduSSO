@@ -9,6 +9,10 @@ use Illuminate\Http\Response;
 use Laravel\Passport\Token;
 use Laravel\Passport\Client;
 use App\User;
+use App\Providers\LdapServiceProvider;
+use App\Rules\idno;
+use App\Rules\ipv4cidr;
+use App\Rules\ipv6cidr;
 
 class v2_adminController extends Controller
 {
@@ -33,9 +37,72 @@ class v2_adminController extends Controller
 		}
 	}
 
+    public function schoolAdd(Request $request)
+    {
+		$validatedData = $request->validate([
+			'o' => 'required|string',
+			'name' => 'required|string',
+			'type' => 'required|string',
+			'area' => 'required|string',
+			'fax' => 'nullable|string',
+			'tel' => 'nullable|string',
+			'postal' => 'nullable|digits_between:3,5',
+			'address' => 'nullable|string',
+			'mbox' => 'nullable|digits:3',
+			'www' => 'nullable|url',
+			'uno' => 'nullable|string|size:6',
+			'ipv4' => new ipv4cidr,
+			'ipv6' => new ipv6cidr,
+		]);
+        $schoolinfo = array();
+		$openldap = new LdapServiceProvider();
+		$dc = $request->get('o');
+		$schoolinfo['objectClass'] = array('tpeduSchool','top');
+		$schoolinfo['o'] = $dc;
+		$schoolinfo['businessCategory'] = $request->get('type');
+        $schoolinfo['st'] = $request->get('area');
+		$schoolinfo['description'] = $request->get('name');
+		if (!empty($request->get('fax'))) $schoolinfo['facsimileTelephoneNumber'] = $request->get('fax');
+		if (!empty($request->get('tel'))) $schoolinfo['telephoneNumber'] = $request->get('tel');
+		if (!empty($request->get('postal'))) $schoolinfo['postalCode'] = $request->get('postal');
+		if (!empty($request->get('address'))) $schoolinfo['street'] = $request->get('address');
+		if (!empty($request->get('mbox'))) $schoolinfo['postOfficeBox'] = $request->get('mbox');
+		if (!empty($request->get('www'))) $schoolinfo['wWWHomePage'] = $request->get('www');
+		if (!empty($request->get('uno'))) $schoolinfo['tpUniformNumbers'] = $request->get('uno');
+		if (!empty($request->get('ipv4'))) $schoolinfo['tpIpv4'] = $request->get('ipv4');
+		if (!empty($request->get('ipv6'))) $schoolinfo['tpIpv6'] = $request->get('ipv6');
+		if (!empty($request->get('admins'))) $schoolinfo['tpAdministrator'] = $request->get('admins');
+		$schoolinfo['dn'] = "dc=$dc,".Config::get('ldap.rdn');
+		if (!$openldap->createEntry($schoolinfo)) {
+		    return response()->json([ 'error' => '教育機構建立失敗：' . $openldap->error() ], 500);
+		}
+		$openldap->updateOus($dc, $request->get('ous'));
+		$openldap->updateClasses($dc, $request->get('classes'));
+		$openldap->updateSubjects($dc, $request->get('subjects'));
+		$openldap->updateData($entry, $schoolinfo);
+		$entry = $openldap->getOrgEntry($dc);
+		$json = $openldap->getOrgData($entry);
+		return json_encode($json, JSON_UNESCAPED_UNICODE);
+    }
+
     public function schoolUpdate(Request $request, $dc)
     {
+		$validatedData = $request->validate([
+			'name' => 'nullable|string',
+			'type' => 'nullable|string',
+			'area' => 'nullable|string',
+			'fax' => 'nullable|string',
+			'tel' => 'nullable|string',
+			'postal' => 'nullable|digits_between:3,5',
+			'address' => 'nullable|string',
+			'mbox' => 'nullable|digits:3',
+			'www' => 'nullable|url',
+			'uno' => 'nullable|string|size:6',
+			'ipv4' => new ipv4cidr,
+			'ipv6' => new ipv6cidr,
+		]);
         $schoolinfo = array();
+		$openldap = new LdapServiceProvider();
         if (!empty($request->get('area'))) $schoolinfo['st'] = $request->get('area');
 		if (!empty($request->get('name'))) $schoolinfo['description'] = $request->get('name');
 		if (!empty($request->get('fax'))) $schoolinfo['facsimileTelephoneNumber'] = $request->get('fax');
@@ -57,53 +124,28 @@ class v2_adminController extends Controller
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
 
-	public function peopleSearch(Request $request)
+	public function peopleRemove(Request $request, $dc)
     {
-		$openldap = new LdapServiceProvider();
-        $dc = $request->get('dc');
-        if ($dc) $condition[] = "(o=$dc)";
-        $role = $request->get('role');
-        if ($role) $condition[] = "(employeeType=$role)";
-        $idno = $request->get('idno');
-        if ($idno) $condition[] = "(cn=$idno)";
-        $uid = $request->get('uid');
-        if ($uid) $condition[] = "(uid=$uid)";
-        $sysid = $request->get('sysid');
-        if ($sysid) $condition[] = "(employeeNumber=$sysid)";
-        $gender = $request->get('gender');
-        if ($gender) $condition[] = "(gender=$gender)";
-        $name = $request->get('name');
-        if ($name) $condition[] = "(displayName=*$name*)";
-        $email = $request->get('email');
-        if ($email) $condition[] = "(mail=*$email*)";
-        $tel = $request->get('tel');
-        if ($tel) $condition[] = "(|(mobile=$tel)(telephoneNumber=$tel))";
-        if (count($condition) > 1) {
-            $filter = '(&';
-            foreach ($condition as $c) {
-                $filter .= $c;
-            }
-            $filter .= '(inetUserStatus=active))';
-            $people = $openldap->findUsers($filter, "entryUUID");
-            $json = array();
-            if ($people)
-	    	    foreach ($people as $one) {
-	        	    $json[] = $one['entryUUID'];
-		        }
-            if ($json)
-                return json_encode($json, JSON_UNESCAPED_UNICODE);
-            else
-                return response()->json([ 'error' => "找不到符合條件的人員"], 404);
-        } else {
-            return response()->json([ 'error' => '請提供搜尋條件'], 500);
-        }
+        $openldap = new LdapServiceProvider();
+        $entry = $openldap->getOrgEntry($dc);
+		if (!$entry) return response()->json([ 'error' => '找不到指定的教育機構'], 404);
+		$result = $openldap->deleteEntry($entry);
+		if ($result)
+		    return response()->json([ 'success' => '指定的教育機構已經刪除'], 410);
+		else
+		    return response()->json([ 'error' => '指定的教育機構刪除失敗：' . $openldap->error() ], 500);
     }
 
     public function peopleAdd(Request $request)
     {
+		$validatedData = $request->validate([
+			'school' => 'required|string',
+			'idno' => new idno,
+			'lastname' => 'required|string',
+			'firstname' => 'required|string',
+			'type' => 'required|string',
+		]);
         $openldap = new LdapServiceProvider();
-        $dc = strtolower($request->get('o'));
-        if (empty($dc)) return response()->json(["error" => "請提供所屬機關學校"], 400);
         $idno = strtoupper($request->get('idno'));
         if (empty($idno)) return response()->json(["error" => "請提供身分證字號"], 400);
         $entry = $openldap->getUserEntry($idno);
@@ -122,12 +164,11 @@ class v2_adminController extends Controller
         }
         $orgs[] = $dc;
         $sch = $request->get('school');
-        if (!empty($sch)) {
-            if (is_array($sch))
-                $orgs = array_unique(array_merge($orgs, $sch));
-            else
-                $orgs[] = $sch;
-        }
+        if (empty($sch)) return response()->json(["error" => "請提供所屬機關學校"], 400);
+        if (is_array($sch))
+            $orgs = array_unique(array_merge($orgs, $sch));
+        else
+            $orgs[] = $sch;
         $educloud = array();
 		foreach ($orgs as $o) {
 			$entry = $openldap->getOrgEntry($o);
@@ -146,11 +187,11 @@ class v2_adminController extends Controller
             if (!empty($request->get('role'))) $info['title'] = $request->get('role');
             if (!empty($request->get('tclass'))) $info['tpTeachClass'] = $request->get('tclass');
         } else {
-            if (empty($request->get('stdno'))) return response()->json(["error" => "please provide user's Student Number!"], 400);
+            if (empty($request->get('stdno'))) return response()->json(["error" => "請提供學號"], 400);
             $info['employeeNumber'] = $request->get('stdno');
-            if (empty($request->get('class'))) return response()->json(["error" => "please provide user's Study Class!"], 400);
+            if (empty($request->get('class'))) return response()->json(["error" => "請提供就讀班級"], 400);
             $info['tpClass'] = $request->get('class');
-            if (empty($request->get('seat'))) return response()->json(["error" => "please provide user's Classroom Seat Number!"], 400);
+            if (empty($request->get('seat'))) return response()->json(["error" => "請提供學生座號"], 400);
             $info['tpSeat'] = $request->get('seat');
         }
 		if (!empty($request->get('memo'))) $info['tpCharacter'] = $request->get('memo');
@@ -170,7 +211,7 @@ class v2_adminController extends Controller
         if ($json)
             return json_encode($json, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '人員新增失敗'], 404);
+            return response()->json([ 'error' => '人員新增失敗：' . $openldap->error() ], 404);
     }
    
     public function peopleUpdate(Request $request, $uuid)
@@ -304,27 +345,21 @@ class v2_adminController extends Controller
     public function peopleRemove(Request $request, $uuid)
     {
         $openldap = new LdapServiceProvider();
-        $permision = false;
-        if ($request->get('oauth_client_id') == 1) $permision=true;
-        if (!$permision) return response()->json(["error" => "此專案不是特權專案"], 403);
-        
         $entry = $openldap->getUserEntry($uuid);
+		if (!$entry) return response()->json([ 'error' => '找不到指定的人員'], 404);
         $result = $openldap->updateData($entry,  [ 'inetUserStatus' => 'deleted' ]);
 //		$result = $openldap->deleteEntry($entry);
 		if ($result)
 		    return response()->json([ 'success' => '指定的人員已經刪除'], 410);
 		else
-		    return response()->json([ 'error' => '指定的人員刪除失敗'], 500);
+		    return response()->json([ 'error' => '指定的人員刪除失敗：' . $openldap->error() ], 500);
     }
     
     public function people(Request $request, $uuid)
     {
         $openldap = new LdapServiceProvider();
-        $permision = false;
-        if ($request->get('oauth_client_id') == 1) $permision=true;
-        if (!$permision) return response()->json(["error" => "此專案不是特權專案"], 403);
-
         $entry = $openldap->getUserEntry($uuid);
+		if (!$entry) return response()->json([ 'error' => '找不到指定的人員'], 404);
 		$json = $openldap->getUserData($entry);
         if ($json)
             return json_encode($json, JSON_UNESCAPED_UNICODE);

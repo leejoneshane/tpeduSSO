@@ -361,7 +361,7 @@ class v2_schoolController extends Controller
         }
 
         $idno = strtoupper($request->get('idno'));
-        if (empty(idno)) return response()->json(["error" => "請提供身分證字號"], 400);
+        if (empty($idno)) return response()->json(["error" => "請提供身分證字號"], 400);
         $entry = $openldap->getUserEntry($idno);
         if ($entry) return response()->json(["error" => "該使用者已經存在"], 400);
         if (empty($request->get('type'))) return response()->json(["error" => "請提供該使用者的身份"], 400);
@@ -402,11 +402,11 @@ class v2_schoolController extends Controller
             if (!empty($request->get('role'))) $info['title'] = $request->get('role');
             if (!empty($request->get('tclass'))) $info['tpTeachClass'] = $request->get('tclass');
         } else {
-            if (empty($request->get('stdno'))) return response()->json(["error" => "please provide user's Student Number!"], 400);
+            if (empty($request->get('stdno'))) return response()->json(["error" => "請提供學號"], 400);
             $info['employeeNumber'] = $request->get('stdno');
-            if (empty($request->get('class'))) return response()->json(["error" => "please provide user's Study Class!"], 400);
+            if (empty($request->get('class'))) return response()->json(["error" => "請提供就讀班級"], 400);
             $info['tpClass'] = $request->get('class');
-            if (empty($request->get('seat'))) return response()->json(["error" => "please provide user's Classroom Seat Number!"], 400);
+            if (empty($request->get('seat'))) return response()->json(["error" => "請提供學生座號"], 400);
             $info['tpSeat'] = $request->get('seat');
         }
 		if (!empty($request->get('memo'))) $info['tpCharacter'] = $request->get('memo');
@@ -426,7 +426,7 @@ class v2_schoolController extends Controller
         if ($json)
             return json_encode($json, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '人員新增失敗'], 404);
+            return response()->json([ 'error' => '人員新增失敗：' . $openldap->error() ], 404);
     }
 
     public function peopleUpdate(Request $request, $dc, $uuid)
@@ -582,7 +582,7 @@ class v2_schoolController extends Controller
 		if ($result)
 		    return response()->json([ 'success' => '指定的人員已經刪除'], 410);
 		else
-		    return response()->json([ 'error' => '指定的人員刪除失敗'], 500);
+		    return response()->json([ 'error' => '指定的人員刪除失敗：' . $openldap->error() ], 500);
     }
   
     public function people(Request $request, $dc, $uuid)
