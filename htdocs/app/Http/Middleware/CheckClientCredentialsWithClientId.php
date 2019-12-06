@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Config;
 use Closure;
 use League\OAuth2\Server\ResourceServer;
 use Illuminate\Auth\AuthenticationException;
@@ -48,30 +49,12 @@ class CheckClientCredentialsWithClientId
             throw new AuthenticationException;
         }
 
-        $this->validateScopes($psr, $scopes);
-        $request["oauth_client_id"] = $psr->getAttribute('oauth_client_id');
-
-        return $next($request);
-    }
-
-    /**
-     * Validate the scopes on the incoming request.
-     *
-     * @param  \Psr\Http\Message\ServerRequestInterface $psr
-     * @param  array  $scopes
-     * @return void
-     * @throws \Laravel\Passport\Exceptions\MissingScopeException
-     */
-    protected function validateScopes($psr, $scopes)
-    {
-        if (in_array('*', $tokenScopes = $psr->getAttribute('oauth_scopes'))) {
-            return;
-        }
-
-        foreach ($scopes as $scope) {
-            if (! in_array($scope, $tokenScopes)) {
-                throw new MissingScopeException($scope);
-            }
+        $client_id = $psr->getAttribute('oauth_client_id');
+        if (in_array($client_id, Config::get('app.prerogative')) {
+            return $next($request);
+        } else {
+            return response('Forbidden.', 403);
         }
     }
+
 }

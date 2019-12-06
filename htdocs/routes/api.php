@@ -61,23 +61,24 @@ Route::group(['prefix' => 'v2'], function () {
         Route::get('profile', 'Api_V2\v2_profileController@profile')->middleware('scope:profile');
         Route::patch('user', 'Api_V2\v2_profileController@updateUser')->middleware('scope:account');
         Route::patch('account', 'Api_V2\v2_profileController@updateAccount')->middleware('scope:account');
-        Route::patch('school/{dc}', 'Api_V2\v2_schoolController@updateSchool')->middleware('scope:schoolAdmin');
+        Route::patch('school/{dc}', 'Api_V2\v2_schoolController@schoolUpdate')->middleware('scope:schoolAdmin');
         Route::post('school/{dc}/people', 'Api_V2\v2_schoolController@peopleAdd')->middleware('scope:schoolAdmin');
         Route::patch('school/{dc}/people/{uuid}', 'Api_V2\v2_schoolController@peopleUpdate')->middleware('scope:schoolAdmin');
         Route::delete('school/{dc}/people/{uuid}', 'Api_V2\v2_schoolController@peopleRemove')->middleware('scope:schoolAdmin');
         Route::get('school/{dc}/people/{uuid}', 'Api_V2\v2_schoolController@people')->middleware('scope:schoolAdmin');
     });
 
-    Route::group(['middleware' => 'clientid:admin'], function () {
-        Route::get('validate/{token}', 'Api_V2\v2_resourceController@valid_token');
-        Route::patch('admin/school/{dc}', 'Api_V2\v2_schoolController@sp_updateSchool');
-        Route::post('admin/people', 'Api_V2\v2_schoolController@sp_peopleAdd');
-        Route::patch('admin/people/{uuid}', 'Api_V2\v2_schoolController@sp_peopleUpdate');
-        Route::delete('admin/people/{uuid}', 'Api_V2\v2_schoolController@sp_peopleRemove');
-        Route::get('admin/people/{uuid}', 'Api_V2\v2_schoolController@sp_people');
+    Route::group(['middleware' => 'admin'], function () {
+        Route::get('validate/{token}', 'Api_V2\v2_adminController@valid_token');
+        Route::patch('admin/school/{dc}', 'Api_V2\v2_adminController@schoolUpdate');
+        Route::get('admin/people', 'Api_V2\v2_adminController@peopleSearch');
+        Route::post('admin/people', 'Api_V2\v2_adminController@peopleAdd');
+        Route::patch('admin/people/{uuid}', 'Api_V2\v2_adminController@peopleUpdate');
+        Route::delete('admin/people/{uuid}', 'Api_V2\v2_adminController@peopleRemove');
+        Route::get('admin/people/{uuid}', 'Api_V2\v2_adminController@people');
     });
 
-    Route::group(['middleware' => 'clientid:school'], function () {
+    Route::group(['middleware' => 'client:school'], function () {
         Route::get('school', 'Api_V2\v2_schoolController@all');
         Route::get('school/{dc}', 'Api_V2\v2_schoolController@one');
         Route::get('school/{dc}/people', 'Api_V2\v2_schoolController@peopleSearch');
