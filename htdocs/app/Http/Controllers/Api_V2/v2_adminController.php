@@ -138,7 +138,8 @@ class v2_adminController extends Controller
 
     public function peopleSearch(Request $request)
     {
-		$openldap = new LdapServiceProvider();
+        $openldap = new LdapServiceProvider();
+        $condition = array();
         $org = $request->get('o');
         if ($org) $condition[] = "(o=$org)";
         $role = $request->get('role');
@@ -157,11 +158,14 @@ class v2_adminController extends Controller
         if ($email) $condition[] = "(mail=*$email*)";
         $tel = $request->get('tel');
         if ($tel) $condition[] = "(|(mobile=$tel)(telephoneNumber=$tel))";
-        if (count($condition) > 1) {
+        if (count($condition) == 0) {
+            return response()->json([ 'error' => '請提供搜尋條件'], 500);
+        } else {
             $filter = '(&';
             foreach ($condition as $c) {
                 $filter .= $c;
             }
+        
             $filter .= '(inetUserStatus=active))';
             $people = $openldap->findUsers($filter, "entryUUID");
             $json = array();
@@ -173,8 +177,6 @@ class v2_adminController extends Controller
                 return json_encode($json, JSON_UNESCAPED_UNICODE);
             else
                 return response()->json([ 'error' => "找不到符合條件的人員"], 404);
-        } else {
-            return response()->json([ 'error' => '請提供搜尋條件'], 500);
         }
     }
 
