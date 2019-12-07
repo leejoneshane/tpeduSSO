@@ -1788,7 +1788,7 @@
 							}
 						],
 						"url": {
-							"raw": "https://ldap.tp.edu.tw/api/v2/admin/people?sysid=107001",
+							"raw": "https://ldap.tp.edu.tw/api/v2/admin/people?o=meps&sysid=107001",
 							"protocol": "https",
 							"host": [
 								"ldap",
@@ -1803,6 +1803,10 @@
 								"people"
 							],
 							"query": [
+								{
+									"key": "o",
+									"value": "meps"
+								},
 								{
 									"key": "sysid",
 									"value": "107001"
