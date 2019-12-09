@@ -43,9 +43,9 @@
 					{{ session('success') }}
 					</div>
 				@endif
-					<p>第一次由{{ $source ?? '第三方' }}帳號登入，請輸入您的個人資料！</p>
+					<p>第一次由{{ $source ?? '第三方' }}帳號登入，請輸入您的真實個人資料！</p>
 					@if(isset($limitDays))
-					<p>提醒您帳號建立後，必須在{{$limitDays}}天內透過親子連結至少綁訂一位您的小孩，否則超過時間，系統將自動刪除你的帳號。</p>
+					<p>提醒您帳號建立後，必須在{{$limitDays}}天內透過親子連結至少連結一位您的小孩，超過時間或輸入非真實資料，本系統將刪除您登錄的帳號。</p>
 					@endif
 				<form class="form-horizontal" method="POST" action="{{ route('registerThird') }}">
 					{{ csrf_field() }}
@@ -66,7 +66,7 @@
 					<div class="form-group{{ $errors->has('displayName') ? ' has-error' : '' }}">
 					<label for="displayName" class="col-md-4 control-label">姓名</label>
 					<div class="col-md-6">
-						<input id="displayName" type="text" class="form-control" name="displayName" value="{{ old('displayName') ?? $socialite->name}}" required> 
+						<input id="displayName" type="text" class="form-control" name="displayName" value="{{ old('displayName') ?? ''}}" required> 
 						@if ($errors->has('displayName'))
 						<span class="help-block">
 						<strong>{{ $errors->first('displayName') }}</strong>
