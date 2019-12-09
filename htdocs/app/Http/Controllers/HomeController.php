@@ -1052,7 +1052,7 @@ class HomeController extends Controller
 					$cc['school_name']=$openldap->getOrgTitle($o);
 				}
 				$cc['student_idno']=$d['student_idno'];
-				$cc['status']= $d['status']=='1' ? '連結' : '未連結';
+				$cc['status']= $d['status']=='1' ? '已連結' : '中斷連結';
 				$cc['parent_relation']=$d['parent_relation'];
 	
 				$dataList[$d['id']]=$cc;

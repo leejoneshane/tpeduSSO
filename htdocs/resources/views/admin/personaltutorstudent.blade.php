@@ -190,10 +190,12 @@
 								html += "<button type=\"button\" class=\"btn btn-success\" style=\"padding: 3px 20px;margin: 3px;\" onclick=\"showqrcode('"+o.sid+"','"+o.id+"')\">產生</button>";
 							}else html += '<span style="color: #CCC;">缺少身分證無法產生</span>';
 						}else html += '<span style="color: #CCC;">已建立親子關係</span>';
-						html += '</td><td style="text-align: center;">';
+						html += '</td><td style="text-align: center;" data="'+((o.from=='R'&&o.linked=='1')?'Y':'N')+'">';
 						if(o.from == 'R'){
-							var chk = (o.linked=='1')?"<i class=\"glyphicon glyphicon-ok\" style=\"color: #5cb85c;cursor: pointer;\" onclick=\"linkedchg('"+o.sid+"','"+o.id+"',this)\"></i>":"<i class=\"glyphicon glyphicon-remove\" style=\"color: #d9534f;cursor: pointer;\" onclick=\"linkedchg('"+o.sid+"','"+o.id+"',this)\"></i>";
-							html += chk;
+							html += "<label><input type=\"radio\" name=\"_link"+o.id+"\" "+(o.linked == '1'?'checked="checked"':'')+"value=\"Y\" onclick=\"linkedchg('"+o.sid+"','"+o.id+"',this)\"/>"
+								+"<i class=\"glyphicon glyphicon-ok\" style=\"color: #5cb85c;cursor: pointer;\"></i></label>"
+								+"&nbsp;&nbsp;<label><input type=\"radio\" name=\"_link"+o.id+"\" "+(o.linked != '1'?'checked="checked"':'')+"value=\"N\" onclick=\"linkedchg('"+o.sid+"','"+o.id+"',this)\"/>"
+								+"<i class=\"glyphicon glyphicon-remove\" style=\"color: #d9534f;cursor: pointer;\"></i></label>";
 						}
 						html += '</td></tr>';
 						$('#mbody').append(html);
@@ -233,18 +235,24 @@
 		}
 
 		function linkedchg(uuid,id,o) {
-			var c = $(o).hasClass('glyphicon-ok');
-			var t = c?'取消':'回復';
-			if(confirm('確定要'+t+'親子關係的連結？')){
-				axios.post('/personal/linkedChange',{uuid:uuid,id:id,c:(c?'N':'Y')}).then(res => {
+			var old = $(o).parent().parent().attr("data");
+			var val = o.value;
+
+			if(old != val){
+				axios.post('/personal/linkedChange',{uuid:uuid,id:id,c:val}).then(res => {
 					if(res.data){
 						if(res.data.success){
-							if(c) $(o).removeClass('glyphicon-ok').addClass('glyphicon-remove').css("color","#d9534f");
-							else $(o).removeClass('glyphicon-remove').addClass('glyphicon-ok').css("color","#5cb85c");
-							alert('已'+t+'親子關係');
+							//if(c) $(o).removeClass('glyphicon-ok').addClass('glyphicon-remove').css("color","#d9534f");
+							//else $(o).removeClass('glyphicon-remove').addClass('glyphicon-ok').css("color","#5cb85c");
+							alert('已'+(val=='Y'?'連結':'中斷')+'親子關係');
+							$(o).parent().parent().attr("data",val);
 						}else if(res.data.error){
+							val = (val=='Y'?'N':'Y');
+							$(o).parent().parent().find("[value='"+val+"']").prop('checked',true);
 							alert(res.data.error);
 						}else{
+							val = (val=='Y'?'N':'Y');
+							$(o).parent().parent().find("[value='"+val+"']").prop('checked',true);
 							alert('設定親子關係時發生錯誤');
 						}
 					}
