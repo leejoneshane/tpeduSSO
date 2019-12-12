@@ -355,6 +355,7 @@ class SyncController extends Controller
 		$messages[] = "開始進行同步";
 		if ($units) {
 			foreach ($units as $unit) {
+				if (!preg_match('^[\w]+$', $unit->ou)) continue;
 				for ($i=0;$i<count($org_units);$i++) {
 					if ($unit->ou == $org_units[$i]->ou) array_splice($org_units, $i, 1);
 				}
@@ -458,6 +459,7 @@ class SyncController extends Controller
 		$messages[] = "開始進行同步";
 		if ($units) {
 			foreach ($units as $unit) {
+				if (!preg_match('^[\w]+$', $unit->ou)) continue;
 				for ($i=0;$i<count($org_units);$i++) {
 					if ($unit->ou == $org_units[$i]->ou) array_splice($org_units, $i, 1);
 				}
@@ -578,6 +580,7 @@ class SyncController extends Controller
 		$messages[] = "開始進行同步";
 		if ($classes) {
 			foreach ($classes as $clsid => $clsname) {
+				if (!preg_match('^[\w]+$', $clsid)) continue;
 				if (!empty($org_classes)) {
 					for ($i=0;$i<count($org_classes);$i++) {
 						if ($clsid == $org_classes[$i]->ou) array_splice($org_classes, $i, 1);
@@ -648,6 +651,7 @@ class SyncController extends Controller
 		$messages[] = "開始進行同步";
 		if ($classes) {
 			foreach ($classes as $clsid => $clsname) {
+				if (!preg_match('^[\w]+$', $clsid)) continue;
 				if (!empty($org_classes)) {
 					for ($i=0;$i<count($org_classes);$i++) {
 						if ($clsid == $org_classes[$i]->ou) array_splice($org_classes, $i, 1);
@@ -718,6 +722,7 @@ class SyncController extends Controller
 		$messages[] = "開始進行同步";
 		if ($classes) {
 			foreach ($classes as $class) {
+				if (!preg_match('^[\w]+$', $class->clsid)) continue;
 				if (!empty($org_classes))
 					for ($i=0;$i<count($org_classes);$i++) {
 						if ($class->clsid == $org_classes[$i]->ou) array_splice($org_classes, $i, 1);
@@ -823,6 +828,7 @@ class SyncController extends Controller
 			}
 		}
 		foreach ($subjects as $subj_id => $subj_name) {
+			if (!preg_match('^[\w]+$', $subj_id)) continue;
 			if (in_array($subj_name, $subject_names)) {
 				$messages[] = $subj_name ." 科目已存在，略過不處理！";
 			} else {
@@ -887,6 +893,7 @@ class SyncController extends Controller
 			}
 		}
 		foreach ($subjects as $subj_id => $subj_name) {
+			if (!preg_match('^[\w]+$', $subj_id)) continue;
 			if (in_array($subj_name, $subject_names)) {
 				$messages[] = $subj_name ." 科目已存在，略過不處理！";
 			} else {
