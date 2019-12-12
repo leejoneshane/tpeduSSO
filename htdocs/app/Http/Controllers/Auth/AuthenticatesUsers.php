@@ -165,9 +165,9 @@ trait AuthenticatesUsers
                     return redirect('/')->with('status', '很抱歉，您的帳號尚未同步到 G-Suite，請稍候再登入 G-Suite 服務！');
                 }
             }
-            $counter = DB::table('counter')->where('count_at', 'CURDATE()')->exists();
+            $counter = DB::table('counter')->where('count_at', date('Y-m-d'))->exists();
             if ($counter) {
-                DB::table('counter')->where('count_at', 'CURDATE()')->increment('count');
+                DB::table('counter')->where('count_at', date('Y-m-d'))->increment('count');
             } else {
                 DB::table('counter')->insert(array( 'count_at' => date('Y-m-d'), 'count' => 1 ));
             }
