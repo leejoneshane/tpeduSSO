@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\RedirectsUsers;
@@ -164,8 +165,13 @@ trait AuthenticatesUsers
                     return redirect('/')->with('status', '很抱歉，您的帳號尚未同步到 G-Suite，請稍候再登入 G-Suite 服務！');
                 }
             }
-//            if (!isset($user->email) || empty($user->email)) return redirect()->route('profile');
-        }     
+            $counter = DB::table('counter')->where('count_at', 'CURDATE()')->exists();
+            if ($counter) {
+                DB::table('counter')->where('count_at', 'CURDATE()')->increment('count');
+            } else {
+                DB::table('counter')->insert(array( 'count_at' => date('Y-m-d'), 'count' => 1 ));
+            }
+        }
     }
 
     /**
