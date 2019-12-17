@@ -580,7 +580,7 @@ class SyncController extends Controller
 		$messages[] = "開始進行同步";
 		if ($classes) {
 			foreach ($classes as $clsid => $clsname) {
-				if (!preg_match('^[\w]+$', $clsid)) continue;
+				if (!preg_match('[\w]+', $clsid)) continue;
 				if (!empty($org_classes)) {
 					for ($i=0;$i<count($org_classes);$i++) {
 						if ($clsid == $org_classes[$i]->ou) array_splice($org_classes, $i, 1);
