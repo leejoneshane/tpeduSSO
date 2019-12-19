@@ -79,8 +79,8 @@ class v2_adminController extends Controller
 		$openldap->updateOus($dc, $request->get('ous'));
 		$openldap->updateClasses($dc, $request->get('classes'));
 		$openldap->updateSubjects($dc, $request->get('subjects'));
-		$openldap->updateData($entry, $schoolinfo);
 		$entry = $openldap->getOrgEntry($dc);
+		$openldap->updateData($entry, $schoolinfo);
 		$json = $openldap->getOrgData($entry);
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
@@ -118,8 +118,8 @@ class v2_adminController extends Controller
 		$openldap->updateOus($dc, $request->get('ous'));
 		$openldap->updateClasses($dc, $request->get('classes'));
 		$openldap->updateSubjects($dc, $request->get('subjects'));
-		$openldap->updateData($entry, $schoolinfo);
 		$entry = $openldap->getOrgEntry($dc);
+		$openldap->updateData($entry, $schoolinfo);
 		$json = $openldap->getOrgData($entry);
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
     }
@@ -206,11 +206,11 @@ class v2_adminController extends Controller
         } else {
             $info["userPassword"] = $openldap->make_ssha_password(substr($idno, -6));
         }
-        $orgs[] = $dc;
+        $orgs = array();
         $sch = $request->get('school');
         if (empty($sch)) return response()->json(["error" => "請提供所屬機關學校"], 400);
         if (is_array($sch))
-            $orgs = array_unique(array_merge($orgs, $sch));
+            $orgs = $sch;
         else
             $orgs[] = $sch;
         $educloud = array();

@@ -134,7 +134,7 @@ class v2_profileController extends Controller
 		$login_email = $request->get('email_login');
 		if ($login_email == 'true') {
 	    	if (array_key_exists('mail', $userinfo)) {
-				$openldap->updateAccount($entry, $user->email, $userinfo['mail'], $user->idno, '電子郵件登入');
+				$openldap->updateAccounts($entry, $user->email, $userinfo['mail'], $user->idno, '電子郵件登入');
 	    	} else {
 				$openldap->addAccount($entry, $user->email, $user->idno, '電子郵件登入');
 	    	}
@@ -146,7 +146,7 @@ class v2_profileController extends Controller
 		$login_mobile = $request->get('mobile_login');
 		if ($login_mobile == 'true') {
 	    	if (array_key_exists('mobile', $userinfo)) {
-				$openldap->updateAccount($entry, $user->mobile, $userinfo['mobile'], $user->idno, '手機號碼登入');
+				$openldap->updateAccounts($entry, $user->mobile, $userinfo['mobile'], $user->idno, '手機號碼登入');
 	    	} else {
 				$openldap->addAccount($entry, $user->mobile, $user->idno, '手機號碼登入');
 	    	}
