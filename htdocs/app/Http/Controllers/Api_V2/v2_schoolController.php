@@ -50,6 +50,21 @@ class v2_schoolController extends Controller
             return response()->json([ 'error' => '找不到指定的機關學校'], 404);
     }
 
+    public function current(Request $request)
+    {
+        $user = $request->user();
+        $openldap = new LdapServiceProvider();
+        $uentry = $openldap->getUserEntry($user->idno);
+        $udata = $openldap->getUserData($uentry, 'o');
+        if (isset($udata['o'])) {
+            if (is_array($udata['o'])) $dc = $udata['o'][0];
+            else $dc = $udata['o'];
+            return json_encode(array('dc' => $dc), JSON_UNESCAPED_UNICODE);
+        } else {
+            return response()->json([ 'error' => '查無隸屬的機關學校'], 404);
+        }
+    }
+
     public function allTeachersByOrg(Request $request, $dc)
     {
 		$openldap = new LdapServiceProvider();
