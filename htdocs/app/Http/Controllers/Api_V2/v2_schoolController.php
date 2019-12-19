@@ -41,7 +41,8 @@ class v2_schoolController extends Controller
     public function one(Request $request, $dc)
     {
 		$openldap = new LdapServiceProvider();
-		$entry = $openldap->getOrgEntry($dc);
+        $entry = $openldap->getOrgEntry($dc);
+        if (!$entry) return response()->json([ 'error' => '找不到指定的機關學校'], 404);
 		$json = $openldap->getOrgData($entry);
         unset($json['tpAdministrator']);
         if ($json)
@@ -134,7 +135,8 @@ class v2_schoolController extends Controller
     public function oneOu(Request $request, $dc, $ou_id)
     {
 		$openldap = new LdapServiceProvider();
-		$entry = $openldap->getOuEntry($dc,$ou_id);
+        $entry = $openldap->getOuEntry($dc,$ou_id);
+        if (!$entry) return response()->json([ 'error' => '找不到指定的行政部門'], 404);
 		$json = $openldap->getOuData($entry);
         if ($json)
             return json_encode($json, JSON_UNESCAPED_UNICODE);
@@ -169,7 +171,8 @@ class v2_schoolController extends Controller
     public function oneSubject(Request $request, $dc, $subj_id)
     {
 		$openldap = new LdapServiceProvider();
-		$entry = $openldap->getSubjectEntry($dc,$subj_id);
+        $entry = $openldap->getSubjectEntry($dc,$subj_id);
+        if (!$entry) return response()->json([ 'error' => '找不到指定的教學科目'], 404);
 		$json = $openldap->getSubjectData($entry);
         if ($json)
             return json_encode($json, JSON_UNESCAPED_UNICODE);
@@ -228,7 +231,8 @@ class v2_schoolController extends Controller
     public function oneRole(Request $request, $dc, $ou_id, $role_id)
     {
 		$openldap = new LdapServiceProvider();
-		$entry = $openldap->getRoleEntry($dc,$ou_id,$role_id);
+        $entry = $openldap->getRoleEntry($dc,$ou_id,$role_id);
+        if (!$entry) return response()->json([ 'error' => '找不到指定的行政職務'], 404);
 		$json = $openldap->getRoleData($entry);
         if ($json)
             return json_encode($json, JSON_UNESCAPED_UNICODE);
@@ -266,7 +270,8 @@ class v2_schoolController extends Controller
     public function oneClass(Request $request, $dc, $class_id)
     {
 		$openldap = new LdapServiceProvider();
-		$entry = $openldap->getOuEntry($dc,$class_id);
+        $entry = $openldap->getOuEntry($dc,$class_id);
+        if (!$entry) return response()->json([ 'error' => '找不到指定的班級'], 404);
 		$json = $openldap->getOuData($entry);
         if ($json)
             return json_encode($json, JSON_UNESCAPED_UNICODE);

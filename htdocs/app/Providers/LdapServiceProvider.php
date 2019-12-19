@@ -996,7 +996,7 @@ class LdapServiceProvider extends ServiceProvider
 		$dn = @ldap_get_dn(self::$ldap_read, $entry);
 		foreach ($fields as $field => $value) {
 			$values = @ldap_get_values(self::$ldap_read, $entry, $field);
-			if (in_array($value, $values)) unset($fields[$field]);
+			if ($values && in_array($value, $values)) unset($fields[$field]);
 		}
 		if (!empty($fields)) {
 			$value = @ldap_mod_add(self::$ldap_write, $dn, $fields);
@@ -1196,11 +1196,16 @@ class LdapServiceProvider extends ServiceProvider
 				$accounts[$i] = $new_account;
 			}
 		}
-		$this->updateData($entry, array( "uid" => $accounts));
-		$dn = "uid=$old_account,".Config::get('ldap.authdn');
-		$rdn = "uid=$new_account";
-		$result = @ldap_rename(self::$ldap_write, $dn, $rdn, null, true);
-		return $result;
+		if (!empty($old_account)) {
+			$this->updateData($entry, array( "uid" => $accounts));
+			$dn = "uid=$old_account,".Config::get('ldap.authdn');
+			$rdn = "uid=$new_account";
+			$result = @ldap_rename(self::$ldap_write, $dn, $rdn, null, true);
+			return $result;
+		} else {
+			return $this->updateData($entry, array( "uid" => $accounts));
+		}
+
 	}
 
     public function deleteAccount($entry, $account)

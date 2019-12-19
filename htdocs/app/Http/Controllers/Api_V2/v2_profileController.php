@@ -45,7 +45,7 @@ class v2_profileController extends Controller
     public function user(Request $request)
     {
 		$user = $request->user();
-		if (!isset($user->ldap)) return response()->json(["error" => "User not available!"], 400);
+		if (!isset($user->ldap)) return response()->json(["error" => "人員不存在"], 400);
 		$json = new \stdClass();
 		$json->role = $user->ldap['employeeType'];
 		$json->uuid = $user->uuid;
@@ -68,7 +68,7 @@ class v2_profileController extends Controller
     public function profile(Request $request)
     {
 		$user = $request->user();
-		if (!isset($user->ldap)) return response()->json(["error" => "User not available!"], 400);
+		if (!isset($user->ldap)) return response()->json(["error" => "人員不存在"], 400);
 		$json = new \stdClass();
 		$json->role = $user->ldap['employeeType'];
 		if (array_key_exists('gender', $user->ldap)) $json->gender = $user->ldap['gender'];
@@ -95,38 +95,38 @@ class v2_profileController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$user = $request->user();
-		if (!isset($user->ldap)) return response()->json(["error" => "User not available!"], 400);
+		if (!isset($user->ldap)) return response()->json(["error" => "人員不存在"], 400);
 		$userinfo = array();
 		$email = $request->get('email');
 		$mobile = $request->get('mobile');
 		$messages = '';
 		if (!empty($email)) {
 		    if ($email == $user->email) {
-				return response()->json(["error" => "Email is the same as the old one!"], 400);
+				return response()->json(["error" => "新電子郵件信箱不可以和舊的相同"], 400);
 		    }
 		    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-				return response()->json(["error" => "Email invalid!"], 400);
+				return response()->json(["error" => "電子郵件信箱格式不正確"], 400);
 		    }
 	    	if (!$openldap->emailAvailable($user->idno, $email)) {
-				return response()->json(["error" => "Email not available!"], 400);
+				return response()->json(["error" => "電子郵件信箱已經被使用"], 400);
 	    	}
 		    $userinfo['mail'] = $email;
 		    $user->email = $userinfo['mail'];
-	    	$messages = 'Email updated! ';
+	    	$messages = '電子郵件信箱更新完成 ';
 		}
 		if (!empty($mobile)) {
 		    if ($mobile == $user->mobile) {
-				return response()->json(["error" => "Mobile is the same as the old one!"], 400);
+				return response()->json(["error" => "新行動電話不可以和舊的相同"], 400);
 		    }
 		    if (!is_numeric($mobile) || strlen($mobile) != 10) {
-				return response()->json(["error" => "Mobile invalid!"], 400);
+				return response()->json(["error" => "行動電話格式不正確"], 400);
 		    }
 		    if (!$openldap->mobileAvailable($user->idno, $mobile)) {
-				return response()->json(["error" => "Mobile not available"], 400);
+				return response()->json(["error" => "行動電話已經被使用"], 400);
 		    }
 		    $userinfo['mobile'] = $mobile;
 	    	$user->mobile = $userinfo['mobile'];
-		    $messages .= 'Mobile updated! ';
+		    $messages .= '行動電話更新完成 ';
 		}
 		$user->save();
 		$entry = $openldap->getUserEntry($user->idno);
@@ -138,10 +138,10 @@ class v2_profileController extends Controller
 	    	} else {
 				$openldap->addAccount($entry, $user->email, $user->idno, '電子郵件登入');
 	    	}
-	    	$messages .= 'Login by email is active! ';
+	    	$messages .= '使用電子郵件信箱登入的功能已經開啟 ';
 		} elseif ($login_email == 'false') {
 	    	$openldap->deleteAccount($entry, $user->email);
-	    	$messages .= 'Login by email is inactive! ';
+	    	$messages .= '使用電子郵件信箱登入的功能已經關閉 ';
 		}
 		$login_mobile = $request->get('mobile_login');
 		if ($login_mobile == 'true') {
@@ -150,13 +150,13 @@ class v2_profileController extends Controller
 	    	} else {
 				$openldap->addAccount($entry, $user->mobile, $user->idno, '手機號碼登入');
 	    	}
-	    	$messages .= 'Login by mobile is active! ';
+	    	$messages .= '使用行動電話登入的功能已經開啟 ';
 		} elseif ($login_mobile == 'false') {
 	    	$openldap->deleteAccount($entry, $user->mobile);
-	    	$messages .= 'Login by mobile is inactive! ';
+	    	$messages .= '使用行動電話登入的功能已經關閉 ';
 		}
 		if (empty($messages)) {
-    	    return response()->json(["error" => "Request invalid!"], 400);
+    	    return response()->json(["error" => "更新帳號資訊時發生錯誤"], 400);
     	}
     	return response()->json(["success" => $messages], 200);
     }
@@ -165,7 +165,7 @@ class v2_profileController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$user = $request->user();
-		if (!isset($user->ldap)) return response()->json(["error" => "User not available!"], 400);
+		if (!isset($user->ldap)) return response()->json(["error" => "人員不存在"], 400);
 		$userinfo = array();
 		$account = $request->get('account');
 		$password = $request->get('password');
@@ -179,29 +179,29 @@ class v2_profileController extends Controller
 		}
 		if (!empty($account) && !empty($current)) {
 		    if  ($account == $current) {
-				return response()->json(["error" => "Account is the same as the old one!"], 400);
+				return response()->json(["error" => "新帳號不可以與舊帳號相同"], 400);
 		    }
 		    if (strlen($account) < 6) {
-				return response()->json(["error" => "Account must be at least 6 characters!"], 400);
+				return response()->json(["error" => "帳號至少要六個字元"], 400);
 		    }
 		    if (!$openldap->accountAvailable($user->idno, $account)) {
-				return response()->json(["error" => "Account not available!"], 400);
+				return response()->json(["error" => "帳號已經被使用"], 400);
 		    }
 		    $entry = $openldap->getUserEntry($user->idno);
 	    	$openldap->renameAccount($entry, $current, $account);
-		    $messages = 'Account updated! ';
+		    $messages = '帳號更新完成 ';
 		}
 		if (!empty($password)) {
 		    if (strlen($password) < 6) {
-				return response()->json(["error" => "Password must be at least 6 characters!"], 400);
+				return response()->json(["error" => "密碼至少要六個字元"], 400);
 		    }
 		    $user->resetLdapPassword($password);
 	    	$user->password = \Hash::make($password);
 		    $user->save();
-		    $messages .= 'Password updated!';
+		    $messages .= '密碼更新完成';
 		}
 		if (empty($messages)) {
-    	    return response()->json(["error" => "Request invalid!"], 400);
+    	    return response()->json(["error" => "更新帳號資訊時發生錯誤"], 400);
     	}
     	return response()->json(["success" => $messages], 200);
     }
