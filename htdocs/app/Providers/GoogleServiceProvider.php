@@ -186,19 +186,21 @@ class GoogleServiceProvider extends ServiceProvider
 		$names->setFullName($user->name);
 		$gsuite_user->setName($names);
 		$gender = new \Google_Service_Directory_UserGender();
-		switch ($user->ldap['gender']) {
-			case 0:
-				$gender->setType('unknow');
-				break;
-			case 1:
-				$gender->setType('male');
-				break;
-			case 2:
-				$gender->setType('female');
-				break;
-			case 9:
-				$gender->setType('other');
-				break;
+		if (!empty($user->ldap['gender'])) {
+			switch ($user->ldap['gender']) {
+				case 0:
+					$gender->setType('unknow');
+					break;
+				case 1:
+					$gender->setType('male');
+					break;
+				case 2:
+					$gender->setType('female');
+					break;
+				case 9:
+					$gender->setType('other');
+					break;
+			}
 		}
 		$gsuite_user->setGender($gender);
 		$gsuite_user->setIsAdmin($user->is_admin ? true : false);
