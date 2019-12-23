@@ -18,6 +18,7 @@ class v2_adminController extends Controller
 {
 	public function valid_token(Request $request, $token)
     {
+		$openldap = new LdapServiceProvider();
 		$psr = (new \Lcobucci\JWT\Parser())->parse($token);
 		$token_id = $psr->getClaim('jti');
 		$token = Token::find($token_id);
@@ -29,8 +30,11 @@ class v2_adminController extends Controller
 			$user = $token->user;
 			$validate = array();
 			if (isset($user->uuid)) $validate['user'] = $user->uuid;
-			$validate['personal'] = false;
-			if (!empty($token->name)) $validate['personal'] = true;
+			if (!empty($token->name)) {
+                $entry = $openldap->getUserEntry($user->uuid);
+                $admin = $openldap->getUserData($entry, 'tpAdminSchools');
+                $validate['admin_schools'] = $admin['tpAdminSchools'];
+            }
 			$validate['client_id'] = $token->client_id;
 			$validate['scopes'] = $token->scopes;
 			return response()->json($validate);
