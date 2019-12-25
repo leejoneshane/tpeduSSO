@@ -59,7 +59,7 @@ class profileController extends Controller
 		$json->email_login = $user->ldap['email_login'];
 		$json->mobile = $user->mobile;
 		$json->mobile_login = $user->ldap['mobile_login'];
-		return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
+		return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
     }
 
     public function idno(Request $request)
@@ -99,7 +99,7 @@ class profileController extends Controller
 			if (isset($user->ldap['tpTutorClass']) && !empty($user->ldap['tpTutorClass'])) $json->tutorClass = $user->ldap['tpTutorClass'];
 		}
 		if (isset($user->ldap['tpCharacter']) && !empty($user->ldap['tpCharacter'])) $json->character = $user->ldap['tpCharacter'];
-		return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
+		return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
     }
 
     public function updateUser(Request $request)

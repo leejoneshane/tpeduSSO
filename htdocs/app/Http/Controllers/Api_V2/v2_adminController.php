@@ -86,7 +86,7 @@ class v2_adminController extends Controller
 		$entry = $openldap->getOrgEntry($dc);
 		$openldap->updateData($entry, $schoolinfo);
 		$json = $openldap->getOrgData($entry);
-		return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
+		return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
     }
 
     public function schoolUpdate(Request $request, $dc)
@@ -125,7 +125,7 @@ class v2_adminController extends Controller
 		$entry = $openldap->getOrgEntry($dc);
 		$openldap->updateData($entry, $schoolinfo);
 		$json = $openldap->getOrgData($entry);
-		return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
+		return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
     }
 
 	public function schoolRemove(Request $request, $dc)
@@ -178,7 +178,7 @@ class v2_adminController extends Controller
 	        	    $json[] = $one['entryUUID'];
 		        }
             if ($json)
-                return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
+                return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
             else
                 return response()->json([ 'error' => "找不到符合條件的人員"], 404);
         }
@@ -257,7 +257,7 @@ class v2_adminController extends Controller
 		$entry = $openldap->getUserEntry($request->get('idno'));
 		$json = $openldap->getUserData($entry);
         if ($json)
-            return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
+            return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
         else
             return response()->json([ 'error' => '人員新增失敗：' . $openldap->error() ], 404);
     }
@@ -387,7 +387,7 @@ class v2_adminController extends Controller
         }
         $entry = $openldap->getUserEntry($uuid);
 		$json = $openldap->getUserData($entry);
-		return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
+		return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
     }
 
     public function peopleRemove(Request $request, $uuid)
@@ -410,7 +410,7 @@ class v2_adminController extends Controller
 		if (!$entry) return response()->json([ 'error' => '找不到指定的人員'], 404);
 		$json = $openldap->getUserData($entry);
         if ($json)
-            return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
+            return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
         else
             return response()->json([ 'error' => '找不到指定的人員'], 404);
     }
