@@ -33,22 +33,22 @@ class v2_schoolController extends Controller
         }
         $json = $openldap->getOrgs($filter);
         if ($json)
-            return json_encode($json, JSON_UNESCAPED_UNICODE);
+            return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '找不到符合條件的機關學校'], 404);
+            return response()->json([ 'error' => '找不到符合條件的機關學校'], 404, JSON_UNESCAPED_UNICODE);
     }
 
     public function one(Request $request, $dc)
     {
 		$openldap = new LdapServiceProvider();
         $entry = $openldap->getOrgEntry($dc);
-        if (!$entry) return response()->json([ 'error' => '找不到指定的機關學校'], 404);
+        if (!$entry) return response()->json([ 'error' => '找不到指定的機關學校'], 404, JSON_UNESCAPED_UNICODE);
 		$json = $openldap->getOrgData($entry);
         unset($json['tpAdministrator']);
         if ($json)
-            return json_encode($json, JSON_UNESCAPED_UNICODE);
+            return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '找不到指定的機關學校'], 404);
+            return response()->json([ 'error' => '找不到指定的機關學校'], 404, JSON_UNESCAPED_UNICODE);
     }
 
     public function allTeachersByOrg(Request $request, $dc)
@@ -61,9 +61,9 @@ class v2_schoolController extends Controller
 	    	$json[] = $teacher['entryUUID'];
 		}
         if ($json)
-            return json_encode($json, JSON_UNESCAPED_UNICODE);
+            return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該機關學校查無教職員'], 404);
+            return response()->json([ 'error' => '該機關學校查無教職員'], 404, JSON_UNESCAPED_UNICODE);
     }
 
     public function peopleSearch(Request $request, $dc)
@@ -99,11 +99,11 @@ class v2_schoolController extends Controller
 	        	    $json[] = $one['entryUUID'];
 		        }
             if ($json)
-                return json_encode($json, JSON_UNESCAPED_UNICODE);
+                return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
             else
-                return response()->json([ 'error' => "找不到符合條件的人員"], 404);
+                return response()->json([ 'error' => "找不到符合條件的人員"], 404, JSON_UNESCAPED_UNICODE);
         } else {
-            return response()->json([ 'error' => '請提供搜尋條件'], 500);
+            return response()->json([ 'error' => '請提供搜尋條件'], 500, JSON_UNESCAPED_UNICODE);
         }
     }
 
@@ -112,21 +112,21 @@ class v2_schoolController extends Controller
 		$openldap = new LdapServiceProvider();
 		$json = $openldap->getOus($dc, "行政部門");
         if ($json)
-            return json_encode($json, JSON_UNESCAPED_UNICODE);
+            return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該機關學校查無行政部門'], 404);
+            return response()->json([ 'error' => '該機關學校查無行政部門'], 404, JSON_UNESCAPED_UNICODE);
    }
 
     public function oneOu(Request $request, $dc, $ou_id)
     {
 		$openldap = new LdapServiceProvider();
         $entry = $openldap->getOuEntry($dc,$ou_id);
-        if (!$entry) return response()->json([ 'error' => '找不到指定的行政部門'], 404);
+        if (!$entry) return response()->json([ 'error' => '找不到指定的行政部門'], 404, JSON_UNESCAPED_UNICODE);
 		$json = $openldap->getOuData($entry);
         if ($json)
-            return json_encode($json, JSON_UNESCAPED_UNICODE);
+            return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '找不到指定的行政部門'], 404);
+            return response()->json([ 'error' => '找不到指定的行政部門'], 404, JSON_UNESCAPED_UNICODE);
     }
 
     public function allTeachersByUnit(Request $request, $dc, $ou_id)
@@ -138,9 +138,9 @@ class v2_schoolController extends Controller
 	    	$json[] = $teacher['entryUUID'];
 		}
         if ($json)
-            return json_encode($json, JSON_UNESCAPED_UNICODE);
+            return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該行政部門查無在職人員'], 404);
+            return response()->json([ 'error' => '該行政部門查無在職人員'], 404, JSON_UNESCAPED_UNICODE);
     }
 
     public function allSubject(Request $request, $dc)
@@ -148,21 +148,21 @@ class v2_schoolController extends Controller
 		$openldap = new LdapServiceProvider();
 		$json = $openldap->getSubjects($dc);
         if ($json)
-            return json_encode($json, JSON_UNESCAPED_UNICODE);
+            return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該機關學校查無教學科目'], 404);
+            return response()->json([ 'error' => '該機關學校查無教學科目'], 404, JSON_UNESCAPED_UNICODE);
     }
 
     public function oneSubject(Request $request, $dc, $subj_id)
     {
 		$openldap = new LdapServiceProvider();
         $entry = $openldap->getSubjectEntry($dc,$subj_id);
-        if (!$entry) return response()->json([ 'error' => '找不到指定的教學科目'], 404);
+        if (!$entry) return response()->json([ 'error' => '找不到指定的教學科目'], 404, JSON_UNESCAPED_UNICODE);
 		$json = $openldap->getSubjectData($entry);
         if ($json)
-            return json_encode($json, JSON_UNESCAPED_UNICODE);
+            return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '找不到指定的教學科目'], 404);
+            return response()->json([ 'error' => '找不到指定的教學科目'], 404, JSON_UNESCAPED_UNICODE);
     }
 
     public function allTeachersBySubject(Request $request, $dc, $subj_id)
@@ -174,9 +174,9 @@ class v2_schoolController extends Controller
 	    	$json[] = $teacher['entryUUID'];
 		}
         if ($json)
-            return json_encode($json, JSON_UNESCAPED_UNICODE);
+            return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該教學科目查無任教教師'], 404);
+            return response()->json([ 'error' => '該教學科目查無任教教師'], 404, JSON_UNESCAPED_UNICODE);
     }
 
     public function allClassesBySubject(Request $request, $dc, $subj_id)
@@ -198,9 +198,9 @@ class v2_schoolController extends Controller
             }
 		}
         if ($json)
-            return json_encode($json, JSON_UNESCAPED_UNICODE);
+            return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該教學科目查無授課班級'], 404);
+            return response()->json([ 'error' => '該教學科目查無授課班級'], 404, JSON_UNESCAPED_UNICODE);
    }
 
     public function allRole(Request $request, $dc, $ou_id)
@@ -208,21 +208,21 @@ class v2_schoolController extends Controller
 		$openldap = new LdapServiceProvider();
 		$json = $openldap->getRoles($dc,$ou_id);
         if ($json)
-            return json_encode($json, JSON_UNESCAPED_UNICODE);
+            return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該行政部門查無職務資訊'], 404);
+            return response()->json([ 'error' => '該行政部門查無職務資訊'], 404, JSON_UNESCAPED_UNICODE);
     }
 
     public function oneRole(Request $request, $dc, $ou_id, $role_id)
     {
 		$openldap = new LdapServiceProvider();
         $entry = $openldap->getRoleEntry($dc,$ou_id,$role_id);
-        if (!$entry) return response()->json([ 'error' => '找不到指定的行政職務'], 404);
+        if (!$entry) return response()->json([ 'error' => '找不到指定的行政職務'], 404, JSON_UNESCAPED_UNICODE);
 		$json = $openldap->getRoleData($entry);
         if ($json)
-            return json_encode($json, JSON_UNESCAPED_UNICODE);
+            return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '找不到指定的行政職務'], 404);
+            return response()->json([ 'error' => '找不到指定的行政職務'], 404, JSON_UNESCAPED_UNICODE);
     }
 
     public function allTeachersByRole(Request $request, $dc, $ou_id, $role_id)
@@ -234,9 +234,9 @@ class v2_schoolController extends Controller
 	    	$json[] = $teacher['entryUUID'];
 		}
         if ($json)
-            return json_encode($json, JSON_UNESCAPED_UNICODE);
+            return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該行政職務查無在職人員'], 404);
+            return response()->json([ 'error' => '該行政職務查無在職人員'], 404, JSON_UNESCAPED_UNICODE);
     }
 
     public function allClass(Request $request, $dc)
@@ -247,21 +247,21 @@ class v2_schoolController extends Controller
             unset($json[$key]->teacher);
         }
         if ($json)
-            return json_encode($json, JSON_UNESCAPED_UNICODE);
+            return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該機關學校查無班級'], 404);
+            return response()->json([ 'error' => '該機關學校查無班級'], 404, JSON_UNESCAPED_UNICODE);
     }
 
     public function oneClass(Request $request, $dc, $class_id)
     {
 		$openldap = new LdapServiceProvider();
         $entry = $openldap->getOuEntry($dc,$class_id);
-        if (!$entry) return response()->json([ 'error' => '找不到指定的班級'], 404);
+        if (!$entry) return response()->json([ 'error' => '找不到指定的班級'], 404, JSON_UNESCAPED_UNICODE);
 		$json = $openldap->getOuData($entry);
         if ($json)
-            return json_encode($json, JSON_UNESCAPED_UNICODE);
+            return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '找不到指定的班級'], 404);
+            return response()->json([ 'error' => '找不到指定的班級'], 404, JSON_UNESCAPED_UNICODE);
     }
 
     public function allTeachersByClass(Request $request, $dc, $class_id)
@@ -273,9 +273,9 @@ class v2_schoolController extends Controller
 	    	$json[] = $teacher['entryUUID'];
 		}
         if ($json)
-            return json_encode($json, JSON_UNESCAPED_UNICODE);
+            return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該班級查無任教老師'], 404);
+            return response()->json([ 'error' => '該班級查無任教老師'], 404, JSON_UNESCAPED_UNICODE);
     }
 
     public function allStudentsByClass(Request $request, $dc, $class_id)
@@ -287,9 +287,9 @@ class v2_schoolController extends Controller
 	    	$json[] = $student['entryUUID'];
 		}
         if ($json)
-            return json_encode($json, JSON_UNESCAPED_UNICODE);
+            return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該班級查無學生'], 404);
+            return response()->json([ 'error' => '該班級查無學生'], 404, JSON_UNESCAPED_UNICODE);
     }
 
     public function allSubjectsByClass(Request $request, $dc, $class_id)
@@ -311,9 +311,9 @@ class v2_schoolController extends Controller
             }
 		}
         if ($json)
-            return json_encode($json, JSON_UNESCAPED_UNICODE);
+            return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '該班級查無教學科目'], 404);
+            return response()->json([ 'error' => '該班級查無教學科目'], 404, JSON_UNESCAPED_UNICODE);
     }
 
     // below function for schoolAdmin scope.
@@ -325,9 +325,9 @@ class v2_schoolController extends Controller
         $data = $openldap->getOrgData($entry, 'tpAdministrator');
         if (is_array($data['tpAdministrator'])) {
             if (!in_array($user->idno, $data['tpAdministrator']))
-                return response()->json(["error" => "你未被權限管理此機關學校"], 403);
+                return response()->json(["error" => "你未被權限管理此機關學校"], 403, JSON_UNESCAPED_UNICODE);
         } elseif ($user->idno != $data['tpAdministrator']) {
-            return response()->json(["error" => "你未被權限管理此機關學校"], 403);
+            return response()->json(["error" => "你未被權限管理此機關學校"], 403, JSON_UNESCAPED_UNICODE);
         }
 
         $schoolinfo = array();
@@ -349,7 +349,7 @@ class v2_schoolController extends Controller
 		$openldap->updateData($entry, $schoolinfo);
 		$entry = $openldap->getOrgEntry($dc);
 		$json = $openldap->getOrgData($entry);
-		return json_encode($json, JSON_UNESCAPED_UNICODE);
+		return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
     }
 
     public function peopleAdd(Request $request, $dc)
@@ -360,17 +360,17 @@ class v2_schoolController extends Controller
         $data = $openldap->getOrgData($entry, 'tpAdministrator');
         if (is_array($data['tpAdministrator'])) {
             if (!in_array($user->idno, $data['tpAdministrator']))
-                return response()->json(["error" => "你未被權限管理此機關學校"], 403);
+                return response()->json(["error" => "你未被權限管理此機關學校"], 403, JSON_UNESCAPED_UNICODE);
         } elseif ($user->idno != $data['tpAdministrator']) {
-            return response()->json(["error" => "你未被權限管理此機關學校"], 403);
+            return response()->json(["error" => "你未被權限管理此機關學校"], 403, JSON_UNESCAPED_UNICODE);
         }
 
         $idno = strtoupper($request->get('idno'));
-        if (empty($idno)) return response()->json(["error" => "請提供身分證字號"], 400);
+        if (empty($idno)) return response()->json(["error" => "請提供身分證字號"], 400, JSON_UNESCAPED_UNICODE);
         $entry = $openldap->getUserEntry($idno);
-        if ($entry) return response()->json(["error" => "該使用者已經存在"], 400);
-        if (empty($request->get('type'))) return response()->json(["error" => "請提供該使用者的身份"], 400);
-        if (empty($request->get('lastname')) || empty($request->get('firstname'))) return response()->json(["error" => "請提供該使用者的真實姓名"], 400);
+        if ($entry) return response()->json(["error" => "該使用者已經存在"], 400, JSON_UNESCAPED_UNICODE);
+        if (empty($request->get('type'))) return response()->json(["error" => "請提供該使用者的身份"], 400, JSON_UNESCAPED_UNICODE);
+        if (empty($request->get('lastname')) || empty($request->get('firstname'))) return response()->json(["error" => "請提供該使用者的真實姓名"], 400, JSON_UNESCAPED_UNICODE);
 		$info = array();
 		$info['dn'] = "cn=".$idno.",".Config::get('ldap.userdn');
 		$info["objectClass"] = array("tpeduPerson","inetUser");
@@ -407,11 +407,11 @@ class v2_schoolController extends Controller
             if (!empty($request->get('role'))) $info['title'] = $request->get('role');
             if (!empty($request->get('tclass'))) $info['tpTeachClass'] = $request->get('tclass');
         } else {
-            if (empty($request->get('stdno'))) return response()->json(["error" => "請提供學號"], 400);
+            if (empty($request->get('stdno'))) return response()->json(["error" => "請提供學號"], 400, JSON_UNESCAPED_UNICODE);
             $info['employeeNumber'] = $request->get('stdno');
-            if (empty($request->get('class'))) return response()->json(["error" => "請提供就讀班級"], 400);
+            if (empty($request->get('class'))) return response()->json(["error" => "請提供就讀班級"], 400, JSON_UNESCAPED_UNICODE);
             $info['tpClass'] = $request->get('class');
-            if (empty($request->get('seat'))) return response()->json(["error" => "請提供學生座號"], 400);
+            if (empty($request->get('seat'))) return response()->json(["error" => "請提供學生座號"], 400, JSON_UNESCAPED_UNICODE);
             $info['tpSeat'] = $request->get('seat');
         }
 		if (!empty($request->get('memo'))) $info['tpCharacter'] = $request->get('memo');
@@ -429,9 +429,9 @@ class v2_schoolController extends Controller
 		$entry = $openldap->getUserEntry($request->get('idno'));
 		$json = $openldap->getUserData($entry);
         if ($json)
-            return json_encode($json, JSON_UNESCAPED_UNICODE);
+            return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
         else
-            return response()->json([ 'error' => '人員新增失敗：' . $openldap->error() ], 404);
+            return response()->json([ 'error' => '人員新增失敗：' . $openldap->error() ], 404, JSON_UNESCAPED_UNICODE);
     }
 
     public function peopleUpdate(Request $request, $dc, $uuid)
@@ -442,9 +442,9 @@ class v2_schoolController extends Controller
         $data = $openldap->getOrgData($entry, 'tpAdministrator');
         if (is_array($data['tpAdministrator'])) {
             if (!in_array($user->idno, $data['tpAdministrator']))
-                return response()->json(["error" => "你未被權限管理此機關學校"], 403);
+                return response()->json(["error" => "你未被權限管理此機關學校"], 403, JSON_UNESCAPED_UNICODE);
         } elseif ($user->idno != $data['tpAdministrator']) {
-            return response()->json(["error" => "你未被權限管理此機關學校"], 403);
+            return response()->json(["error" => "你未被權限管理此機關學校"], 403, JSON_UNESCAPED_UNICODE);
         }
 
         $entry = $openldap->getUserEntry($uuid);
@@ -455,7 +455,7 @@ class v2_schoolController extends Controller
         } else {
             $orgs[] = $person['o'];
         }
-        if (!in_array($dc, $orgs)) return response()->json([ 'error' => '找不到指定的人員'], 404);
+        if (!in_array($dc, $orgs)) return response()->json([ 'error' => '找不到指定的人員'], 404, JSON_UNESCAPED_UNICODE);
 
         $info = array();
         if (!empty($request->get('lastname'))) $info['sn'] = $request->get('lastname');
@@ -556,7 +556,7 @@ class v2_schoolController extends Controller
         }
         $entry = $openldap->getUserEntry($uuid);
 		$json = $openldap->getUserData($entry);
-		return json_encode($json, JSON_UNESCAPED_UNICODE);
+		return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
     }
 
     public function peopleRemove(Request $request, $dc, $uuid)
@@ -567,9 +567,9 @@ class v2_schoolController extends Controller
         $data = $openldap->getOrgData($entry, 'tpAdministrator');
         if (is_array($data['tpAdministrator'])) {
             if (!in_array($user->idno, $data['tpAdministrator']))
-                return response()->json(["error" => "你未被權限管理此機關學校"], 403);
+                return response()->json(["error" => "你未被權限管理此機關學校"], 403, JSON_UNESCAPED_UNICODE);
         } elseif ($user->idno != $data['tpAdministrator']) {
-            return response()->json(["error" => "你未被權限管理此機關學校"], 403);
+            return response()->json(["error" => "你未被權限管理此機關學校"], 403, JSON_UNESCAPED_UNICODE);
         }
 
         $entry = $openldap->getUserEntry($uuid);
@@ -580,14 +580,14 @@ class v2_schoolController extends Controller
         } else {
             $orgs[] = $person['o'];
         }
-        if (!in_array($dc, $orgs)) return response()->json([ 'error' => '找不到指定的人員'], 404);
+        if (!in_array($dc, $orgs)) return response()->json([ 'error' => '找不到指定的人員'], 404, JSON_UNESCAPED_UNICODE);
 
         $result = $openldap->updateData($entry,  [ 'inetUserStatus' => 'deleted' ]);
 //		$result = $openldap->deleteEntry($entry);
 		if ($result)
-		    return response()->json([ 'success' => '指定的人員已經刪除'], 410);
+		    return response()->json([ 'success' => '指定的人員已經刪除'], 410, JSON_UNESCAPED_UNICODE);
 		else
-		    return response()->json([ 'error' => '指定的人員刪除失敗：' . $openldap->error() ], 500);
+		    return response()->json([ 'error' => '指定的人員刪除失敗：' . $openldap->error() ], 500, JSON_UNESCAPED_UNICODE);
     }
   
     public function people(Request $request, $dc, $uuid)
@@ -598,26 +598,26 @@ class v2_schoolController extends Controller
         $data = $openldap->getOrgData($entry, 'tpAdministrator');
         if (is_array($data['tpAdministrator'])) {
             if (!in_array($user->idno, $data['tpAdministrator']))
-                return response()->json(["error" => "你未被權限管理此機關學校"], 403);
+                return response()->json(["error" => "你未被權限管理此機關學校"], 403, JSON_UNESCAPED_UNICODE);
         } elseif ($user->idno != $data['tpAdministrator']) {
-            return response()->json(["error" => "你未被權限管理此機關學校"], 403);
+            return response()->json(["error" => "你未被權限管理此機關學校"], 403, JSON_UNESCAPED_UNICODE);
         }
 
         $entry = $openldap->getUserEntry($uuid);
         $person = $openldap->getUserData($entry);
         $orgs = array();
         if (!array_key_exists('o',$person)) {
-            return response()->json([ 'error' => '找不到指定的人員'], 404);
+            return response()->json([ 'error' => '找不到指定的人員'], 404, JSON_UNESCAPED_UNICODE);
         } else {
             if (is_array($person['o'])) {
                 $orgs = $person['o'];
             } else {
                 $orgs[] = $person['o'];
             }
-            if (!in_array($dc, $orgs)) return response()->json([ 'error' => '找不到指定的人員'], 404);
+            if (!in_array($dc, $orgs)) return response()->json([ 'error' => '找不到指定的人員'], 404, JSON_UNESCAPED_UNICODE);
         }
 
-        return json_encode($person, JSON_UNESCAPED_UNICODE);
+        return response()->json($person, 200, JSON_UNESCAPED_UNICODE);
     }
 
     // below function for ajax calling
@@ -631,7 +631,7 @@ class v2_schoolController extends Controller
 				if (empty($area) || isset($org->st) && $area == $org->st) $orgs[] = $org;
 			}
 		}
-		return json_encode($orgs, JSON_UNESCAPED_UNICODE);
+		return response()->json($orgs, 200, JSON_UNESCAPED_UNICODE);
     }
     
     public function listClasses(Request $request, $dc, $grade = '')
@@ -642,7 +642,7 @@ class v2_schoolController extends Controller
 		foreach ($data as $class) {
 			if (empty($grade) || $grade == substr($class->ou, 0, 1)) $classes[] = $class;
 		}
-		return json_encode($classes, JSON_UNESCAPED_UNICODE);
+		return response()->json($classes, 200, JSON_UNESCAPED_UNICODE);
     }
 
     public function listTeachers(Request $request, $dc, $ou)
@@ -664,6 +664,6 @@ class v2_schoolController extends Controller
 
 			$json[] = $teacher;
 		}
-		return json_encode($json, JSON_UNESCAPED_UNICODE);
+		return response()->json($json, 200, JSON_UNESCAPED_UNICODE);
     }
 }
