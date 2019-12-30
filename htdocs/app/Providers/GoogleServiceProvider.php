@@ -23,7 +23,7 @@ class GoogleServiceProvider extends ServiceProvider
 		//$client->useApplicationDefaultCredentials();
 		//If you have delegated domain-wide access to the service account and you want to impersonate a user account
 		//specify the email address of the user account using the method setSubject
-		$client->setSubject('leosys@gm.tp.edu.tw');
+		$client->setSubject(config('saml.service_account'));
 
 		return $client;
 	}
@@ -38,7 +38,7 @@ class GoogleServiceProvider extends ServiceProvider
 		$client->addScope(\Google_Service_Directory::ADMIN_DIRECTORY_USER);
 		$service = new \Google_Service_Directory($client);
 		//查單人
-		//$results = $service->users->get('test@gm.tp.edu.tw', ['fields' => 'primaryEmail,name']);
+		//$results = $service->users->get('test@'.config('saml.email_domain'), ['fields' => 'primaryEmail,name']);
 		//查全部
 		$result = $service->users->listUsers($optParams);
 
@@ -57,15 +57,13 @@ class GoogleServiceProvider extends ServiceProvider
 
 		$user->setKind("admin#directory#user");
 		$user->setChangePasswordAtNextLogin(false);
-		$user->setprimaryEmail($uname.'@'.'gm.tp.edu.tw');//env('SAML_MAIL', 'gm.tp.edu.tw'));
+		$user->setprimaryEmail($uname.'@'.config('saml.email_domain'));
 		$user->setIsAdmin(false);
 		$names->setFamilyName($familyName);
 		$names->setGivenName($givenName);
 		$names->setFullName($fullName);
 		$user->setName($names);
 		$user->setPassword($password);
-		//$user->setEmails(array("address"=>'annihir@gm.tp.edu.tw', "type"=>"work", "primary"=>true, "isAdmin"=>false));
-		//$user->setOrgUnitPath('/');
 
 		return $service->users->insert($user);
 	}

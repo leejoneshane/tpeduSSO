@@ -32,7 +32,8 @@ return [
     // request. The debug output is written to storage/logs/laravel.log.
     'debug_saml_request' => false,
 
-    'email_domain'	=> env('SAML_MAIL', 'ms.tp.edu.tw'),
+    'email_domain'	=> env('SAML_MAIL', 'gm.tp.edu.tw'),
+	'service_account' => 'leosys@gm.tp.edu.tw',
     /*
     |--------------------------------------------------------------------------
     | IDP (identification provider) settings
@@ -69,11 +70,11 @@ return [
         /**
          * SP Entry ID for G suits domain ms.tp.edu.tw
          */
-        'aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS9hL21zLnRwLmVkdS50dy9hY3M=' => [        
+        'aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS9hL2dtLnRwLmVkdS50dy9hY3M=' => [        
             // The destination is the consuming SAML URL. This might be a SamlAuthController receiving the SAML response.  
-            'destination' => 'https://www.google.com/a/ms.tp.edu.tw/acs',
+            'destination' => 'https://www.google.com/a/gm.tp.edu.tw/acs',
             // Issuer could be anything, mostly it makes sense to pass the metadata URL
-            'issuer' => 'google.com/a/ms.tp.edu.tw',
+            'issuer' => 'google.com/a/gm.tp.edu.tw',
             
             // OPTIONAL: Use a specific audience restriction value when creating the SAMLRequest object.
             //           Default value is the assertion consumer service URL (the base64 encoded SP url). 

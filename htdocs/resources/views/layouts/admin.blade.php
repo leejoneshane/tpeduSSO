@@ -44,10 +44,12 @@
         <div id="content">
             <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: white;padding: 0;margin: 0;">
                 <div class="container-fluid">
+					@auth
                     <button type="button" id="sidebarCollapse" class="btn btn-info" style="margin: 15px 10px;">
 						<i class="glyphicon glyphicon-menu-hamburger"></i>
                         <span></span>
                     </button>
+					@endauth
                     <div style="float: right;">
                         <ul class="nav navbar-top-links navbar-right">
                         @guest

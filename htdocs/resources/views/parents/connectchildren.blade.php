@@ -18,10 +18,10 @@
 	
 		@if (session('success'))
 		    <div class="alert alert-success">
-			{{ session('success') }}
+			{!! session('success') !!}
 		    </div>
 		@endif
-		<p>已建立親子連結關係之子女</p>
+		<p>親子連結關係之子女</p>
 		<div class="col-md-10 col-md-offset-9">
 			<a class="btn btn-primary" id='buttonAdd' name='buttonAdd' href='{{ route('parents.showConnectChildForm') }}'>新增親子連結</a>
 		</div>		
@@ -55,7 +55,7 @@
 								<label>{{ $d['parent_relation'] }}</label>
 							</td>
 							<td style="vertical-align: inherit;">
-								<label>{{ $d['status']=='1' ? '連結' : '未連結' }}</label>
+								<label>{{ $d['status'] }}</label>
 							</td>
 						</tr>
 					@endforeach

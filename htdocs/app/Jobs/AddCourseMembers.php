@@ -31,7 +31,7 @@ class AddCourseMembers implements ShouldQueue
     {
 		$openldap = new LdapServiceProvider();
 		$gs = new GoogleServiceProvider();
-		$domain = 'gm.tp.edu.tw';//env('SAML_MAIL', 'gm.tp.edu.tw'));
+		$domain = config('saml.email_domain');
 
 		//加入教師
 		if(count($this->user)){

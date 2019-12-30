@@ -1528,13 +1528,6 @@ class SchoolController extends Controller
 		$info['userPassword'] = $openldap->make_ssha_password(substr($idno,-6));
 		
 		if (array_key_exists('uid', $data) && !empty($data['uid'])) {
-			//設定密碼還原後的有效期
-			$fp = Config::get('app.firstPasswordChangeDay');
-			if(ctype_digit(''.$fp) && $fp > 0){
-				$dt = Carbon::now()->addDays($fp)->format('Ymd');
-				$info['description'] = '<DEFAULT_PW_CREATEDATE>'.$dt.'</DEFAULT_PW_CREATEDATE>';
-			}
-
 			if (is_array($data['uid'])) {
 				foreach ($data['uid'] as $account) {
 					$account_entry = $openldap->getAccountEntry($account);
@@ -1559,6 +1552,13 @@ class SchoolController extends Controller
 			$openldap->createEntry($account);
 			$info["uid"] = $account["uid"];
 		}
+
+		//設定密碼還原後的有效期
+		//20191115密碼有效期移到people裡的initials
+		$fp = Config::get('app.firstPasswordChangeDay');
+		if(ctype_digit(''.$fp) && $fp > 0)
+			$info['initials'] = Carbon::now()->addDays($fp)->format('Ymd');
+
 		$result = $openldap->updateData($entry, $info);
 		if ($result) {
 			$user = User::where('idno', $idno)->first();

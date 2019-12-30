@@ -1630,7 +1630,7 @@ class SyncController extends Controller
 						$messages[] = "cn=". $idno .",stdno=". $data['stdno'] .",name=". $data['name'] . "學生新增失敗！".$openldap->error();
 					}
 				}
-/*
+
 				//學生的父母及家長塞到mysql
 				if (isset($parents) && !empty($parents) && is_array($parents)) {
 					//取出已建立親子連結的家長
@@ -1645,9 +1645,9 @@ class SyncController extends Controller
 						if(is_array($par) && sizeof($par) == 4){
 							if(sizeof($names) == 0 || !array_key_exists($par[0],$names)){
 								array_push($inspar,['school_id' => $sid
-									, 'student_id' => $data['stdno']
+									//, 'student_id' => $data['stdno']
 									, 'student_idno' => $idno
-									, 'student_birthday' => substr($data['birthdate'],0,8)
+									//, 'student_birthday' => substr($data['birthdate'],0,8)
 									, 'parent_name' => $par[0]
 									, 'parent_relation' => $par[1]
 									, 'parent_mobile' => $par[2]
@@ -1705,7 +1705,7 @@ class SyncController extends Controller
 						DB::table('student_classsubj')->whereIn('id',$values)->delete();
 						DB::table('student_classsubj')->insert($insles);
 					});
-				}*/
+				}
 			}
 			$filter = "(&(o=$dc)(tpClass=$clsid))";
 			$org_students = $openldap->findUsers($filter, 'cn');
@@ -1941,7 +1941,7 @@ class SyncController extends Controller
 							$messages[] = "cn=". $idno .",stdno=". $stdno .",name=". $data['name'] . "學生新增失敗！".$openldap->error();
 						}
 					}
-/*
+
 					//學生家長塞到mysql
 					if(isset($pars) && !empty($pars))
 					{
@@ -1957,9 +1957,9 @@ class SyncController extends Controller
 							if(!empty($par) && array_key_exists('name',$par)){
 								if(count($names) == 0 || !array_key_exists($par->name,$names)){
 									$insdata = ['school_id' => $sid
-										, 'student_id' => $stdno
+										//, 'student_id' => $stdno
 										, 'student_idno' => $idno
-										, 'student_birthday' => substr($data['birthdate'],0,8)
+										//, 'student_birthday' => substr($data['birthdate'],0,8)
 										, 'parent_name' => $par->name
 										//, 'parent_email' => $par[3]
 										, 'created_at' => \Carbon\Carbon::now()
@@ -2021,7 +2021,7 @@ class SyncController extends Controller
 							DB::table('student_classsubj')->whereIn('id',$values)->delete();
 							DB::table('student_classsubj')->insert($insles);
 						});
-					}*/
+					}
 				}
 			}
 			$filter = "(&(o=$dc)(tpClass=$clsid))";

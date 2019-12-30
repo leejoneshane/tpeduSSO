@@ -47,9 +47,7 @@
 			</div>					
 
 		<div class="col-md-10 col-md-offset-5">
-			<button type="submit" class="btn btn-primary" id='buttonSubmit' name='buttonSubmit' value="send">
-				更新
-			</button>
+			<button type="submit" class="btn btn-primary" id='buttonSubmit' name='buttonSubmit' value="send">確定</button>
 		</div>		
 
 		<div class="row">

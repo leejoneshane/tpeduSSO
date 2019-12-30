@@ -143,6 +143,7 @@
 
 		function createCourse() {
 			$("#create-error").hide().text('');
+			$("#checkall").prop('checked',false);
 
 			var o = $("#panelBody");
 			o.find(".error-block").hide().find("strong").text('');

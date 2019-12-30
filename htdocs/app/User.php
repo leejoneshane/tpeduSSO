@@ -74,6 +74,15 @@ class User extends Authenticatable
 		if (array_key_exists('birthDate', $data)) {
 		    $data['birthDate'] = substr($data['birthDate'],0,8);
 		}
+
+		if(empty($entry)){
+			$info = \App\ParentsInfo::where('cn',$this->attributes['idno'])->first();
+			if($info){
+				$data['employeeType'] = '家長';
+				$data['mobile'] = $info->mobile;
+			}
+		}
+
 		return $data;
     }
     

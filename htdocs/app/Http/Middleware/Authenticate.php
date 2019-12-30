@@ -7,10 +7,10 @@ use Illuminate\Auth\Middleware\Authenticate as Middleware;
 
 class Authenticate extends Middleware
 {
-/*    public function handle($request, Closure $next, ...$guards)
+    public function handle($request, Closure $next, ...$guards)
     {
-		$this->authenticate($request, $guards);
-		
+        $this->authenticate($request, $guards);
+
 		$md = $_SERVER['REQUEST_METHOD'];
 		$uri = $_SERVER['REQUEST_URI'];
 		if(!empty($uri) && strpos($uri,'?')) $uri = substr($uri,0,strpos($uri,'?'));
@@ -45,11 +45,13 @@ class Authenticate extends Middleware
 			$u['/personal/listparentsqrcode'] = ['module' => '個人管理/導師班學生管理-列印家長QR-CODE', 'note' => '列印家長QR-CODE'];
 			$u['/personal/parentsqrcode'] = ['module' => '個人管理/導師班學生管理-產生家長QR-CODE', 'note' => '產生家長QR-CODE'];
 			$u['/personal/linkedChange'] = ['module' => '個人管理/導師班學生管理-變更親子連結狀態', 'note' => '變更親子連結狀態'];
-			$u['/parents/connectChild'] = ['module' => '個人管理/親子連結-建立親子連結', 'note' => '建立親子連結'];
+			$u['/parents/connectChild'] = ['module' => '個人管理/家長服務-建立親子連結', 'note' => '建立親子連結'];
 			$u['/parents/authConnectChild'] = ['module' => '個人管理/第三方應用授權-個資授權', 'note' => '個資授權'];
+			$u['/parents/connectApply'] = ['module' => '個人管理/家長服務-申請親子連結', 'note' => '申請親子連結'];
 
 			$u['/personal/gsuiteregister'] = ['module' => '個人管理/使用G-Suite服務-註冊帳號', 'note' => '註冊G-Suite帳號'];
 			$u['/personal/teacher_courses'] = ['module' => '個人管理/G-Suite Classroom 建立-建立課程', 'note' => '建立Classroom課程'];
+			$u['/personal/parentslink_verify'] = ['module' => '個人管理/教師服務-導師審核家長親子連結申請', 'note' => '審核家長親子連結申請'];
 
 			$p = $request->except(['_token']);
 
@@ -62,9 +64,9 @@ class Authenticate extends Middleware
 			if(array_key_exists($uri, $u))
 				\App\UsageLogger::add($u[$uri]['module'], array_key_exists('content',$u[$uri])?$u[$uri]['content']:$this->reqParam($request), $u[$uri]['note']);
 		}
+
         return $next($request);
     }
-*/
 
     /**
      * Get the path the user should be redirected to when they are not authenticated.
@@ -76,11 +78,15 @@ class Authenticate extends Middleware
     {
         return route('login');
     }
-/*
+
 	protected function reqParam($request)
 	{
 		$p = $request->except(['_token']);
+		$keys = array_keys($p);
+		foreach($keys as $k){
+			if(empty($p[$k]))
+				unset($p[$k]);
+		}
 		return json_encode($p,JSON_UNESCAPED_UNICODE);
 	}
-*/
 }

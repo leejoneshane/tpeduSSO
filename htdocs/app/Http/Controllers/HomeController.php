@@ -61,7 +61,7 @@ class HomeController extends Controller
 		$mobile = $request->get('mobile');
 		$user = Auth::user();
 		$idno = $user->idno;
-		$accounts = $openldap->getUserAccounts($idno);
+
 		$userinfo = array();
 		if ($email && $email != $user->email) {
 	    	$validatedData = $request->validate([
@@ -89,21 +89,82 @@ class HomeController extends Controller
     		$userinfo['mobile'] = array();
     		$user->mobile = null;
 		}
-		$user->save();
+		//$user->save();
+
 		$entry = $openldap->getUserEntry($idno);
-		$result = $openldap->updateData($entry, $userinfo);
-		if (!$result) return back()->withInput()->with("error", "無法變更人員資訊！".$openldap->error());
-		if ($request->get('login-by-email', 'no') == "yes" && !empty($email)) $accounts[] = $email;
-		if ($request->get('login-by-mobile', 'no') == "yes" && !empty($mobile)) $accounts[] = $mobile;
-		$accounts = array_values(array_unique($accounts));
-		$openldap->updateData($entry, array( 'uid' => $accounts));
-		$openldap->updateAccounts($entry, $accounts);
+		if(!empty($entry)){
+			$result = $openldap->updateData($entry, $userinfo);
+			if($result) $user->save();
+			else return back()->withInput()->with("error", "無法變更人員資訊！".$openldap->error());
+			$accounts = $openldap->getUserAccounts($idno);
+			if ($request->get('login-by-email', 'no') == "yes" && !empty($email)) $accounts[] = $email;
+			if ($request->get('login-by-mobile', 'no') == "yes" && !empty($mobile)) $accounts[] = $mobile;
+			$accounts = array_values(array_unique($accounts));
+			$openldap->updateData($entry, array( 'uid' => $accounts));
+			$openldap->updateAccounts($entry, $accounts);
+
+			//順便更新家長table,如果有的話...
+			$info = \App\ParentsInfo::where('cn',$idno)->first();
+			if($info){
+				$info->mail = $user->email;
+				$info->mobile = $user->mobile;
+				$info->save();
+			}
+		}else{
+			$info = \App\ParentsInfo::where('cn',$idno)->first();
+			if($info){
+				$info->mail = $user->email;
+				$info->mobile = $user->mobile;
+				$info->save();
+				$user->save();
+			}else return back()->withInput()->with("error", "無法變更人員資訊！找不到人員資訊");
+		}
+
 		return back()->withInput()->with("success","您的個人資料設定已經儲存！");
     }
 
+	public function checkGsuiteAccount($username,$idno)
+	{
+		/*
+		//暫時停用
+		$openldap = new LdapServiceProvider();
+		if($username)
+			$idno = $openldap->checkAccount($username);
+
+        if ($idno) {
+			$openldap = new LdapServiceProvider();
+			$entry = $openldap->getUserEntry($idno);
+			if($entry){
+				$data = $openldap->getUserData($entry, 'entryUUID');
+				if($data){
+					$u = User::where('uuid',$data['entryUUID'])->first();
+					if($u && !empty($u->gsuite_email)){
+						$u->is_change_account = '1';
+						$u->save();
+						return false;
+					}
+				}
+			}
+		}
+		*/
+
+		return true;
+	}
+
     public function showChangeAccountForm(Request $request)
     {
-		return view('auth.changeaccount');
+		if (Auth::check()) {
+			$user = Auth::user();
+			$username=$user->uname;
+		} else {
+			$username=$request->session()->get('username');
+		}
+		$isChangeAccount = '0';
+
+		if (!$this->checkGsuiteAccount($username,null))
+			return view('auth.changeaccount')->with(['username' => $username, 'is_change_account' => '1', 'error' => "已註冊過G-Suite帳號，不可以變更帳號！"]);
+
+		return view('auth.changeaccount')->with("username",$username)->with("is_change_account",$isChangeAccount);
     }
 
     public function changeAccount(Request $request)
@@ -114,6 +175,10 @@ class HomeController extends Controller
 		} else {
 		  $idno = $request->session()->get('idno');
 		}
+
+		if (!$this->checkGsuiteAccount(null,$idno))
+			return back()->withInput();
+
 		$validatedData = $request->validate([
 			'new-account' => 'required|alpha_num|min:6',
 		]);
@@ -124,7 +189,7 @@ class HomeController extends Controller
     		if ($new == $account) return back()->withInput()->with("error","新帳號不可以跟舊的帳號相同，請重新想一個新帳號再試一次！");
 		}
 		if($idno == $new) return back()->withInput()->with("error","新帳號不可以跟身分證字號相同，請重新想一個新帳號再試一次！");
-		if (!$openldap->accountAvailable($new)) return back()->withInput()->with("error","您輸入的帳號已經被別人使用，請您重新輸入一次！");
+		if (!$openldap->accountAvailable($new)) return back()->withInput()->with("error","您輸入的".$new."帳號已經被別人使用，請您重新輸入一次！");
 		$entry = $openldap->getUserEntry($idno);
 		$data = $openldap->getUserData($entry, 'mail');
 		if (empty($accounts)) {
@@ -157,27 +222,32 @@ class HomeController extends Controller
 				if (isset($data['mail'])) Notification::route('mail', $data['mail'])->notify(new AccountChangeNotification($new));
 			}
 			//G-Suite Account add Alias 
-			if (!empty($user->email) && stripos($user->email,Config::get('saml.email_domain'))>0) {
+			//if (!empty($user->email) && stripos($user->email,Config::get('saml.email_domain'))>0) {
+			if(!empty($user->gsuite_email)) {
 				$gs = new GoogleServiceProvider();
-				try{
-					$result = $gs->queryUserByEmail($user->email);
-					$new_email=$new."@".Config::get('saml.email_domain');
 
-					if(isset($result) || !empty($result) || is_array($result)) {
+				try{
+					$new_email = $new."@".Config::get('saml.email_domain');
+					$result = $gs->queryUserByEmail($user->gsuite_email);
+					//在g-suite真的有帳號
+					if($result){
+						$result = $gs->queryUserByEmail($new_email);
+						if($result)
+							return back()->withInput()->with("error",$new."已經有人使用，無法變更！");
+
 						try{
-							$result = $gs->createUserAlias($user->email,$new_email);
-							Log::info('G-Suite Account ('.$user->email.') add alias:'.$new_email);
+							$result = $gs->createUserAlias($user->gsuite_email,$new_email);
+							Log::info('User '.$user->idno.' add G-Suite alias '.$new_email.' success');
 						}catch (\Exception $e){
-							Log::debug('G-Suite Account ('.$user->email.') add alias:'.$new_email.' failed:'.$e->getMessage());
+							Log::debug('User '.$user->idno.' add G-Suite alias:'.$new_email.' failed:'.$e->getMessage());
 						}
-					}					
+					}
 				}catch (\Exception $e){
 					Log::debug('G-Suite Account ('.$user->email.') failed:'.$e->getMessage());
 				}
 			}
 
-			$mustChangePW=$request->session()->pull('mustChangePW', false);
-			if ($mustChangePW) {
+			if ($openldap->userLogin("cn=$idno", substr($idno,-6)) && !Auth::check()){
 				$request->session()->put('idno', $idno);
 				return redirect()->route('changePassword')->with("success","帳號變更成功，要先修改密碼才能執行後續作業！");
 			} else {
@@ -366,26 +436,23 @@ class HomeController extends Controller
 		$openldap = new LdapServiceProvider();
 		$teas = $openldap->findUsers('tpTeachClass='.$key, ['entryUUID','cn']);
 		$uuid = Auth::user()->uuid;
+		$ownerId = null;
 		$user = [];
-		$filter = '(|';
 
 		if(!empty($teas)){
 			foreach ($teas as $t){
 				$acc = \App\User::where('uuid',$t['entryUUID'])->first();
 
-				if(!empty($acc) && !empty($acc->gsuite_created_at)){
-					$filter .= '(cn='.$t['cn'].')';
-				}else if($t['entryUUID'] == $uuid){
-					return '{"error":"未註冊G-Suite帳號，無法建立課程！"}';
+				if(!empty($acc) && !empty($acc->gsuite_email)){
+					if($t['entryUUID'] == $uuid){
+						$ownerId = $acc->gsuite_email;
+					}else $user[] = $acc->gsuite_email;
 				}
-				$user[] = $t['entryUUID'];
 			}
 		}
 
-		if(!in_array($uuid,$user))
-			return '{"error":"不是此課程的教師不可以建立課程！"}';
-
-		$filter .= ')';
+		if($ownerId == null)
+			return '{"error":"未註冊G-Suite帳號，無法建立課程！"}';
 
 		$tc = \App\TeacherClassroom::where('uuid',$uuid)->where('subjkey',$key)->first();
 
@@ -399,24 +466,7 @@ class HomeController extends Controller
 		}else if(!empty($pid) && !is_array($pid)){
 			return '{"error":"錯誤的學生參數！"}';
 		}else{
-			$domain = 'gm.tp.edu.tw';//env('SAML_MAIL', 'gm.tp.edu.tw'));
-			$ownerId = null;
-			$user = [];
-
-			if(strlen($filter) > 3){
-				$teas = $openldap->findAccounts($filter, ['uid','cn']);
-				if(!empty($teas)){
-					foreach($teas as $t){
-						$uid = $t['uid'].'@'.$domain;
-						if($t['cn'] == Auth::user()->idno){
-							$ownerId = $uid;
-						}else $user[] = $uid;
-					}
-				}
-			}
-
-			if(empty($ownerId))
-				return '{"error":"找不到使用者帳號！"}';
+			$domain = config('saml.email_domain');
 
 			//建立課程
 			try{
@@ -427,7 +477,7 @@ class HomeController extends Controller
 				$result = $gs->createCourse($name,null,null,$brief,null,$ownerId,null);
 			}catch (\Exception $e){
 				//$error = $e->getMessage();
-				Log::debug('Create G-Suite Course failed:'.$e->getMessage());
+				Log::debug('Create G-Suite Course failed:'.$e->getMessage().PHP_EOL.$name.PHP_EOL.$brief.PHP_EOL.$ownerId);
 			}
 
 			if(isset($result) && array_key_exists('alternateLink',$result) && array_key_exists('enrollmentCode',$result) && array_key_exists('id',$result)){
@@ -453,8 +503,8 @@ class HomeController extends Controller
 
 				return '{"success":"success","key":"'.$key.'"}';
 			}else{
-//				if(isset($error) && !empty($error))
-//					return '{"error":"建立G-Suite課程失敗:'.$error.'"}';
+				if(isset($error) && !empty($error))
+					return '{"error":"建立G-Suite課程失敗:'.$error.'"}';
 				return '{"error":"建立G-Suite課程失敗！"}';
 			}
 		}
@@ -478,7 +528,7 @@ class HomeController extends Controller
 			$title = $openldap->getOuTitle($dc,$cls);
 
 			if ($title) {
-				$students = $openldap->findUsers("(&(o=$dc)(employeeType=學生)(tpClass=$cls))", ["entryUUID","inetUserStatus","uid","cn","displayName","tpClass","tpSeat","o"]);
+				$students = $openldap->findUsers("(&(o=$dc)(employeeType=學生)(tpClass=$cls))", ["entryUUID","inetUserStatus","uid","cn","displayName","tpClass","tpSeat","o","mail","mobile"]);
 
 				$cc = 0;
 				foreach ($students as $stu) {
@@ -496,13 +546,22 @@ class HomeController extends Controller
 						$stu = $students[$s];
 						$stu['status'] = ($stu['inetUserStatus'] == 'active') ? '啟用':'未啟用';
 						$stu['tpSeat'] = str_pad($stu['tpSeat'],2,'0',STR_PAD_LEFT);
+						if(is_array($stu['uid'])){
+							if(array_key_exists('mail',$stu) && in_array($stu['mail'],$stu['uid']))
+								array_splice($stu['uid'], array_search($stu['mail'],$stu['uid']), 1);
+							if(array_key_exists('mobile',$stu) && in_array($stu['mobile'],$stu['uid']))
+								array_splice($stu['uid'], array_search($stu['mobile'],$stu['uid']), 1);
+							$stu['uid'] = count($stu['uid']) > 0?$stu['uid'][0]:'';
+						}
 						array_push($data,$stu);
 					}
 				}
 			}
 		}
 
-		return view('admin.personaltutorstudent', ['data' => $data, 'clsname' => $title, 'expire' => Carbon::now()->addDays(5)->format('Y/m/d')]);
+		$expireDate = Config::get('app.parentsQRCodeExpireDays');
+
+		return view('admin.personaltutorstudent', ['data' => $data, 'clsname' => $title, 'expire' => Carbon::now()->addDays($expireDate)->format('Y/m/d')]);
 	}
 
     public function resetpwStudent(Request $request, $uuid)
@@ -525,13 +584,6 @@ class HomeController extends Controller
 		$info = array();
 		$info['userPassword'] = $openldap->make_ssha_password(substr($idno,-6));
 
-		//設定密碼還原後的有效期
-		$fp = Config::get('app.firstPasswordChangeDay');
-		if(ctype_digit(''.$fp) && $fp > 0){
-			$dt = Carbon::now()->addDays($fp)->format('Ymd');
-			$info['description'] = '<DEFAULT_PW_CREATEDATE>'.$dt.'</DEFAULT_PW_CREATEDATE>';
-		}
-
 		if (!array_key_exists('uid', $data) || empty($data['uid']) || !array_key_exists('employeeType', $data) || $data['employeeType'] != '學生') {
 			return back()->with("error", "找不到學生！");
 		}else if(empty($cls) || !array_key_exists('tpClass',$data) || strcmp($cls,$data['tpClass'])){
@@ -548,6 +600,12 @@ class HomeController extends Controller
 			}
 		}
 
+		//設定密碼還原後的有效期
+		//20191115密碼有效期移到people裡的initials
+		$fp = Config::get('app.firstPasswordChangeDay');
+		if(ctype_digit(''.$fp) && $fp > 0)
+			$info['initials'] = Carbon::now()->addDays($fp)->format('Ymd');
+
 		$result = $openldap->updateData($entry, $info);
 
 		if ($result) {
@@ -562,7 +620,7 @@ class HomeController extends Controller
 					$text = $user->name.'您好'.PHP_EOL.PHP_EOL.'您的導師 '.$me['displayName'].' 已於 '.Carbon::now()->format('Y-m-d H:i:s').' 將您的登入密碼重設為身分證字號末六碼';
 					\Mail::raw($text, function($message) use ($data)
 					{
-						$message->from(env('MAIL_USERNAME', ''), '臺北市教育人員統一身份驗證服務');
+						$message->from(Config::get('mail.from.address'), Config::get('mail.from.name'));
 						$message->to($data['mail'])->subject('臺北市教育人員單一身分驗證服務-密碼重設通知');
 					});
 				}catch (\Exception $e){
@@ -611,8 +669,8 @@ class HomeController extends Controller
 			return '{"error":"您不是這位學生的導師"}';
 
 		$data = [];
-
 		$filter = '(&(objectClass=tpeduPerson)(|';
+		$idnos = array();
 		$names = array();
 
 		//取得學生已連結的家長
@@ -620,6 +678,7 @@ class HomeController extends Controller
 		foreach ($pars as $p){
 			array_push($names, $p->parent_name);
 			$filter .= '(cn='.$p->parent_idno.')';
+			$idnos[] = $p->parent_idno;
 			array_push($data, (object)['sid' => $uuid, 'id' => $p->id, 'idno' => $p->parent_idno, 'name' => $p->parent_name, 'rel' => $p->parent_relation, 'linked' => $p->status, 'status' => '無', 'from' => 'R']);
 		}
 
@@ -628,14 +687,19 @@ class HomeController extends Controller
 		foreach ($pars as $p){
 			if(!in_array($p->parent_name, $names)){
 				$filter .= '(cn='.$p->parent_idno.')';
+				$idnos[] = $p->parent_idno;
 				array_push($data, (object)['sid' => $uuid, 'id' => $p->id, 'idno' => $p->parent_idno, 'name' => $p->parent_name, 'rel' => $p->parent_relation, 'linked' => '0', 'status' => '無', 'from' => 'D']);
 			}
 		}
 
 		if(count($data) > 0){
+			$info = \App\ParentsInfo::whereIn('cn',$idnos)->get();
+			$idnos = array();
+			foreach($info as $p)
+				$idnos[$p->cn] = $p->user_status == 'active' ? '啟用':'未啟用';
+
 			$filter .= '))';
 			$parents = $openldap->findUsers($filter, ["inetUserStatus","cn"]);
-			$idnos = array();
 			foreach($parents as $par)
 				$idnos[$par['cn']] = $par['inetUserStatus'] == 'active' ? '啟用':'未啟用';
 
@@ -771,7 +835,7 @@ class HomeController extends Controller
 
 		ksort($sort);
 
-		$dt = Carbon::now()->addDays(5);
+		$dt = Carbon::now()->addDays(Config::get('app.parentsQRCodeExpireDays'));
 		$data = [];
 		$insert = [];
 		$url = $request->getSchemeAndHttpHost().'/';
@@ -930,7 +994,7 @@ class HomeController extends Controller
 		if(!empty($pars)){
 			if(!in_array($pars->parent_name, $rels)){
 				$guid = str_replace('-','',\Guid::create());
-				$dt = Carbon::now()->addDays(5);
+				$dt = Carbon::now()->addDays(Config::get('app.parentsQRCodeExpireDays'));
 
 				$data = (object)[
 					'cls' => $student['tpClass'],
@@ -964,16 +1028,18 @@ class HomeController extends Controller
 		}
 	}
 	
-public function listConnectChildren(Request $request)
-    {
+	public function listConnectChildren(Request $request)
+	{
 		$openldap = new LdapServiceProvider();
 		if (Auth::check()) {
 			$userNow = Auth::user();
 		} else redirect()->back()->with("error","無法取得您的登入資訊，請重新登入，謝謝！")->withInput();	
 		$data = StudentParentRelation::where('parent_idno',$userNow->idno)->orderBy('created_at','desc')->get();
+
+		$idnos = [];
+		$dataList = [];
 		if(!empty($data)) {
 			//設定學生資料
-			$dataList = [];
 			foreach ($data as $d) {
 				$cc=[];
 				$entry = $openldap->getUserEntry($d['student_idno']);
@@ -986,14 +1052,44 @@ public function listConnectChildren(Request $request)
 					$cc['school_name']=$openldap->getOrgTitle($o);
 				}
 				$cc['student_idno']=$d['student_idno'];
-				$cc['status']=$d['status'];
+				$cc['status']= $d['status']=='1' ? '已連結' : '中斷連結';
 				$cc['parent_relation']=$d['parent_relation'];
 	
 				$dataList[$d['id']]=$cc;
+				$idnos[] = $d['student_idno'];
 			}
-
 		}
-	
+
+		//申請資料
+		$data = \App\StudentParentApply::where('parent_idno',$userNow->idno)->orderBy('created_at','desc')->get();
+		foreach ($data as $d) {
+			if(!in_array($d['student_idno'],$idnos)){
+				$cc=[];
+				$entry = $openldap->getUserEntry($d['student_idno']);
+				if ($entry) {
+					$studentData = $openldap->getUserData($entry);
+					$cc['student_name']=$studentData['displayName'];
+					$cc['student_id']=$studentData['employeeNumber'];
+					//學校 
+					$o=$studentData['o'];
+					$cc['school_name']=$openldap->getOrgTitle($o);
+				}
+				$cc['student_idno']=$d['student_idno'];
+				if($d['status'] == '0'){
+					$cc['status'] = '審核中';
+				}else if($d['status'] == '1'){
+					$cc['status'] = '同意';
+				}else if($d['status'] == '2'){
+					$cc['status'] = '不同意';
+				}
+
+				$cc['parent_relation']=$d['parent_relation'];
+
+				$dataList[$d['id']]=$cc;
+				$idnos[] = $d['student_idno'];
+			}
+		}
+
 		return view('parents.connectchildren', ['data' => $dataList]);
 	}
 
@@ -1002,10 +1098,12 @@ public function listConnectChildren(Request $request)
 		$areas = Config::get('app.areas');
 		$schoolCategorys = Config::get('app.schoolCategory');
 		
-		
-		$area = $request->get('area');
-		$schoolCategory = $request->get('schoolCategory');
-		$dc = $request->get('dc'); //school
+		if($request->old('area')!==null)  $area = $request->old('area');
+			else $area = $request->get('area');
+		if($request->old('schoolCategory')!==null)  $schoolCategory = $request->old('schoolCategory');
+			else $schoolCategory = $request->get('schoolCategory');
+		if($request->old('dc')!==null)  $dc = $request->old('dc');
+			else $dc = $request->get('dc'); //school
 		if (empty($area)) $area = $areas[0];
 		if (empty($schoolCategory)) $schoolCategory = $schoolCategorys[0];
 		if (empty($schoolCategory)) $filter = "st=$area";
@@ -1014,26 +1112,29 @@ public function listConnectChildren(Request $request)
 		$openldap = new LdapServiceProvider();
 		$schools = $openldap->getOrgs($filter);
 
-        return view('parents.connectchildedit', [  'idno'=>$request->get('idno'), 'student_id'=>$request->get('student_id'), 'student_birthday'=>$request->get('student_birthday'), 'pname'=>$request->get('pname'), 'relationType'=>$request->get('relationType'),'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'schoolCategorys' => $schoolCategorys, 'schoolCategory' => $schoolCategory ]);
+        return view('parents.connectchildedit', [  'idno'=>$request->get('idno'), 'student_id'=>$request->get('student_id'), 'student_birthday'=>$request->get('student_birthday'), 'pname'=>empty($request->get('pname'))?(Auth::user()->name):$request->get('pname'), 'email' => Auth::user()->email, 'mobile' => Auth::user()->mobile, 'relationType'=>$request->get('relationType'),'area' => $area, 'areas' => $areas, 'schools' => $schools, 'dc' => $dc, 'schoolCategorys' => $schoolCategorys, 'schoolCategory' => $schoolCategory ]);
 	}
 	
 	public function connectChild(Request $request)
     {
 		$attributes = [
             'idno' => '身分字號',            
+			'student_id' => '學號',
 			'student_birthday' => '出生年月日',
-			'email' => '學號',
 			'dc' => '學校',
+			'relationType' => '親子關係',
 			'pname' => '姓名',
 		];
 		
 		$this->validate($request, [
             'idno' =>  ['required', new idno()],
-            'student_id' => 'required|digits:8|numeric',
+            'student_id' => 'required|alpha_num',
             'student_birthday' => 'required|date|date_format:Ymd',
+			'relationType' => 'required|string',
             'pname' => 'required|string',
         ],[],$attributes);
-          
+
+		$idno = $request->get('idno');
 		$openldap = new LdapServiceProvider();
 
 		if (Auth::check()) {
@@ -1041,63 +1142,78 @@ public function listConnectChildren(Request $request)
 		} else redirect()->back()->with("error","無法取得您的登入資訊，請重新登入，謝謝！")->withInput();	
 		
 		//檢查學生身分證是否有在LDAP
-        if ($openldap->checkIdno($request->get('idno'))) {
-		//檢查學生資料是否正確
-		$entry = $openldap->getUserEntry($request->get('idno'));
-		if ($entry) {
-			$data = $openldap->getUserData($entry);
-			$userCheck = new \App\User();
-			$userCheck->idno=$request->get('idno');
-			//是否是學生
-			if($userCheck->inRole('學生')) {
-				if($data['employeeNumber'] == $request->get('student_id') && substr($data['birthDate'],0,8) == $request->get('student_birthday')) {
-					//是否資料在DB有
-					$stuParentData = StudentParentData::where('parent_name',$request->get('pname'))
-					->where('parent_relation',$request->get('relationType'))
-					->where('student_idno',$request->get('idno'))
-					->where('student_id',$request->get('student_id'))
-					->where('student_birthday',$request->get('student_birthday'))
-	        		->first();
+        if ($openldap->checkIdno($idno)) {
+			//檢查學生資料是否正確
+			$entry = $openldap->getUserEntry($idno);
+			if ($entry) {
+				$data = $openldap->getUserData($entry);
+				$schid = $openldap->getOrgID($request->get('dc'));
 
-					if($stuParentData) {
-						if($stuParentData->status=='0') {
-							//如父母有身分證就要再多核對						
-							if($stuParentData->parent_idno!='') {
-									if($stuParentData->parent_idno != $userNow->idno) {
-										return redirect()->back()->with("error","您帳號的身分證號與學生的監護人資料不符，請確認後再行綁定，謝謝！")->withInput();
-									}
-								}	
-							
-							//進行綁定
-							$parentRelation  = new \App\StudentParentRelation();
-							$parentRelation->student_idno=$request->get('idno');
-							$parentRelation->student_birthday=$request->get('student_birthday');
-							$parentRelation->parent_name=$request->get('pname');
-							$parentRelation->parent_idno=$userNow->idno;
-							$parentRelation->parent_relation=$request->get('relationType');
-							$parentRelation->status='1';
-							$parentRelation->save();
-
-							//更新student_parent_data
-							$stuParentData->status='1';
-							$stuParentData->save();	
-
-							return redirect()->route('parents.listConnectChildren')->with("success","家長學生關連綁定成功！");
-						} else {
+				$userCheck = new \App\User();
+				$userCheck->idno=$idno;
+				//是否是學生
+				if($userCheck->inRole('學生')) {
+					if($data['employeeNumber'] == $request->get('student_id') && substr($data['birthDate'],0,8) == $request->get('student_birthday') && $data['o'] == $request->get('dc')) {
+						$cntRelation = count(\App\StudentParentRelation::where('student_idno',$idno)->where('parent_idno',Auth::user()->idno)->get());
+						if($cntRelation > 0)
 							return redirect()->back()->with("error","該筆家長學生關連資料已綁定過，謝謝！")->withInput();
+
+						//是否資料在DB有
+						$stuParentData = StudentParentData::where('parent_name',$request->get('pname'))
+						->where('school_id',$schid)
+						//->where('parent_relation',$request->get('relationType'))
+						->where('student_idno',$idno)
+						//->where('student_id',$request->get('student_id'))//mysql裡的學號棄用,比過ldap就好
+						//->where('student_birthday',$request->get('student_birthday'))//mysql裡的生日棄用,比過ldap就好
+						->first();
+
+						$askApply = false;
+
+						if($stuParentData) {
+							//如父母有身分證就要再多核對
+							if($stuParentData->parent_idno!='') {
+								if($stuParentData->parent_idno != $userNow->idno) {
+									//return redirect()->back()->with("error","您帳號的身分證號與學生的監護人資料不符，請確認後再行綁定，謝謝！")->withInput();
+									$askApply = true;
+								}
+							}
+
+							if(!$askApply){
+								//進行綁定
+								$parentRelation  = new \App\StudentParentRelation();
+								$parentRelation->student_idno=$idno;
+								//$parentRelation->student_birthday=$request->get('student_birthday');
+								$parentRelation->parent_name=$request->get('pname');
+								$parentRelation->parent_idno=$userNow->idno;
+								$parentRelation->parent_relation=$request->get('relationType');
+								$parentRelation->status='1';
+								$parentRelation->save();
+
+								//更新student_parent_data
+								$stuParentData->status='1';
+								$stuParentData->save();	
+
+								return redirect()->route('parents.listConnectChildren')->with("success","家長學生關連綁定成功！");
+							}
+						} else {
+							$askApply = true;
+							//return redirect()->back()->with("error","輸入家長資料與學生關連對應不符，請確認後再行綁定，謝謝！")->withInput();
+						}
+
+						if($askApply){
+							return back()->withInput()->with(['askApply' => 'open', 'pname' => $request->get('pname')
+								, 'rtype' => $request->get('relationType'), 'idno' => $idno, 'stdno' => $request->get('student_id')
+								, 'birth' => $request->get('student_birthday'), 'dc' => $request->get('dc')]);
 						}
 					} else {
-						return redirect()->back()->with("error","輸入家長資料與學生關連對應不符，請確認後再行綁定，謝謝！")->withInput();
-					}	
+						return redirect()->back()->with("error","輸入綁定學生資料對應不符，請確認後再行綁定，謝謝！")->withInput();
+					}
 				} else {
-					return redirect()->back()->with("error","輸入綁定學生資料對應不符，請確認後再行綁定，謝謝！")->withInput();
+					return redirect()->back()->with("error","輸入綁定學生身分證其身分並非學生，請確認後再行綁定，謝謝！")->withInput();
 				}
 			} else {
-				return redirect()->back()->with("error","輸入綁定學生身分證其身分並非學生，請確認後再行綁定，謝謝！")->withInput();
+				return redirect()->back()->with("error","該身分證字號查無學生資料(entry not in LDAP)，謝謝！")->withInput();
 			}
-		} else {
-			return redirect()->back()->with("error","該身分證字號查無學生資料(entry not in LDAP)，謝謝！")->withInput();
-		}
 		} else {
 			return redirect()->back()->with("error","該身分證字號不存在於本系統，請確認後再行綁定，謝謝！")->withInput();
 		}
@@ -1106,7 +1222,9 @@ public function listConnectChildren(Request $request)
 	public function showConnectChildrenAuthForm(Request $request)
     {
 		$openldap = new LdapServiceProvider();
-		$userNow = $request->user();
+		if (Auth::check()) {
+			$userNow = Auth::user();
+		} else return redirect()->back()->with("error","無法取得您的登入資訊，請重新登入，謝謝！");	
 		//取家長的學生
 		$yearsAgo12=date("Ymd",strtotime("-12 year"));
 		$data = StudentParentRelation::where('parent_idno',$userNow->idno)->where('status','1')->orderBy('created_at','desc')->get();
@@ -1126,7 +1244,8 @@ public function listConnectChildren(Request $request)
 					//判斷是否為12歲以下
 					$studentRow = $openldap->getUserData($entry);
 					$cc['student_name']=$studentRow['displayName'];
-					if($d['student_birthday']>=$yearsAgo12) {
+					//改抓LDAP學生生日進行判斷是否有大於12歲 
+					if(substr($studentRow['birthDate'],0,8)>=$yearsAgo12) {						
 						$cc['wantAgree']='1';
 					} else {
 						$cc['wantAgree']='0';
@@ -1192,7 +1311,9 @@ public function listConnectChildren(Request $request)
 	
 	public function authConnectChild(Request $request)
     {
-		$userNow = $request->user();
+		if (Auth::check()) {
+			$userNow = Auth::user();
+		} else return redirect()->back()->with("error","無法取得您的登入資訊，請重新登入，謝謝！");	
 		if($request->get('student')=='') {
 			return redirect()->back()->with("error","無法進行更新，可能您選擇的是非12歲以下學生，謝謝！")->withInput();
 		} 
@@ -1224,12 +1345,13 @@ public function listConnectChildren(Request $request)
 		return redirect()->route('parents.showConnectChildrenAuthForm')->with("success","授權更新成功！")->with("student",$request->get('student'));
 	}		
 
-	public function connectChildQRcode(Request $request)
-	{
-	    $userNow = $request->user();
+	public function connectChildQRcode(Request $request) {
+	  if (Auth::check()) {
+			$userNow = Auth::user();
+	  } else redirect()->route('/')->with("error","無法取得您的登入資訊，請重新登入，謝謝！");
 
-		$openldap = new LdapServiceProvider();
-	    $qrcodeData = $request->session()->pull('qrcodeObject'); //StudentParentsQrcode
+	  $openldap = new LdapServiceProvider();
+	  $qrcodeData = $request->session()->pull('qrcodeObject'); //StudentParentsQrcode
 	  //用姓名 座號 位置 於LDAP找學生
 	  $students = $openldap->findUsers("(&(displayName=$qrcodeData->std_name)(tpSeat=$qrcodeData->std_seat)(employeeType=學生)(tpClass=$qrcodeData->std_cls))", ["entryUUID","inetUserStatus","uid","cn","displayName","tpClass","tpSeat","o","birthDate"]);
 	  if($students) {
@@ -1238,7 +1360,8 @@ public function listConnectChildren(Request $request)
 			$stuParentData = StudentParentData::where('parent_name',$qrcodeData->par_name)
 			->where('parent_relation',$qrcodeData->par_rel)
 			->where('student_idno',$stu['cn'])
-			->where('student_birthday',substr($stu['birthDate'],0,8))
+			->where('id',$qrcodeData->dataid)
+			//->where('student_birthday',substr($stu['birthDate'],0,8))
 			->first();
 
 			//綁定 家長ID check
@@ -1246,14 +1369,14 @@ public function listConnectChildren(Request $request)
 				if($stuParentData->status=='0') {
 					//如父母有身分證就要再多核對						
 					if($stuParentData->parent_idno!='') {
-							if($stuParentData->parent_idno != $userNow->idno) {
-								return redirect()->route('parents.listConnectChildren')->with("error","您帳號的身分證號與學生的監護人資料不符，請確認後再行綁定，謝謝！");
-							}
-						}	
+						if($stuParentData->parent_idno != $userNow->idno) {
+							return redirect()->route('parents.listConnectChildren')->with("error","您帳號的身分證號與學生的監護人資料不符，請確認後再行綁定，謝謝！");
+						}
+					}	
 					//進行綁定
 					$parentRelation  = new \App\StudentParentRelation();
 					$parentRelation->student_idno=$stu['cn'];
-					$parentRelation->student_birthday = substr($stu['birthDate'],0,8);
+					//$parentRelation->student_birthday = substr($stu['birthDate'],0,8);
 					$parentRelation->parent_name=$qrcodeData->par_name;
 					$parentRelation->parent_idno=$userNow->idno;
 					$parentRelation->parent_relation=$qrcodeData->par_rel;
@@ -1277,25 +1400,201 @@ public function listConnectChildren(Request $request)
 	  }
 	}
 
-	public function gsuitepage(Request $request)
+	public function connectApply(Request $request)
 	{
-		$user = $request->user();
-		$date = '';
-		if($user && !empty($user->gsuite_created_at))
-			$date = $user->gsuite_created_at;
-		$domain = env('SAML_MAIL', 'gm.tp.edu.tw');
+		$idno = $request->get('idno');
+		$dc = $request->get('dc');
+		$stdno = $request->get('stdno');
+		$birth = $request->get('birth');
+		$pidno = Auth::user()->idno;
+		$rtype = $request->get('rtype');
+		$pname = $request->get('pname');
+		$email = $request->get('email');
+		$mobile = $request->get('mobile');
 
-		return view('admin.personalgsuitepage', ['date' => $date, 'domain' => $domain]);
+		$openldap = new LdapServiceProvider();
+		$schid = $openldap->getOrgID($request->get('dc'));
+		$chkidno = new idno();
+
+		$entry = $openldap->getUserEntry($idno);
+		if($entry)
+			$st = $openldap->getUserData($entry);
+
+		if(!isset($st) || empty($st) || ((is_array($st['employeeType']) && !in_array('學生',$st['employeeType'])) || (is_string($st['employeeType']) && $st['employeeType'] != '學生')) || $st['employeeNumber'] != $stdno || substr($st['birthDate'],0,8) != $birth || $st['o'] != $dc || empty($schid))
+			return '{"error":"學生資料錯誤"}';
+
+		if(!$chkidno->passes(null,$pidno) || ($rtype != '父親' && $rtype != '母親' && $rtype != '監護人') || empty($pname))
+			return '{"error":"家長資料錯誤"}';
+
+		$data = [];
+		if(empty($email)){
+			$data['email'] = 'eMail信箱為必填！';
+		}else if(count(explode('@',$email)) != 2 || strlen($email) < 8 || substr($email,-1) == '.' || count(explode('.',explode('@',$email)[1])) < 2){
+			$data['email'] = 'eMail信箱格式不正確！';
+		}
+
+		if(empty($mobile)){
+			$data['mobile'] = '電話號碼為必填！';
+		}
+
+		if(count($data) > 0)
+			return json_encode($data, JSON_UNESCAPED_UNICODE);
+
+		$sp = StudentParentRelation::where('student_idno',$idno)->where('parent_idno',$pidno)->get();
+		if(count($sp) > 0)
+			return '{"error":"輸入的身分證字號已建立過親子連結"}';
+
+		//是否資料在DB有
+		$stuParentData = StudentParentData::where('parent_name',$pname)
+			->where('school_id',$schid)
+			->where('student_idno',$idno)
+			//->where('student_id',$stdno)//mysql裡的學號棄用,比過ldap就好
+			//->where('student_birthday',$birth)//mysql裡的生日棄用,比過ldap就好
+			->first();
+
+		$askApply = false;
+
+		if($stuParentData) {
+			//如父母有身分證就要再多核對
+			if($stuParentData->parent_idno != '' && $stuParentData->parent_idno != $userNow->idno)
+				$askApply = true;
+		} else {
+			$apply = \App\StudentParentApply::where('student_idno',$idno)->where('parent_idno',$pidno)->where('status','0')->first();
+			if(!empty($apply))
+				return '{"error":"已有待審核的申請存在，不可以重複送出申請"}';
+			$askApply = true;
+		}
+
+		if($askApply){
+			/*
+			$entry = $openldap->getUserEntry($pidno);
+			$pdata = $openldap->getUserData($entry);
+
+			$accounts = [];
+			if (is_array($pdata['uid'])) $accounts = $pdata['uid'];
+			else $accounts[] = $pdata['uid'];
+			$emailLogin = array_key_exists('mail',$pdata) && in_array($pdata['mail'],$accounts);
+			$mobileLogin = array_key_exists('mobile',$pdata) && in_array($pdata['mobile'],$accounts);
+			*/
+			$user = Auth::user();
+
+			//$accounts = $openldap->getUserAccounts($pidno);
+			/*
+			$userinfo = array();
+
+			if(!array_key_exists('mail',$pdata)){
+				$userinfo['mail'] = $email;
+				$user->email = $email;
+			}else if ($pdata['mail'] != $email){
+				if(!$openldap->emailAvailable($pidno, $email))
+					return '{"error":"您輸入的電子郵件已經被別人使用！"}';
+				$userinfo['mail'] = $email;
+				$user->email = $email;
+			}
+
+			if(!array_key_exists('mobile',$pdata)){
+				$userinfo['mobile'] = $mobile;
+				$user->mobile = $mobile;
+			}else if ($pdata['mobile'] != $mobile){
+				if(!$openldap->mobileAvailable($pidno, $mobile))
+					return '{"error":"您輸入的手機號碼已經被別人使用！"}';
+				$userinfo['mobile'] = $mobile;
+				$user->mobile = $mobile;
+			}
+			*/
+
+			if(!$openldap->emailAvailable($pidno, $email))
+				return '{"error":"您輸入的電子郵件已經被別人使用！"}';
+			if(!$openldap->mobileAvailable($pidno, $mobile))
+				return '{"error":"您輸入的手機號碼已經被別人使用！"}';
+
+			if($user->email != $email || $user->mobile != $mobile){
+				$user->email = $email;
+				$user->mobile = $mobile;
+
+				$info = \App\ParentsInfo::where('cn',$pidno)->first();
+				if($info){
+					$info->mail = $email;
+					$info->mobile = $mobile;
+				}else{
+					return '{"error":"找不到個人資料！"}';
+				}
+			}
+
+			$a = new \App\StudentParentApply();
+			$a->school_id = $schid;
+			$a->student_idno = $idno;
+			$a->parent_idno = $pidno;
+			$a->parent_relation = $rtype;
+			$a->parent_name = $pname;
+			$a->parent_email = $email;
+			$a->parent_mobile = $mobile;
+			$a->save();
+
+			$message = '已送出申請資料，請等待導師審核';
+
+			if(isset($info)){
+				$user->save();
+				$info->save();
+			}
+
+			$filter = '(&(o='.$dc.')(tpTutorClass='.$st['tpClass'].'))';
+			$tutor = $openldap->findUsers($filter, ["displayName","mail"]);
+
+			if(!empty($tutor)){
+				$m = $tutor[0]['mail'];
+
+				if(empty($m)){
+					$message .= '<br/>學生的導師未設定email，無法發送通知';
+				}else if(!filter_var($m, FILTER_VALIDATE_EMAIL)){
+					$message .= '<br/>學生的導師email設定錯誤，無法發送通知';
+				}else{
+					try{
+						$text = $tutor[0]['displayName'].' 老師您好'.PHP_EOL.PHP_EOL.'您班上學生 '.$st['displayName'].' 的'.$rtype.'於 '.Carbon::now()->format('Y-m-d H:i:s').' 送出了一份建立親子連結的申請'.PHP_EOL.'請您抽空登入<臺北市教育人員單一身分驗證服務>審核';
+						\Mail::raw($text, function($message) use ($m)
+						{
+							$message->from(env('MAIL_USERNAME', ''), '臺北市教育人員單一身分驗證服務');
+							$message->to($m)->subject('臺北市教育人員單一身分驗證服務-學生家長建立親子連結申請');
+						});
+
+						$message .= '<br/>已發送申請通知mail給學生的導師';
+					}catch (\Exception $e){
+						$message .= '<br/>發送申請通知mail給學生的導師時發生錯誤';
+					}
+				}
+			}else{
+				$message .= '<br/>找不到學生的導師，無法發送通知';
+			}
+
+			\Session::flash('success', $message);
+			return '{"success":"'.$message.'"}';
+		}else{
+			return '{"error":"輸入的家長資料錯誤，請重新操作親子連結服務功能"}';
+		}
+
+		return json_encode($data, JSON_UNESCAPED_UNICODE);
 	}
 
-	public function gsuiteregister(Request $request)
+	public function gsuitepage()
 	{
-		$user = $request->user();
-		if (!empty($user)) {
-			if (empty($user->gsuite_created_at)) {
+		$user = User::where('uuid',Auth::user()->uuid)->first();
+		$date = '';
+
+		if($user && !empty($user->gsuite_created_at))
+			$date = $user->gsuite_created_at;
+
+		return view('admin.personalgsuitepage', ['date' => $date, 'domain' => config('saml.email_domain')]);
+	}
+
+	public function gsuiteregister()
+	{
+		$user = User::where('uuid',Auth::user()->uuid)->first();
+
+		if(!empty($user)){
+			if(empty($user->gsuite_created_at)){
 				$openldap = new LdapServiceProvider();
 				$gs = new GoogleServiceProvider();
-				$domain = env('SAML_MAIL', 'gm.tp.edu.tw');
+				$domain = config('saml.email_domain');
 
 				$a = $openldap->findAccounts('cn='.Auth::user()->idno, ['uid']);
 				$email = $a[0]['uid'].'@'.$domain;
@@ -1332,8 +1631,8 @@ public function listConnectChildren(Request $request)
 					}
 
 					if(!$flag){
-//						if(isset($error))
-//							return back()->withInput()->with("error","註冊帳號失敗:".$error);
+						if(isset($error))
+							return back()->withInput()->with("error","註冊帳號失敗:".$error);
 						return back()->withInput()->with("error","註冊帳號失敗！");
 					}
 				}else{
@@ -1351,5 +1650,174 @@ public function listConnectChildren(Request $request)
 		}else{
 			return back()->withInput()->with("error","找不到使用者！");
 		}
+	}
+
+	public function parentslinkVerifyForm(Request $request)
+	{
+		if(!Auth::user()->inRole('教師'))
+			return redirect()->route('/');
+
+		$kind = $request->get('kind');
+		if($kind != 'all') $kind = 'now';
+
+		$title = null;
+		$openldap = new LdapServiceProvider();
+		$user = $openldap->getUserData($openldap->getUserEntry(Auth::user()->uuid));
+
+		$cls = array_key_exists('tpTutorClass',$user) ? $user['tpTutorClass']:null;
+		$dc = array_key_exists('o',$user) ? $user['o']:null;
+
+		$data = [];
+		if(!empty($cls) && !empty($dc)){
+			$title = $openldap->getOuTitle($dc,$cls);
+
+			if ($title) {
+				$students = $openldap->findUsers("(&(o=$dc)(employeeType=學生)(tpClass=$cls))", ["entryUUID","uid","cn","displayName","tpClass","tpSeat","o","employeeNumber"]);
+
+				$idnos = [];
+				if($students){
+					foreach($students as $st)
+						$idnos[$st['cn']] = $st;
+				}
+				unset($students);
+
+				if(count($idnos) > 0){
+					$data = \App\StudentParentApply::whereIn('student_idno',array_keys($idnos));
+					if($kind != 'all'){
+						$data->where('status','0');
+					}else{
+						$data->where('status', '<>', '0');
+					}
+					$data = $data->get();
+
+					for($i=0;$i<count($data);$i++){
+						$data[$i]['row'] = $i+1;
+						$idno = $data[$i]->student_idno;
+						if(array_key_exists($idno,$idnos)){
+							$data[$i]['seat'] = $idnos[$idno]['tpSeat'];
+							$data[$i]['name'] = $idnos[$idno]['displayName'];
+							$data[$i]['employeeNumber'] = $idnos[$idno]['employeeNumber'];
+						}
+
+						if($data[$i]->student_idno != '0')
+							$data[$i]['result'] = ($data[$i]['status']=='1'?'同意':'不同意').(empty($data[$i]['cause'])?'':(':'.$data[$i]['cause']));
+					}
+				}
+			}
+		}
+
+		return view('admin.personalparentslinkverify', ['data' => $data, 'clsname' => $title, 'kind' => $kind]);
+	}
+
+	public function parentslinkVerify(Request $request)
+	{
+		if(!Auth::user()->inRole('教師'))
+			return redirect()->route('/');
+
+		$openldap = new LdapServiceProvider();
+		$user = $openldap->getUserData($openldap->getUserEntry(Auth::user()->uuid));
+		$dc = array_key_exists('o',$user) ? $user['o']:null;
+		$cls = array_key_exists('tpTutorClass',$user) ? $user['tpTutorClass']:null;
+
+		if(empty($dc))
+			return '{"error":"找不到所屬學校"}';
+		if(empty($cls))
+			return '{"error":"您不是班級導師"}';
+
+		$title = $openldap->getOuTitle($dc,$cls);
+
+		if(!$title)
+			return '{"error":"找不到班級資料"}';
+
+		$id = $request->get('id');
+		if(!empty($id)){
+			$id = explode(",",$id);
+			if(is_array($id) && count($id)){
+				foreach($id as $d){
+					if(!ctype_digit($d))
+						return '{"error":"系統編號錯誤"}';
+				}
+			}else{
+				return '{"error":"缺少系統編號"}';
+			}
+		}
+
+		$apply = $request->get('apply');
+		//$cause = $request->get('cause');
+
+		if(!is_string($apply) || ($apply != '1' && $apply != '2'))
+			return '{"error":"請選擇同意或不同意"}';
+		//if(!is_string($cause))
+		//	$cause = null;
+
+		$sps = \App\StudentParentApply::whereIn('id',$id)->get();
+
+		if(empty($sps))
+			return '{"error":"找不到申請資料"}';
+
+		foreach($sps as $sp){
+			$student = $openldap->getUserData($openldap->getUserEntry($sp->student_idno));
+
+			if(empty($student))
+				return '{"error":"找不到學生"}';
+			if(!array_key_exists('tpClass',$student))
+				return '{"error":"找不到學生班級"}';
+			if(!$student['tpClass'] || $cls != $student['tpClass'])
+				return '{"error":"您不是這位學生的導師"}';
+			if($sp->status != '0')
+				return '{"error":"這筆申請已經審核過了"}';
+
+			if($apply == '1'){
+				//取得學生已連結的家長
+				$pars = StudentParentRelation::where('student_idno',$sp->student_idno)
+					->where('parent_idno',$sp->parent_idno)
+					//->where('parent_name',$sp->parent_name)
+					->first();
+
+				if(!empty($pars))
+					return '{"error":"已有相同家長資料的親子連結存在，無法建立"}';
+			}
+		}
+
+		$mailto = [];
+		$check = [];
+
+		foreach($sps as $sp){
+			$sp->status = $apply;
+			//$sp->cause = $cause;
+			$sp->verify_tm = Carbon::now();
+			$sp->save();
+
+			if($apply == '1' && !in_array($sp->student_idno.'-'.$sp->parent_idno,$check)){
+				$pars = new StudentParentRelation();
+				$pars->student_idno = $sp->student_idno;
+				//$pars->student_birthday = $sp->student_birthday;
+				$pars->parent_idno = $sp->parent_idno;
+				$pars->parent_name = $sp->parent_name;
+				$pars->parent_relation = $sp->parent_relation;
+				$pars->status = '1';
+				$pars->save();
+
+				$mailto[] = ['text' => $pars->parent_name.'您好'.PHP_EOL.PHP_EOL.'您在<臺北市教育人員單一身分驗證服務>送出，要與'.$student['displayName'].'建立親子連結關係的申請已於'.date('Y-m-d H:i:s', strtotime($sp->verify_tm)).'通過了', 'mail' => $sp->parent_email];
+				$check[] = $sp->student_idno.'-'.$sp->parent_idno;
+			}
+		}
+
+		foreach($mailto as $mt){
+			try{
+				\Mail::raw($mt['text'], function($message) use ($mt)
+				{
+					$message->from(Config::get('mail.from.address'), Config::get('mail.from.name'));
+					$message->to($mt['mail'])->subject('臺北市教育人員單一身分驗證服務-建立親子連結審核通知');
+				});
+			}catch (\Exception $e){
+				Log::info('parentslinkVerify send mail to '.$mt['mail'].' error:'.$e->getMessage());
+			}
+		}
+
+		$text = ($apply=='1'?'同意':'不同意');
+		\Session::flash('success', '審核成功');
+
+		return '{"success":"'.$text.'"}';
 	}
 }

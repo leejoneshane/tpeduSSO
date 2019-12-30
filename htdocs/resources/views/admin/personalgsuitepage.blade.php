@@ -54,7 +54,7 @@
 									<li>第一次登入使用需要註冊，註冊時間約需5秒鐘，請耐心等候</li>
 									<li>導向Google註冊期間請勿按任意鍵，以免產生錯誤</li>
 									<li>透過本平臺向G-Suite教育版服務註冊，將提供你的以下資料給Google：帳號、姓名、學校</li>
-									<li>你將得到臺北市申請的G-Suite教育版服務帳號為{{ Auth::user()->uname }}@gm.tp.edu.tw</li>
+									<li>你將得到臺北市申請的G-Suite教育版服務帳號為{{ Auth::user()->uname.'@'.$domain  }}</li>
 								</ul>
 								<div style="margin: 10px 35px 0;">
 									<label><input type="checkbox" id="agree"/>&nbsp;&nbsp;已閱讀上述內容，並同意資料傳送</label>
