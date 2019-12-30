@@ -88,7 +88,7 @@
 				@if (!empty($teachers))
 				@foreach ($teachers as $teacher)
 					<td> <!--label class="checkbox-inline"-->
-						<input type="checkbox" name="teachers[]" value="{{ $teacher['cn'] }}">{{ $teacher['displayName'] }}（{{ !empty($teacher['titleName']) ?: $teacher['titleName'][$dc][0]->name}}）
+						<input type="checkbox" name="teachers[]" value="{{ $teacher['cn'] }}">{{ $teacher['displayName'] }}（{{ !empty($teacher['titleName']) ? $teacher['titleName'][$dc][0]->name : '' }}）
 					</td>
 					@if ($loop->iteration % 6 == 0)
 					</tr><tr>
