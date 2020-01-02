@@ -44,7 +44,7 @@ class PasswordChangeNotification extends Notification implements ShouldQueue
     {
         return (new MailMessage)
                     ->subject('通知')
-                    ->line('系統接收到您的變更密碼要求，已經幫您把原來的密碼更改為新密碼：'.$this->password.'。')
+                    ->line('系統接收到您的變更密碼要求，已經幫您把原來的密碼更改為新密碼。')
                     ->line('如果您未曾透過系統變更密碼，可能您的帳號已經遭到別人冒用，請儘速使用新密碼登入系統並立即變更您的帳號及密碼。')
                     ->line('若您已經無法登入，請聯絡貴校管理員為您回復密碼。')
                     ->line('回復密碼後，您仍應立即登入系統，並修改您的帳號及密碼。');
