@@ -30,13 +30,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
         
-        Passport::routes(function ($router) {
-            Route::post('/token', [
-                'uses' => 'AccessTokenController@issueToken',
-                'as' => 'passport.token',
-            ]);
-            $router->all();
-        });
+        Passport::routes();
         Passport::tokensExpireIn(Carbon::now()->addHours(2));
         Passport::refreshTokensExpireIn(Carbon::now()->addDay());
 //        Passport::personalAccessTokensExpireIn(Carbon::now()->addMonths(6));

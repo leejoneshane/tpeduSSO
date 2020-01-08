@@ -39,6 +39,12 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
+        Route::post('/token', [
+            'uses' => '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken',
+            'as' => 'passport.token',
+            'middleware' => "throttle:10000,1",
+        ]);
+
         //
     }
 
