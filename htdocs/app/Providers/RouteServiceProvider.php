@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Laravel\Passport\Passport;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -39,10 +40,11 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
+        Passport::routes();
         Route::post('/token', [
             'uses' => '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken',
             'as' => 'passport.token',
-            'middleware' => "throttle:10000,1",
+//            'middleware' => "throttle:10000,1",
         ]);
 
         //
