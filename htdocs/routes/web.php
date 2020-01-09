@@ -33,8 +33,8 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('passw
 //Route::get('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
 
 //Passport::routes();
-Route::post('token', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken')->name('passport.token');
-Route::group(['middleware' => 'auth'], function () {
+Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken')->name('passport.token');
+Route::group(['prefix' => 'oauth', 'middleware' => 'auth'], function () {
 	//RouteRegistrar::forAuthorization()
 	Route::get('authorize', '\Laravel\Passport\Http\Controllers\AuthorizationController@authorize')->name('passport.authorizations.authorize');
 	Route::post('authorize', '\Laravel\Passport\Http\Controllers\ApproveAuthorizationController@approve')->name('passport.authorizations.approve');
