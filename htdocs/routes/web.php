@@ -37,8 +37,8 @@ Route::post('token', '\Laravel\Passport\Http\Controllers\AccessTokenController@i
 Route::group(['middleware' => 'auth'], function () {
 	//RouteRegistrar::forAuthorization()
 	Route::get('authorize', '\Laravel\Passport\Http\Controllers\AuthorizationController@authorize')->name('passport.authorizations.authorize');
-	Route::post('authorize', '\Laravel\Passport\Http\Controllers\AuthorizationController@approve')->name('passport.authorizations.approve');
-	Route::delete('authorize', '\Laravel\Passport\Http\Controllers\AuthorizationController@deny')->name('passport.authorizations.deny');
+	Route::post('authorize', '\Laravel\Passport\Http\Controllers\ApproveAuthorizationController@approve')->name('passport.authorizations.approve');
+	Route::delete('authorize', '\Laravel\Passport\Http\Controllers\DenyAuthorizationController@deny')->name('passport.authorizations.deny');
 	//RouteRegistrar::forAccessTokens()
 	Route::get('tokens', '\Laravel\Passport\Http\Controllers\AuthorizedAccessTokenController@forUser')->name('passport.tokens.index');
 	Route::delete('tokens/{token_id}', '\Laravel\Passport\Http\Controllers\AuthorizedAccessTokenController@destroy')->name('passport.tokens.destroy');
