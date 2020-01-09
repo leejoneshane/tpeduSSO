@@ -35,16 +35,21 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('passw
 //Passport::routes();
 Route::post('token', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken')->name('passport.token');
 Route::group(['middleware' => 'auth'], function () {
+	//RouteRegistrar::forAuthorization()
 	Route::get('authorize', '\Laravel\Passport\Http\Controllers\AuthorizationController@authorize')->name('passport.authorizations.authorize');
 	Route::post('authorize', '\Laravel\Passport\Http\Controllers\AuthorizationController@approve')->name('passport.authorizations.approve');
 	Route::delete('authorize', '\Laravel\Passport\Http\Controllers\AuthorizationController@deny')->name('passport.authorizations.deny');
+	//RouteRegistrar::forAccessTokens()
 	Route::get('tokens', '\Laravel\Passport\Http\Controllers\AuthorizedAccessTokenController@forUser')->name('passport.tokens.index');
 	Route::delete('tokens/{token_id}', '\Laravel\Passport\Http\Controllers\AuthorizedAccessTokenController@destroy')->name('passport.tokens.destroy');
+	//RouteRegistrar::forTransientTokens()
 	Route::post('token/refresh', '\Laravel\Passport\Http\Controllers\TransientTokenController@refresh')->name('passport.token.refresh');
+	//RouteRegistrar::forClients()
 	Route::get('clients', '\Laravel\Passport\Http\Controllers\ClientController@forUser')->name('passport.clients.index');
 	Route::post('clients', '\Laravel\Passport\Http\Controllers\ClientController@store')->name('passport.clients.store');
 	Route::put('clients/{client_id}', '\Laravel\Passport\Http\Controllers\ClientController@update')->name('passport.clients.update');
 	Route::delete('clients/{client_id}', '\Laravel\Passport\Http\Controllers\ClientController@destroy')->name('passport.clients.destroy');
+	//RouteRegistrar::forPersonalAccessTokens()
 	Route::get('scopes', '\Laravel\Passport\Http\Controllers\ScopeController@all')->name('passport.scopes.index');
 	Route::get('personal-access-tokens', '\Laravel\Passport\Http\Controllers\PersonalAccessTokenController@forUser')->name('passport.personal.tokens.index');
 	Route::post('personal-access-tokens', '\Laravel\Passport\Http\Controllers\PersonalAccessTokenController@store')->name('passport.personal.tokens.store');
