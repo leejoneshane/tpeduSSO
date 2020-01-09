@@ -32,6 +32,25 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('passw
 //Route::get('email/verify/{id}', 'Auth\VerificationController@verify')->name('verification.verify');
 //Route::get('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
 
+//Passport::routes();
+Route::post('token', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken')->name('passport.token');
+Route::group(['middleware' => 'auth'], function () {
+	Route::get('authorize', '\Laravel\Passport\Http\Controllers\AuthorizationController@authorize')->name('passport.authorizations.authorize');
+	Route::post('authorize', '\Laravel\Passport\Http\Controllers\AuthorizationController@approve')->name('passport.authorizations.approve');
+	Route::delete('authorize', '\Laravel\Passport\Http\Controllers\AuthorizationController@deny')->name('passport.authorizations.deny');
+	Route::get('tokens', '\Laravel\Passport\Http\Controllers\AuthorizedAccessTokenController@forUser')->name('passport.tokens.index');
+	Route::delete('tokens/{token_id}', '\Laravel\Passport\Http\Controllers\AuthorizedAccessTokenController@destroy')->name('passport.tokens.destroy');
+	Route::post('token/refresh', '\Laravel\Passport\Http\Controllers\TransientTokenController@refresh')->name('passport.token.refresh');
+	Route::get('clients', '\Laravel\Passport\Http\Controllers\ClientController@forUser')->name('passport.clients.index');
+	Route::post('clients', '\Laravel\Passport\Http\Controllers\ClientController@store')->name('passport.clients.store');
+	Route::put('clients/{client_id}', '\Laravel\Passport\Http\Controllers\ClientController@update')->name('passport.clients.update');
+	Route::delete('clients/{client_id}', '\Laravel\Passport\Http\Controllers\ClientController@destroy')->name('passport.clients.destroy');
+	Route::get('scopes', '\Laravel\Passport\Http\Controllers\ScopeController@all')->name('passport.scopes.index');
+	Route::get('personal-access-tokens', '\Laravel\Passport\Http\Controllers\PersonalAccessTokenController@forUser')->name('passport.personal.tokens.index');
+	Route::post('personal-access-tokens', '\Laravel\Passport\Http\Controllers\PersonalAccessTokenController@store')->name('passport.personal.tokens.store');
+	Route::delete('personal-access-tokens/{token_id}', '\Laravel\Passport\Http\Controllers\PersonalAccessTokenController@destroy')->name('passport.personal.tokens.destroy');
+});
+
 Route::get('schoolAdmin', 'SchoolController@showSchoolAdminSettingForm');
 Route::post('schoolAdmin', 'SchoolController@addSchoolAdmin')->name('schoolAdmin');
 Route::post('schoolAdminRemove', 'SchoolController@delSchoolAdmin')->name('schoolAdminRemove');
