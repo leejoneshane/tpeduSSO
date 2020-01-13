@@ -459,7 +459,7 @@ class SyncController extends Controller
 		$messages[] = "開始進行同步";
 		if ($units) {
 			foreach ($units as $unit) {
-				if (!preg_match('/\w+/', $unit->ou)) continue;
+				if (!isset($unit->ou) || !preg_match('/\w+/', $unit->ou)) continue;
 				for ($i=0;$i<count($org_units);$i++) {
 					if ($unit->ou == $org_units[$i]->ou) array_splice($org_units, $i, 1);
 				}
