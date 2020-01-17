@@ -83,10 +83,10 @@ class profileController extends Controller
 				$o = $user->ldap['o'];
 			}
 			$json->o = $o;
+			if (isset($user->ldap['school'][$o]) && !empty($user->ldap['school'][$o])) $json->organization = $user->ldap['school'][$o];
 		}
 		if (isset($user->ldap['gender']) && !empty($user->ldap['gender'])) $json->gender = $user->ldap['gender'];
 		if (isset($user->ldap['birthDate']) && !empty($user->ldap['birthDate'])) $json->birthDate = $user->ldap['birthDate'];
-		if (isset($user->ldap['school'][$o]) && !empty($user->ldap['school'][$o])) $json->organization = $user->ldap['school'][$o];
 		if ($json->role == '學生') {
 			if (isset($user->ldap['employeeNumber']) && !empty($user->ldap['employeeNumber'])) $json->studentId = $user->ldap['employeeNumber'];
 			if (isset($user->ldap['tpClass']) && !empty($user->ldap['tpClass'])) $json->class = $user->ldap['tpClass'];
