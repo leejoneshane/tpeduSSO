@@ -21,7 +21,7 @@ class v2_profileController extends Controller
 			$url = $request->get('redirect');
 			return "<script>location='$url';</script>";
 		} else {
-			return "<script>history.go(-1);</script>";
+			return "<script>history.go(-2);</script>";
 		}
     }
 
