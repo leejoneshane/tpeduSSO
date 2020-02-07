@@ -4,9 +4,9 @@ cn: tpeduschool
 olcAttributeTypes: ( 2.5.4.116 NAME 'tpSims' DESC 'The school information serve
  r for school data sync.' EQUALITY caseIgnoreMatch SYNTAX 1.3.6.1.4.1.1466.115.
  121.1.15 SINGLE-VALUE )
-olcAttributeTypes: ( 2.5.4.104 NAME 'tpUniformNumbers' DESC 'An integer uniquel
- y identifying a school' EQUALITY integerMatch SYNTAX 1.3.6.1.4.1.1466.115.121.
- 1.27 SINGLE-VALUE )
+olcAttributeTypes: ( 2.5.4.104 NAME 'tpUniformNumbers' DESC 'An uniquely identi
+ fying a school' EQUALITY caseIgnoreMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+ SINGLE-VALUE )
 olcAttributeTypes: ( 2.5.4.105 NAME 'tpIPv4' DESC 'A string identifying the IPv
  4 range for school' EQUALITY caseIgnoreMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1
  .44 )
