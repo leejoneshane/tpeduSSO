@@ -13,7 +13,7 @@
         "kingstarter/laravel-saml": "dev-master",
         "laravel/framework": "5.8.*",
         "laravel/passport": "^7.0",
-        "laravel/socialite": "^3.1",
+        "laravel/socialite": "^4.3",
         "laravel/telescope": "^2.0",
         "laravel/tinker": "^1.0",
         "lightsaml/lightsaml": "^1.4",
