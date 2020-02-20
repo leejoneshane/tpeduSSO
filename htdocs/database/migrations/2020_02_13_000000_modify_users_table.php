@@ -14,8 +14,8 @@ class ModifyUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->timestamp('email_verified_at')->nullable()->change();
-            $table->tinyInteger('is_parent')->after('is_admin')->default(0)->change()->index();
+            $table->boolean('is_parent')->after('is_admin')->default(0)->change()->index();
+            $table->timestamp('email_verified_at')->after('remember_token')->nullable()->change();
         });
     }
 
