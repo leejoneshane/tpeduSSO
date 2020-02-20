@@ -21,7 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique()->nullable();
             $table->string('mobile')->unique()->nullable();
             $table->string('password');
-            $table->tinyInteger('is_admin')->default(0)->index();
+            $table->boolean('is_admin')->default(0)->index();
             $table->rememberToken();
             $table->timestamps();
         });

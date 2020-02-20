@@ -26,7 +26,7 @@ class CreateProjectsTable extends Migration
             $table->string('connEmail',255);
             $table->string('connTel',255);
             $table->string('memo',255)->nullable();
-            $table->tinyInteger('audit')->default(0); //1->pass
+            $table->boolean('audit')->default(0); //1->pass
             $table->string('clients',255)->nullable(); //split by ,
             $table->timestamps();
         });
