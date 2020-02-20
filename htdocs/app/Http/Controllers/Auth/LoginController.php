@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Log;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Auth\AuthenticatesUsers;
+use Socialite;
+use App\SocialiteAccount;
+use App\User;
 
 class LoginController extends Controller
 {
@@ -36,4 +40,82 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
+
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function handleGoogleCallback()
+    {
+        try {
+            $user = Socialite::driver('Google')->user();
+            return $this->SocialiteLogin($request, 'Google', $user);
+        } catch (\Exception $e){
+            Log::debug('使用 Google 帳號登入失敗：'.$e->getMessage());
+        }
+        return redirect()->route('login');
+    }
+
+    public function redirectToFacebook()
+    {
+        return Socialite::driver('facebook')->redirect();
+    }
+
+    public function handleFacebookCallback(Request $request)
+    {
+        try {
+            $user = Socialite::driver('facebook')->user();
+            return $this->SocialiteLogin($request, 'Facebook', $user);
+        } catch (\Exception $e){
+            Log::debug('使用 Facebook 帳號登入失敗：'.$e->getMessage());
+        }
+        return redirect()->route('login');
+    }
+
+    public function redirectToYahoo()
+    {
+        return Socialite::driver('yahoo')->redirect();
+    }
+
+    public function handleYahooCallback(Request $request)
+    {
+        try {
+            $user = Socialite::driver('yahoo')->user();
+            return $this->SocialiteLogin($request, 'Yahoo', $user);
+        } catch (\Exception $e){
+            Log::debug('使用 Yahoo 帳號登入失敗：'.$e->getMessage());
+        }
+        return redirect()->route('login');
+
+    }
+
+    public function SocialiteLogin(Request $request, $socialite, $user) 
+    {
+        $userID = $user->getId();
+		if (Auth::check()) {
+            $myuser = Auth::user();
+            SocialiteAccount::create([
+                'idno' => $myuser->idno,
+                'socialite' => $socialite,
+                'userID' => $userID,
+            ]);
+            return redirect()->route('socialite')->with('success',$socialite.'社群帳號：'.$userID.'綁定完成！');
+		} else {
+            $account = SocialiteAccount::where('userID', $userID)->where('socialite', $socialite)->first();
+            if($account) {
+                $myuser = $account->user();
+                if ($myuser) {
+                    Auth::login($myuser);
+//                  if($request->session()->has('qrcodeObject')) {
+//                      return app('App\Http\Controllers\HomeController')->connectChildQrcode($request);
+//                  } else {
+                        return redirect()->intended($this->redirectTo);
+//                  }
+                } 
+            }
+            return redirect()->route('login')->with('error','這個社群帳號尚未綁定使用者，所以無法登入！');
+        }
+    }
+
 }

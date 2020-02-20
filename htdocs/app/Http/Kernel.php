@@ -54,6 +54,7 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.admin' => \App\Http\Middleware\AuthenticateAdmin::class,
+        'auth.parent' => \App\Http\Middleware\AuthenticateParent::class,
         'auth.school' => \App\Http\Middleware\AuthenticateSchoolAdmin::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
@@ -67,7 +68,7 @@ class Kernel extends HttpKernel
         'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,
         'scope' => \Laravel\Passport\Http\Middleware\CheckForAnyScope::class,
         'client' => \Laravel\Passport\Http\Middleware\CheckClientCredentials::class,
-        'admin' => \App\Http\Middleware\CheckClientCredentialsWithClientId::class,
+        'prerogative' => \App\Http\Middleware\CheckClientCredentialsWithClientId::class,
 
     ];
 }

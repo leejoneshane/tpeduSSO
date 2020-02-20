@@ -14,7 +14,11 @@ class LdapUserProvider extends EloquentUserProvider
 
     public function retrieveByCredentials(array $credentials)
     {
-		if (empty($credentials)) return;
+		if (empty($credentials) ||
+           (count($credentials) === 1 &&
+            array_key_exists('password', $credentials))) {
+            return;
+        }
 		$openldap = new LdapServiceProvider();
 		if (isset($credentials['username'])) {
 			if (substr($credentials['username'],0,3) == 'cn=') {
@@ -23,12 +27,12 @@ class LdapUserProvider extends EloquentUserProvider
 				$id = $openldap->checkAccount($credentials['username']);
 			}
 		}
-		if (isset($credentials['email'])) {
-			$id = $openldap->checkEmail($credentials['email']);
-		}
-		if (isset($credentials['mobile'])) {
-			$id = $openldap->checkMobile($credentials['mobile']);
-		}
+//		if (isset($credentials['email'])) {
+//			$id = $openldap->checkEmail($credentials['email']);
+//		}
+//		if (isset($credentials['mobile'])) {
+//			$id = $openldap->checkMobile($credentials['mobile']);
+//		}
 		if ($id) {
 			$entry = $openldap->getUserEntry($id);
 			$data = $openldap->getUserData($entry);
@@ -62,6 +66,8 @@ class LdapUserProvider extends EloquentUserProvider
 			} else $user->mobile = null;
 			$user->save();
 			return $user;
+		} else {
+			return User::where('email', $credentials['username'])->first();
 		}
 	}
 
@@ -71,7 +77,10 @@ class LdapUserProvider extends EloquentUserProvider
 		if (substr($credentials['username'],0,3) == 'cn=') {
 			return $openldap->userLogin($credentials['username'], $credentials['password']);
 		} else {
-			return $openldap->authenticate($credentials['username'], $credentials['password']);
+			if ($openldap->authenticate($credentials['username'], $credentials['password']))
+				return true;
+			else
+				return $this->hasher->check($credentials['password'], $user->getAuthPassword());
 		}
 	}
 }

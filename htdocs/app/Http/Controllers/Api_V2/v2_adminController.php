@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Laravel\Passport\Token;
-use Laravel\Passport\Client;
 use App\User;
 use App\Providers\LdapServiceProvider;
 use App\Rules\idno;

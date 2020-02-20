@@ -30,8 +30,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
                 
-        Passport::tokensExpireIn(Carbon::now()->addHours(2));
-        Passport::refreshTokensExpireIn(Carbon::now()->addDay());
+        Passport::tokensExpireIn(Carbon::now()->addDays(15));
+        Passport::refreshTokensExpireIn(Carbon::now()->addDays(30));
 //        Passport::personalAccessTokensExpireIn(Carbon::now()->addMonths(6));
         Passport::tokensCan([
     	    'me' => '想要取得您的電子郵件和姓名',

@@ -130,6 +130,7 @@ class LdapServiceProvider extends ServiceProvider
         return false;
     }
 
+	/*
     public function checkEmail($email)
     {
     	if (empty($email)) return false;
@@ -159,7 +160,7 @@ class LdapServiceProvider extends ServiceProvider
 		} 
         return false;
     }
-
+*/
     public function checkStatus($idno)
     {
     	if (empty($idno)) return false;

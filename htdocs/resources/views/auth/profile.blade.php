@@ -18,7 +18,7 @@
 					{{ session('success') }}
 		    		</div>
 				@endif
-				<p>注意：電子郵件將作為傳送帳號鎖定通知、重設密碼...等系統訊息使用，請務必填寫！</p>
+				<p>注意：電子郵件將作為傳送帳號鎖定通知、重設密碼...等系統訊息使用，請務必填寫！ 請勿填寫家長的電子郵件，以免家長帳號無法註冊！ 請勿填寫他人的電子郵件，以免密碼外洩。 若您尚未有電子郵件，請先離開此頁面，不要按「確定」。</p>
             	<form method="POST" action="{{ route('profile') }}">
             	@csrf
             	    <div class="row">
@@ -51,7 +51,7 @@
             	    <div class="form-group row">
             		<label for="email" class="col-md-4 col-form-label text-md-right">電子郵件</label>
             		<div class="col-md-6">
-            		    <input id="email" type="text" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ $user->email }}" placeholder="請勿填寫他人的電子郵件，以免密碼外洩。" required autofocus>            		    
+            		    <input id="email" type="text" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ $user->email }}" required autofocus>            		    
             		    @if ($errors->has('email'))
             			<span class="invalid-feedback">
             			    <strong>{{ $errors->first('email') }}</strong>

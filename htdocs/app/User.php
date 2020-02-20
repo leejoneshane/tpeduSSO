@@ -5,10 +5,11 @@ namespace App;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Providers\LdapServiceProvider;;
 use App\Notifications\ResetPasswordNotification;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, Notifiable;
 
@@ -18,7 +19,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'idno', 'password',
+		'name', 'idno', 'email', 'password',
     ];
 
     /**
@@ -27,7 +28,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'is_admin',
+        'password', 'remember_token', 'is_admin', 'is_parent',
     ];
     
     protected $appends = [
@@ -36,11 +37,18 @@ class User extends Authenticatable
     
     protected $casts = [
 		'is_admin' => 'boolean',
+		'is_parent' => 'boolean',
+		'email_verified_at' => 'datetime',
     ];
 
 	public function gmails()
 	{
     	return $this->hasMany('App\Gsuite', 'idno', 'idno');
+	}
+
+	public function socialite_accounts()
+	{
+    	return $this->hasMany('App\SocialiteAccount', 'idno', 'idno');
 	}
 
 	public function nameID()
@@ -52,6 +60,7 @@ class User extends Authenticatable
 
     public function getLdapAttribute()
     {
+		if ($this->attributes['is_parent']) return false;
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getUserEntry($this->attributes['idno']);
 		$data = $openldap->getUserData($entry);
@@ -83,24 +92,29 @@ class User extends Authenticatable
     
     public function sendPasswordResetNotification($token)
     {
-		$openldap = new LdapServiceProvider();
-		$entry = $openldap->getUserEntry($this->attributes['idno']);
-		$data = $openldap->getUserData($entry, 'uid');
-		$accounts = '';
-		if (array_key_exists('uid', $data)) {
-			if (is_array($data['uid'])) {
-		    	$accounts = implode('、', $data['uid']);
-			} else {
-		    	$accounts = $data['uid'];
-			}
+		if ($this->attributes['is_parent']) {
+			$accounts = $this->attributes['email'];
 		} else {
-			$accounts = '尚未設定帳號，請使用 cn='.$this->attributes['idno'].' 登入設定！';
+			$openldap = new LdapServiceProvider();
+			$entry = $openldap->getUserEntry($this->attributes['idno']);
+			$data = $openldap->getUserData($entry, 'uid');
+			$accounts = '';
+			if (array_key_exists('uid', $data)) {
+				if (is_array($data['uid'])) {
+					$accounts = implode('、', $data['uid']);
+				} else {
+					$accounts = $data['uid'];
+				}
+			} else {
+				$accounts = '尚未設定帳號，請使用 cn='.$this->attributes['idno'].' 登入設定！';
+			}
 		}
 		$this->notify(new ResetPasswordNotification($token, $accounts));
     }
     
     public function resetLdapPassword($value)
     {
+		if ($this->attributes['is_parent']) return;
 		$openldap = new LdapServiceProvider();
 		$ssha = $openldap->make_ssha_password($value);
 		$new_passwd = array( 'userPassword' => $ssha );
@@ -122,12 +136,17 @@ class User extends Authenticatable
 
     public function findForPassport($username)
     {
-		$openldap = new LdapServiceProvider();
-		$id = $openldap->checkAccount($username);
-		if ($id) {
-			$user = $this->where('idno', $id)->first();
-		    return $user;
-		}	
+		$user = $this->where('email', $username)->first();
+		if ($user) {
+			return $user;
+		} else {
+			$openldap = new LdapServiceProvider();
+			$id = $openldap->checkAccount($username);
+			if ($id) {
+				$user = $this->where('idno', $id)->first();
+				return $user;
+			}	
+		}
     }
 
 	public function account()

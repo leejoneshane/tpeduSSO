@@ -16,21 +16,27 @@
 // Authentication Routes...
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
+Route::get('login/google', 'LoginController@redirectToGoogle')->name('login.google');
+Route::match(array('GET','POST'), 'login/google/callback', 'LoginController@handleGoogleCallback');
+Route::get('login/facebook', 'LoginController@redirectToFacebook')->name('login.facebook');;
+Route::match(array('GET','POST'), 'login/facebook/callback', 'LoginController@handleFacebookCallback');
+Route::get('login/yahoo', 'LoginController@redirectToYahoo')->name('login.yahoo');
+Route::match(array('GET','POST'), 'login/yahoo/callback', 'LoginController@handleYahooCallback');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('api/logout', 'Api\profileController@logout');
 Route::get('api/v2/logout', 'Api_V2\v2_profileController@logout');
 // Registration Routes...
-//Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
-//Route::post('register', 'Auth\RegisterController@register');
+Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+Route::post('register', 'Auth\RegisterController@register');
 // Password Reset Routes...
 Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
 Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');
 // Email Verification Routes...
-//Route::get('email/verify', 'Auth\VerificationController@show')->name('verification.notice');
-//Route::get('email/verify/{id}', 'Auth\VerificationController@verify')->name('verification.verify');
-//Route::get('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
+Route::get('email/verify', 'Auth\VerificationController@show')->name('verification.notice');
+Route::get('email/verify/{id}', 'Auth\VerificationController@verify')->name('verification.verify');
+Route::get('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
 
 //Passport::routes();
 Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken')->name('passport.token');
@@ -59,17 +65,48 @@ Route::group(['prefix' => 'oauth', 'middleware' => 'auth'], function () {
 Route::get('schoolAdmin', 'SchoolController@showSchoolAdminSettingForm');
 Route::post('schoolAdmin', 'SchoolController@addSchoolAdmin')->name('schoolAdmin');
 Route::post('schoolAdminRemove', 'SchoolController@delSchoolAdmin')->name('schoolAdminRemove');
-Route::get('changePassword', 'HomeController@showChangePasswordForm');
+Route::get('changePassword', 'HomeController@showChangePasswordForm')->middleware('verified');
 Route::post('changePassword', 'HomeController@changePassword')->name('changePassword');
-Route::get('changeAccount', 'HomeController@showChangeAccountForm');
+Route::get('changeAccount', 'HomeController@showChangeAccountForm')->middleware('verified');
 Route::post('changeAccount', 'HomeController@changeAccount')->name('changeAccount');
 
 Route::group(['middleware' => 'auth'], function () {
 	Route::get('/', 'HomeController@index')->name('home');
     Route::get('profile', 'HomeController@showProfileForm');
     Route::post('profile', 'HomeController@changeProfile')->name('profile');
-	Route::get('oauth', 'oauthController@index')->name('oauth');
+	Route::get('oauth', 'OauthController@index')->name('oauth');
 	Route::get('gsuite/sync', 'HomeController@syncToGsuite')->name('createGsuite');
+	Route::get('socialite', 'OauthController@socialite')->name('socialite');
+	Route::post('socialite/remove', 'OauthController@removeSocialite')->name('socialite.remove');
+
+	//導師班級管理
+//	Route::get('personal/tutor_student', 'HomeController@tutorStudent')->name('personal.tutor_student');
+//	Route::post('personal/{uuid}/resetpw_student', 'HomeController@resetpwStudent')->name('personal.resetpwStudent');
+//	Route::get('personal/listparents', 'HomeController@listparents');
+//	Route::get('personal/listmyparents/{uuid}', 'HomeController@listmyparents');
+//	Route::post('personal/linkedChange', 'HomeController@linkedChange');
+//	Route::post('personal/parentsqrcode', 'HomeController@parentsqrcode');
+//	Route::post('personal/listparentsqrcode', 'HomeController@listparentsqrcode')->name('personal.listparentsqrcode');
+
+	//G-Suite Class Room 建立
+//	Route::get('personal/teacher_lessons', 'HomeController@teacherLessons')->name('personal.teacher_lessons');
+//	Route::post('personal/lessons_member', 'HomeController@lessonsMember');
+//	Route::post('personal/teacher_courses', 'HomeController@teacherCourses')->name('personal.teacher_courses');
+
+	//導師審核家長親子連結申請
+//	Route::get('personal/parentslink_verify', 'HomeController@parentslinkVerifyForm')->name('personal.parentslink_verify');
+//	Route::post('personal/parentslink_verify', 'HomeController@parentslinkVerify');
+});
+
+Route::group(['prefix' => 'parent', 'middleware' => 'auth.parent'], function () {
+	Route::get('/', 'ParentController@index')->name('parent');
+	Route::get('link', 'ParentController@listLink')->name('parent.listLink');
+	Route::get('link/new', 'ParentController@showLinkForm');
+	Route::post('link/new', 'ParentController@showLinkForm')->name('parent.showLinkForm');
+	Route::post('link/apply', 'ParentController@applyLink')->name('parent.applyLink');
+	Route::post('link/remove/{id}', 'ParentController@removeLink')->name('parent.removeLink');
+	Route::get('showConnectChildrenAuthForm', 'ParentController@showConnectChildrenAuthForm')->name('parent.showConnectChildrenAuthForm');
+	Route::post('authConnectChild', 'ParentController@authConnectChild')->name('parent.authConnectChild');
 });
 
 Route::group(['prefix' => 'sync', 'middleware' => 'auth.admin'], function () {

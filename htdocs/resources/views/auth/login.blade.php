@@ -12,7 +12,7 @@
 </div>
 <div class="row">
     <div class="col-sm-4 col-sm-offset-4 form-box">
-	<div class="form-top">
+	    <div class="form-top">
             <div class="form-top-left">
                 <h3>歡迎使用</h3>
 		        @if (session('error') || session('success'))
@@ -25,7 +25,7 @@
                 <i class="fa fa-lock"></i>
             </div>
         </div>
-	<div class="form-bottom">
+	    <div class="form-bottom">
             <form role="form" method="POST" action="{{ route('login') }}" class="login-form" data-stage="DataStore1">
                 @csrf
                 @if(isset($_GET['SAMLRequest']))
@@ -56,11 +56,24 @@
                     <label for="remember" class="col-sm-6 pull-left btn-link">
                     <input type="checkbox" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}> 記住我<br>
                     </label>
-                	<!--p>網頁設計：臺北市福星國小　黃永銘</p-->
-            	    </label>
             	    <a class="btn-link pull-right" href="{{ route('password.request') }}">忘記帳號、密碼？</a>
                 </div>
-                <button type="submit" index="0" role="button" class="btn">登入</button>
+                <button type="submit" index="0" role="button" class="btn btn-warning">登入</button>
+            </form>
+            <div class="row">
+                <div class="col-sm-12 social-login-buttons" style="text-align:center;">
+                    <!-- a href="/login/google"--><img style="padding-left:5px;border=0;width:55px;height:50px;" src="{{ asset('img/google.png') }}"><!-->
+                    <!-- a href="/login/facebook"--><img style="padding-left:5px;border=0;width:55px;height:50px;" src="{{ asset('img/facebook.png') }}"><!-->
+                    <!-- a href="/login/yahoo"--><img style="padding-left:5px;border=0;width:55px;height:50px;" src="{{ asset('img/yahoo.png') }}"><!-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4 col-sm-offset-4 form-box">
+	    <div class="form-top"></div>
+        <div class="form-bottom">
+            <form>
+            <button type="button" index="1" role="button" class="btn btn-primary" onclick="location='{{ route('register') }}';">註冊家長帳號</button>
             </form>
         </div>
     </div>
@@ -69,7 +82,8 @@
     <div class="col-sm-6 col-sm-offset-3 credits">        
 	<p>臺北市政府教育局</p>
 	<p>地址：臺北市信義區市府路1號8樓</p>
-	<p>電話：1999（外縣市請撥02-27208889）#1234</p> <p>信箱：<a href="mailto:edu_ict.19@mail.taipei.gov.tw" target="_top" rel="noreferrer">edu_ict.19@mail.taipei.gov.tw</a></p>
+    <p>電話：1999（外縣市請撥02-27208889）#1234</p>
+    <p>信箱：<a href="mailto:edu_ict.19@mail.taipei.gov.tw" target="_top" rel="noreferrer">edu_ict.19@mail.taipei.gov.tw</a></p>
 	<!--<p>網頁版型設計：<a href="http://www.fhps.tp.edu.tw" title="臺北市福星國小">臺北市福星國小</a> 黃永銘</p>-->
     </div>
 </div>
