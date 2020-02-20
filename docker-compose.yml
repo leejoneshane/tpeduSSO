@@ -23,7 +23,15 @@ services:
       MYSQL_DATABASE: laravel
       MYSQL_ROOT_PASSWORD: dbpassword
     restart: always
-    
+
+  sqladmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: sqladmin
+    ports:
+      - "8088:80"
+    links:
+      - mysql:db
+
   redis:
     image: redis
     container_name: redis
