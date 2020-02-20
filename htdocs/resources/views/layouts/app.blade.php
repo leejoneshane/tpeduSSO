@@ -13,62 +13,64 @@
     <!-- Styles -->
 	<link href='//fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
 	<link href="{{ asset('assets/stylesheets/styles.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
 </head>
 <body>
-    <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light navbar-laravel" style="margin-bottom: 0">
-            <div class="container-fluid">
+    <ul id="app">
+        <nav class="navbar navbar-default navbar-static-top" style="margin-bottom: 0">
 			<div class="navbar-header">
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="sr-only">Toggle Navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
                 </a>
 			</div>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <!-- Left Side Of Navbar -->
-                <ul class="navbar-nav navbar-left">
-				</ul>
-
-                <!-- Right Side Of Navbar -->
-				<ul class="navbar-nav navbar-right ml-auto">
-                        @guest
-                            <li><a class="nav-link" href="{{ route('login') }}">登入</a></li>
-                        @else
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fa fa-user fa-fw"></i>{{ Auth::user()->name }} 
-                                </a>
-                                <ul  style="min-width:50px; left: -40px; top:120%" class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="{{ url('/') }}"><i class="fa fa-home fa-fw"></i>回首頁</a></li>
-                            	    @if (Auth::user()->is_admin || Auth::user()->id == 1)
-                                    <li><a class="dropdown-item" href="{{ route('sync') }}"><i class="fa fa-gears fa-fw"></i>資料維護</a></li>
-                            	    <li><a class="dropdown-item" href="{{ route('bureau') }}"><i class="fa fa-eye fa-fw"></i>局端管理</a></li>
-                            	    @endif
-                                    @if (Auth::user()->ldap['adminSchools'])
-                                    @foreach (Auth::user()->ldap['adminSchools'] as $o)
+            <ul class="nav navbar-top-links navbar-right">
+                @guest
+                    <li><a href="{{ route('login') }}">登入</a></li>
+                @else
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-user fa-fw"></i>{{ Auth::user()->name }} 
+                        </a>
+                        <ul  style="min-width:50px; left: -40px; top:120%" class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{{ url('/') }}"><i class="fa fa-home fa-fw"></i>回首頁</a></li>
+                            @if (Auth::user()->is_admin || Auth::user()->id == 1)
+                                <li><a class="dropdown-item" href="{{ route('sync') }}"><i class="fa fa-gears fa-fw"></i>資料維護</a></li>
+                        	    <li><a class="dropdown-item" href="{{ route('bureau') }}"><i class="fa fa-eye fa-fw"></i>局端管理</a></li>
+                    	    @endif
+                            @if (Auth::user()->ldap['adminSchools'])
+                                @foreach (Auth::user()->ldap['adminSchools'] as $o)
                                     <li><a class="dropdown-item" href="{{ route('school', [ 'dc' => $o ]) }}"><i class="fa fa-university fa-fw"></i>學校管理：{{ $o }}</a></li>
-                                    @endforeach
-                                    @endif
-                                    <li><a class="dropdown-item" href="{{ route('oauth') }}"><i class="fa fa-key fa-fw"></i>金鑰管理</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('profile') }}"><i class="fa fa-edit fa-fw"></i>修改個資</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('changeAccount') }}"><i class="fa fa-tag fa-fw"></i>變更帳號</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('changePassword') }}"><i class="fa fa-lock fa-fw"></i>變更密碼</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('socialite') }}"><i class="fa fa-at fa-fw"></i>社群帳號綁定</a></li>
+                                @endforeach
+                            @endif
+                            @if (Auth::user()->is_parent)
+                                <li><a class="dropdown-item" href="{{ route('parent.showAuthProxyForm') }}"><i class="fa fa-key fa-fw"></i>代理授權</a></li>
+                                <li><a class="dropdown-item" href="{{ route('parent.listLink') }}"><i class="fa fa-child fa-fw"></i>親子連結</a></li>
+                            @else
+                                <li><a class="dropdown-item" href="{{ route('oauth') }}"><i class="fa fa-key fa-fw"></i>金鑰管理</a></li>
+                                @if (Auth::user()->ldap['employeeType'] != '學生')
                                     <li><a class="dropdown-item" href="{{ route('parent.listLink') }}"><i class="fa fa-child fa-fw"></i>親子連結</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                        	document.getElementById('logout-form').submit();"><i class="fa fa-sign-out fa-fw"></i>登出</a></li>
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest
+                                @endif
+                            @endif
+                            <li><a class="dropdown-item" href="{{ route('profile') }}"><i class="fa fa-edit fa-fw"></i>修改個資</a></li>
+                            @if (!(Auth::user()->is_parent))
+                                <li><a class="dropdown-item" href="{{ route('changeAccount') }}"><i class="fa fa-tag fa-fw"></i>變更帳號</a></li>
+                            @endif
+                            <li><a class="dropdown-item" href="{{ route('changePassword') }}"><i class="fa fa-lock fa-fw"></i>變更密碼</a></li>
+                            <li><a class="dropdown-item" href="{{ route('socialite') }}"><i class="fa fa-at fa-fw"></i>社群帳號綁定</a></li>
+                            <li><a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="fa fa-sign-out fa-fw"></i>登出</a></li>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
+                        </ul>
+                    </li>
+                    @endguest
 				</ul>
 			</div>
         </nav>

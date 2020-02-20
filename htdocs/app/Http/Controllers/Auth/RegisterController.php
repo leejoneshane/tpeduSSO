@@ -69,7 +69,7 @@ class RegisterController extends Controller
     {
         return User::create([
             'idno' => $data['idno'],
-            'uuid' => Str::uuid(),
+            'uuid' => (string) Str::uuid(),
             'name' => $data['name'],
             'email' => $data['email'],
             'mobile' => $data['mobile'],

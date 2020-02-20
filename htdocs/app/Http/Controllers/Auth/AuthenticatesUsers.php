@@ -60,21 +60,29 @@ trait AuthenticatesUsers
         } else {
             $idno = $openldap->checkAccount($username);
         }
-        if (!$idno) return back()->with("error","查無此使用者帳號！");
-	    $status = $openldap->checkStatus($idno);
-	    if ($status == 'inactive') return back()->with("error","很抱歉，您已經被管理員停權！");
-        if ($status == 'deleted') return back()->with("error","很抱歉，您已經被管理員刪除！");
-        if (substr($username,-9) == substr($idno, -9)) {
-            if ($openldap->authenticate($username,$password)) {
-                $request->session()->put('idno', $idno);
-                if ($password == substr($idno, -6)) $request->session()->put('mustChangePW', true);
-                return redirect()->route('changeAccount');
+        if (!$idno) {
+            $parent = DB::table('users')->where('email', $username)->first();
+            if ($parent) {
+                $idno = $parent->idno;
+            } else {
+                return back()->with("error","查無此使用者帳號！");
             }
-        }
-        if ($password == substr($idno, -6)) {
-            if ($openldap->authenticate($username,$password)) {
-                $request->session()->put('idno', $idno);
-                return redirect()->route('changePassword');
+        } else {
+            $status = $openldap->checkStatus($idno);
+            if ($status == 'inactive') return back()->with("error","很抱歉，您已經被管理員停權！");
+            if ($status == 'deleted') return back()->with("error","很抱歉，您已經被管理員刪除！");
+            if (substr($username,-9) == substr($idno, -9)) {
+                if ($openldap->authenticate($username,$password)) {
+                    $request->session()->put('idno', $idno);
+                    if ($password == substr($idno, -6)) $request->session()->put('mustChangePW', true);
+                    return redirect()->route('changeAccount');
+                }
+            }
+            if ($password == substr($idno, -6)) {
+                if ($openldap->authenticate($username,$password)) {
+                    $request->session()->put('idno', $idno);
+                    return redirect()->route('changePassword');
+                }
             }
         }
         // If the class is using the ThrottlesLogins trait, we can automatically throttle

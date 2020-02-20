@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
+            <div class="card card-default" style="margin-top: 20px">
                 <div class="card-header">{{ __('驗證您的電子郵件地址') }}</div>
 
                 <div class="card-body">

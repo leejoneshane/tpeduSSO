@@ -1,31 +1,25 @@
-@extends('layouts.parent')
+@extends('layouts.app')
 
-@section('page_heading')
-@endsection
-
-@section('section')
+@section('content')
 <div class="container">
-    <div class="row">
-		@if (session('error'))
-		    <div class="alert alert-danger">
-			{{ session('error') }}
-		    </div>
-		@endif	
-		@if (session('success'))
-		    <div class="alert alert-success">
-			{{ session('success') }}
-		    </div>
-		@endif
-		<div class="col-sm-12">
-			<div class="panel panel-default">
-			<div class="panel-heading">
-				<h4>
-					親子連結一覽表
-				</h4>
-			</div>
-			<div class="panel-body">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card card-default" style="margin-top: 20px">
+                <div class="card-header">親子連結一覽表</div>
+
+                <div class="card-body">
+				@if (session('error'))
+		    		<div class="alert alert-danger">
+					{{ session('error') }}
+		    		</div>
+				@endif
+				@if (session('success'))
+		    		<div class="alert alert-success">
+					{{ session('success') }}
+		    		</div>
+				@endif
 				<div class="col-md-10 col-md-offset-9">
-					<a class="btn btn-primary" id='buttonAdd' name='buttonAdd' href='{{ route('parents.showLinkForm') }}'>新增親子連結</a>
+					<a class="btn btn-primary" id='buttonAdd' name='buttonAdd' href='{{ route('parent.showLinkForm') }}'>新增親子連結</a>
 				</div>		
 				<table class="table table-hover">
 					<thead>
@@ -78,10 +72,9 @@
 						<form id="form" action="" method="" style="display: none;">
 						@csrf
 						</form>
-						@endif
 					</tbody>
 				</table>
-			</div>
+				</div>
 			</div>
 		</div>
 	</div>

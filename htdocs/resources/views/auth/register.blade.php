@@ -54,7 +54,7 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="mobile" class="col-md-4 col-form-label text-md-right">手機號碼（核對家長身份）</label>
+                            <label for="mobile" class="col-md-4 col-form-label text-md-right">手機號碼</label>
 
                             <div class="col-md-6">
                                 <input id="mobile" type="mobile" class="form-control{{ $errors->has('mobile') ? ' is-invalid' : '' }}" name="mobile" value="{{ old('mobile') }}" required>

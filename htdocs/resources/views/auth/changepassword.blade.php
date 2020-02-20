@@ -20,7 +20,7 @@
 		<form class="form-horizontal" method="POST" action="{{ route('changePassword') }}">
 		    {{ csrf_field() }}
 		    <div class="form-group{{ $errors->has('new-password') ? ' has-error' : '' }}">
-			<label for="new-password" class="col-md-4 control-label">新密碼</label>
+			<label for="new-password" class="col-md-4 col-form-label text-md-right">新密碼</label>
 			<div class="col-md-6">
 			    <input id="new-password" type="password" class="form-control" name="new-password" required>
 			    @if ($errors->has('new-password'))
@@ -32,7 +32,7 @@
 		    </div>
 
 		    <div class="form-group">
-			<label for="new-password-confirm" class="col-md-4 control-label">請再輸入一次新密碼</label>
+			<label for="new-password-confirm" class="col-md-4 col-form-label text-md-right">請再輸入一次新密碼</label>
 			<div class="col-md-6">
 			    <input id="new-password-confirm" type="password" class="form-control" name="new-password_confirmation" required>
 			</div>

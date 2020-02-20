@@ -65,13 +65,13 @@ Route::group(['prefix' => 'oauth', 'middleware' => 'auth'], function () {
 Route::get('schoolAdmin', 'SchoolController@showSchoolAdminSettingForm');
 Route::post('schoolAdmin', 'SchoolController@addSchoolAdmin')->name('schoolAdmin');
 Route::post('schoolAdminRemove', 'SchoolController@delSchoolAdmin')->name('schoolAdminRemove');
-Route::get('changePassword', 'HomeController@showChangePasswordForm')->middleware('verified');
+Route::get('changePassword', 'HomeController@showChangePasswordForm');
 Route::post('changePassword', 'HomeController@changePassword')->name('changePassword');
-Route::get('changeAccount', 'HomeController@showChangeAccountForm')->middleware('verified');
+Route::get('changeAccount', 'HomeController@showChangeAccountForm');
 Route::post('changeAccount', 'HomeController@changeAccount')->name('changeAccount');
 
 Route::group(['middleware' => 'auth'], function () {
-	Route::get('/', 'HomeController@index')->name('home');
+	Route::get('/', 'HomeController@index')->middleware('verified')->name('home');
     Route::get('profile', 'HomeController@showProfileForm');
     Route::post('profile', 'HomeController@changeProfile')->name('profile');
 	Route::get('oauth', 'OauthController@index')->name('oauth');
@@ -105,8 +105,8 @@ Route::group(['prefix' => 'parent', 'middleware' => 'auth.parent'], function () 
 	Route::post('link/new', 'ParentController@showLinkForm')->name('parent.showLinkForm');
 	Route::post('link/apply', 'ParentController@applyLink')->name('parent.applyLink');
 	Route::post('link/remove/{id}', 'ParentController@removeLink')->name('parent.removeLink');
-	Route::get('showConnectChildrenAuthForm', 'ParentController@showConnectChildrenAuthForm')->name('parent.showConnectChildrenAuthForm');
-	Route::post('authConnectChild', 'ParentController@authConnectChild')->name('parent.authConnectChild');
+	Route::get('authproxy', 'ParentController@showAuthProxyForm')->name('parent.showAuthProxyForm');
+	Route::post('authproxy', 'ParentController@applyAuthProxy')->name('parent.applyAuthProxy');
 });
 
 Route::group(['prefix' => 'sync', 'middleware' => 'auth.admin'], function () {
