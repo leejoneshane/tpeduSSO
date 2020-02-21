@@ -29,5 +29,10 @@ return [
         'client_secret' => env('YAHOO_CLIENT_SECRET'),
         'redirect'      => env('YAHOO_REDIRECT')
     ],
+    'line' => [
+        'client_id'     => env('LINE_KEY'),
+        'client_secret' => env('LINE_SECRET'),
+        'redirect'      => env('LINE_REDIRECT_URI')
+    ],
 
 ];

@@ -18,7 +18,12 @@
         "laravel/telescope": "^2.0",
         "laravel/tinker": "^1.0",
         "lightsaml/lightsaml": "^1.4",
-        "predis/predis": "^1.1"
+        "predis/predis": "^1.1",
+        "simplesoftwareio/simple-qrcode": "^2.0",
+        "socialiteproviders/facebook": "^1.0",
+        "socialiteproviders/google": "^3.0",
+        "socialiteproviders/line": "^2.1",
+        "socialiteproviders/yahoo": "^3.0"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
