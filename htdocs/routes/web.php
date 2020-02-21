@@ -16,12 +16,12 @@
 // Authentication Routes...
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
-Route::get('login/google', 'LoginController@redirectToGoogle')->name('login.google');
-Route::match(array('GET','POST'), 'login/google/callback', 'LoginController@handleGoogleCallback');
-Route::get('login/facebook', 'LoginController@redirectToFacebook')->name('login.facebook');;
-Route::match(array('GET','POST'), 'login/facebook/callback', 'LoginController@handleFacebookCallback');
-Route::get('login/yahoo', 'LoginController@redirectToYahoo')->name('login.yahoo');
-Route::match(array('GET','POST'), 'login/yahoo/callback', 'LoginController@handleYahooCallback');
+Route::get('login/google', 'Auth\LoginController@redirectToGoogle')->name('login.google');
+Route::match(array('GET','POST'), 'login/google/callback', 'Auth\LoginController@handleGoogleCallback');
+Route::get('login/facebook', 'Auth\LoginController@redirectToFacebook')->name('login.facebook');;
+Route::match(array('GET','POST'), 'login/facebook/callback', 'Auth\LoginController@handleFacebookCallback');
+Route::get('login/yahoo', 'Auth\LoginController@redirectToYahoo')->name('login.yahoo');
+Route::match(array('GET','POST'), 'login/yahoo/callback', 'Auth\LoginController@handleYahooCallback');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('api/logout', 'Api\profileController@logout');
 Route::get('api/v2/logout', 'Api_V2\v2_profileController@logout');
