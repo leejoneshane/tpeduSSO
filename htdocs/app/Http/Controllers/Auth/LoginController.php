@@ -43,7 +43,7 @@ class LoginController extends Controller
 
     public function redirectToGoogle()
     {
-        return Socialite::driver('google')->redirect();
+        return Socialite::with('google')->redirect();
     }
 
     public function handleGoogleCallback()
@@ -59,7 +59,7 @@ class LoginController extends Controller
 
     public function redirectToFacebook()
     {
-        return Socialite::driver('facebook')->redirect();
+        return Socialite::with('facebook')->redirect();
     }
 
     public function handleFacebookCallback(Request $request)
@@ -75,7 +75,7 @@ class LoginController extends Controller
 
     public function redirectToYahoo()
     {
-        return Socialite::driver('yahoo')->redirect();
+        return Socialite::with('yahoo')->redirect();
     }
 
     public function handleYahooCallback(Request $request)
@@ -85,6 +85,23 @@ class LoginController extends Controller
             return $this->SocialiteLogin($request, 'Yahoo', $user);
         } catch (\Exception $e){
             Log::debug('使用 Yahoo 帳號登入失敗：'.$e->getMessage());
+        }
+        return redirect()->route('login');
+
+    }
+
+    public function redirectToLine()
+    {
+        return Socialite::with('line')->redirect();
+    }
+
+    public function handleLineCallback(Request $request)
+    {
+        try {
+            $user = Socialite::driver('line')->user();
+            return $this->SocialiteLogin($request, 'Line', $user);
+        } catch (\Exception $e){
+            Log::debug('使用 Line 帳號登入失敗：'.$e->getMessage());
         }
         return redirect()->route('login');
 
