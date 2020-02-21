@@ -148,4 +148,48 @@ class TutorController extends Controller
 		}
 	}
 
+	public function classLinkForm(Request $request, $dc, $ou)
+	{
+		$openldap = new LdapServiceProvider();
+		$links = PSLink::byClass($dc, $ou);
+		$records = array();
+		if ($links) {
+			foreach ($links as $l) {
+				$link_id = $l->id;
+				$parent = $l->parent();
+				$student_idno = $l->student_idno;
+				$entry = $openldap->getUserEntry($student_idno);
+				$data = $openldap->getUserData($entry);
+				$k = array();
+				$k['parent'] = $parent->name;
+				$k['email'] = $parent->email;
+				$k['mobile'] = $parent->mobile;
+				$k['student'] = $data['displayName'];
+				$k['seat'] = $data['tpSeat'];
+				$records[$link_id] = $k;
+			}	
+		}
+		return view('admin.classListLink', [ 'dc' => $dc, 'ou' => $ou, 'links' => $links, 'records' => $records ]);
+	}
+
+	public function denyLink(Request $request, $id)
+	{
+		$link = PSLink::find($id);
+		$link->verified = 0;
+		$link->verified_idno = Auth::user()->idno;
+		$link->verified_time = date("Y-m-d H:i:s");
+		$link->save();
+		return back()->with("success","已經解除指定的親子連結！");
+	}
+
+	public function verifyLink(Request $request, $id)
+	{
+		$link = PSLink::find($id);
+		$link->verified = 1;
+		$link->verified_idno = Auth::user()->idno;
+		$link->verified_time = date("Y-m-d H:i:s");
+		$link->save();
+		return back()->with("success","已經將指定的親子連結設為有效！");
+	}
+
 }

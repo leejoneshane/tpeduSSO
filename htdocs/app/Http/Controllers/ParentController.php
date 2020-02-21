@@ -32,11 +32,12 @@ class ParentController extends Controller
 		$kids = array();
 		foreach ($links as $l) {
 			$link_id = $l->id;
+			$user = $l->student();
+			$k = array();
 			$student_idno = $l->student_idno;
 			$entry = $openldap->getUserEntry($student_idno);
 			$data = $openldap->getUserData($entry);
 			$school = $openldap->getOrgTitle($data['o']);
-			$k = array();
 			$k['idno'] = $idno;
 			$k['stdno'] = $data['employeeNumber'];
 			$k['name'] = $data['displayName'];
@@ -83,14 +84,22 @@ class ParentController extends Controller
 			$parents = $alle->ps_call('student_parents_info', [ 'sid' => $uno, 'stdno' => $stdno ]);
 			$match = false;
 			foreach ($parents as $p) {
-				if ($p->name == $user->name && $p->telephone == $user->mobile && $p->relation == $relation) {
-					$match = true;
+				if ($p->name == $user->name) {
+					$reason = array();
+					if ($user->mobile && empty($p->telephone)) 
+						$reason[] = '學籍資料缺家長手機號碼';
+					elseif ($user->mobile != $p->telephone)
+						$reason[] = '手機號碼不吻合';
+					if ($p->relation == $relation) $reason[] = '親子關係不吻合';
+					if (empty($reason)) $match = true;
 					break;
 				}
 			}
 			if ($match) {
 				$info['verified'] = 1;
 				$info['verified_time'] = time();
+			} else {
+				$info['denyReason'] = implode('、', $reason);
 			}
 		}
 		PSLink::create($info);

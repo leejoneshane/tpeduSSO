@@ -8,6 +8,9 @@
                         <li {{ (Request::is('tutor/student') ? 'class="active"' : '') }}>
                             <a href="{{ route('tutor.student', [ 'dc' => $dc, 'ou' => $ou ]) }}">學生帳號管理</a>
                         </li>
+                        <li {{ (Request::is('tutor/link') ? 'class="active"' : '') }}>
+                            <a href="{{ route('tutor.link', [ 'dc' => $dc, 'ou' => $ou ]) }}">審核親子連結</a>
+                        </li>
                     </ul>
                 </div>
            	</nav>

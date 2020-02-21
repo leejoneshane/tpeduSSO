@@ -64,7 +64,7 @@
 							<td style="vertical-align: inherit;">
 								<form action="{{ route('parent.removeLink', [ 'id' => $l->id ]) }}" method="POST">
 									@csrf
-									<input type="submit" class="btn btn-danger" value="刪除">
+									<button type="submit" class="btn btn-danger">刪除</button>
 								</form>
 							</td>
 						</tr>

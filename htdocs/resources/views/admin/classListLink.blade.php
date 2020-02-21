@@ -35,41 +35,47 @@
 						<th>學生姓名</th>
 						<th>座號</th>
 						<th>關係</th>
-						<th>管理</th>
+						<th>未通過的原因</th>
+						<th>審核</th>
 					</tr>
 				</thead>
 				<tbody>
 					@foreach ($links as $l)
 					<tr>
 						<td style="vertical-align: inherit;">
-							<span>{{ $kids[$l->id]['idno'] }}</span>
+							<span>{{ $records[$l->id]['parent'] }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<span>{{ $kids[$l->id]['stdno'] }}</span>
+							<span>{{ $l->parent_idno }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<span>{{ $kids[$l->id]['name'] }}</span>
+							<span>{{ $records[$l->id]['email'] }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<span>{{ $kids[$l->id]['school'] }}</span>
+							<span>{{ $records[$l->id]['mobile'] }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<span>{{ $kids[$l->id]['class'] }}</span>
+							<span>{{ $records[$l->id]['student'] }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<span>{{ $kids[$l->id]['seat'] }}</span>
+							<span>{{ $records[$l->id]['seat'] }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
 							<span>{{ $l->relation }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<span>{{ ($l->verified) ? '作用中' : '無作用' }}</span>
+							<span>{{ $l->denyReason }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<form action="{{ route('parent.removeLink', [ 'id' => $l->id ]) }}" method="POST">
-								@csrf
-								<input type="submit" class="btn btn-danger" value="刪除">
-							</form>
+							@if ($l->verified)
+							<button type="button" class="btn btn-danger"
+							 	onclick="$('#form').attr('action','{{ route('tutor.denyLink', [ 'id' => $l->id ]) }}');
+										 $('#form').submit();">拒絕</button>
+							@else
+							<button type="button" class="btn btn-success"
+							 	onclick="$('#form').attr('action','{{ route('tutor.verifyLink', [ 'id' => $l->id ]) }}');
+										 $('#form').submit();">同意</button>
+							@endif
 						</td>
 					</tr>
 					@endforeach
@@ -77,6 +83,9 @@
 			</table>
 		</div>
 		</div>
+		<form id="form" action="" method="POST" style="display: none;">
+		@csrf
+		</form>
 	</div>
 	</div>
 </div>

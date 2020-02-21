@@ -83,8 +83,7 @@ Route::group(['middleware' => 'auth'], function () {
 Route::group(['prefix' => 'parent', 'middleware' => 'auth.parent'], function () {
 	Route::get('/', 'ParentController@index')->name('parent');
 	Route::get('link', 'ParentController@listLink')->name('parent.listLink');
-	Route::get('link/new', 'ParentController@showLinkForm');
-	Route::post('link/new', 'ParentController@showLinkForm')->name('parent.showLinkForm');
+	Route::get('link/new', 'ParentController@showLinkForm')->name('parent.showLinkForm');
 	Route::post('link/apply', 'ParentController@applyLink')->name('parent.applyLink');
 	Route::post('link/remove/{id}', 'ParentController@removeLink')->name('parent.removeLink');
 	Route::get('authproxy', 'ParentController@showAuthProxyForm')->name('parent.showAuthProxyForm');
@@ -100,6 +99,9 @@ Route::group(['prefix' => 'tutor', 'middleware' => 'auth.tutor'], function () {
 	Route::post('{dc}/people/{uuid}/toggle', 'SchoolController@toggle')->name('tutor.toggle');
 	Route::post('{dc}/people/{uuid}/undo', 'SchoolController@undo')->name('tutor.undo');
 	Route::post('{dc}/people/{uuid}/resetpass', 'SchoolController@resetpass')->name('tutor.resetpass');
+	Route::get('{dc}/{ou}/link', 'TutorController@classLinkForm')->name('tutor.link');
+	Route::post('link/deny/{id}', 'TutorController@denyLink')->name('tutor.denyLink');
+	Route::post('link/verify/{id}', 'TutorController@verifyLink')->name('tutor.verifyLink');
 //	Route::get('personal/listparents', 'HomeController@listparents');
 //	Route::get('personal/listmyparents/{uuid}', 'HomeController@listmyparents');
 //	Route::post('personal/linkedChange', 'HomeController@linkedChange');
