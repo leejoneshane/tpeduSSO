@@ -48,7 +48,7 @@
 							<label>{{ $class->ou }}</label>
 						</td>
 						<td>
-							<input id="description" type="text" style="width:100px" class="form-control" name="description" value="{{ $class->description ? $class->description : old('description') }}">
+							<input id="{{ $class->ou }}description" type="text" style="width:100px" class="form-control" name="{{ $class->ou }}description" value="{{ $class->description ? $class->description : old('description') }}">
 						</td>
 						<td>
 							<select class="form-control" style="width:auto;display:inline" id="{{ $class->ou }}ou" name="{{ $class->ou }}ou" onchange="refresh_teachers('{{ $class->ou }}ou','{{ $class->ou }}teacher');">
@@ -112,7 +112,7 @@
 				@else
 			    <div class="form-group{{ $errors->has('new-desc') ? ' has-error' : '' }}">
 					<label>導師</label>
-					<select class="form-control" id="new-ou" name="new-ou" onchange="refresh_teachers('new-ou','new-teacher');">
+					<select class="form-control" id="ou" name="ou" onchange="refresh_teachers('ou','new-teacher');">
 						@foreach ($ous as $ou)
 							<option value="{{ $ou->ou }}"{{ $my_ou == $ou->ou ? ' selected' : '' }}>{{ $ou->description }}</option>
 						@endforeach

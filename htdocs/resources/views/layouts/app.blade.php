@@ -49,7 +49,7 @@
                                     <li><a class="dropdown-item" href="{{ route('school', [ 'dc' => $o ]) }}"><i class="fa fa-university fa-fw"></i>學校管理：{{ $o }}</a></li>
                                 @endforeach
                             @endif
-                            @if (isset(Auth::user()->ldap['tpTutorClass'])
+                            @if (isset(Auth::user()->ldap['tpTutorClass']))
                                 <?php $tutor = Auth::user()->ldap['tpTutorClass']; ?>
                                 <li><a class="dropdown-item" href="{{ route('tutor', [ 'dc' => $o, 'class' => $tutor ]) }}"><i class="fa fa-university fa-fw"></i>班級管理：{{ $tutor }}</a></li>
                             @endif

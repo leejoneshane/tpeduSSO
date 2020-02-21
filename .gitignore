@@ -12,7 +12,7 @@
 /htdocs/Homestead.yaml
 /htdocs/npm-debug.log
 /htdocs/yarn-error.log
+/htdocs/*.pid
 .DS_Store
 Icon
 */Icon
-*.pid

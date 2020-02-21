@@ -13,7 +13,7 @@ class OauthController extends Controller
     }
     public function index()
     {
-        return view('oauthManager');
+        return view('auth.oauthManager');
     }
 
     public function socialite(Request $request)
@@ -23,7 +23,7 @@ class OauthController extends Controller
         $google = $query->where('socialite', 'Google')->first();
         $facebook = $query->where('socialite', 'Facebook')->first();
         $yahoo = $query->where('socialite', 'Yahoo')->first();
-        return view('socialiteManager', [ 'google' => $google, 'facebook' => $facebook, 'yahoo' => $yahoo ]);
+        return view('auth.socialiteManager', [ 'google' => $google, 'facebook' => $facebook, 'yahoo' => $yahoo ]);
     }
 
     public function removeSocialite(Request $request)

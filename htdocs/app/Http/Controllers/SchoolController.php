@@ -1858,7 +1858,7 @@ class SchoolController extends Controller
 			'description' => 'required|string',
 		]);
 		$info = array();
-		$info['description'] = $request->get('description');
+		$info['description'] = $request->get($class.'description');
 
 		$openldap = new LdapServiceProvider();
 		$idno = $request->get($class.'teacher');

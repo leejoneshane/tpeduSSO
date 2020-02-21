@@ -1,7 +1,7 @@
 @extends('layouts.tutorboard')
 
 @section('page_heading')
-學生管理
+學生帳號管理
 @endsection
 
 @section('section')

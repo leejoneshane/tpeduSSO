@@ -43,7 +43,7 @@ class TutorController extends Controller
 		$openldap = new LdapServiceProvider();
 		$entry = $openldap->getUserEntry($uuid);
 		$user = $openldap->getUserData($entry);
-		return view('admin.classstudentedit', [ 'dc' => $dc, 'ou' => $ou, 'student' => $user ]);
+		return view('admin.classstudentedit', [ 'dc' => $dc, 'ou' => $ou, 'user' => $user ]);
 	}
 	
     public function updateStudent(Request $request, $dc, $ou, $uuid)
