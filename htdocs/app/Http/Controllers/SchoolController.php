@@ -658,7 +658,7 @@ class SchoolController extends Controller
 				$result = $openldap->renameUser($original['cn'], $idno);
 				if ($result) {
 					$user = User::where('idno', $original['cn'])->first();
-	        if ($user) $user->delete();
+	        		if ($user) $user->delete();
 					return redirect('school/'.$dc.'/student?field='.$my_field.'&keywords='.$keywords)->with("success", "已經為您更新學生基本資料！");
 				} else {
 					return redirect('school/'.$dc.'/student?field='.$my_field.'&keywords='.$keywords)->with("error", "學生身分證字號變更失敗！".$openldap->error());

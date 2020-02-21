@@ -14,6 +14,7 @@
                         </div>
                     @endif
 
+{{--
                     您已經登入系統！<br>
                     @if (!$account_ready)
                     注意：您使用的預設帳號在您畢業（或離職）後會自動刪除，請務必修改為自訂帳號才能長久保留使用！<br>
@@ -32,6 +33,7 @@
                         <li>雲端硬碟為 <a href="https://drive.google.com/a/ms.tp.edu.tw">https://drive.google.com/a/ms.tp.edu.tw</a></li>
                     </ul>
                     @endif
+--}}
                 </div>
             </div>
         </div>

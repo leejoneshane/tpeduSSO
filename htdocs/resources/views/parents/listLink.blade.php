@@ -19,7 +19,7 @@
 		    		</div>
 				@endif
 				<div class="col-md-10 col-md-offset-9">
-					<a class="btn btn-primary" id='buttonAdd' name='buttonAdd' href='{{ route('parent.showLinkForm') }}'>新增親子連結</a>
+					<a class="btn btn-primary" id='buttonAdd' name='buttonAdd' href='{{ route('parent.showLinkForm') }}'>新增子女</a>
 				</div>		
 				<table class="table table-hover">
 					<thead>
@@ -62,16 +62,13 @@
 								<span>{{ ($l->verified) ? '作用中' : '無作用' }}</span>
 							</td>
 							<td style="vertical-align: inherit;">
-								<button type="button" class="btn btn-danger"
-									 onclick="$('#form').attr('action','{{ route('parent.removeLink', [ 'id' => $l->id ]) }}');
-											 $('#form').attr('method', 'POST');
-											 $('#form').submit();">刪除</button>
+								<form action="{{ route('parent.removeLink', [ 'id' => $l->id ]) }}" method="POST">
+									@csrf
+									<input type="submit" class="btn btn-danger" value="刪除">
+								</form>
 							</td>
 						</tr>
 						@endforeach
-						<form id="form" action="" method="" style="display: none;">
-						@csrf
-						</form>
 					</tbody>
 				</table>
 				</div>

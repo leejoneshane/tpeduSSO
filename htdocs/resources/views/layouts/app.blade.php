@@ -44,17 +44,20 @@
                                 <li><a class="dropdown-item" href="{{ route('sync') }}"><i class="fa fa-gears fa-fw"></i>資料維護</a></li>
                         	    <li><a class="dropdown-item" href="{{ route('bureau') }}"><i class="fa fa-eye fa-fw"></i>局端管理</a></li>
                     	    @endif
-                            @if (Auth::user()->ldap['adminSchools'])
+                            @if (isset(Auth::user()->ldap['adminSchools']))
                                 @foreach (Auth::user()->ldap['adminSchools'] as $o)
                                     <li><a class="dropdown-item" href="{{ route('school', [ 'dc' => $o ]) }}"><i class="fa fa-university fa-fw"></i>學校管理：{{ $o }}</a></li>
                                 @endforeach
                             @endif
-                            @if (Auth::user()->is_parent)
-                                <li><a class="dropdown-item" href="{{ route('parent.showAuthProxyForm') }}"><i class="fa fa-key fa-fw"></i>代理授權</a></li>
-                                <li><a class="dropdown-item" href="{{ route('parent.listLink') }}"><i class="fa fa-child fa-fw"></i>親子連結</a></li>
-                            @else
+                            @if (isset(Auth::user()->ldap['tpTutorClass'])
+                                <?php $tutor = Auth::user()->ldap['tpTutorClass']; ?>
+                                <li><a class="dropdown-item" href="{{ route('tutor', [ 'dc' => $o, 'class' => $tutor ]) }}"><i class="fa fa-university fa-fw"></i>班級管理：{{ $tutor }}</a></li>
+                            @endif
+                            @if (!(Auth::user()->is_parent))
                                 <li><a class="dropdown-item" href="{{ route('oauth') }}"><i class="fa fa-key fa-fw"></i>金鑰管理</a></li>
+                            @else
                                 @if (Auth::user()->ldap['employeeType'] != '學生')
+                                    <li><a class="dropdown-item" href="{{ route('parent.showAuthProxyForm') }}"><i class="fa fa-key fa-fw"></i>代理授權</a></li>
                                     <li><a class="dropdown-item" href="{{ route('parent.listLink') }}"><i class="fa fa-child fa-fw"></i>親子連結</a></li>
                                 @endif
                             @endif

@@ -78,10 +78,28 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('gsuite/sync', 'HomeController@syncToGsuite')->name('createGsuite');
 	Route::get('socialite', 'OauthController@socialite')->name('socialite');
 	Route::post('socialite/remove', 'OauthController@removeSocialite')->name('socialite.remove');
+});
 
-	//導師班級管理
-//	Route::get('personal/tutor_student', 'HomeController@tutorStudent')->name('personal.tutor_student');
-//	Route::post('personal/{uuid}/resetpw_student', 'HomeController@resetpwStudent')->name('personal.resetpwStudent');
+Route::group(['prefix' => 'parent', 'middleware' => 'auth.parent'], function () {
+	Route::get('/', 'ParentController@index')->name('parent');
+	Route::get('link', 'ParentController@listLink')->name('parent.listLink');
+	Route::get('link/new', 'ParentController@showLinkForm');
+	Route::post('link/new', 'ParentController@showLinkForm')->name('parent.showLinkForm');
+	Route::post('link/apply', 'ParentController@applyLink')->name('parent.applyLink');
+	Route::post('link/remove/{id}', 'ParentController@removeLink')->name('parent.removeLink');
+	Route::get('authproxy', 'ParentController@showAuthProxyForm')->name('parent.showAuthProxyForm');
+	Route::post('authproxy', 'ParentController@applyAuthProxy')->name('parent.applyAuthProxy');
+});
+
+Route::group(['prefix' => 'tutor', 'middleware' => 'auth.tutor'], function () {
+	Route::get('/', 'TutorController@index')->name('tutor');
+	Route::get('{dc}/{ou}/student', 'TutorController@classStudentForm')->name('tutor.student');
+	Route::get('{dc}/{ou}/student/{uuid}/update', 'TutorController@studentEditForm');
+	Route::post('{dc}/{ou}/student/{uuid}/update', 'TutorController@updateStudent')->name('tutor.updateStudent');
+	Route::post('{dc}/people/{uuid}/remove', 'SchoolController@remove')->name('tutor.remove');
+	Route::post('{dc}/people/{uuid}/toggle', 'SchoolController@toggle')->name('tutor.toggle');
+	Route::post('{dc}/people/{uuid}/undo', 'SchoolController@undo')->name('tutor.undo');
+	Route::post('{dc}/people/{uuid}/resetpass', 'SchoolController@resetpass')->name('tutor.resetpass');
 //	Route::get('personal/listparents', 'HomeController@listparents');
 //	Route::get('personal/listmyparents/{uuid}', 'HomeController@listmyparents');
 //	Route::post('personal/linkedChange', 'HomeController@linkedChange');
@@ -96,17 +114,6 @@ Route::group(['middleware' => 'auth'], function () {
 	//導師審核家長親子連結申請
 //	Route::get('personal/parentslink_verify', 'HomeController@parentslinkVerifyForm')->name('personal.parentslink_verify');
 //	Route::post('personal/parentslink_verify', 'HomeController@parentslinkVerify');
-});
-
-Route::group(['prefix' => 'parent', 'middleware' => 'auth.parent'], function () {
-	Route::get('/', 'ParentController@index')->name('parent');
-	Route::get('link', 'ParentController@listLink')->name('parent.listLink');
-	Route::get('link/new', 'ParentController@showLinkForm');
-	Route::post('link/new', 'ParentController@showLinkForm')->name('parent.showLinkForm');
-	Route::post('link/apply', 'ParentController@applyLink')->name('parent.applyLink');
-	Route::post('link/remove/{id}', 'ParentController@removeLink')->name('parent.removeLink');
-	Route::get('authproxy', 'ParentController@showAuthProxyForm')->name('parent.showAuthProxyForm');
-	Route::post('authproxy', 'ParentController@applyAuthProxy')->name('parent.applyAuthProxy');
 });
 
 Route::group(['prefix' => 'sync', 'middleware' => 'auth.admin'], function () {

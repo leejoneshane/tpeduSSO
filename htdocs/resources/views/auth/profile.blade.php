@@ -71,7 +71,7 @@
 					</div>
 					@if (!$user->is_parent)
             	    <div class="form-group row">
-            		<div class="col-md-6 offset-md-4">
+            		<div class="col-md-8 text-md-right">
             		    <div class="checkbox">
             			<label>
             			    <input type="checkbox" name="login-by-email" value="yes"{{ $user->ldap['email_login'] ? ' checked' : '' }}>允許使用電子郵件代替自訂帳號進行登入
@@ -93,7 +93,7 @@
 					</div>
 					@if (!$user->is_parent)
             	    <div class="form-group row">
-            		<div class="col-md-6 offset-md-4">
+            		<div class="col-md-8 text-md-right">
             		    <div class="checkbox">
             			<label>
             			    <input type="checkbox" name="login-by-mobile" value="yes"{{ $user->ldap['mobile_login'] ? ' checked' : '' }}>允許使用手機號碼代替自訂帳號進行登入
@@ -147,7 +147,7 @@
                     	</div>
                     @endif
                     <div class="form-group row mb-0">
-                	<div class="col-md-8 offset-md-4">
+                	<div class="col-md-8 text-md-center">
                 	    <button type="submit" class="btn btn-primary">確定</button>
                 	</div>
             	    </div>

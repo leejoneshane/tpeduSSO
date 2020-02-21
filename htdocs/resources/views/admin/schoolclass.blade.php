@@ -59,7 +59,7 @@
 								<option></option>
 							@if ($teachers)
 							@foreach ($teachers as $teacher)
-								<option value="{{ $teacher['cn'] }}"{{ isset($class->teacher) && $teacher['cn'] == $class->teacher ? ' selected' : '' }}>{{ $teacher['displayName'] }}</option>
+								<option value="{{ $teacher['cn'] }}"{{ isset($class->tutor) && $teacher['cn'] == $class->tutor ? ' selected' : '' }}>{{ $teacher['displayName'] }}</option>
 							@endforeach
 							@endif
 							</select>

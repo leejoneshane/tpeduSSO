@@ -5,14 +5,12 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
-class AuthenticateParent
+class AuthenticateTutor
 {
     public function handle($request, Closure $next, $guard = null)
     {
         $user = $request->user();
-        $role = '';
-        if (isset($user->ldap['employeeType'])) $role = $user->ldap['employeeType'];
-        if (Auth::guard($guard)->guest() || $role == '學生') {
+        if (Auth::guard($guard)->guest() || !isset($user->ldap['tpTutorClass'])) {
             if ($request->ajax() || $request->wantsJson()) {
                 return response('Unauthorized.', 401);
             } else {

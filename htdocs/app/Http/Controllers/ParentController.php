@@ -12,7 +12,7 @@ use App\OauthThirdappStudent;
 use Illuminate\Http\Request;
 use App\Providers\SimsServiceProvider;
 use App\Providers\LdapServiceProvider;
-use App\Providers\GoogleServiceProvider;
+use App\Rules\idno;
 
 class ParentController extends Controller
 {
@@ -50,42 +50,37 @@ class ParentController extends Controller
 
 	public function showLinkForm(Request $request)
     {
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
-		$area = $request->get('area');
-		if (empty($area)) $area = $areas[0];
-		$filter = "st=$area";
-		$openldap = new LdapServiceProvider();
-		$schools = $openldap->getOrgs($filter);
-		$dc = $request->get('dc');
-		if (empty($dc) && $schools) $dc = $schools[0]->o;
-		return view('parents.linkEdit', [ 'areas' => $areas, 'area' => $area, 'schools' => $schools, 'dc' => $dc ]);
+		$relations = [ '父子', '母子', '監護人' ];
+		return view('parents.linkEdit', [ 'relations' => $relations ]);
 	}
 	
 	public function applyLink(Request $request)
     {
 		$validatedData = $request->validate([
-			'dc' => 'required|string',
-			'stdno' => 'required|string',
+            'idno' => ['required', 'string', 'size:10', new idno],
 			'relation' => 'required|string',
 		]);
-		$sims = new SimsServiceProvider();
+		$alle = new SimsServiceProvider();
 		$openldap = new LdapServiceProvider();
 		$user = Auth::user();
-		$dc = $request->get('dc');
-		$stdno = $request->get('stdno');
+		$idno = strtoupper($request->get('idno'));
 		$relation = $request->get('relation');
-		$students = $openldap->findUsers("(&(o=$dc)(employeeType=學生)(employeeNumber=$stdno))", 'cn');
-		$idno = $students[0]['cn'];
+		$student = $openldap->getUserEntry($idno);
+		$data = $openldap->getUserData($student);
+		$dc = $data['o'];
+		$role = $data['employeeType'];
+		$stdno = $data['employeeNumber'];
+		if ($role != '學生') return back()->with("error","該身份證字號不屬於貴子弟所有！");
 		$info = array();
 		$info['parent_idno'] = $user->idno;
 		$info['student_idno'] = $idno;
 		$info['relation'] = $relation;
 		$org = $openldap->getOrgEntry($dc);
-		$data = $openldap->getOrgData($org);
-		$sims = $data['tpSims'];
-		if ($sims == 'alle') {
-			$uno = $data['tpUniformNumbers'];
-			$parents = $sims->ps_call('student_parents_info', [ 'sid' => $uno, 'stdno' => $stdno ]);
+		$odata = $openldap->getOrgData($org);
+		if (!empty($odata['tpSims'])) $sims = $odata['tpSims'];
+		if (isset($sims) && $sims == 'alle') {
+			$uno = $odata['tpUniformNumbers'];
+			$parents = $alle->ps_call('student_parents_info', [ 'sid' => $uno, 'stdno' => $stdno ]);
 			$match = false;
 			foreach ($parents as $p) {
 				if ($p->name == $user->name && $p->telephone == $user->mobile && $p->relation == $relation) {
