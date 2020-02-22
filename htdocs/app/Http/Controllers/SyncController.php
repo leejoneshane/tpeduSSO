@@ -40,7 +40,7 @@ class SyncController extends Controller
     
 	public function hs_testForm(Request $request)
 	{
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$areas = Config::get('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=bridge))";
@@ -87,7 +87,7 @@ class SyncController extends Controller
 	
 	public function js_testForm(Request $request)
 	{
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$areas = Config::get('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=oneplus))";
@@ -131,7 +131,7 @@ class SyncController extends Controller
 	
 	public function ps_testForm(Request $request)
 	{
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$areas = Config::get('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=alle))";
@@ -333,7 +333,7 @@ class SyncController extends Controller
 
 	public function hs_syncOuForm(Request $request)
 	{
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$areas = Config::get('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=bridge))";
@@ -437,7 +437,7 @@ class SyncController extends Controller
 
 	public function js_syncOuForm(Request $request)
 	{
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$areas = Config::get('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=oneplus))";
@@ -558,7 +558,7 @@ class SyncController extends Controller
 	
 	public function hs_syncClassForm(Request $request)
 	{
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$areas = Config::get('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=bridge))";
@@ -629,7 +629,7 @@ class SyncController extends Controller
 
 	public function js_syncClassForm(Request $request)
 	{
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$areas = Config::get('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=oneplus))";
@@ -700,7 +700,7 @@ class SyncController extends Controller
 
 	public function ps_syncClassForm(Request $request)
 	{
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$areas = Config::get('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=alle))";
@@ -786,7 +786,7 @@ class SyncController extends Controller
 	
     public function hs_syncSubjectForm(Request $request)
     {
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$areas = Config::get('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=bridge))";
@@ -851,7 +851,7 @@ class SyncController extends Controller
 	
     public function js_syncSubjectForm(Request $request)
     {
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$areas = Config::get('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=oneplus))";
@@ -916,7 +916,7 @@ class SyncController extends Controller
 
     public function ps_syncSubjectForm(Request $request)
     {
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$areas = Config::get('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=alle))";
@@ -1003,7 +1003,7 @@ class SyncController extends Controller
 	
     public function hs_syncTeacherForm(Request $request)
     {
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$areas = Config::get('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=bridge))";
@@ -1316,7 +1316,7 @@ class SyncController extends Controller
 
     public function js_syncTeacherForm(Request $request)
     {
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$areas = Config::get('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=oneplus))";
@@ -1629,7 +1629,7 @@ class SyncController extends Controller
 
     public function ps_syncTeacherForm(Request $request)
     {
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$areas = Config::get('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=alle))";
@@ -2094,7 +2094,7 @@ class SyncController extends Controller
 	
     public function hs_syncStudentForm(Request $request)
     {
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$areas = Config::get('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$openldap = new LdapServiceProvider();
@@ -2331,7 +2331,7 @@ class SyncController extends Controller
 
     public function js_syncStudentForm(Request $request)
     {
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$areas = Config::get('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$openldap = new LdapServiceProvider();
@@ -2568,7 +2568,7 @@ class SyncController extends Controller
 
     public function ps_syncStudentForm(Request $request)
     {
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$areas = Config::get('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$openldap = new LdapServiceProvider();

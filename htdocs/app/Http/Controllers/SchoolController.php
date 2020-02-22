@@ -1063,7 +1063,7 @@ class SchoolController extends Controller
 	
     public function schoolTeacherEditForm(Request $request, $dc, $uuid = null)
     {
-		$types = [ '教師', '校長', '職工' ];
+		$types = Config::get('app.employeeTypes');
 		$my_field = $request->session()->get('field');
 		$keywords = $request->session()->get('keywords');
 		$openldap = new LdapServiceProvider();
@@ -2070,8 +2070,8 @@ class SchoolController extends Controller
 
     public function schoolProfileForm(Request $request, $dc)
     {
-		$categorys = [ '幼兒園', '國民小學', '國民中學', '高中', '高職', '大專院校', '特殊教育', '主管機關' ];
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$categorys = Config::get('app.schoolCategory');
+		$areas = Config::get('app.areas');
 		$openldap = new LdapServiceProvider();
 		$school = $openldap->getOrgEntry($dc);
 		$data = $openldap->getOrgData($school);

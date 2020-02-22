@@ -36,7 +36,7 @@ class BureauController extends Controller
     public function bureauPeopleSearchForm(Request $request)
     {
 		$my_field = $request->get('field');
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$areas = Config::get('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "st=$area";
@@ -93,8 +93,8 @@ class BureauController extends Controller
 		$dc = $request->session()->get('dc');
 		$my_field = $request->session()->get('field');
 		$keywords = $request->session()->get('keywords');
-		$types = [ '教師', '學生', '校長', '職工', '主官管' ];
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$types = Config::get('app.employeeTypes');
+		$areas = Config::get('app.areas');
 		if (empty($area)) $area = $areas[0];
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getOrgs();
@@ -1032,7 +1032,7 @@ class BureauController extends Controller
 
     public function bureauOrgForm(Request $request)
     {
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$areas = Config::get('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "st=$area";
@@ -1043,9 +1043,9 @@ class BureauController extends Controller
 
     public function bureauOrgEditForm(Request $request, $dc = '')
     {
-		$sims = [ 'alle' => '全誼', 'oneplus' => '巨耀', 'bridge' => '虹橋' ];
-		$category = [ '幼兒園', '國民小學', '國民中學', '高中', '高職', '大專院校', '特殊教育', '主管機關' ];
-		$areas = [ '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區' ];
+		$sims = Config::get('app.sims');
+		$category = Config::get('app.schoolCategory');
+		$areas = Config::get('app.areas');
 		$openldap = new LdapServiceProvider();
 		if (!empty($dc)) {
 			$entry = $openldap->getOrgEntry($dc);
@@ -1247,14 +1247,14 @@ class BureauController extends Controller
 		    		continue;
 				}
 				$validator = Validator::make(
-    				[ 'category' => $org->category ], [ 'category' => 'required|in:幼兒園,國民小學,國民中學,高中,高職,大專院校,特殊教育,主管機關' ]
+    				[ 'category' => $org->category ], [ 'category' => 'required|in:'.implode(',', Config::get('app.schoolCategory')) ]
     			);
     			if ($validator->fails()) {
 					$messages[] = "第 $i 筆記錄，".$org->name."機構類別資訊不正確，跳過不處理！";
 	    			continue;
 				}
 				$validator = Validator::make(
-    				[ 'area' => $org->area ], [ 'area' => 'required|in:中正區,大同區,中山區,松山區,大安區,萬華區,信義區,士林區,北投區,內湖區,南港區,文山區' ]
+    				[ 'area' => $org->area ], [ 'area' => 'required|in:'.implode(',', Config::get('app.areas')) ]
     			);
     			if ($validator->fails()) {
 					$messages[] = "第 $i 筆記錄，".$org->name."行政區資訊不正確，跳過不處理！";

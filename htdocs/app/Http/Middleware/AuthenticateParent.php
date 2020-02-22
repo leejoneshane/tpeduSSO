@@ -9,7 +9,7 @@ class AuthenticateParent
 {
     public function handle($request, Closure $next, $guard = null)
     {
-        $user = $request->user();
+        $user = Auth::user();
         $role = '';
         if (isset($user->ldap['employeeType'])) $role = $user->ldap['employeeType'];
         if (Auth::guard($guard)->guest() || $role == '學生') {

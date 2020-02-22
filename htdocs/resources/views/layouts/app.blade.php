@@ -51,13 +51,13 @@
                             @endif
                             @if (isset(Auth::user()->ldap['tpTutorClass']))
                                 <?php $tutor = Auth::user()->ldap['tpTutorClass']; ?>
-                                <li><a class="dropdown-item" href="{{ route('tutor', [ 'dc' => $o, 'class' => $tutor ]) }}"><i class="fa fa-university fa-fw"></i>班級管理：{{ $tutor }}</a></li>
+                                <li><a class="dropdown-item" href="{{ route('tutor', [ 'dc' => $o, 'class' => $tutor ]) }}"><i class="fa fa-library fa-fw"></i>班級管理：{{ $tutor }}</a></li>
                             @endif
                             @if (!(Auth::user()->is_parent))
                                 <li><a class="dropdown-item" href="{{ route('oauth') }}"><i class="fa fa-key fa-fw"></i>金鑰管理</a></li>
                             @endif
                             @if (Auth::user()->ldap['employeeType'] != '學生')
-                                <li><a class="dropdown-item" href="{{ route('parent.showAuthProxyForm') }}"><i class="fa fa-key fa-fw"></i>代理授權</a></li>
+                                <li><a class="dropdown-item" href="{{ route('parent.showAuthProxyForm') }}"><i class="fa fa-unlock fa-fw"></i>代理授權</a></li>
                                 <li><a class="dropdown-item" href="{{ route('parent.listLink') }}"><i class="fa fa-child fa-fw"></i>親子連結</a></li>
                             @endif
                             <li><a class="dropdown-item" href="{{ route('profile') }}"><i class="fa fa-edit fa-fw"></i>修改個資</a></li>

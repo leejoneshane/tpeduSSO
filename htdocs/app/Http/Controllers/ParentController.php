@@ -19,8 +19,10 @@ class ParentController extends Controller
 
 	public function index()
 	{
-		$idno = Auth::user()->idno;
-		$kids = PSLink::where('parent_idno', $idno)->where('verified', 1)->orderBy('created_at','desc')->first();
+		$user = Auth::user();
+		if (!($user->is_parent)) return redirect()->route('home');
+		$idno = $user->idno;
+		$kids = PSLink::where('parent_idno', $idno)->where('verified', 1)->orderBy('created_at','desc')->get();
 		return view('parents.home', [ 'kids' => $kids ]);
 	}
 

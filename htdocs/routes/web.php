@@ -44,7 +44,7 @@ Route::get('email/resend', 'Auth\VerificationController@resend')->name('verifica
 Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken')->name('passport.token');
 Route::group(['prefix' => 'oauth', 'middleware' => 'auth'], function () {
 	//RouteRegistrar::forAuthorization()
-	Route::get('authorize', '\Laravel\Passport\Http\Controllers\AuthorizationController@authorize')->name('passport.authorizations.authorize');
+	Route::get('authorize', '\Laravel\Passport\Http\Controllers\AuthorizationController@authorize')->middleware('age')->name('passport.authorizations.authorize');
 	Route::post('authorize', '\Laravel\Passport\Http\Controllers\ApproveAuthorizationController@approve')->name('passport.authorizations.approve');
 	Route::delete('authorize', '\Laravel\Passport\Http\Controllers\DenyAuthorizationController@deny')->name('passport.authorizations.deny');
 	//RouteRegistrar::forAccessTokens()
@@ -83,7 +83,7 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 Route::group(['prefix' => 'parent', 'middleware' => 'auth.parent'], function () {
-	Route::get('/', 'ParentController@index')->name('parent');
+	Route::get('/', 'ParentController@index')->middleware('verified')->name('parent');
 	Route::get('link', 'ParentController@listLink')->name('parent.listLink');
 	Route::get('link/new', 'ParentController@showLinkForm')->name('parent.showLinkForm');
 	Route::post('link/apply', 'ParentController@applyLink')->name('parent.applyLink');

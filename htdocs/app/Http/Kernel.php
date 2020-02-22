@@ -52,6 +52,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+        'age' => \App\Http\Middleware\AboveAge12::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.admin' => \App\Http\Middleware\AuthenticateAdmin::class,
         'auth.parent' => \App\Http\Middleware\AuthenticateParent::class,
