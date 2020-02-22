@@ -46,8 +46,4 @@ class PSAuthorize extends Model
     	return PSAuthorize::whereIn('student_idno', $users)->where('trust_level', '>', 0)->get();
 	}
 
-    public static function byParent($idno)
-	{
-    	return PSAuthorize::whereIn('parent_idno', $idno)->get();
-	}
 }

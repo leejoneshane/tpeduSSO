@@ -87,9 +87,12 @@ Route::group(['prefix' => 'parent', 'middleware' => 'auth.parent'], function () 
 	Route::get('link', 'ParentController@listLink')->name('parent.listLink');
 	Route::get('link/new', 'ParentController@showLinkForm')->name('parent.showLinkForm');
 	Route::post('link/apply', 'ParentController@applyLink')->name('parent.applyLink');
-	Route::post('link/remove/{id}', 'ParentController@removeLink')->name('parent.removeLink');
-	Route::get('authproxy', 'ParentController@showAuthProxyForm')->name('parent.showAuthProxyForm');
-	Route::post('authproxy', 'ParentController@applyAuthProxy')->name('parent.applyAuthProxy');
+	Route::post('link/{id}/remove', 'ParentController@removeLink')->name('parent.removeLink');
+	Route::get('authorize', 'ParentController@listAuthProxy')->name('parent.listAuthProxy');
+	Route::get('authorize/new', 'ParentController@showAuthProxyForm')->name('parent.showAuthProxyForm');
+	Route::post('authorize/apply', 'ParentController@applyAuthProxy')->name('parent.applyAuthProxy');
+	Route::post('authorize/{id}/update', 'ParentController@editAuthProxyForm')->name('parent.updateAuthProxy');
+	Route::post('authorize/{id}/remove', 'ParentController@removeAuthProxy')->name('parent.removeAuthProxy');
 });
 
 Route::group(['prefix' => 'tutor', 'middleware' => 'auth.tutor'], function () {

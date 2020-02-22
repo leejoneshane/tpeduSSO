@@ -7,8 +7,8 @@ use Log;
 use Carbon\Carbon;
 use App\User;
 use App\PSLink;
-use App\OauthScopeField;
-use App\OauthThirdappStudent;
+use App\PSAuthorize;
+use Laravel\Passport\Passport;
 use Illuminate\Http\Request;
 use App\Providers\SimsServiceProvider;
 use App\Providers\LdapServiceProvider;
@@ -34,7 +34,6 @@ class ParentController extends Controller
 		$kids = array();
 		foreach ($links as $l) {
 			$link_id = $l->id;
-			$user = $l->student();
 			$k = array();
 			$student_idno = $l->student_idno;
 			$entry = $openldap->getUserEntry($student_idno);
@@ -114,93 +113,71 @@ class ParentController extends Controller
 		return back()->with("success","已經為您移除親子連結！");
 	}
 
+	public function listAuthProxy(Request $request)
+	{
+		$openldap = new LdapServiceProvider();
+		$idno = Auth::user()->idno;
+		$links = PSLink::where('parent_idno', $idno)->orderBy('created_at','desc')->get();
+		$idnos = array();
+		$kids = array();
+		foreach ($links as $l) {
+			$student_idno = $l->student_idno;
+			$idnos[] = $student_idno;
+			$entry = $openldap->getUserEntry($student_idno);
+			$data = $openldap->getUserData($entry);
+			$age = Carbon::today()->subYears(13);
+			$str = $data['birthDate'];
+			$born = Carbon::createFromDate(substr($str,0,4), substr($str,4,2), substr($str,6,2), 'Asia/Taipei');
+			if ($born > $age) {
+				$kids[$student_idno] = $data['displayName'];
+			}
+		}
+		$myidno = $request->get('myidno');
+		if (!$myidno) $myidno = $idnos[0];
+		$authorizes = PSAuthorize::where('student_idno', $myidno)->get();
+		return view('parents.listAuthProxy', [ 'myidno' => $myidno, 'authorizes' => $authorizes, 'kids' => $kids, 'trust_level' => Config::get('app.trust_level') ]);
+	}
+
 	public function showAuthProxyForm(Request $request)
     {
 		$openldap = new LdapServiceProvider();
-		//取家長的學生
-		$yearsAgo12=date("Ymd",strtotime("-12 year"));
-		$data = StudentParentRelation::where('parent_idno',$userNow->idno)->where('status','1')->orderBy('created_at','desc')->get();
-		
-		$dataList = [];
-		$studentData = [];
-		$agreeAll=[];
-		$agreeList=[];	
-		$student_id=0;	
-		if($request->session()->has('student')) $student_id=$request->session()->pull('student');
-		if(!empty($request->get('student'))) $student_id=$request->get('student');
-		if(!empty($data)) {
-			foreach ($data as $d) {
-				$cc=[];
-				$entry = $openldap->getUserEntry($d['student_idno']);
-				if ($entry) {
-					//判斷是否為12歲以下
-					$studentRow = $openldap->getUserData($entry);
-					$cc['student_name']=$studentRow['displayName'];
-					//改抓LDAP學生生日進行判斷是否有大於12歲 
-					if(substr($studentRow['birthDate'],0,8)>=$yearsAgo12) {						
-						$cc['wantAgree']='1';
-					} else {
-						$cc['wantAgree']='0';
-						$cc['student_name']=$cc['student_name'].'(不用授權)';
-					}
-					$cc['student_idno']=$studentRow['cn'];
-					$cc['id']=$d['id'];
-				}
-				
-				if($student_id==$d['id']) {
-					 $studentData=$cc;
-					 $cc['isChecked']='selected';
-				} else {
-					$cc['isChecked']='';
-				}
-				$dataList[$d['id']]=$cc;
-
-			}
-			if(empty($studentData)) {
-				foreach ($dataList as $dd) {
-					 $studentData=$dd;
-					 $student_id=$dd['id'];
-					 break;
-				}
-			}
-
-			if($studentData) {
-				//取該學生授權資料
-				$agreeAll = OauthThirdappStudent::where('parent_idno',$userNow->idno)->where('type','1')->where('student_idno',$studentData['student_idno'])->first();
-				$agreeList = OauthThirdappStudent::where('parent_idno',$userNow->idno)->where('type','0')->where('student_idno',$studentData['student_idno'])->get();
-			}	
-		}
-		//取得要12的授權第三方
-		$apps=[];
-		$thirdappList=Thirdapp::where('authyn','Y')->get();
-		if($thirdappList) {
-			foreach ($thirdappList as $t) {
-				$apps[$t->id]['id'] = $t->id;
-				$apps[$t->id]['entry'] = $t->entry;
-				$apps[$t->id]['background'] = $t->background;
-				$apps[$t->id]['agree']='0';
-				if($agreeList) {
-					foreach ($agreeList as $a) {
-						if($a['thirdapp_id']== $t->id)  $apps[$t->id]['agree']='1';
-					}
-				}
-				$sc = $t->scope;
-				$apps[$t->id]['scope_list']='';
-				if(is_string ($sc) && $sc != ''){
-					$ss = explode(" ", $sc);
-					$scopes=DB::table('oauth_scope_field')->select('field_cname')->distinct()->whereIn('scope', $ss)->get();
-					foreach ($scopes as $s) {
-						if($apps[$t->id]['scope_list']!='') $apps[$t->id]['scope_list']=$apps[$t->id]['scope_list'] . ", ";
-						$apps[$t->id]['scope_list']=$apps[$t->id]['scope_list'] . $s->field_cname;
-					}
-				} else  {
-					$apps[$t->id]['scope_list']="";
-				}				
+		$idno = Auth::user()->idno;
+		$links = PSLink::where('parent_idno', $idno)->orderBy('created_at','desc')->get();
+		$idnos = array();
+		$kids = array();
+		foreach ($links as $l) {
+			$student_idno = $l->student_idno;
+			$idnos[] = $student_idno;
+			$entry = $openldap->getUserEntry($student_idno);
+			$data = $openldap->getUserData($entry);
+			$age = Carbon::today()->subYears(13);
+			$str = $data['birthDate'];
+			$born = Carbon::createFromDate(substr($str,0,4), substr($str,4,2), substr($str,6,2), 'Asia/Taipei');
+			if ($born > $age) {
+				$kids[$student_idno] = $data['displayName'];
 			}
 		}
-		return view('parents.connectchildrenauth', ['dataList' => $dataList,'apps' => $apps, 'agreeList' => $agreeList, 'agreeAll' => $agreeAll,'student' => $studentData]);		
+		$myidno = $request->get('myidno');
+		if (!$myidno) $myidno = $idnos[0];
+		$apps = Passport::client()->all();
+		$agreeAll = PSAuthorize::where('student_idno', $myidno)->where('client_id', '*')->first();
+		return view('parents.authProxyForm', [ 'myidno' => $myidno, 'kids' => $kids, 'apps' => $apps, 'agreeAll' => $agreeAll ]);		
 	}
-	
+
+	public function updateAuthProxy(Request $request, $id)
+    {
+		$auth = PSAuthorize::find($id);
+		$auth->trust_level = $request->get('level');
+		$auth->save();
+		return back()->with('success', '已為您變更信任等級！');
+	}
+
+	public function removeAuthProxy(Request $request, $id)
+    {
+		$auth = PSAuthorize::find($id)->delete();
+		return back()->with('success', '已為您刪除代理授權設定！');
+	}
+
 	public function applyAuthProxy(Request $request)
     {
 		if($request->get('student')=='') {
