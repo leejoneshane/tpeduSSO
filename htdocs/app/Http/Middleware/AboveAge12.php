@@ -13,6 +13,7 @@ class AboveAge12
     public function handle($request, Closure $next, $guard = null)
     {
         $user = Auth::user();
+        if ($user->is_parent) return view('auth.parents');
         $age = Carbon::today()->subYears(13);
         $str = $user->ldap['birthDate'];
         $born = Carbon::createFromDate(substr($str,0,4), substr($str,4,2), substr($str,6,2), 'Asia/Taipei');
