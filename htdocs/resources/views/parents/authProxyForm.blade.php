@@ -17,25 +17,19 @@
 					{{ session('success') }}
 		    		</div>
 				@endif
-				<div class="col-sm-12">
-					<div class="input-group custom-search-form">
-						<div class="form-group">
-							<label for="student" class="col-md-4 text-md-right control-label">請選擇您13歲以下的小孩：</label>
-							<div class="row">
-								<div class="col-md-6 text-md-left">
-									<select name="student" class="form-control" style="width: auto"  onchange="location='{{ url()->current() }}?myidno=' + $(this).val();">
-									   @if ($kids)
-										   @foreach ($kids as $idno => $name)
-											   <option value="{{ $idno }}"{{ ($myidno == $idno) ? ' selected' : '' }}>{{ $name }}</option>
-										   @endforeach
-									   @endif	
-							   		</select>
-							   </div>
-							</div>
-						</div>
-					</div>
-					<form id="form" action="{{ route(parent.applyAuthProxy) }}" method="POST">
+				<div class="col-md-16">
+					<form id="form" action="{{ route('parent.applyAuthProxy') }}" method="POST">
 					@csrf
+					<div class="input-group custom-search-form">
+						<label for="student" class="control-label">請選擇您13歲以下的小孩：</label>
+						<select name="student" class="form-control pull-right" style="width: auto"  onchange="location='{{ url()->current() }}?myidno=' + $(this).val();">
+						   @if ($kids)
+							   @foreach ($kids as $idno => $name)
+								   <option value="{{ $idno }}"{{ ($myidno == $idno) ? ' selected' : '' }}>{{ $name }}</option>
+							   @endforeach
+						   @endif	
+				   		</select>
+					</div>
 					<input type="hidden" name="student" value="{{ $myidno }}">
 					<div class="row">
 						<div class="col-md-10 text-md-left control-label">
@@ -58,31 +52,29 @@
 						@foreach ($apps as $app)
 						<tr>
 							<td style="vertical-align: inherit;">
-								<input name="agree[]" type="checkbox" value="{{ $app->client_id }}">
+								<input name="agree[]" type="checkbox" value="{{ $app->id }}">
 							</td>
 							<td style="vertical-align: inherit;">
-								<input id="{{ $app->client_id }}level" type="text" value="2"
-									data-provide="slider"
-									data-slider-ticks="[0, 1, 2, 3]"
-									data-slider-ticks-labels='["僅公開資訊", "一般資訊", "敏感資訊", "完全信任"]'
-									data-slider-min="0"
-									data-slider-max="3"
-									data-slider-step="1"
-									data-slider-value="2"
-									data-slider-tooltip="hide"
-									onchange="refresh_help()"/>
+								<label>{{ $app->name }}</label>
 							</td>
 							<td style="vertical-align: inherit;">
-								<span id="help"></span>
+								<select name="{{ $app->id }}level" class="form-control" style="width: auto" onchange="refresh_help('{{ $app->id }}');">
+									<option value="0"{{ isset($authorizes[$app->id]) && $authorizes[$app->id] == 0 ? ' selected' : '' }}>公開資訊</option>
+									<option value="1"{{ isset($authorizes[$app->id]) && $authorizes[$app->id] == 1 ? ' selected' : '' }}>一般資訊</option>
+									<option value="2"{{ isset($authorizes[$app->id]) && $authorizes[$app->id] == 2 ? ' selected' : '' }}>敏感資訊</option>
+									<option value="3"{{ isset($authorizes[$app->id]) && $authorizes[$app->id] == 3 ? ' selected' : '' }}>完全信任</option>
+								</select>
+							</td>
+							<td style="vertical-align: inherit;">
+								<span id="{{ $app->id }}help">{{ isset($authorizes[$app->id]) ? $trust_level[$authorizes[$app->id]] : '' }}</span>
 							</td>
 						</tr>
 						@endforeach
-						<td style="vertical-align: inherit;">
-							<button type="submit" class="btn btn-danger">確定</button>
-						</td>
+					@endif
 					</tbody>
 					</table>
-					</form>
+					<button type="submit" class="btn btn-danger">確定</button>
+				</form>
 				</div>
 				</div>
 			</div>
@@ -98,12 +90,12 @@
 		}
 	}
 
-	function refresh_help() {
-		$a = $('#level').val();
-		if ($a == 0) $('#help').text('{{ $trust_level[0] }}');
-		if ($a == 1) $('#help').text('{{ $trust_level[1] }}');
-		if ($a == 2) $('#help').text('{{ $trust_level[2] }}');
-		if ($a == 3) $('#help').text('{{ $trust_level[3] }}');
+	function refresh_help(target) {
+		$a = $('#' + target + 'level').val();
+		if ($a == 0) $('#' + target + 'help').text('{{ $trust_level[0] }}');
+		if ($a == 1) $('#' + target + 'help').text('{{ $trust_level[1] }}');
+		if ($a == 2) $('#' + target + 'help').text('{{ $trust_level[2] }}');
+		if ($a == 3) $('#' + target + 'help').text('{{ $trust_level[3] }}');
 	}
 </script>
 @endsection

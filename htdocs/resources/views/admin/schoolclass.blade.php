@@ -42,7 +42,7 @@
 				<tbody>
 					@foreach ($classes as $class)
 					<tr>
-						<form role="form" method="POST" action="{{ route('school.updateClass', [ 'dc' => $dc, 'ou' => $class->ou ]) }}">
+						<form id="{{ $class->ou }}form" method="POST" action="{{ route('school.updateClass', [ 'dc' => $dc, 'ou' => $class->ou ]) }}">
 		    			@csrf
 						<td style="vertical-align: inherit;">
 							<label>{{ $class->ou }}</label>
@@ -51,21 +51,23 @@
 							<input id="{{ $class->ou }}description" type="text" style="width:100px" class="form-control" name="{{ $class->ou }}description" value="{{ $class->description ? $class->description : old('description') }}">
 						</td>
 						<td>
-							<select class="form-control" style="width:auto;display:inline" id="{{ $class->ou }}ou" name="{{ $class->ou }}ou" onchange="refresh_teachers('{{ $class->ou }}ou','{{ $class->ou }}teacher');">
+							<select class="form-control" style="width:auto;display:inline" id="{{ $class->ou }}ou" name="{{ $class->ou }}ou" onchange="refresh_teachers('{{ $class->ou }}ou','{{ $class->ou }}teacher','{{ $class->ou }}oldteacher');">
 							@foreach ($ous as $ou)
 								<option value="{{ $ou->ou }}"{{ $my_ou == $ou->ou ? ' selected' : '' }}>{{ $ou->description }}</option>
 							@endforeach
-							</select><select class="form-control" style="width:auto;display:inline" id="{{ $class->ou }}teacher" name="{{ $class->ou }}teacher">
+							</select>
+							<input type="hidden" id="{{ $class->ou }}oldteacher" value="{{ isset($class->teacher) ? $class->teacher : '' }}" />
+							<select class="form-control" style="width:auto;display:inline" id="{{ $class->ou }}teacher" name="{{ $class->ou }}teacher">
 								<option></option>
 							@if ($teachers)
 							@foreach ($teachers as $teacher)
-								<option value="{{ $teacher['cn'] }}"{{ isset($class->tutor) && $teacher['cn'] == $class->tutor ? ' selected' : '' }}>{{ $teacher['displayName'] }}</option>
+								<option value="{{ $teacher['cn'] }}"{{ isset($class->teacher) && $teacher['cn'] == $class->teacher ? ' selected' : '' }}>{{ $teacher['displayName'] }}</option>
 							@endforeach
 							@endif
 							</select>
 						</td>
 						<td>
-							<button type="submit" class="btn btn-primary">修改</button>
+							<input type="submit" class="btn btn-primary" value="修改" />
 							<button type="button" class="btn btn-danger"
 							 	onclick="$('#remove-form').attr('action','{{ route('school.removeClass', [ 'dc' => $dc, 'ou' => $class->ou ]) }}');
 										 $('#remove-form').submit();">刪除</button>
@@ -136,14 +138,18 @@
 	</div>
 	</div>
 	<script type="text/javascript">
-		function refresh_teachers(ou_select, teacher_select) {
+		function refresh_teachers(ou_select, teacher_select, oldteacher) {
 			axios.get('/school/{{ $dc }}/teachers/' + $('#' + ou_select).val())
     			.then(response => {
     				$('#' + teacher_select).find('option').remove();
 					$('#' + teacher_select).append('<option></option>');
 					response.data.forEach(
     					function add_options(teacher) {
-    						$('#' + teacher_select).append('<option value="' + teacher.idno + '">' + teacher.name + '</option>');
+							if ($('#' + oldteacher).val() == teacher.idno) {
+								$('#' + teacher_select).append('<option value="' + teacher.idno + '" selected>' + teacher.name + '</option>');
+							} else {
+								$('#' + teacher_select).append('<option value="' + teacher.idno + '">' + teacher.name + '</option>');
+							}
     					}
         			);
 				})

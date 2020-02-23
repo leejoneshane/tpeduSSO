@@ -14,7 +14,7 @@
                         </div>
                     @endif
                     
-                    @if (Auth::user()->is_admin)
+                    @if (Auth::user()->is_admin || Auth::user()->id == 1)
                     <passport-clients></passport-clients>
                     @endif
                     <passport-authorized-clients></passport-authorized-clients>

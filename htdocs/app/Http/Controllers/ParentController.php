@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Config;
 use Auth;
 use Log;
 use Carbon\Carbon;
@@ -113,31 +114,6 @@ class ParentController extends Controller
 		return back()->with("success","已經為您移除親子連結！");
 	}
 
-	public function listAuthProxy(Request $request)
-	{
-		$openldap = new LdapServiceProvider();
-		$idno = Auth::user()->idno;
-		$links = PSLink::where('parent_idno', $idno)->orderBy('created_at','desc')->get();
-		$idnos = array();
-		$kids = array();
-		foreach ($links as $l) {
-			$student_idno = $l->student_idno;
-			$idnos[] = $student_idno;
-			$entry = $openldap->getUserEntry($student_idno);
-			$data = $openldap->getUserData($entry);
-			$age = Carbon::today()->subYears(13);
-			$str = $data['birthDate'];
-			$born = Carbon::createFromDate(substr($str,0,4), substr($str,4,2), substr($str,6,2), 'Asia/Taipei');
-			if ($born > $age) {
-				$kids[$student_idno] = $data['displayName'];
-			}
-		}
-		$myidno = $request->get('myidno');
-		if (!$myidno) $myidno = $idnos[0];
-		$authorizes = PSAuthorize::where('student_idno', $myidno)->get();
-		return view('parents.listAuthProxy', [ 'myidno' => $myidno, 'authorizes' => $authorizes, 'kids' => $kids, 'trust_level' => Config::get('app.trust_level') ]);
-	}
-
 	public function showAuthProxyForm(Request $request)
     {
 		$openldap = new LdapServiceProvider();
@@ -160,107 +136,63 @@ class ParentController extends Controller
 		$myidno = $request->get('myidno');
 		if (!$myidno) $myidno = $idnos[0];
 		$apps = Passport::client()->all();
+		foreach ($apps as $k => $app) {
+			if ($app->firstParty()) unset($apps[$k]);
+		}
 		$agreeAll = PSAuthorize::where('student_idno', $myidno)->where('client_id', '*')->first();
-		return view('parents.authProxyForm', [ 'myidno' => $myidno, 'kids' => $kids, 'apps' => $apps, 'agreeAll' => $agreeAll ]);		
-	}
+		$authorizes = array();
+		$data = PSAuthorize::where('student_idno', $myidno)->where('client_id', '!=', '*')->get();
+		foreach ($data as $d) {
+			$authorizes[$d->client_id] = $d->trust_level;
+		}
 
-	public function updateAuthProxy(Request $request, $id)
-    {
-		$auth = PSAuthorize::find($id);
-		$auth->trust_level = $request->get('level');
-		$auth->save();
-		return back()->with('success', '已為您變更信任等級！');
-	}
-
-	public function removeAuthProxy(Request $request, $id)
-    {
-		$auth = PSAuthorize::find($id)->delete();
-		return back()->with('success', '已為您刪除代理授權設定！');
+		return view('parents.authProxyForm', [ 'myidno' => $myidno, 'kids' => $kids, 'apps' => $apps, 'agreeAll' => $agreeAll, 'authorizes' => $authorizes, 'trust_level' => Config::get('app.trust_level') ]);		
 	}
 
 	public function applyAuthProxy(Request $request)
     {
-		if($request->get('student')=='') {
-			return redirect()->back()->with("error","無法進行更新，可能您選擇的是非12歲以下學生，謝謝！")->withInput();
-		} 
-
-		$studentData = StudentParentRelation::where('id',$request->get('student'))->first();
-		$res=OauthThirdappStudent::where('student_idno',$studentData->student_idno)->where('parent_idno',$userNow->idno)->delete();
-		if($request->get('agreeAll')=='1') {
-			$obj  = new \App\OauthThirdappStudent();
-			$obj->student_idno=$studentData->student_idno;
-			$obj->parent_idno=$userNow->idno;
-			$obj->type='1';
-			$obj->save();
-		} else  {
-			$agreeList = $request->get('agree');
-			if(!empty($agreeList)) {
-				foreach($agreeList as $a){
-					if($a!='') {
-						$obj  = new \App\OauthThirdappStudent();
-						$obj->student_idno=$studentData->student_idno;
-						$obj->parent_idno=$userNow->idno;
-						$obj->type='0';
-						$obj->thirdapp_id=$a;
-						$obj->save();
-					}	
-				}
+		if (Auth::check())
+			$parent_idno = Auth::user()->idno;
+		else
+			$parent_idno = 'qrcode';
+		$student_idno = $request->get('student');
+		$agreeAll = $request->get('agreeAll');
+		$agree = $request->get('agree');
+		if (!empty($agreeAll)) {
+			if ($agreeAll == 'new') {
+				PSAuthorize::create([
+					'parent_idno' => $parent_idno,
+					'student_idno' => $student_idno,
+					'client_id' => '*',
+					'trust_level' => 3,
+				]);
+			} else {
+				PSAuthorize::where('student_idno', $student_idno)->where('client_id', '!=', '*')->delete();
 			}
-		}
-		
-		return redirect()->route('parents.showConnectChildrenAuthForm')->with("success","授權更新成功！")->with("student",$request->get('student'));
-	}		
-
-	public function linkQRcode(Request $request)
-	{
-		$openldap = new LdapServiceProvider();
-		$qrcodeData = $request->session()->pull('qrcodeObject'); //StudentParentsQrcode
-		//用姓名 座號 位置 於LDAP找學生
-		$students = $openldap->findUsers("(&(displayName=$qrcodeData->std_name)(tpSeat=$qrcodeData->std_seat)(employeeType=學生)(tpClass=$qrcodeData->std_cls))", ["entryUUID","inetUserStatus","uid","cn","displayName","tpClass","tpSeat","o","birthDate"]);
-		if($students) {
-			foreach ($students as $stu) {
-				//用stu idno id  + 父名找關連
-				$stuParentData = StudentParentData::where('parent_name',$qrcodeData->par_name)
-				->where('parent_relation',$qrcodeData->par_rel)
-				->where('student_idno',$stu['cn'])
-				->where('id',$qrcodeData->dataid)
-				//->where('student_birthday',substr($stu['birthDate'],0,8))
-				->first();
-	
-				//綁定 家長ID check
-				if($stuParentData) {
-					if($stuParentData->status=='0') {
-						//如父母有身分證就要再多核對						
-						if($stuParentData->parent_idno!='') {
-							if($stuParentData->parent_idno != $userNow->idno) {
-								return redirect()->route('parents.listConnectChildren')->with("error","您帳號的身分證號與學生的監護人資料不符，請確認後再行綁定，謝謝！");
-							}
-						}	
-						//進行綁定
-						$parentRelation  = new \App\StudentParentRelation();
-						$parentRelation->student_idno=$stu['cn'];
-						//$parentRelation->student_birthday = substr($stu['birthDate'],0,8);
-						$parentRelation->parent_name=$qrcodeData->par_name;
-						$parentRelation->parent_idno=$userNow->idno;
-						$parentRelation->parent_relation=$qrcodeData->par_rel;
-						$parentRelation->status='1';
-						$parentRelation->save();
-	
-						//更新student_parent_data
-						$stuParentData->status='1';
-						$stuParentData->save();	
-						return redirect()->route('parents.listConnectChildren')->with("success","家長學生關連綁定成功！");
+		} else {
+			$apps = Passport::client()->all();
+			foreach ($apps as $app) {
+				if ($app->firstParty()) continue;
+				if (in_array($app->id, $agree)) {
+					$trust_level = $request->get($app->id.'level');
+					$old = PSAuthorize::where('student_idno', $student_idno)->where('client_id', $app->id)->first();
+					if ($old) {
+						$old->trust_level = $trust_level;
+						$old->save();
 					} else {
-						return redirect()->route('parents.listConnectChildren')->with("error","該筆家長學生關連資料已綁定過，謝謝！");
+						PSAuthorize::create([
+							'parent_idno' => $parent_idno,
+							'student_idno' => $student_idno,
+							'client_id' => $app->id,
+							'trust_level' => $trust_level,
+						]);
 					}
 				} else {
-					return redirect()->route('parents.listConnectChildren')->with("error","綁定學生家長對應資料不符，請與學校確認後再行綁定，謝謝！");
+					PSAuthorize::where('student_idno', $student_idno)->where('client_id', $app->id)->delete();
 				}
-				break;
 			}
-		  } else {
-		  return redirect()->route('parents.listConnectChildren')->with("error","該學生資料不存在於本系統，請與學校確認後再行綁定，謝謝！");
 		}
+		return redirect()->route('parent.showAuthProxyForm')->with("success","已經為您更新代理授權設定！")->with("student",$request->get('student'));
 	}
 
 }

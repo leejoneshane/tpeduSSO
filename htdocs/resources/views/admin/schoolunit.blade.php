@@ -35,13 +35,13 @@
 					@if ($ous)
 					@foreach ($ous as $ou)
 					<tr>
-						<form role="form" method="POST" action="{{ route('school.updateUnit', [ 'dc' => $dc, 'ou' => $ou->ou ]) }}">
+						<form id="{{ $ou->ou }}form" method="POST" action="{{ route('school.updateUnit', [ 'dc' => $dc, 'ou' => $ou->ou ]) }}">
 		    			@csrf
 						<td>
-							<input id="ou" type="text" class="form-control" name="ou" value="{{ $ou->ou ? $ou->ou : old('ou') }}">
+							<input id="{{ $ou->ou }}ou" type="text" class="form-control" name="ou" value="{{ $ou->ou ? $ou->ou : old('ou') }}">
 						</td>
 						<td>
-							<input id="description" type="text" class="form-control" name="description" value="{{ $ou->description ? $ou->description : old('description') }}">
+							<input id="{{ $ou->ou }}description" type="text" class="form-control" name="description" value="{{ $ou->description ? $ou->description : old('description') }}">
 						</td>
 						<td>
 							<button type="submit" class="btn btn-primary">修改</button>

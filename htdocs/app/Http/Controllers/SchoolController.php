@@ -1709,7 +1709,13 @@ class SchoolController extends Controller
 			$classes = array();
 			foreach ($data as $class) {
 				if (!in_array($class->grade, $grades)) $grades[] = $class->grade;
-				if ($class->grade == $my_grade) $classes[] = $class;
+				if ($class->grade == $my_grade) {
+					$uuids = $class->tutor;
+					if ($uuids) {
+						$class->teacher = $openldap->getUserIDNO($uuids[0]);
+					}
+					$classes[] = $class;
+				}
 			}
 		}
 		$teachers = array();
@@ -1855,7 +1861,7 @@ class SchoolController extends Controller
     public function updateSchoolClass(Request $request, $dc, $class)
     {
 		$validatedData = $request->validate([
-			'description' => 'required|string',
+			$class.'description' => 'required|string',
 		]);
 		$info = array();
 		$info['description'] = $request->get($class.'description');
@@ -2006,12 +2012,12 @@ class SchoolController extends Controller
     public function updateSchoolUnit(Request $request, $dc, $ou)
     {
 		$validatedData = $request->validate([
-			'ou' => 'required|string',
-			'description' => 'required|string',
+			$ou.'ou' => 'required|string',
+			$ou.'description' => 'required|string',
 		]);
 		$info = array();
-		$info['ou'] = $request->get('ou');
-		$info['description'] = $request->get('description');
+		$info['ou'] = $request->get($ou.'ou');
+		$info['description'] = $request->get($ou.'description');
 		
 		$openldap = new LdapServiceProvider();
 		if ($ou != $info['ou']) {
@@ -2033,7 +2039,7 @@ class SchoolController extends Controller
 					if (count($a) == 2 && ($a[0] != $dc || $a[1] != $ou)) $units[] = $ou_pair; 
 					if (count($a) == 1 && $a[0] != $ou) $units[] = $dc.','.$ou_pair;
 				}
-				$units = array_values(array_unique($units + [ $dc.','.$info['cn'] ]));
+				$units = array_values(array_unique($units + [ $dc.','.$info['ou'] ]));
 	    		$openldap->updateData($user_entry, [ 'ou' => $units ]);
 			}
 		}

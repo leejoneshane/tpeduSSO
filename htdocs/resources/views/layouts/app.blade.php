@@ -12,12 +12,12 @@
 
     <!-- Styles -->
 	<link href='//fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
-	<link href="{{ asset('assets/stylesheets/styles.css') }}" rel="stylesheet">
+	<link href="{{ asset('css/styles.css') }}" rel="stylesheet">
 
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
 </head>
 <body>
-    <ul id="app">
+    <div id="app">
         <nav class="navbar navbar-default navbar-static-top" style="margin-bottom: 0">
 			<div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -51,14 +51,14 @@
                             @endif
                             @if (isset(Auth::user()->ldap['tpTutorClass']))
                                 <?php $tutor = Auth::user()->ldap['tpTutorClass']; ?>
-                                <li><a class="dropdown-item" href="{{ route('tutor', [ 'dc' => $o, 'class' => $tutor ]) }}"><i class="fa fa-library fa-fw"></i>班級管理：{{ $tutor }}</a></li>
+                                <li><a class="dropdown-item" href="{{ route('tutor', [ 'dc' => $o, 'class' => $tutor ]) }}"><i class="fa fa-book fa-fw"></i>班級管理：{{ $tutor }}</a></li>
                             @endif
                             @if (!(Auth::user()->is_parent))
                                 <li><a class="dropdown-item" href="{{ route('oauth') }}"><i class="fa fa-key fa-fw"></i>金鑰管理</a></li>
                             @endif
                             @if (Auth::user()->ldap['employeeType'] != '學生')
-                                <li><a class="dropdown-item" href="{{ route('parent.listAuthProxy') }}"><i class="fa fa-unlock fa-fw"></i>代理授權</a></li>
-                                <li><a class="dropdown-item" href="{{ route('parent.listLink') }}"><i class="fa fa-child fa-fw"></i>親子連結</a></li>
+                                <li><a class="dropdown-item" href="{{ route('parent.showAuthProxyForm') }}"><i class="fa fa-check fa-fw"></i>代理授權</a></li>
+                                <li><a class="dropdown-item" href="{{ route('parent.listLink') }}"><i class="fa fa-chain fa-fw"></i>親子連結</a></li>
                             @endif
                             <li><a class="dropdown-item" href="{{ route('profile') }}"><i class="fa fa-edit fa-fw"></i>修改個資</a></li>
                             @if (!(Auth::user()->is_parent))
@@ -73,7 +73,7 @@
                         </ul>
                     </li>
                     @endguest
-				</ul>
+				</div>
 			</div>
         </nav>
         <main>

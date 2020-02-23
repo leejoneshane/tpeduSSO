@@ -141,8 +141,6 @@ class HomeController extends Controller
 			$openldap->addAccount($entry, $new, "自建帳號");
 			if (Auth::check()) {
 				if ($user->hasVerifiedEmail()) $user->notify(new PasswordChangeNotification($new));
-			} else {
-				if (isset($data['mail'])) Notification::route('mail', $data['mail'])->notify(new AccountChangeNotification($new));
 			}
 			return back()->withInput()->with("success","帳號建立成功！");
 		} else {
@@ -150,8 +148,6 @@ class HomeController extends Controller
 			$openldap->renameAccount($entry, $new);
 			if (Auth::check()) {
 				if ($user->hasVerifiedEmail()) $user->notify(new PasswordChangeNotification($new));
-			} else {
-				if (isset($data['mail'])) Notification::route('mail', $data['mail'])->notify(new AccountChangeNotification($new));
 			}
 			$mustChangePW = $request->session()->pull('mustChangePW', false);
 			if ($mustChangePW) {
@@ -208,7 +204,6 @@ class HomeController extends Controller
 					$user->password = \Hash::make($new);
 					$user->save();
 				}
-				if (isset($data['mail'])) Notification::route('mail', $data['mail'])->notify(new PasswordChangeNotification($new));
 			}
 			$request->session()->invalidate();
 			return redirect('login')->with("success","密碼變更成功，請重新登入！");

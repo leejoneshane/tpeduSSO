@@ -409,16 +409,16 @@ class LdapServiceProvider extends ServiceProvider
 		}
 		if ($info['businessCategory'] == '教學班級') {
 			$info['grade'] = substr($info['ou'], 0, 1);
-			$dn=ldap_get_dn(self::$ldap_read,$entry);
-			$augs=explode(',', $dn);
-			$o=explode('=', $augs[1]);
-			$filter='(&(o='.$o[1].')(tpTutorClass='.$info['ou'].'))';
-			$tutors=$this->findUsers($filter,'entryUUID');
-			$teachers=array();
+			$dn = ldap_get_dn(self::$ldap_read,$entry);
+			$augs = explode(',', $dn);
+			$o = explode('=', $augs[1]);
+			$filter = '(&(o='.$o[1].')(tpTutorClass='.$info['ou'].'))';
+			$tutors = $this->findUsers($filter,'entryUUID');
+			$teachers = array();
 			foreach ($tutors as $t) {
-				$teachers[]=$t['entryUUID'];
+				$teachers[] = $t['entryUUID'];
 			}
-			$info['tpTutor']=$teachers;
+			$info['tpTutor'] = $teachers;
 		}
 		return $info;
 	}
@@ -941,11 +941,29 @@ class LdapServiceProvider extends ServiceProvider
 		return $userinfo;
 	}
 
+	public function getUserIDNO($identifier)
+  	{
+		if (strlen($identifier) == 10) return $identifier;
+		$entry = $this->getUserEntry($identifier);
+		$dn = ldap_get_dn(self::$ldap_read, $entry);
+		$augs = explode(',', $dn);
+		$cn = explode('=', $augs[0]);
+		return $cn[1];
+	}
+
+	public function getUserUUID($identifier)
+  	{
+		if (strlen($identifier) > 10) return $identifier;
+		$entry = $this->getUserEntry($identifier);
+		$value = @ldap_get_values(self::$ldap_read, $entry, 'entryUUID');
+		return $value['count'] == 1 ? $value[0] : $identifier;
+	}
+
 	public function getUserName($identifier)
   	{
 		$entry = $this->getUserEntry($identifier);
-		$name = $this->getUserData($entry, 'displayName');
-		return !empty($name['displayName']) ? $name['displayName'] : $identifier;
+		$value = @ldap_get_values(self::$ldap_read, $entry, 'displayName');
+		return $value['count'] == 1 ? $value[0] : $identifier;
 	}
 
 	public function getUserAccounts($identifier)
