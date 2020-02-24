@@ -48692,6 +48692,10 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "modal-header" }, [
+      _c("h4", { staticClass: "modal-title" }, [
+        _vm._v("\n                        建立專案\n                    ")
+      ]),
+      _vm._v(" "),
       _c(
         "button",
         {
@@ -48703,11 +48707,7 @@ var staticRenderFns = [
           }
         },
         [_vm._v("×")]
-      ),
-      _vm._v(" "),
-      _c("h4", { staticClass: "modal-title" }, [
-        _vm._v("\n                        建立專案\n                    ")
-      ])
+      )
     ])
   },
   function() {
@@ -48724,6 +48724,10 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "modal-header" }, [
+      _c("h4", { staticClass: "modal-title" }, [
+        _vm._v("\n                        編輯專案\n                    ")
+      ]),
+      _vm._v(" "),
       _c(
         "button",
         {
@@ -48735,11 +48739,7 @@ var staticRenderFns = [
           }
         },
         [_vm._v("×")]
-      ),
-      _vm._v(" "),
-      _c("h4", { staticClass: "modal-title" }, [
-        _vm._v("\n                        編輯專案\n                    ")
-      ])
+      )
     ])
   },
   function() {
@@ -49789,6 +49789,10 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "modal-header" }, [
+      _c("h4", { staticClass: "modal-title" }, [
+        _vm._v("\n                        建立存取金鑰\n                    ")
+      ]),
+      _vm._v(" "),
       _c(
         "button",
         {
@@ -49800,11 +49804,7 @@ var staticRenderFns = [
           }
         },
         [_vm._v("×")]
-      ),
-      _vm._v(" "),
-      _c("h4", { staticClass: "modal-title" }, [
-        _vm._v("\n                        建立存取金鑰\n                    ")
-      ])
+      )
     ])
   },
   function() {
@@ -49821,6 +49821,10 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "modal-header" }, [
+      _c("h4", { staticClass: "modal-title" }, [
+        _vm._v("\n                        個人存取金鑰\n                    ")
+      ]),
+      _vm._v(" "),
       _c(
         "button",
         {
@@ -49832,11 +49836,7 @@ var staticRenderFns = [
           }
         },
         [_vm._v("×")]
-      ),
-      _vm._v(" "),
-      _c("h4", { staticClass: "modal-title" }, [
-        _vm._v("\n                        個人存取金鑰\n                    ")
-      ])
+      )
     ])
   },
   function() {
