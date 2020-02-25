@@ -33,7 +33,6 @@ ENV YAHOO_CLIENT_ID null
 ENV YAHOO_CLIENT_SECRET null
 ENV YAHOO_REDIRECT null
 
-ADD htdocs /root/htdocs
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY restore.sh /usr/local/bin/restore
 COPY crontab /etc/crontabs/root
@@ -78,8 +77,11 @@ RUN chmod 755 /usr/local/bin/* \
            "/etc/php7/php.ini" \
        \
     && rm -f index.html \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer \
-    && chown -R apache:apache /root/htdocs \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
+
+ADD htdocs /root/htdocs
+
+RUN chown -R apache:apache /root/htdocs \
     && cp -rdp /root/htdocs /var/www/localhost
 
 VOLUME ["/var/www/localhost/htdocs"]
