@@ -6,7 +6,7 @@ use Cookie;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Laravel\Passport\Token;
+use Laravel\Passport\Passport;
 use App\User;
 use App\Providers\LdapServiceProvider;
 use App\Rules\idno;
@@ -20,7 +20,7 @@ class v2_adminController extends Controller
 		$openldap = new LdapServiceProvider();
 		$psr = (new \Lcobucci\JWT\Parser())->parse($token);
 		$token_id = $psr->getClaim('jti');
-		$token = Token::find($token_id);
+		$token = Passport::token()->find($token_id);
 		if (!$token) {
 			return response()->json(['error' => 'The token is invliad!'], 404);
 		} elseif ($token->revoked) {

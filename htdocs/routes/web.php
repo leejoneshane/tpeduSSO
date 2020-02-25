@@ -43,13 +43,18 @@ Route::get('email/resend', 'Auth\VerificationController@resend')->name('verifica
 //Passport::routes();
 Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken')->name('passport.token');
 Route::group(['prefix' => 'oauth', 'middleware' => 'auth'], function () {
+	//管理介面
+	Route::get('/', 'OauthController@index')->name('oauth');
+	Route::get('tokens/new', 'OauthController@showCreateTokenForm')->name('newToken');
+	Route::post('tokens/store', 'OauthController@storeToken')->name('storeToken');
+	Route::post('tokens/{token_id}/revoke', 'OauthController@revokeToken')->name('revokeToken');
 	//RouteRegistrar::forAuthorization()
 	Route::get('authorize', '\Laravel\Passport\Http\Controllers\AuthorizationController@authorize')->middleware('age')->name('passport.authorizations.authorize');
 	Route::post('authorize', '\Laravel\Passport\Http\Controllers\ApproveAuthorizationController@approve')->name('passport.authorizations.approve');
 	Route::delete('authorize', '\Laravel\Passport\Http\Controllers\DenyAuthorizationController@deny')->name('passport.authorizations.deny');
 	//RouteRegistrar::forAccessTokens()
-	Route::get('tokens', '\Laravel\Passport\Http\Controllers\AuthorizedAccessTokenController@forUser')->name('passport.tokens.index');
-	Route::delete('tokens/{token_id}', '\Laravel\Passport\Http\Controllers\AuthorizedAccessTokenController@destroy')->name('passport.tokens.destroy');
+	//Route::get('tokens', '\Laravel\Passport\Http\Controllers\AuthorizedAccessTokenController@forUser')->name('passport.tokens.index');
+	//Route::delete('tokens/{token_id}', '\Laravel\Passport\Http\Controllers\AuthorizedAccessTokenController@destroy')->name('passport.tokens.destroy');
 	//RouteRegistrar::forTransientTokens()
 	Route::post('token/refresh', '\Laravel\Passport\Http\Controllers\TransientTokenController@refresh')->name('passport.token.refresh');
 	//RouteRegistrar::forClients()
@@ -58,10 +63,10 @@ Route::group(['prefix' => 'oauth', 'middleware' => 'auth'], function () {
 	Route::put('clients/{client_id}', '\Laravel\Passport\Http\Controllers\ClientController@update')->name('passport.clients.update');
 	Route::delete('clients/{client_id}', '\Laravel\Passport\Http\Controllers\ClientController@destroy')->name('passport.clients.destroy');
 	//RouteRegistrar::forPersonalAccessTokens()
-	Route::get('scopes', '\Laravel\Passport\Http\Controllers\ScopeController@all')->name('passport.scopes.index');
-	Route::get('personal-access-tokens', '\Laravel\Passport\Http\Controllers\PersonalAccessTokenController@forUser')->name('passport.personal.tokens.index');
-	Route::post('personal-access-tokens', '\Laravel\Passport\Http\Controllers\PersonalAccessTokenController@store')->name('passport.personal.tokens.store');
-	Route::delete('personal-access-tokens/{token_id}', '\Laravel\Passport\Http\Controllers\PersonalAccessTokenController@destroy')->name('passport.personal.tokens.destroy');
+	//Route::get('scopes', '\Laravel\Passport\Http\Controllers\ScopeController@all')->name('passport.scopes.index');
+	//Route::get('personal-access-tokens', '\Laravel\Passport\Http\Controllers\PersonalAccessTokenController@forUser')->name('passport.personal.tokens.index');
+	//Route::post('personal-access-tokens', '\Laravel\Passport\Http\Controllers\PersonalAccessTokenController@store')->name('passport.personal.tokens.store');
+	//Route::delete('personal-access-tokens/{token_id}', '\Laravel\Passport\Http\Controllers\PersonalAccessTokenController@destroy')->name('passport.personal.tokens.destroy');
 });
 
 Route::get('schoolAdmin', 'SchoolController@showSchoolAdminSettingForm');
@@ -76,7 +81,6 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/', 'HomeController@index')->middleware('verified')->name('home');
     Route::get('profile', 'HomeController@showProfileForm');
     Route::post('profile', 'HomeController@changeProfile')->name('profile');
-	Route::get('oauth', 'OauthController@index')->name('oauth');
 	Route::get('gsuite/sync', 'HomeController@syncToGsuite')->name('createGsuite');
 	Route::get('socialite', 'OauthController@socialite')->name('socialite');
 	Route::post('socialite/remove', 'OauthController@removeSocialite')->name('socialite.remove');
