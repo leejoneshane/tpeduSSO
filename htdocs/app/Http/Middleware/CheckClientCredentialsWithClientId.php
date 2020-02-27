@@ -9,6 +9,8 @@ use Illuminate\Auth\AuthenticationException;
 use Laravel\Passport\Exceptions\MissingScopeException;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
+use Laravel\Passport\Passport;
+use App\Project;
 
 class CheckClientCredentialsWithClientId
 {
@@ -50,7 +52,8 @@ class CheckClientCredentialsWithClientId
         }
 
         $client_id = $psr->getAttribute('oauth_client_id');
-        if (in_array($client_id, Config::get('app.prerogative'))) {
+        $client = Passport::client()->find($client_id);
+        if ($vlient->firstParty() || Project::isPrivileged($client_id)) {
             return $next($request);
         } else {
             return response('Forbidden.', 403);

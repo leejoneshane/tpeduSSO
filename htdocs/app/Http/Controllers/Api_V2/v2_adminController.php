@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Laravel\Passport\Passport;
 use App\User;
+use App\Project;
 use App\Providers\LdapServiceProvider;
 use App\Rules\idno;
 use App\Rules\ipv4cidr;
@@ -26,19 +27,37 @@ class v2_adminController extends Controller
 		} elseif ($token->revoked) {
 			return response()->json(['error' => 'The token is revoked!'], 410);
 		} else {
+            $client = $token->client();
+            $project = Project::byClient($client->id);
 			$user = $token->user;
 			$validate = array();
 			if (isset($user->uuid)) $validate['user'] = $user->uuid;
-			if (!empty($token->name)) {
+			if ($client->firstParty()) {
                 $entry = $openldap->getUserEntry($user->uuid);
                 $admin = $openldap->getUserData($entry, 'tpAdminSchools');
                 $validate['admin_schools'] = $admin['tpAdminSchools'];
             }
-			$validate['client_id'] = $token->client_id;
+            if ($project->privileged) $validate['privileged'] = 'true';
+			$validate['client_id'] = $client->id;
 			$validate['scopes'] = $token->scopes;
 			return response()->json($validate);
 		}
 	}
+
+	public function clients(Request $request)
+    {
+        $clients = Passport::client()->all();
+        foreach ($clients as $k => $client) {
+            if ($client->is_firstParty()) unset($clients[$k]);
+        }
+        return response()->json($clients, 200, array(JSON_UNESCAPED_UNICODE));
+    }
+
+	public function scopes(Request $request)
+    {
+        $scopes = Passport::scopes();
+        return response()->json($scopes, 200, array(JSON_UNESCAPED_UNICODE));
+    }
 
     public function schoolAdd(Request $request)
     {

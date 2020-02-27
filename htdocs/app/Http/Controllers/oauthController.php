@@ -30,8 +30,9 @@ class OauthController extends Controller
     public function revokeToken(Request $request, $token_id)
     {
         $user = Auth::user();
-        $token = Passport::token()->where('id', $token_id)->where('user_id', $user->getKey())->first()->revoke();
-        $this->index();
+        $token = Passport::token()->where('id', $token_id)->where('user_id', $user->getKey())->first();
+        $token->revoke();
+        return redirect()->route('oauth');
     }
 
     public function showCreateTokenForm(Request $request)
@@ -67,7 +68,7 @@ class OauthController extends Controller
         $socialite = $request->get('socialite');
         $userid = $request->get('userid');
         $account = $query->where('socialite', $socialite)->where('userID', $userid)->delete();
-        $this->socialite();
+        return redirect()->route('socialite');
     }
 
 }

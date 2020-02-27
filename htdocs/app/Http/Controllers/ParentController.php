@@ -133,19 +133,21 @@ class ParentController extends Controller
 				$kids[$student_idno] = $data['displayName'];
 			}
 		}
-		$myidno = $request->get('myidno');
-		if (!$myidno) $myidno = $idnos[0];
 		$apps = Passport::client()->all();
 		foreach ($apps as $k => $app) {
 			if ($app->firstParty()) unset($apps[$k]);
 		}
-		$agreeAll = PSAuthorize::where('student_idno', $myidno)->where('client_id', '*')->first();
+		$myidno = $request->get('myidno');
+		$agreeAll = null;
 		$authorizes = array();
-		$data = PSAuthorize::where('student_idno', $myidno)->where('client_id', '!=', '*')->get();
-		foreach ($data as $d) {
-			$authorizes[$d->client_id] = $d->trust_level;
+		if ($idnos) {
+			if (!$myidno) $myidno = $idnos[0];
+			$agreeAll = PSAuthorize::where('student_idno', $myidno)->where('client_id', '*')->first();
+			$data = PSAuthorize::where('student_idno', $myidno)->where('client_id', '!=', '*')->get();
+			foreach ($data as $d) {
+				$authorizes[$d->client_id] = $d->trust_level;
+			}
 		}
-
 		return view('parents.authProxyForm', [ 'myidno' => $myidno, 'kids' => $kids, 'apps' => $apps, 'agreeAll' => $agreeAll, 'authorizes' => $authorizes, 'trust_level' => Config::get('app.trust_level') ]);		
 	}
 

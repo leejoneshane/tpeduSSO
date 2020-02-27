@@ -56,12 +56,12 @@ Route::group(['prefix' => 'oauth', 'middleware' => 'auth'], function () {
 	//Route::get('tokens', '\Laravel\Passport\Http\Controllers\AuthorizedAccessTokenController@forUser')->name('passport.tokens.index');
 	//Route::delete('tokens/{token_id}', '\Laravel\Passport\Http\Controllers\AuthorizedAccessTokenController@destroy')->name('passport.tokens.destroy');
 	//RouteRegistrar::forTransientTokens()
-	Route::post('token/refresh', '\Laravel\Passport\Http\Controllers\TransientTokenController@refresh')->name('passport.token.refresh');
+	//Route::post('token/refresh', '\Laravel\Passport\Http\Controllers\TransientTokenController@refresh')->name('passport.token.refresh');
 	//RouteRegistrar::forClients()
-	Route::get('clients', '\Laravel\Passport\Http\Controllers\ClientController@forUser')->name('passport.clients.index');
-	Route::post('clients', '\Laravel\Passport\Http\Controllers\ClientController@store')->name('passport.clients.store');
-	Route::put('clients/{client_id}', '\Laravel\Passport\Http\Controllers\ClientController@update')->name('passport.clients.update');
-	Route::delete('clients/{client_id}', '\Laravel\Passport\Http\Controllers\ClientController@destroy')->name('passport.clients.destroy');
+	//Route::get('clients', '\Laravel\Passport\Http\Controllers\ClientController@forUser')->name('passport.clients.index');
+	//Route::post('clients', '\Laravel\Passport\Http\Controllers\ClientController@store')->name('passport.clients.store');
+	//Route::put('clients/{client_id}', '\Laravel\Passport\Http\Controllers\ClientController@update')->name('passport.clients.update');
+	//Route::delete('clients/{client_id}', '\Laravel\Passport\Http\Controllers\ClientController@destroy')->name('passport.clients.destroy');
 	//RouteRegistrar::forPersonalAccessTokens()
 	//Route::get('scopes', '\Laravel\Passport\Http\Controllers\ScopeController@all')->name('passport.scopes.index');
 	//Route::get('personal-access-tokens', '\Laravel\Passport\Http\Controllers\PersonalAccessTokenController@forUser')->name('passport.personal.tokens.index');
@@ -208,6 +208,18 @@ Route::group(['prefix' => 'bureau', 'middleware' => 'auth.admin'], function () {
 	Route::get('units/{dc}', 'Api\schoolController@allOu');
 	Route::get('roles/{dc}/{ou_id}', 'Api\schoolController@allRole');
 	Route::get('classes/{dc}', 'Api\schoolController@listClasses');
+	Route::get('project', 'BureauController@listProjects')->name('bureau.project');
+	Route::get('project/new', 'BureauController@createProject')->name('bureau.createProject');
+	Route::post('project/store', 'BureauController@storeProject')->name('bureau.storeProject');
+	Route::get('project/{id}/update', 'BureauController@projectEditForm')->name('bureau.updateProject');
+	Route::post('project/{id}/remove', 'BureauController@removeProject')->name('bureau.removeProject');
+	Route::get('project/{id}/deny', 'BureauController@showDenyProjectForm');
+	Route::post('project/{id}/deny', 'BureauController@denyProject')->name('bureau.denyProject');
+	Route::post('project/{id}/pass', 'BureauController@passProject')->name('bureau.passProject');
+	Route::get('client', 'BureauController@listClients')->name('bureau.client');
+	Route::get('client/{id}/build', 'BureauController@createClient')->name('bureau.createClient');
+	Route::get('client/{id}/secret', 'BureauController@changeSecret')->name('bureau.changeSecret');
+	Route::get('client/{id}/toggle', 'BureauController@toggleClient')->name('bureau.toggleClient');
 });
 
 Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () {

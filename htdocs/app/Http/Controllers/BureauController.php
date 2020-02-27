@@ -6,7 +6,10 @@ use Config;
 use Validator;
 use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Laravel\Passport\Passport;
 use App\User;
+use App\Project;
 use App\Providers\LdapServiceProvider;
 use App\Rules\idno;
 use App\Rules\ipv4cidr;
@@ -32,7 +35,141 @@ class BureauController extends Controller
     {
         return view('bureau');
     }
-    
+
+    public function listProjects(Request $request)
+	{
+		$projects = Project::all();
+		if (empty($projects)) {
+			$clients = Passport::client()->where('personal_access_client', 0)->where('password_client', 0)->get();
+			if ($clients) {
+				foreach ($clients as $client) {
+					Project::create([
+						'applicationName' => $client->name,
+						'redirect' => $client->redirect,
+						'audit' => true,
+						'client' => $client->id,
+					]);	
+				}
+				$projects = Project::all();
+			}
+		}
+		return view('admin.bureauproject', [ 'projects' => $projects ]);
+	}
+
+    public function createProject(Request $request)
+	{
+		return view('admin.bureauprojectedit');
+	}
+
+    public function storeProject(Request $request)
+	{
+		$validatedData = $request->validate([
+            'organization' => 'required|string|max:150',
+            'applicationName' => 'required|string|max:150',
+            'reason' => 'required|string|max:255',
+            'website' => 'required|url',
+            'redirect' => 'required|url',
+            'connName' => 'required|string|max:50',
+            'connUnit' => 'sometimes|string|max:150',
+            'connEmail' => 'required|email:rfc,dns',
+            'connTel' => 'required|digits_between:7,10',
+        ]);
+		$token = Project::create([
+			'organization' => $request->get('organization'),
+			'applicationName' => $request->get('applicationName'),
+			'reason' => $request->get('reason'),
+			'website' => $request->get('website'),
+			'redirect' => $request->get('redirect'),
+			'privileged' => $request->get('privileged'),
+			'kind' => $request->get('kind'),
+			'connName' => $request->get('connName'),
+			'connUnit' => $request->get('connUnit') ?: '',
+			'connEmail' => $request->get('connEmail') ?: '',
+			'connTel' => $request->get('connTel'),
+			'memo' => $request->get('memo'),
+		]);
+		return redirect()->route('bureau.project');
+	}
+
+    public function projectEditForm(Request $request, $id)
+	{
+		$project = Project::find($id);
+		return view('admin.bureauprojectedit', [ 'project' => $project ]);		
+	}
+
+    public function removeProject(Request $request, $id)
+	{
+		Project::find($id)->delete();
+		return redirect()->route('bureau.project');
+	}
+
+    public function showDenyProjectForm(Request $request, $id)
+	{
+		$project = Project::find($id);
+		return view('admin.bureauprojectdeny', [ 'project' => $project ]);		
+	}
+
+    public function denyProject(Request $request, $id)
+	{
+		$project = Project::find($id);
+		$reason = $reguest->get('reason');
+		$project->reject()->sendMail([
+			'很遺憾，您申請的介接專案已經被駁回！理由如下：',
+			$reason,
+			'請您補齊文件後，儘速與承辦人員聯絡，以便處理後續事宜！',
+		]);
+		return redirect()->route('bureau.project');
+		
+	}
+
+    public function passProject(Request $request, $id)
+	{
+		$project = Project::find($id)->allow()->buildClient();
+		event(new ProjectAllowed($project));
+		return redirect()->route('bureau.project');
+	}
+
+    public function listClients(Request $request)
+	{
+		$projects = Project::whereNotNull('client')->get();
+		if (empty($projects)) {
+			$clients = Passport::client()->where('personal_access_client', 0)->where('password_client', 0)->get();
+			if ($clients) {
+				foreach ($clients as $client) {
+					Project::create([
+						'applicationName' => $client->name,
+						'redirect' => $client->redirect,
+						'audit' => true,
+						'client' => $client->id,
+					]);	
+				}
+				$projects = Project::all();
+			}
+		}
+		return view('admin.bureauclient', [ 'projects' => $projects ]);		
+	}
+
+    public function changeSecret(Request $request, $id)
+	{
+		$project = Project::find($id);
+		$client = $project->client();
+		$client->secret = Str::random(40);
+		$client->save();
+		return redirect()->route('bureau.client');		
+	}
+
+    public function toggleClient(Request $request, $id)
+	{
+		$project = Project::find($id);
+		$client = $project->client();
+		if ($client->revoked)
+			$client->revoked = false;
+		else
+			$client->revoked = true;
+		$client->save();
+		return redirect()->route('bureau.client');		
+	}
+
     public function bureauPeopleSearchForm(Request $request)
     {
 		$my_field = $request->get('field');

@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Events\Event;
+use App\Events\ProjectAllowed;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -18,14 +18,11 @@ class EventListener
         //
     }
 
-    /**
-     * Handle the event.
-     *
-     * @param  Event  $event
-     * @return void
-     */
-    public function handle(Event $event)
+    public function handle(ProjectAllowed $event)
     {
-        //
+        $project = $event->project;
+        if (!empty($this->connEmail)) {
+            $project->notify(new ProjectAllowedNotification($project));
+        }
     }
 }

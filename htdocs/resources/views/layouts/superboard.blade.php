@@ -36,6 +36,20 @@
                                 </li>
                             </ul>
                         </li>
+                        <li {{ (Request::is('bureau/project') ? 'class="active"' : '') }}>
+                            <a href="#"><i class="fa fa-user fa-fw"></i>介接專案管理<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li {{ (Request::is('bureau/project') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('bureau.project') }}">編輯審核</a>
+                                </li>
+                                <li {{ (Request::is('bureau/project/new') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('bureau.createProject') }}">新增專案</a>
+                                </li>
+                                <li {{ (Request::is('bureau/client') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('bureau.client') }}">OAuth 用戶端管理</a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
            	</nav>

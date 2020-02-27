@@ -70,7 +70,7 @@ class Kernel extends HttpKernel
         'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,
         'scope' => \Laravel\Passport\Http\Middleware\CheckForAnyScope::class,
         'client' => \Laravel\Passport\Http\Middleware\CheckClientCredentials::class,
-        'prerogative' => \App\Http\Middleware\CheckClientCredentialsWithClientId::class,
+        'privileged' => \App\Http\Middleware\CheckClientCredentialsWithClientId::class,
 
     ];
 }

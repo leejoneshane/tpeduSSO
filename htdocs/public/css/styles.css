@@ -1314,21 +1314,6 @@ mark,
   padding: .2em;
   background-color: #fcf8e3;
 }
-.text-left {
-  text-align: left;
-}
-.text-right {
-  text-align: right;
-}
-.text-center {
-  text-align: center;
-}
-.text-justify {
-  text-align: justify;
-}
-.text-nowrap {
-  white-space: nowrap;
-}
 .text-lowercase {
   text-transform: lowercase;
 }
@@ -6667,7 +6652,7 @@ button.close {
 .center-block {
   display: block;
   margin-right: auto;
-  margin-left: auto;
+  margin-left: 0;
 }
 .pull-right {
   float: right !important;
@@ -6975,12 +6960,6 @@ button.close {
   padding: .2em .25em .15em;
   border: solid 0.08em #eeeeee;
   border-radius: .1em;
-}
-.pull-right {
-  float: right;
-}
-.pull-left {
-  float: left;
 }
 .fa.pull-left {
   margin-right: .3em;

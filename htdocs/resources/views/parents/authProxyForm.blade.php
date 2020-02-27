@@ -18,6 +18,9 @@
 		    		</div>
 				@endif
 				<div class="col-md-16">
+					@if (empty($myidno))
+					<p>請先進行親子連結後再進行代理授權設定，謝謝！</p>
+					@else
 					<form id="form" action="{{ route('parent.applyAuthProxy') }}" method="POST">
 					@csrf
 					<div class="input-group custom-search-form">
@@ -74,7 +77,8 @@
 					</tbody>
 					</table>
 					<button type="submit" class="btn btn-danger">確定</button>
-				</form>
+					</form>
+					@endif
 				</div>
 				</div>
 			</div>

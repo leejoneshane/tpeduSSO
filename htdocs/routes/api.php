@@ -68,8 +68,10 @@ Route::group(['prefix' => 'v2'], function () {
         Route::get('school/{dc}/people/{uuid}', 'Api_V2\v2_schoolController@people')->middleware('scope:schoolAdmin');
     });
 
-    Route::group(['middleware' => 'prerogative'], function () {
+    Route::group(['middleware' => 'privileged'], function () {
         Route::get('validate/{token}', 'Api_V2\v2_adminController@valid_token');
+        Route::get('clients', 'Api_V2\v2_adminController@clients');
+        Route::get('scopes', 'Api_V2\v2_adminController@scopes');
         Route::post('admin/school', 'Api_V2\v2_adminController@schoolAdd');
         Route::patch('admin/school/{dc}', 'Api_V2\v2_adminController@schoolUpdate');
         Route::delete('admin/school/{dc}', 'Api_V2\v2_adminController@schoolRemove');

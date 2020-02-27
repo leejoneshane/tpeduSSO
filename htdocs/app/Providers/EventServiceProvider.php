@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Lockout;
+use App\Events\ProjectAllowed;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -21,6 +22,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         Lockout::class => [
             'App\Listeners\SendLockoutNotification',
+        ],
+        ProjectAllowed::class => [
+            'App\Listeners\SendProjectAllowedNotification',
         ],
         'Laravel\Passport\Events\AccessTokenCreated' => [
             'App\Listeners\RevokeOldTokens',
