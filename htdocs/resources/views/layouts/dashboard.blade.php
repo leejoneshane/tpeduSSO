@@ -98,6 +98,17 @@
                                 @endif
                             </ul>
                         </li>
+                        <li {{ (Request::is('school/token') ? 'class="active"' : '') }}>
+                            <a href="#"><i class="fa fa-child fa-fw"></i> 授權管理<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li {{ (Request::is('school/token') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('school.token', [ 'dc' => $dc ]) }}">瀏覽代理授權</a>
+                                </li>
+                                <li {{ (Request::is('school/token/new') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('school.createToken', [ 'dc' => $dc ]) }}">新增授權金鑰</a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
            	</nav>

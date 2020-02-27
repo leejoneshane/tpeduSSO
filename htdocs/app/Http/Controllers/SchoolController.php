@@ -2289,6 +2289,60 @@ class SchoolController extends Controller
 		}
 	}
 
+	public function schoolToken(Request $request, $dc)
+    {
+		$openldap = new LdapServiceProvider();
+		$entry = $openldap->getOrgEntry($dc);
+		$data = $openldap->getOrgData($entry, "tpAdministrator");
+		$ids = array();
+		if (array_key_exists('tpAdministrator', $data)) {
+		    if (is_array($data['tpAdministrator'])) {
+				$ids = $data['tpAdministrator'];
+			} else {
+				$ids[] = $data['tpAdministrator'];
+			}
+		}
+		$data = $openldap->findUsers("tpAdminSchools=$dc");
+		foreach ($data as $user) {
+			if (!in_array($user['cn'], $ids)) $ids[] = $user['cn'];
+		}
+		$admins = User::whereIn('idno', $ids)->get();
+		$usrids = array();
+		foreach ($admins as $a) {
+			$usrids[] = $a->id;
+		}
+		$tokens = Passport::token()->whereIn('user_id', $usrids)->get();
+		$pstokens = array();
+		$pstokens = $tokens->load('client')->filter(function ($token) {
+            return $token->client->personal_access_client && ! $token->revoked;
+        })->values();
+        return view('admin.schooltoken', [ 'personal' => $pstokens ]);
+    }
+
+	public function revokeToken(Request $request, $token_id)
+    {
+        $user = Auth::user();
+        $token = Passport::token()->where('id', $token_id)->where('user_id', $user->getKey())->first();
+        $token->revoke();
+        return redirect()->route('admin.schooltoken');
+    }
+
+    public function showCreateTokenForm(Request $request)
+    {
+        $scopes = Passport::scopes();
+        return view('admin.schooltokenadd', [ 'scopes' => $scopes ]);
+    }
+
+    public function storeToken(Request $request)
+    {
+		$validatedData = $request->validate([
+            'name' => 'required|max:255',
+            'scopes' => 'array|in:'.implode(',', Passport::scopeIds()),
+        ]);
+        $token = Auth::user()->createToken($request->get('name'), $request->get('scopes') ?: []);
+        return view('admin.schooltokenshow', [ 'token' => $token ]);
+    }
+
 	private function chomp_address($address)
 	{
 		return mb_ereg_replace("\\\\", "",$address);

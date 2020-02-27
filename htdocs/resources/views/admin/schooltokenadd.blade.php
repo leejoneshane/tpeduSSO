@@ -1,28 +1,28 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
-@section('content')
+@section('page_heading')
+建立代理授權金鑰
+@endsection
+
+@section('section')
 <div class="container">
+	<div class="row">
+	@if (session('error'))
+	    <div class="alert alert-danger">
+		{{ session('error') }}
+	    </div>
+	@endif
+	@if (session('success'))
+	    <div class="alert alert-success">
+		{{ session('success') }}
+	    </div>
+	@endif
     <div class="row justify-content-center">
         <div class="col-md-6" style="margin-left: 25%">
             <div class="card card-default" style="margin-top: 20px">
-                <div class="card-header">建立存取金鑰</div>
+                <div class="card-header">建立代理授權金鑰</div>
                 <div class="card-body">
-                    @if (session('error'))
-                        <div class="alert alert-danger">
-                            <p class="mb-0"><strong>糟糕！</strong> 發生錯誤！</p>
-                            <br>
-                                <ul>
-                                @if (is_array(session('error')))
-                                    @foreach (session('error') as $error)
-                                    <li>{{ $error }}</li>
-                                    @endforeach
-                                @else
-                                    <li>{{ session('error') }}</li>
-                                @endif
-                                </ul>
-                        </div>
-                    @endif
-                    <form id="form" role="form" action="{{ route('storeToken') }}" method="POST">
+                    <form id="form" role="form" action="{{ route('school.createToken') }}" method="POST">
                         @csrf
                         <div class="form-group">
                             <label for="name" class="col-md-4 col-form-label text-md-right">用途說明</label>

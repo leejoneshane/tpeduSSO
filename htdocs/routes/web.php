@@ -45,8 +45,6 @@ Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenContro
 Route::group(['prefix' => 'oauth', 'middleware' => 'auth'], function () {
 	//管理介面
 	Route::get('/', 'OauthController@index')->name('oauth');
-	Route::get('tokens/new', 'OauthController@showCreateTokenForm')->name('newToken');
-	Route::post('tokens/store', 'OauthController@storeToken')->name('storeToken');
 	Route::post('tokens/{token_id}/revoke', 'OauthController@revokeToken')->name('revokeToken');
 	//RouteRegistrar::forAuthorization()
 	Route::get('authorize', '\Laravel\Passport\Http\Controllers\AuthorizationController@authorize')->middleware('age')->name('passport.authorizations.authorize');
@@ -276,4 +274,8 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
 	Route::post('{dc}/people/{uuid}/toggle', 'SchoolController@toggle')->name('school.toggle');
 	Route::post('{dc}/people/{uuid}/undo', 'SchoolController@undo')->name('school.undo');
 	Route::post('{dc}/people/{uuid}/resetpass', 'SchoolController@resetpass')->name('school.resetpass');
+	Route::get('{dc}/tokens', 'SchoolController@schoolToken')->name('school.tokens');
+	Route::get('{dc}/tokens/new', 'SchoolController@showCreateTokenForm');
+	Route::post('{dc}/tokens/new', 'SchoolController@storeToken')->name('school.createToken');
+	Route::post('{dc}/tokens/{token_id}/revoke', 'SchoolController@revokeToken')->name('school.revokeToken');
 });

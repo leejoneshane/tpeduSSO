@@ -16,15 +16,7 @@ class OauthController extends Controller
         $mytokens =  $tokens->load('client')->filter(function ($token) {
             return ! $token->client->firstParty() && ! $token->revoked;
         })->values();
-        $is_schoolAdmin = false;
-        $pstokens = array();
-        if (isset($user->ldap['adminSchools'])) {
-            $is_schoolAdmin = true;
-            $pstokens = $tokens->load('client')->filter(function ($token) {
-                return $token->client->personal_access_client && ! $token->revoked;
-            })->values();
-        }
-        return view('auth.oauthManager', [ 'is_schoolAdmin' => $is_schoolAdmin, 'tokens' => $mytokens, 'personal' => $pstokens ]);
+        return view('auth.oauthManager', [ 'tokens' => $mytokens ]);
     }
 
     public function revokeToken(Request $request, $token_id)
@@ -33,22 +25,6 @@ class OauthController extends Controller
         $token = Passport::token()->where('id', $token_id)->where('user_id', $user->getKey())->first();
         $token->revoke();
         return redirect()->route('oauth');
-    }
-
-    public function showCreateTokenForm(Request $request)
-    {
-        $scopes = Passport::scopes();
-        return view('auth.createTokenForm', [ 'scopes' => $scopes ]);
-    }
-
-    public function storeToken(Request $request)
-    {
-		$validatedData = $request->validate([
-            'name' => 'required|max:255',
-            'scopes' => 'array|in:'.implode(',', Passport::scopeIds()),
-        ]);
-        $token = Auth::user()->createToken($request->get('name'), $request->get('scopes') ?: []);
-        return view('auth.showToken', [ 'token' => $token ]);
     }
 
     public function socialite(Request $request)

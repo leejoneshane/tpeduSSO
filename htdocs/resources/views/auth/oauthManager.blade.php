@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-6" style="margin-left: 25%">
+        <div class="col-md-8" style="margin-left: 20%">
             <div class="card card-default" style="margin-top: 20px">
                 <div class="card-header">我同意授權之專案</div>
                 <div class="card-body">
@@ -41,42 +41,6 @@
                     @endif
                 </div>
             </div>
-            @if ($is_schoolAdmin)
-            <div class="card card-default" style="margin-top: 20px">
-                <div class="card-header">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span>學校代理授權金鑰</span>
-                        <a class="action-link" tabindex="-1" href="{{ route('newToken') }}">建立金鑰</a>
-                    </div>
-                </div>
-                <div class="card-body">
-                @if (!$personal)
-                    <p class="mb-0">您尚未建立任何學校代理授權金鑰。</p>
-                @else
-                    <table class="table table-borderless mb-0">
-                        <thead>
-                            <tr>
-                                <th>識別名稱（用途說明）</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($personal as $token)
-                            <tr>
-                                <td style="vertical-align: middle;">{{ $token->name }}</td>
-                                <td style="vertical-align: middle;">
-                                    <button type="button" class="btn btn-danger"
-                                        onclick="$('#form').attr('action','{{ route('revokeToken', [ 'token_id' => $token->id ]) }}');
-                                            $('#form').submit();">刪除金鑰</button>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                @endif
-                </div>
-            </div>
-            @endif
             <form id="form" action="" method="POST" style="display: none;">
             @csrf
             </form>
