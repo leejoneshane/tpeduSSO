@@ -6,7 +6,7 @@ use App\Events\ProjectAllowed;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendProjectAllowedNotification
+class SendClientChangeNotification
 {
     /**
      * Create the event listener.
@@ -22,7 +22,7 @@ class SendProjectAllowedNotification
     {
         $project = $event->project;
         if (!empty($this->connEmail)) {
-            $project->notify(new ProjectAllowedNotification($project));
+            $project->notify(new ClientChangeNotification($project));
         }
     }
 }

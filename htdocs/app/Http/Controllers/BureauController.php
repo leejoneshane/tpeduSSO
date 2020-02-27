@@ -74,20 +74,46 @@ class BureauController extends Controller
             'connEmail' => 'required|email:rfc,dns',
             'connTel' => 'required|digits_between:7,10',
         ]);
-		$token = Project::create([
-			'organization' => $request->get('organization'),
-			'applicationName' => $request->get('applicationName'),
-			'reason' => $request->get('reason'),
-			'website' => $request->get('website'),
-			'redirect' => $request->get('redirect'),
-			'privileged' => $request->get('privileged'),
-			'kind' => $request->get('kind'),
-			'connName' => $request->get('connName'),
-			'connUnit' => $request->get('connUnit') ?: '',
-			'connEmail' => $request->get('connEmail') ?: '',
-			'connTel' => $request->get('connTel'),
-			'memo' => $request->get('memo'),
-		]);
+		if ($request->get('id')) {
+			$project = Project::find($id);
+			$project->forceFill([
+				'organization' => $request->get('organization'),
+				'applicationName' => $request->get('applicationName'),
+				'reason' => $request->get('reason'),
+				'website' => $request->get('website'),
+				'redirect' => $request->get('redirect'),
+				'privileged' => $request->get('privileged'),
+				'kind' => $request->get('kind'),
+				'connName' => $request->get('connName'),
+				'connUnit' => $request->get('connUnit') ?: '',
+				'connEmail' => $request->get('connEmail') ?: '',
+				'connTel' => $request->get('connTel'),
+				'memo' => $request->get('memo'),
+			])->save();
+			$client = $project->client();
+			if ($client) {
+				$client->forceFill([
+					'name' => $request->get('applicationName'),
+					'redirect' => $request->get('redirect'),
+				])->save();	
+			}
+		} else {
+			Project::create([
+				'id' => (string) Str::uuid(),
+				'organization' => $request->get('organization'),
+				'applicationName' => $request->get('applicationName'),
+				'reason' => $request->get('reason'),
+				'website' => $request->get('website'),
+				'redirect' => $request->get('redirect'),
+				'privileged' => $request->get('privileged'),
+				'kind' => $request->get('kind'),
+				'connName' => $request->get('connName'),
+				'connUnit' => $request->get('connUnit') ?: '',
+				'connEmail' => $request->get('connEmail') ?: '',
+				'connTel' => $request->get('connTel'),
+				'memo' => $request->get('memo'),
+			]);
+		}
 		return redirect()->route('bureau.project');
 	}
 
@@ -149,12 +175,29 @@ class BureauController extends Controller
 		return view('admin.bureauclient', [ 'projects' => $projects ]);		
 	}
 
-    public function changeSecret(Request $request, $id)
+    public function updateClient(Request $request, $id)
 	{
 		$project = Project::find($id);
 		$client = $project->client();
-		$client->secret = Str::random(40);
+		return view('admin.bureauclientedit', [ 'project' => $project, 'client' => $client ]);		
+	}
+
+    public function storeClient(Request $request, $id)
+	{
+		$project = Project::find($id);
+		$client = $project->client();
+		$validatedData = $request->validate([
+            'applicationName' => 'required|string|max:150',
+            'redirect' => 'required|url',
+		]);
+		$project->applicationName = $request->get("applicationName");
+		$project->redirect = $request->get("redirect");
+		$project->save();
+		$client->name = $request->get("applicationName");
+		$client->redirect = $request->get("redirect");
+		if ($request->get('secret')) $client->secret = Str::random(40);
 		$client->save();
+		event(new ClientChange($project));
 		return redirect()->route('bureau.client');		
 	}
 

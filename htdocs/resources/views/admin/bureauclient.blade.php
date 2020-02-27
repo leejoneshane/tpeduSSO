@@ -58,9 +58,10 @@ OAuth 用戶端管理
 							<span>{{ $project->client()->redirect }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<button type="button" class="btn btn-warning"
-								onclick="$('#form').attr('action','{{ route('bureau.changeSecret', [ 'id' => $project->id ]) }}');
-										 $('#form').submit();">更換密鑰</button>
+							<button type="button" class="btn btn-primary"
+								onclick="$('#form').attr('action','{{ route('bureau.updateClient', [ 'id' => $project->id ]) }}');
+										 $('#form').attr('method','GET');
+										 $('#form').submit();">編輯</button>
 							<button type="button" class="btn btn-info"
 								onclick="$('#form').attr('action','{{ route('bureau.toggleClient', [ 'id' => $project->id ]) }}');
 										 $('#form').submit();">{{ $project->client()->revoked ? '啟用' : '停用' }}</button>
@@ -72,7 +73,6 @@ OAuth 用戶端管理
 		</div>
 		</div>
 	</div>
-
     <form id="form" action="" method="POST" style="display: none;">
     @csrf
     </form>

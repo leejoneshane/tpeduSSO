@@ -36,6 +36,7 @@ class Project extends Model
 
     public function client() //取得 OAuth 用戶端
     {
+        if (empty($this->client)) return false;
         return Passport::client()->where('id', $this->client)->first();
     }
 

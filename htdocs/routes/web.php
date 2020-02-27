@@ -10,8 +10,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-//Route::prefix('img')->middleware('image.cache'); //實驗圖片快取功能
-
 //Auth::routes();
 // Authentication Routes...
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
@@ -74,6 +72,9 @@ Route::get('changePassword', 'HomeController@showChangePasswordForm');
 Route::post('changePassword', 'HomeController@changePassword')->name('changePassword');
 Route::get('changeAccount', 'HomeController@showChangeAccountForm');
 Route::post('changeAccount', 'HomeController@changeAccount')->name('changeAccount');
+Route::get('3party', 'GuestController@showApplyForm')->name('3party');
+Route::post('3party/store', 'GuestController@store')->name('store3party');
+Route::post('3party/update', 'GuestController@showEditForm')->name('edit3party');
 
 Route::group(['middleware' => 'auth'], function () {
 	Route::get('/', 'HomeController@index')->middleware('verified')->name('home');
@@ -215,9 +216,9 @@ Route::group(['prefix' => 'bureau', 'middleware' => 'auth.admin'], function () {
 	Route::post('project/{id}/deny', 'BureauController@denyProject')->name('bureau.denyProject');
 	Route::post('project/{id}/pass', 'BureauController@passProject')->name('bureau.passProject');
 	Route::get('client', 'BureauController@listClients')->name('bureau.client');
-	Route::get('client/{id}/build', 'BureauController@createClient')->name('bureau.createClient');
-	Route::get('client/{id}/secret', 'BureauController@changeSecret')->name('bureau.changeSecret');
-	Route::get('client/{id}/toggle', 'BureauController@toggleClient')->name('bureau.toggleClient');
+	Route::get('client/{id}/update', 'BureauController@updateClient');
+	Route::post('client/{id}/update', 'BureauController@storeClient')->name('bureau.updateClient');
+	Route::post('client/{id}/toggle', 'BureauController@toggleClient')->name('bureau.toggleClient');
 });
 
 Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () {

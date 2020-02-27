@@ -14,7 +14,7 @@ class CreateProjectsTable extends Migration
     public function up()
     {
         Schema::create('projects', function (Blueprint $table) {
-            $table->increments('id');
+            $table->uuid('id')->primary();
             $table->string('organizaton',150)->nullable();
             $table->string('applicationName',150);
             $table->string('reason',255)->nullable();
@@ -29,6 +29,7 @@ class CreateProjectsTable extends Migration
             $table->boolean('audit')->default(0); //1->pass
             $table->integer('client')->nullable()->index();
             $table->boolean('privileged')->default(0);
+            $table->string('')->default(0);
             $table->timestamps();
         });
     }

@@ -62,9 +62,10 @@
             </form>
             <div class="row">
                 <div class="col-sm-12 social-login-buttons" style="text-align:center;">
-                    <!-- a href="/login/google"--><img style="padding-left:5px;border=0;width:55px;height:50px;" src="{{ asset('img/google.png') }}"><!-->
-                    <!-- a href="/login/facebook"--><img style="padding-left:5px;border=0;width:55px;height:50px;" src="{{ asset('img/facebook.png') }}"><!-->
-                    <!-- a href="/login/yahoo"--><img style="padding-left:5px;border=0;width:55px;height:50px;" src="{{ asset('img/yahoo.png') }}"><!-->
+                    <!-- a href="/login/google"--><i class="fa fa-google fa-5x"></i><!-->
+                    <!-- a href="/login/facebook"--><i class="fa fa-facebook fa-5x"><!-->
+                    <!-- a href="/login/yahoo"--><i class="fa fa-yahoo fa-5x"><!-->
+                    <a href="/3party"><i class="fa fa-group fa-5x"></a>
                 </div>
             </div>
         </div>
