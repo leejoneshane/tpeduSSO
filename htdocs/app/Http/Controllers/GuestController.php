@@ -7,6 +7,7 @@ use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Project;
+use App\Events\ProjectApply;
 
 class GuestController extends Controller
 {
@@ -65,6 +66,7 @@ class GuestController extends Controller
 				'connTel' => $request->get('connTel'),
 			]);	
 		}
+		event(new ProjectApply($project));
         return view('3party.store');
 	}
 
