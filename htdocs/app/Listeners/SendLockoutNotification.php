@@ -36,7 +36,7 @@ class SendLockoutNotification
         if ($trylogin && $trylogin->hasVerifiedEmail()) {
             $trylogin->notify(new LockoutNotification());
         }
-        $users = User::where('is_admin', 1);
+        $users = User::where('is_admin', 1)->get();
         if ($users) {
             foreach ($users as $u) {
                 $u->notify(new LockoutAdminNotification($throttled));

@@ -197,7 +197,7 @@ class HomeController extends Controller
 				$user->resetLdapPassword($new);
 				$user->password = \Hash::make($new);
 				$user->save();
-				if ($user->hasVerifiedEmail()) $user->notify(new PasswordChangeNotification($new));
+				if ($user->hasVerifiedEmail()) $user->notify(new PasswordChangeNotification($user->name));
 			} else {
 				$openldap->resetPassword($entry, $new);
 				if ($user) {
