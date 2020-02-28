@@ -52,7 +52,6 @@
                 @endif
                 </div>
             </div>
-            @endif
             <form id="form" action="" method="POST" style="display: none;">
             @csrf
             </form>
