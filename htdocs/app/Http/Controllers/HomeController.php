@@ -222,24 +222,4 @@ class HomeController extends Controller
 		}
     }
 
-	public function googleClassroom(Request $request)
-    {
-		$user = Auth::user();
-		if ($user->is_parent) return redirect()->route('parent');
-		if (!$user->nameID() || $user->ldap['employeeType'] == '學生') return redirect()->route('home');
-		$openldap = new LdapServiceProvider();
-		$tclass = $user->ldap['tpTeachClass'];
-		$data = array();
-		if (!empty($tclass)) {
-			foreach ($tclass as $t) {
-				$pair = explode(',', $t);
-				$school = $openldap->getOrgTitle($pair[0]);
-				$class = $openldap->getOuTitle($pair[0], $pair[1]);
-				$subject = $openldap->getSubjectTitle($pair[0], $pair[2]);
-				$data[$pair] = $school.$class.$subject;
-			}
-		}
-		return view('admin.classroom', [ 'data' => $data ]);
-    }
-
 }

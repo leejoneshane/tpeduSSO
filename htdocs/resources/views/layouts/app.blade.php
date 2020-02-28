@@ -53,11 +53,6 @@
                                 <?php $tutor = Auth::user()->ldap['tpTutorClass']; ?>
                                 <li><a class="dropdown-item" href="{{ route('tutor', [ 'dc' => $o, 'class' => $tutor ]) }}"><i class="fa fa-book fa-fw"></i>班級管理：{{ $tutor }}</a></li>
                             @endif
-{{--
-                            @if (Auth::user()->nameID && Auth::user()->ldap['employeeType'] != '學生')
-                                <li><a class="dropdown-item" href="{{ route('classroom') }}"><i class="fa fa-key fa-fw"></i>Google 課堂管理</a></li>
-                            @endif
---}}
                             @if (Auth::user()->is_parent || Auth::user()->ldap['employeeType'] != '學生')
                             <li><a class="dropdown-item" href="{{ route('parent.listLink') }}"><i class="fa fa-chain fa-fw"></i>親子連結</a></li>
                             <li><a class="dropdown-item" href="{{ route('parent.showAuthProxyForm') }}"><i class="fa fa-check fa-fw"></i>代理授權</a></li>
