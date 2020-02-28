@@ -12,6 +12,7 @@ class OauthController extends Controller
     public function index()
     {
         $user = Auth::user();
+        if ($user->is_parent) return redirect()->route('parent');
         $tokens = Passport::token()->where('user_id', $user->getKey())->get();
         $mytokens =  $tokens->load('client')->filter(function ($token) {
             return ! $token->client->firstParty() && ! $token->revoked;
@@ -22,6 +23,7 @@ class OauthController extends Controller
     public function revokeToken(Request $request, $token_id)
     {
         $user = Auth::user();
+        if ($user->is_parent) return redirect()->route('parent');
         $token = Passport::token()->where('id', $token_id)->where('user_id', $user->getKey())->first();
         $token->revoke();
         return redirect()->route('oauth');

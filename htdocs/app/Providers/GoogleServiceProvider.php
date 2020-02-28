@@ -259,32 +259,57 @@ class GoogleServiceProvider extends ServiceProvider
 		}
 		return false;
 	}
-/*
+
 	public function createUserAlias($email, $alias)
 	{
 		$email_alias = new \Google_Service_Directory_Alias();
 		$email_alias->setAlias($alias);
-		return $this->directory->users_aliases->insert($email,$email_alias);
+		try {
+			return $this->directory->users_aliases->insert($email,$email_alias);
+		} catch (\Google_Service_Exception $e) {
+			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			return false;
+		}
 	}
 
 	public function listUserAliases($email)
 	{
-		return $this->directory->users_aliases->listUsersAliases($email);
+		try {
+			return $this->directory->users_aliases->listUsersAliases($email);
+		} catch (\Google_Service_Exception $e) {
+			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			return false;
+		}
 	}
 
 	public function removeUserAlias($email, $alias)
 	{
-		return $this->directory->users_aliases->delete($email, $alias);
+		try {
+			return $this->directory->users_aliases->delete($email, $alias);
+		} catch (\Google_Service_Exception $e) {
+			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			return false;
+		}
 	}
 
 	public function listGroups()
 	{
-		return $this->directory->groups->listGroups();
+		try {
+			return $this->directory->groups->listGroups();
+		} catch (\Google_Service_Exception $e) {
+			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			return false;
+		}
 	}
 
 	public function listMembers($groupId)
 	{
-		return $this->directory->members->listMembers($groupId);
+		try {
+			return $this->directory->members->listMembers($groupId);
+		} catch (\Google_Service_Exception $e) {
+			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			return false;
+		}
 	}
 
 	public function addMembers($groupId, $members)
@@ -294,38 +319,63 @@ class GoogleServiceProvider extends ServiceProvider
 			$member = new \Google_Service_Directory_Member();
 			$member->setEmail($m);
 			$member->setRole('MEMBER');
-			$users[] = $this->directory->members->insert($groupId, $member);
+			try {
+				$users[] = $this->directory->members->insert($groupId, $member);
+			} catch (\Google_Service_Exception $e) {
+				if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			}
 		}
 		return $users;
 	}
 
-	public function listCourses()
+	public function listCourses($teacher)
 	{
-		return $this->classroom->courses->listCourses();
+		try {
+			return $this->classroom->courses->listCourses(['teacherId' => $teacher])->getCourses();
+		} catch (\Google_Service_Exception $e) {
+			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			return false;
+		}
 	}
 
 	public function getCourse($courseId)
 	{
-		return $this->classroom->courses->get($courseId);
+		try {
+			return $this->classroom->courses->get($courseId);
+		} catch (\Google_Service_Exception $e) {
+			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			return false;
+		}
 	}
 
 	public function createCourse($name, $ownerId, $section, $descriptionHeading, $description, $room, $courseState)
 	{
 		$course = new \Google_Service_Classroom_Course();
 		$course->setName($name);
+		//OwnerId: id, email or 'me'
 		$course->setOwnerId($ownerId);
-		if(!empty($section)) $course->setSection($section);
-		if(!empty($descriptionHeading)) $course->setDescriptionHeading($descriptionHeading);
-		if(!empty($description)) $course->setDescription($description);
-		if(!empty($room)) $course->setRoom($room);
-		//PROVISIONED,ACTIVE,DECLINED
+		if (!empty($section)) $course->setSection($section);
+		if (!empty($descriptionHeading)) $course->setDescriptionHeading($descriptionHeading);
+		if (!empty($description)) $course->setDescription($description);
+		if (!empty($room)) $course->setRoom($room);
+		//CourceState: PROVISIONED,ACTIVE,DECLINED
 		if(!empty($courseState)) $course->setCourseState($courseState);
-		return $this->classroom->courses->create($course);
+		try {
+			return $this->classroom->courses->create($course);
+		} catch (\Google_Service_Exception $e) {
+			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			return false;
+		}
 	}
 
 	public function deleteCourse($courseId)
 	{
-		return $this->classroom->courses->delete($courseId);
+		try {
+			return $this->classroom->courses->delete($courseId);
+		} catch (\Google_Service_Exception $e) {
+			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			return false;
+		}
 	}
 
 	public function addCourseTeachers($courseId, $teachers)
@@ -334,7 +384,11 @@ class GoogleServiceProvider extends ServiceProvider
 		foreach($teachers as $t){
 			$tea = new \Google_Service_Classroom_Teacher();
 			$tea->setUserId($t);
-			$users[] = $this->classroom->courses_teachers->create($courseId, $tea);
+			try {
+				$users[] = $this->classroom->courses_teachers->create($courseId, $tea);
+			} catch (\Google_Service_Exception $e) {
+				if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			}
 		}
 		return $users;
 	}
@@ -343,7 +397,11 @@ class GoogleServiceProvider extends ServiceProvider
 	{
 		$users = array();
 		foreach($teachers as $t){
-			$users[] = $this->classroom->courses_teachers->delete($courseId, $t);
+			try {
+				$users[] = $this->classroom->courses_teachers->delete($courseId, $t);
+			} catch (\Google_Service_Exception $e) {
+				if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			}
 		}
 		return $users;
 	}
@@ -354,7 +412,11 @@ class GoogleServiceProvider extends ServiceProvider
 		foreach($students as $s){
 			$stu = new \Google_Service_Classroom_Student();
 			$stu->setUserId($s);
-			$users[] = $this->classroom->courses_students->create($courseId, $stu);
+			try {
+				$users[] = $this->classroom->courses_students->create($courseId, $stu);
+			} catch (\Google_Service_Exception $e) {
+				if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			}
 		}
 		return $users;
 	}
@@ -363,9 +425,13 @@ class GoogleServiceProvider extends ServiceProvider
 	{
 		$users = array();
 		foreach($students as $s){
-			$users[] = $this->classroom->courses_students->delete($courseId, $s);
+			try {
+				$users[] = $this->classroom->courses_students->delete($courseId, $s);
+			} catch (\Google_Service_Exception $e) {
+				if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			}
 		}
 		return $users;
 	}
-*/
+
 }

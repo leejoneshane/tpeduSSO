@@ -109,7 +109,7 @@ class HomeController extends Controller
     {
 		if (Auth::check()) {
 			$user = Auth::user();
-			if ($user->is_parent) return redirect('parent');
+			if ($user->is_parent) return redirect()->route('parent');
 		}
 		return view('auth.changeaccount');
     }
@@ -119,7 +119,7 @@ class HomeController extends Controller
 		if (Auth::check()) {
 			$user = Auth::user();
 			$idno = $user->idno;
-			if ($user->is_parent) return redirect('parent');
+			if ($user->is_parent) return redirect()->route('parent');
 		} else {
 			$idno = $request->session()->get('idno');
 		}
@@ -220,6 +220,26 @@ class HomeController extends Controller
 		} else {
 			return redirect('/')->with("status","G-Suite 帳號同步失敗！");
 		}
+    }
+
+	public function googleClassroom(Request $request)
+    {
+		$user = Auth::user();
+		if ($user->is_parent) return redirect()->route('parent');
+		if (!$user->nameID() || $user->ldap['employeeType'] == '學生') return redirect()->route('home');
+		$openldap = new LdapServiceProvider();
+		$tclass = $user->ldap['tpTeachClass'];
+		$data = array();
+		if (!empty($tclass)) {
+			foreach ($tclass as $t) {
+				$pair = explode(',', $t);
+				$school = $openldap->getOrgTitle($pair[0]);
+				$class = $openldap->getOuTitle($pair[0], $pair[1]);
+				$subject = $openldap->getSubjectTitle($pair[0], $pair[2]);
+				$data[$pair] = $school.$class.$subject;
+			}
+		}
+		return view('admin.classroom', [ 'data' => $data ]);
     }
 
 }
