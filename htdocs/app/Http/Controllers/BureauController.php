@@ -139,20 +139,18 @@ class BureauController extends Controller
 
     public function denyProject(Request $request, $id)
 	{
-		$project = Project::find($id);
 		$reason = $reguest->get('reason');
-		$project->reject()->sendMail([
+		Project::find($id)->reject()->sendMail([
 			'很遺憾，您申請的介接專案已經被駁回！理由如下：',
 			$reason,
 			'請您補齊文件後，儘速與承辦人員聯絡，以便處理後續事宜！',
 		]);
 		return redirect()->route('bureau.project');
-		
 	}
 
     public function passProject(Request $request, $id)
 	{
-		$project = Project::find($id)->allow()->buildClient();
+		$project = Project::find($id)->allow();
 		event(new ProjectAllowed($project));
 		return redirect()->route('bureau.project');
 	}

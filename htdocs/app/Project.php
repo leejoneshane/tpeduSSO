@@ -95,6 +95,7 @@ class Project extends Model
 
     public function allow() //核准申請
     {
+        $this->buildClient();
         $this->audit = true;
         $this->save();
         return $this;
