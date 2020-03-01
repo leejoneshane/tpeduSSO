@@ -75,6 +75,8 @@ Route::post('changeAccount', 'HomeController@changeAccount')->name('changeAccoun
 Route::get('3party', 'GuestController@showApplyForm')->name('3party');
 Route::post('3party/store', 'GuestController@store')->name('store3party');
 Route::post('3party/update', 'GuestController@showEditForm')->name('edit3party');
+Route::get('qrcode/{{id}}', 'GuestController@showGuardianAuthForm');
+Route::post('qrcode/{{id}}', 'GuestController@applyGuardianAuth')->name('qrcode');
 
 Route::group(['middleware' => 'auth'], function () {
 	Route::get('/', 'HomeController@index')->middleware('verified')->name('home');
@@ -91,8 +93,8 @@ Route::group(['prefix' => 'parent', 'middleware' => 'auth.parent'], function () 
 	Route::get('link/new', 'ParentController@showLinkForm')->name('parent.showLinkForm');
 	Route::post('link/apply', 'ParentController@applyLink')->name('parent.applyLink');
 	Route::post('link/{id}/remove', 'ParentController@removeLink')->name('parent.removeLink');
-	Route::get('authorize', 'ParentController@showAuthProxyForm')->name('parent.showAuthProxyForm');
-	Route::post('authorize/apply', 'ParentController@applyAuthProxy')->name('parent.applyAuthProxy');
+	Route::get('authorize', 'ParentController@showGuardianAuthForm');
+	Route::post('authorize', 'ParentController@applyGuardianAuth')->name('parent.guardianAuth');
 });
 
 Route::group(['prefix' => 'tutor', 'middleware' => 'auth.tutor'], function () {
@@ -107,20 +109,9 @@ Route::group(['prefix' => 'tutor', 'middleware' => 'auth.tutor'], function () {
 	Route::get('{dc}/{ou}/link', 'TutorController@classLinkForm')->name('tutor.link');
 	Route::post('link/deny/{id}', 'TutorController@denyLink')->name('tutor.denyLink');
 	Route::post('link/verify/{id}', 'TutorController@verifyLink')->name('tutor.verifyLink');
-//	Route::get('personal/listparents', 'HomeController@listparents');
-//	Route::get('personal/listmyparents/{uuid}', 'HomeController@listmyparents');
-//	Route::post('personal/linkedChange', 'HomeController@linkedChange');
-//	Route::post('personal/parentsqrcode', 'HomeController@parentsqrcode');
-//	Route::post('personal/listparentsqrcode', 'HomeController@listparentsqrcode')->name('personal.listparentsqrcode');
-
-	//G-Suite Class Room 建立
-//	Route::get('personal/teacher_lessons', 'HomeController@teacherLessons')->name('personal.teacher_lessons');
-//	Route::post('personal/lessons_member', 'HomeController@lessonsMember');
-//	Route::post('personal/teacher_courses', 'HomeController@teacherCourses')->name('personal.teacher_courses');
-
-	//導師審核家長親子連結申請
-//	Route::get('personal/parentslink_verify', 'HomeController@parentslinkVerifyForm')->name('personal.parentslink_verify');
-//	Route::post('personal/parentslink_verify', 'HomeController@parentslinkVerify');
+	Route::get('{dc}/{ou}/qrcode', 'TutorController@classQrcodeForm')->name('tutor.qrcode');
+	Route::post('{dc}/{ou}/qrcode/{uuid}', 'TutorController@qrcodeGenerate')->name('tutor.generateQrcode');
+	Route::post('{dc}/{ou}/qrcode/{uuid}/remove', 'TutorController@qrcodeRemove')->name('tutor.removeQrcode');
 });
 
 Route::group(['prefix' => 'sync', 'middleware' => 'auth.admin'], function () {

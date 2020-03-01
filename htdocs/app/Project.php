@@ -25,7 +25,7 @@ class Project extends Model
 
     public function routeNotificationForMail($notification)
     {
-        return $this->connEmail ?: false;
+        return $this->attributes['connEmail'] ?: false;
     }
 
     public function sendmail(array $messages, $header = '')
@@ -37,32 +37,32 @@ class Project extends Model
     public function client() //取得 OAuth 用戶端
     {
         if (empty($this->client)) return false;
-        return Passport::client()->where('id', $this->client)->first();
+        return Passport::client()->where('id', $this->attributes['client'])->first();
     }
 
     public function findClient() //搜尋已存在的 OAuth 用戶端
     {
-        return Passport::client()->where('name', $this->applicationName)->where('redirect', $this->redirect)->first();
+        return Passport::client()->where('name', $this->attributes['applicationName'])->where('redirect', $this->attributes['redirect'])->first();
     }
 
     public function buildClient() //建立 OAuth 用戶端
     {
-        if (empty($this->client)) {
+        if (empty($this->attributes['client'])) {
             $client = $this->findClient();
             if ($client) { //連結已存在的用戶端
-                $this->client = $client->id;
+                $this->attributes['client'] = $client->id;
                 $this->keep()->save();
             } else {
                 $client = Passport::client()->forceFill([
                     'user_id' => Auth::user()->getKey(),
-                    'name' => $this->applicationName,
+                    'name' => $this->attributes['applicationName'],
                     'secret' => Str::random(40),
-                    'redirect' => $this->redirect,
+                    'redirect' => $this->attributes['redirect'],
                     'personal_access_client' => 0,
                     'password_client' => 0,
                     'revoked' => false,
                 ])->save();
-                $this->client = $client->id;
+                $this->attributes['client'] = $client->id;
                 $this->save();
             }
         }
@@ -82,13 +82,13 @@ class Project extends Model
     public static function isPrivileged($client_id) //檢查 client 是否為特權專案
     {
         $project = Project::byClient($client_id);
-        if ($project && $project->privileged) return true;
+        if ($project && $project->attributes['privileged']) return true;
         return false;
     }
 
     public function reject() //拒絕申請
     {
-        $this->audit = false;
+        $this->attributes['audit'] = false;
         $this->revoke()->save();
         return $this;
     }
@@ -96,7 +96,7 @@ class Project extends Model
     public function allow() //核准申請
     {
         $this->buildClient();
-        $this->audit = true;
+        $this->attributes['audit'] = true;
         $this->save();
         return $this;
     }

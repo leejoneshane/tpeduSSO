@@ -29,7 +29,7 @@
 						<th>科目代號</th>
 						<th>教學領域</th>
 						<th>科目名稱</th>
-						<th>管理</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>

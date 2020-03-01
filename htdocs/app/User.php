@@ -41,6 +41,11 @@ class User extends Authenticatable implements MustVerifyEmail
 		'email_verified_at' => 'datetime',
     ];
 
+	public function qrcode()
+	{
+    	return $this->hasOne('App\Qrcode', 'idno', 'idno');
+	}
+
 	public function gmails()
 	{
     	return $this->hasMany('App\Gsuite', 'idno', 'idno');

@@ -28,7 +28,7 @@
 					<tr>
 						<th>群組代號</th>
 						<th>過濾條件</th>
-						<th>管理</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>

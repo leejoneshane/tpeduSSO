@@ -29,7 +29,6 @@ class CreateProjectsTable extends Migration
             $table->boolean('audit')->default(0); //1->pass
             $table->integer('client')->nullable()->index();
             $table->boolean('privileged')->default(0);
-            $table->string('')->default(0);
             $table->timestamps();
         });
     }

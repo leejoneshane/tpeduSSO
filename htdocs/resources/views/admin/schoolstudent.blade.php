@@ -56,7 +56,7 @@
 						<th>姓名</th>
 						<th>班級代號</th>
 						<th>座號</th>
-						<th>管理</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>

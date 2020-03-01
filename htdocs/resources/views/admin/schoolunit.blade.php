@@ -28,7 +28,7 @@
 					<tr>
 						<th>處室代號</th>
 						<th>處室全銜</th>
-						<th>管理</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>

@@ -4,15 +4,15 @@ namespace App\Http\Controllers;
 
 use Auth;
 use Log;
+use Config;
 use Carbon\Carbon;
 use App\User;
 use App\PSLink;
-use App\OauthScopeField;
-use App\OauthThirdappStudent;
+use App\PSAuthorize;
+use App\Qrcode;
 use Illuminate\Http\Request;
-use App\Providers\SimsServiceProvider;
+use Illuminate\Support\Str;
 use App\Providers\LdapServiceProvider;
-use App\Providers\GoogleServiceProvider;
 
 class TutorController extends Controller
 {
@@ -190,6 +190,42 @@ class TutorController extends Controller
 		$link->verified_time = date("Y-m-d H:i:s");
 		$link->save();
 		return back()->with("success","已經將指定的親子連結設為有效！");
+	}
+
+	public function classQrcodeForm(Request $request, $dc, $ou)
+    {
+		$openldap = new LdapServiceProvider();
+		$filter = "(&(o=$dc)(tpClass=$ou)(employeeType=學生)(!(inetUserStatus=deleted)))";
+		$students = $openldap->findUsers($filter, ["cn", "displayName", "o", "tpClass", "tpSeat", "entryUUID", "uid", "inetUserStatus"]);
+		usort($students, function ($a, $b) { return $a['tpSeat'] <=> $b['tpSeat']; });
+		foreach ($students as $st) {
+			$qrcode = Qrcode::where('idno', $st['cn'])->first();
+			if ($qrcode) $st['QRCODE'] = $qrcode->generate();
+		}
+		return view('admin.classstudentqrcode', [ 'dc' => $dc, 'ou' => $ou, 'students' => $students ]);
+	}
+
+	public function qrcodeGenerate(Request $request, $dc, $ou, $uuid)
+    {
+		$openldap = new LdapServiceProvider();
+		$idno = $openldap->getUserIDNO($uuid);
+		$qrcode = Qrcode::where('idno', $idno)->first();
+		if ($qrcode) $qrcode->delete();
+		Qrcode::create([
+			'id' => (string) Str::uuid(),
+			'idno' => $idno,
+			'expired_at' => Carbon::today()->addDays(Config::get('app.QRCodeExpireDays')),
+		]);
+		return redirect()->route('tutor.qrcode', [ 'dc' => $dc, 'ou' => $ou ]);
+	}
+
+	public function qrcodeRemove(Request $request, $dc, $ou, $uuid)
+    {
+		$openldap = new LdapServiceProvider();
+		$idno = $openldap->getUserIDNO($uuid);
+		$qrcode = Qrcode::where('idno', $idno)->first();
+		if ($qrcode) $qrcode->delete();
+		return redirect()->route('tutor.qrcode', [ 'dc' => $dc, 'ou' => $ou ]);
 	}
 
 }

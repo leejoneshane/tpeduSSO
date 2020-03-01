@@ -56,7 +56,7 @@
 						<th>姓名</th>
 						<th>單位</th>
 						<th>職稱</th>
-						<th>管理</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>

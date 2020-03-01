@@ -40,7 +40,7 @@
 					<tr>
 						<th>職務代號</th>
 						<th>職稱</th>
-						<th>管理</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>

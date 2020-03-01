@@ -31,6 +31,6 @@ class CreateParentStudentAuthorizeTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('parent_student_link');
+        Schema::dropIfExists('parent_student_authorize');
     }
 }

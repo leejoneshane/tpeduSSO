@@ -114,7 +114,7 @@ class ParentController extends Controller
 		return back()->with("success","已經為您移除親子連結！");
 	}
 
-	public function showAuthProxyForm(Request $request)
+	public function showGuardianAuthForm(Request $request)
     {
 		$openldap = new LdapServiceProvider();
 		$idno = Auth::user()->idno;
@@ -148,15 +148,12 @@ class ParentController extends Controller
 				$authorizes[$d->client_id] = $d->trust_level;
 			}
 		}
-		return view('parents.authProxyForm', [ 'myidno' => $myidno, 'kids' => $kids, 'apps' => $apps, 'agreeAll' => $agreeAll, 'authorizes' => $authorizes, 'trust_level' => Config::get('app.trust_level') ]);		
+		return view('parents.guardianAuthForm', [ 'myidno' => $myidno, 'kids' => $kids, 'apps' => $apps, 'agreeAll' => $agreeAll, 'authorizes' => $authorizes, 'trust_level' => Config::get('app.trust_level') ]);		
 	}
 
-	public function applyAuthProxy(Request $request)
+	public function applyGuardianAuth(Request $request)
     {
-		if (Auth::check())
-			$parent_idno = Auth::user()->idno;
-		else
-			$parent_idno = 'qrcode';
+		$parent_idno = Auth::user()->idno;
 		$student_idno = $request->get('student');
 		$agreeAll = $request->get('agreeAll');
 		$agree = $request->get('agree');
@@ -194,7 +191,7 @@ class ParentController extends Controller
 				}
 			}
 		}
-		return redirect()->route('parent.showAuthProxyForm')->with("success","已經為您更新代理授權設定！")->with("student",$request->get('student'));
+		return redirect()->route('parent.guardianAuth')->with("success","已經為您更新代理授權設定！")->with("student",$request->get('student'));
 	}
 
 }

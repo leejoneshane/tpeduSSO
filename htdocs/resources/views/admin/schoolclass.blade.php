@@ -36,7 +36,7 @@
 						<th>班級代號</th>
 						<th>班級名稱</th>
 						<th>導師</th>
-						<th>管理</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>

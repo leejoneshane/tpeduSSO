@@ -55,7 +55,7 @@
                             @endif
                             @if (Auth::user()->is_parent || Auth::user()->ldap['employeeType'] != '學生')
                             <li><a class="dropdown-item" href="{{ route('parent.listLink') }}"><i class="fa fa-chain fa-fw"></i>親子連結</a></li>
-                            <li><a class="dropdown-item" href="{{ route('parent.showAuthProxyForm') }}"><i class="fa fa-check fa-fw"></i>代理授權</a></li>
+                            <li><a class="dropdown-item" href="{{ route('parent.guardianAuth') }}"><i class="fa fa-check fa-fw"></i>代理授權</a></li>
                             @endif
                             @if (!(Auth::user()->is_parent))
                                 <li><a class="dropdown-item" href="{{ route('oauth') }}"><i class="fa fa-key fa-fw"></i>金鑰管理</a></li>

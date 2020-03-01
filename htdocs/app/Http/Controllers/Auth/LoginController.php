@@ -124,11 +124,7 @@ class LoginController extends Controller
                 $myuser = $account->user();
                 if ($myuser) {
                     Auth::login($myuser);
-//                  if($request->session()->has('qrcodeObject')) {
-//                      return app('App\Http\Controllers\HomeController')->connectChildQrcode($request);
-//                  } else {
-                        return redirect()->intended($this->redirectTo);
-//                  }
+                    return redirect()->intended($this->redirectTo);
                 } 
             }
             return redirect()->route('login')->with('error','這個社群帳號尚未綁定使用者，所以無法登入！');

@@ -36,7 +36,7 @@
 						<th>座號</th>
 						<th>關係</th>
 						<th>自動檢測結果</th>
-						<th>審核</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
