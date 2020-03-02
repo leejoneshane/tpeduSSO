@@ -10,6 +10,7 @@ use App\Events\ClientChange;
 use App\Events\ProjectApply;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use SocialiteProviders\Manager\SocialiteWasCalled;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -25,6 +26,16 @@ class EventServiceProvider extends ServiceProvider
         Lockout::class => [
             'App\Listeners\SendLockoutNotification',
         ],
+        'Laravel\Passport\Events\AccessTokenCreated' => [
+            'App\Listeners\RevokeOldTokens',
+        ],
+        'Laravel\Passport\Events\RefreshTokenCreated' => [
+            'App\Listeners\PruneOldTokens',
+        ],
+        SocialiteWasCalled::class => [
+            'SocialiteProviders\Yahoo\YahooExtendSocialite@handle',
+            'SocialiteProviders\Line\LineExtendSocialite@handle',
+        ],
         ProjectAllowed::class => [
             'App\Listeners\SendProjectAllowedNotification',
         ],
@@ -33,12 +44,6 @@ class EventServiceProvider extends ServiceProvider
         ],
         ProjectApply::class => [
             'App\Listeners\SendProjectApplyNotification',
-        ],
-        'Laravel\Passport\Events\AccessTokenCreated' => [
-            'App\Listeners\RevokeOldTokens',
-        ],
-        'Laravel\Passport\Events\RefreshTokenCreated' => [
-            'App\Listeners\PruneOldTokens',
         ],
     ];
 

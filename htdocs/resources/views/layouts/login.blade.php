@@ -15,6 +15,8 @@
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/form-elements.css') }}" rel="stylesheet">
     <link href="{{ asset('css/login-style.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/brands.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/fontawesome.min.css') }}" rel="stylesheet">
 
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
 </head>
@@ -29,9 +31,7 @@
 
     <!-- Scripts -->
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-backstretch/2.0.4/jquery.backstretch.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js"></script>
     <script src="{{ asset('js/scripts.js') }}"></script>
     <!--[if lt IE 10]>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-placeholder/2.3.1/jquery.placeholder.min.js"></script>

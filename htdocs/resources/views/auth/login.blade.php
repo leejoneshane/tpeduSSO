@@ -62,10 +62,11 @@
             </form>
             <div class="row">
                 <div class="col-sm-12 social-login-buttons" style="text-align:center;">
-                    <!-- a href="/login/google"--><i class="fa fa-google fa-5x" title="使用 Google 登入"></i><!-->
-                    <!-- a href="/login/facebook"--><i class="fa fa-facebook fa-5x" title="使用 Facebook 登入"><!-->
-                    <!-- a href="/login/yahoo"--><i class="fa fa-yahoo fa-5x" title="使用 YAHOO 登入"><!-->
-                    <a href="/3party"><i class="fa fa-group fa-5x" title="申請介接專案"></a>
+                    <a href="/login/google"><i class="fa fa-google fa-3x" title="使用 Google 登入"></i></a>
+                    <a href="/login/facebook"><i class="fa fa-facebook fa-3x" title="使用 Facebook 登入"></i></a>
+                    <a href="/login/yahoo"><i class="fa fa-yahoo fa-3x" title="使用 Yahoo 登入"></i></a>
+                    <a href="/login/line"><i class="fa fa-line fa-3x" title="使用 Line 登入"></i></a>
+                    <a href="/3party"><i class="fa fa-group fa-3x" title="申請介接專案"></i></a>
                 </div>
             </div>
         </div>
