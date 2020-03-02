@@ -6,7 +6,7 @@
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
                         <li {{ (Request::is('/school/admin') ? 'class="active"' : '') }}>
-                            <a href="{{ route('/school.admin', [ 'dc' => $dc ]) }}"><i class="fa fa-user-md fa-fw"></i> 設定管理員</a>
+                            <a href="{{ route('school.admin', [ 'dc' => $dc ]) }}"><i class="fa fa-user-md fa-fw"></i> 設定管理員</a>
                         </li>
                         <li {{ (Request::is('/school/profile') ? 'class="active"' : '') }}>
                             <a href="{{ route('school.profile', [ 'dc' => $dc ]) }}"><i class="fa fa-list-alt fa-fw"></i> 學校基本資料</a>

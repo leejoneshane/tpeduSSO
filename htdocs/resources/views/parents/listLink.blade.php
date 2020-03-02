@@ -18,7 +18,7 @@
 					{{ session('success') }}
 		    		</div>
 				@endif
-				<div class="col-md-10 col-md-offset-9">
+				<div class="col-md-10 offset-md-9">
 					<a class="btn btn-primary" id='buttonAdd' name='buttonAdd' href='{{ route('parent.showLinkForm') }}'>新增子女</a>
 				</div>		
 				<table class="table table-hover">
