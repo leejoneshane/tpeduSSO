@@ -36,7 +36,8 @@ class OauthController extends Controller
         $google = $query->where('socialite', 'Google')->first();
         $facebook = $query->where('socialite', 'Facebook')->first();
         $yahoo = $query->where('socialite', 'Yahoo')->first();
-        return view('auth.socialiteManager', [ 'google' => $google, 'facebook' => $facebook, 'yahoo' => $yahoo ]);
+        $line = $query->where('socialite', 'Line')->first();
+        return view('auth.socialiteManager', [ 'google' => $google, 'facebook' => $facebook, 'yahoo' => $yahoo, 'line' => $line ]);
     }
 
     public function removeSocialite(Request $request)

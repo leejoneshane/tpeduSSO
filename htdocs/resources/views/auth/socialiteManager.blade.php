@@ -66,6 +66,22 @@
                         <a href="{{ route('login.yahoo') }}" class="btn btn-primary">綁定</a>
                     </div>
                 @endif
+                @if ($yahoo)
+                    <div class="col-md-8">
+                        Line 帳號：{{ $line->userID }}
+                        <button type="button" class="btn btn-danger"
+							 	onclick="$('#form').attr('action','{{ route('socialite.remove') }}');
+                                         $('#form').attr('method', 'POST');
+                                         $('#socialite').value('Line');
+                                         $('#userid').value($line->userID);
+										 $('#form').submit();">解除</button>
+                    </div>
+                @else
+                    <div class="col-md-8">
+                        Line 帳號：
+                        <a href="{{ route('login.line') }}" class="btn btn-primary">綁定</a>
+                    </div>
+                @endif
                 <form id="form" action="" method="" style="display: none;">
                 @csrf
                 <input type="hidden" id='socialite' name='socialite' value="">

@@ -72,9 +72,9 @@ Route::get('changePassword', 'HomeController@showChangePasswordForm');
 Route::post('changePassword', 'HomeController@changePassword')->name('changePassword');
 Route::get('changeAccount', 'HomeController@showChangeAccountForm');
 Route::post('changeAccount', 'HomeController@changeAccount')->name('changeAccount');
-Route::get('3party', 'GuestController@showApplyForm')->name('3party');
-Route::post('3party/store', 'GuestController@store')->name('store3party');
-Route::post('3party/update', 'GuestController@showEditForm')->name('edit3party');
+Route::get('3party', 'GuestController@apply')->name('3party');
+Route::post('3party/store', 'GuestController@store')->name('3party.store');
+Route::post('3party/update', 'GuestController@edit')->name('3party.edit');
 Route::get('qrcode/{{id}}', 'GuestController@showGuardianAuthForm');
 Route::post('qrcode/{{id}}', 'GuestController@applyGuardianAuth')->name('qrcode');
 
