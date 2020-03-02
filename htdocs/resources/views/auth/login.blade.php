@@ -21,9 +21,6 @@
                     <p>請輸入您的使用者名稱與密碼：</p>
 		        @endif
             </div>
-    	    <div class="form-top-right">
-                <i class="fa fa-lock"></i>
-            </div>
         </div>
 	    <div class="form-bottom">
             <form role="form" method="POST" action="{{ route('login') }}" class="login-form" data-stage="DataStore1">
@@ -62,11 +59,11 @@
             </form>
             <div class="row">
                 <div class="col-sm-12 social-login-buttons" style="text-align:center;">
-                    <a href="/login/google"><i class="fa fa-google fa-3x" title="使用 Google 登入"></i></a>
-                    <a href="/login/facebook"><i class="fa fa-facebook fa-3x" title="使用 Facebook 登入"></i></a>
-                    <a href="/login/yahoo"><i class="fa fa-yahoo fa-3x" title="使用 Yahoo 登入"></i></a>
-                    <a href="/login/line"><i class="fa fa-line fa-3x" title="使用 Line 登入"></i></a>
-                    <a href="/3party"><i class="fa fa-group fa-3x" title="申請介接專案"></i></a>
+                    <a href="/login/google"><i style="color:FireBrick" class="fab fa-2x fa-google" title="使用 Google 登入"></i></a>　
+                    <a href="/login/facebook"><i style="color:blue" class="fab fa-2x fa-facebook" title="使用 Facebook 登入"></i></a>　
+                    <a href="/login/yahoo"><i style="color:RebeccaPurple" class="fab fa-2x fa-yahoo" title="使用 Yahoo 登入"></i></a>　
+                    <a href="/login/line"><i style="color:green" class="fab fa-2x fa-line" title="使用 Line 登入"></i></a>　　
+                    <a href="/3party"><i style="color:gray" class="fa fa-2x fa-users" title="申請介接專案"></i></a>
                 </div>
             </div>
         </div>

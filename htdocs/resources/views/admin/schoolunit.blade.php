@@ -26,7 +26,7 @@
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th>處室代號</th>
+						<th width="30%">處室代號</th>
 						<th>處室全銜</th>
 						<th></th>
 					</tr>

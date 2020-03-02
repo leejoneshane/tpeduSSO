@@ -7,6 +7,7 @@ use Config;
 use Validator;
 use Auth;
 use Illuminate\Http\Request;
+use Laravel\Passport\Passport;
 use App\User;
 use App\Providers\LdapServiceProvider;
 use App\Rules\idno;
