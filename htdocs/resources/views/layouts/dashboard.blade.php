@@ -5,13 +5,13 @@
            <nav class="navbar-light sidebar" style="margin-top: 0px" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
-                        <li {{ (Request::is('/school/admin') ? 'class="active"' : '') }}>
+                        <li class="py-2">
                             <a href="{{ route('school.admin', [ 'dc' => $dc ]) }}"><i class="fa fa-user-md fa-fw"></i> 設定管理員</a>
                         </li>
-                        <li {{ (Request::is('/school/profile') ? 'class="active"' : '') }}>
+                        <li class="py-2">
                             <a href="{{ route('school.profile', [ 'dc' => $dc ]) }}"><i class="fa fa-list-alt fa-fw"></i> 學校基本資料</a>
                         </li>
-                        <li {{ (Request::is('/school/unit') ? 'class="active"' : '') }}>
+                        <li class="py-2">
                             <a href="#"><i class="fa fa-sitemap fa-fw"></i> 行政部門管理</a>
                             <ul class="nav nav-second-level">
                                 @if (!empty($sims) && $sims != 'alle')
@@ -24,11 +24,11 @@
                                 </li>
                             </ul>
                         </li>
-                        <li {{ (Request::is('/school/role') ? 'class="active"' : '') }}>
+                        <li class="py-2">
                             <a href="{{ route('school.role', [ 'dc' => $dc, 'ou' => 'null' ]) }}"><i class="fa fa-suitcase fa-fw"></i> 職稱管理</a>
                         </li>
-                        <li {{ (Request::is('/school/class') ? 'class="active"' : '') }}>
-                            <a href="#"><i class="fa fa-graduation-cap fa-fw"></i> 班級管理<span class="fa arrow"></span></a>
+                        <li class="py-2">
+                            <a href="#"><i class="fa fa-graduation-cap fa-fw"></i> 班級管理</a>
                             <ul class="nav nav-second-level">
                                 @if (!empty($sims))
                                 <li {{ (Request::is('/school/sync_class') ? 'class="active"' : '') }}>
@@ -43,8 +43,8 @@
                                 </li>
                             </ul>
                         </li>
-                        <li {{ (Request::is('/school/subject') ? 'class="active"' : '') }}>
-                            <a href="#"><i class="fa fa-flask fa-fw"></i> 教學科目管理<span class="fa arrow"></span></a>
+                        <li class="py-2">
+                            <a href="#"><i class="fa fa-flask fa-fw"></i> 教學科目管理</a>
                             <ul class="nav nav-second-level">
                                 @if (!empty($sims))
                                 <li {{ (Request::is('/school/sync_subject') ? 'class="active"' : '') }}>
@@ -56,8 +56,8 @@
                                 </li>
                             </ul>
                         </li>
-                        <li {{ (Request::is('/school/teacher') ? 'class="active"' : '') }}>
-                            <a href="#"><i class="fa fa-female fa-fw"></i> 教師管理<span class="fa arrow"></span></a>
+                        <li class="py-2">
+                            <a href="#"><i class="fa fa-female fa-fw"></i> 教師管理</a>
                             <ul class="nav nav-second-level">
                                 @if (!empty($sims))
                                 <li {{ (Request::is('/school/sync_teacher') ? 'class="active"' : '') }}>
@@ -77,8 +77,8 @@
                                 @endif
                             </ul>
                         </li>
-                        <li {{ (Request::is('/school/student') ? 'class="active"' : '') }}>
-                            <a href="#"><i class="fa fa-child fa-fw"></i> 學生管理<span class="fa arrow"></span></a>
+                        <li class="py-2">
+                            <a href="#"><i class="fa fa-child fa-fw"></i> 學生管理</a>
                             <ul class="nav nav-second-level">
                                 @if (!empty($sims))
                                 <li {{ (Request::is('/school/sync_student') ? 'class="active"' : '') }}>
@@ -98,8 +98,8 @@
                                 @endif
                             </ul>
                         </li>
-                        <li {{ (Request::is('/school/token') ? 'class="active"' : '') }}>
-                            <a href="#"><i class="fa fa-child fa-fw"></i> 授權管理<span class="fa arrow"></span></a>
+                        <li class="py-2">
+                            <a href="#"><i class="fa fa-key fa-fw"></i> 授權管理</a>
                             <ul class="nav nav-second-level">
                                 <li {{ (Request::is('/school/tokens') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.tokens', [ 'dc' => $dc ]) }}">瀏覽代理授權</a>
@@ -112,7 +112,6 @@
                     </ul>
                 </div>
            	</nav>
-
 
         	<div id="page-wrapper">
 				<div class="row">

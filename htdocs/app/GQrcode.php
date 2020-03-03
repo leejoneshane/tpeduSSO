@@ -2,14 +2,16 @@
 
 namespace App;
 
-use Carbon;
-use Qrcode;
+use QrCode;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class Gsuite extends Model
+class GQrcode extends Model
 {
 
 	protected $table = 'guardian_qrcode';
+
+	public $timestamps = false;
 
     protected $fillable = [
         'id', 'idno', 'expired_at',

@@ -8,7 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Project;
-use App\Qrcode;
+use App\GQrcode;
 use App\Events\ProjectApply;
 
 class GuestController extends Controller
@@ -81,7 +81,8 @@ class GuestController extends Controller
 
 	public function showGuardianAuthForm(Request $request, $id)
     {
-		$qrcode = Qrcode::find($id);
+		$qrcode = GQrcode::find($id);
+		if ($qrcode && $qrcode->expired()) return redirect()->route('home');
 		$student_idno = $qrcode->user()->idno;
 		$openldap = new LdapServiceProvider();
 		$kids = array();
@@ -110,7 +111,8 @@ class GuestController extends Controller
 	public function applyGuardianAuth(Request $request, $id)
     {
 		$parent_idno = 'qrcode';
-		$qrcode = Qrcode::find($id);
+		$qrcode = GQrcode::find($id);
+		if ($qrcode && $qrcode->expired()) return redirect()->route('home');
 		$student_idno = $qrcode->user()->idno;
 		$agreeAll = $request->get('agreeAll');
 		$agree = $request->get('agree');

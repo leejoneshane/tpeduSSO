@@ -5,11 +5,11 @@
            <nav class="navbar-light sidebar" style="margin-top: 0px" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
-                        <li {{ (Request::is('bureau/admin') ? 'class="active"' : '') }}>
-                            <a href="{{ route('bureau.admin') }}"><i class="fa fa-user-md fa-fw"></i>設定局端管理員</a>
+                        <li class="py-2">
+                            <a href="{{ route('bureau.admin') }}"><i class="fa fa-user-md fa-fw"></i> 設定局端管理員</a>
                         </li>
-                        <li {{ (Request::is('bureau/organization') ? 'class="active"' : '') }}>
-                            <a href="#"><i class="fa fa-sitemap fa-fw"></i>教育機構管理</a>
+                        <li class="py-2">
+                            <a href="#"><i class="fa fa-sitemap fa-fw"></i> 教育機構管理</a>
                             <ul class="nav nav-second-level">
                                 <li {{ (Request::is('bureau/organization') ? 'class="active"' : '') }}>
                                     <a href="{{ route('bureau.organization') }}">線上編輯</a>
@@ -19,11 +19,11 @@
                                 </li>
                             </ul>
                         </li>
-                        <li {{ (Request::is('bureau/group') ? 'class="active"' : '') }}>
-                            <a href="{{ route('bureau.group') }}"><i class="fa fa-group fa-fw"></i>動態群組管理</a>
+                        <li class="py-2">
+                            <a href="{{ route('bureau.group') }}"><i class="fa fa-group fa-fw"></i> 動態群組管理</a>
                         </li>
-                        <li {{ (Request::is('bureau/people') ? 'class="active"' : '') }}>
-                            <a href="#"><i class="fa fa-user fa-fw"></i>人員管理<span class="fa arrow"></span></a>
+                        <li class="py-2">
+                            <a href="#"><i class="fa fa-user fa-fw"></i> 人員管理</a>
                             <ul class="nav nav-second-level">
                                 <li {{ (Request::is('bureau/people') ? 'class="active"' : '') }}>
                                     <a href="{{ route('bureau.people') }}">瀏覽及搜尋</a>
@@ -36,8 +36,8 @@
                                 </li>
                             </ul>
                         </li>
-                        <li {{ (Request::is('bureau/project') ? 'class="active"' : '') }}>
-                            <a href="#"><i class="fa fa-user fa-fw"></i>介接專案管理<span class="fa arrow"></span></a>
+                        <li class="py-2">
+                            <a href="#"><i class="fa fa-key fa-fw"></i> 介接專案管理</a>
                             <ul class="nav nav-second-level">
                                 <li {{ (Request::is('bureau/project') ? 'class="active"' : '') }}>
                                     <a href="{{ route('bureau.project') }}">編輯審核</a>

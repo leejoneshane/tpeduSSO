@@ -23,8 +23,8 @@
 			<h4>
 				學生 QRCODE 一覽表
 			</h4>
-			<div class="col-md-10 col-md-offset-9">
-				<button class="btn btn-primary" onclick="window.print();">列印</button>
+			<div class="col-md-10">
+				<button class="btn btn-success float-right" onclick="window.print();">列印</button>
 			</div>		
 		</div>
 		<div class="panel-body">
@@ -35,6 +35,7 @@
 						<th>座號</th>
 						<th>QRCODE</th>
 						<th>到期日</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -50,13 +51,16 @@
 							<span>{{ $student['tpSeat'] }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<span>{!! isset($student['QRCODE']) ? $student['QRCODE'] : '尚未產生' !!}</span>
+							<span>{!! isset($student['QRCODE'])  ? $student['QRCODE'] : '尚未產生' !!}</span>
+						</td>
+						<td style="vertical-align: inherit;">
+							<span>{{ isset($student['expired'])  ? $student['expired'] : '-' }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
 							<button type="button" class="btn btn-primary"
 							 	onclick="$('#form').attr('action','{{ route('tutor.generateQrcode', [ 'dc' => $dc, 'ou' => $ou, 'uuid' => $student['entryUUID'] ]) }}');
 										 $('#form').submit();">重新產生</button>
-							@if ($student['QRCODE'])
+							@if (isset($student['QRCODE']))
 							<button type="button" class="btn btn-danger"
 							 	onclick="$('#form').attr('action','{{ route('tutor.removeQrcode', [ 'dc' => $dc, 'ou' => $ou, 'uuid' => $student['entryUUID'] ]) }}');
 										 $('#form').submit();">刪除 QRCODE</button>

@@ -9,7 +9,7 @@ use Carbon\Carbon;
 use App\User;
 use App\PSLink;
 use App\PSAuthorize;
-use App\Qrcode;
+use App\GQrcode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Providers\LdapServiceProvider;
@@ -198,9 +198,12 @@ class TutorController extends Controller
 		$filter = "(&(o=$dc)(tpClass=$ou)(employeeType=學生)(!(inetUserStatus=deleted)))";
 		$students = $openldap->findUsers($filter, ["cn", "displayName", "o", "tpClass", "tpSeat", "entryUUID", "uid", "inetUserStatus"]);
 		usort($students, function ($a, $b) { return $a['tpSeat'] <=> $b['tpSeat']; });
-		foreach ($students as $st) {
-			$qrcode = Qrcode::where('idno', $st['cn'])->first();
-			if ($qrcode) $st['QRCODE'] = $qrcode->generate();
+		foreach ($students as $k => $st) {
+			$qrcode = GQrcode::where('idno', $st['cn'])->first();
+			if ($qrcode) {
+				$students[$k]['QRCODE'] = $qrcode->generate();
+				$students[$k]['expired'] = $qrcode->expired_at;
+			}
 		}
 		return view('admin.classstudentqrcode', [ 'dc' => $dc, 'ou' => $ou, 'students' => $students ]);
 	}
@@ -209,9 +212,9 @@ class TutorController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$idno = $openldap->getUserIDNO($uuid);
-		$qrcode = Qrcode::where('idno', $idno)->first();
+		$qrcode = GQrcode::where('idno', $idno)->first();
 		if ($qrcode) $qrcode->delete();
-		Qrcode::create([
+		GQrcode::create([
 			'id' => (string) Str::uuid(),
 			'idno' => $idno,
 			'expired_at' => Carbon::today()->addDays(Config::get('app.QRCodeExpireDays')),
@@ -223,7 +226,7 @@ class TutorController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$idno = $openldap->getUserIDNO($uuid);
-		$qrcode = Qrcode::where('idno', $idno)->first();
+		$qrcode = GQrcode::where('idno', $idno)->first();
 		if ($qrcode) $qrcode->delete();
 		return redirect()->route('tutor.qrcode', [ 'dc' => $dc, 'ou' => $ou ]);
 	}

@@ -43,7 +43,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
 	public function qrcode()
 	{
-    	return $this->hasOne('App\Qrcode', 'idno', 'idno');
+    	return $this->hasOne('App\GQrcode', 'idno', 'idno');
 	}
 
 	public function gmails()
