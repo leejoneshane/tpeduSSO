@@ -2320,28 +2320,28 @@ class SchoolController extends Controller
         return view('admin.schooltoken', [ 'personal' => $pstokens ]);
     }
 
-	public function revokeToken(Request $request, $token_id)
+	public function revokeToken(Request $request, $dc, $token_id)
     {
         $user = Auth::user();
         $token = Passport::token()->where('id', $token_id)->where('user_id', $user->getKey())->first();
         $token->revoke();
-        return redirect()->route('admin.schooltoken');
+        return redirect()->route('admin.schooltoken', [ 'dc' => $dc ]);
     }
 
-    public function showCreateTokenForm(Request $request)
+    public function showCreateTokenForm(Request $request, $dc)
     {
         $scopes = Passport::scopes();
-        return view('admin.schooltokenadd', [ 'scopes' => $scopes ]);
+        return view('admin.schooltokenadd', [ 'dc' => $dc, 'scopes' => $scopes ]);
     }
 
-    public function storeToken(Request $request)
+    public function storeToken(Request $request, $dc)
     {
 		$validatedData = $request->validate([
             'name' => 'required|max:255',
             'scopes' => 'array|in:'.implode(',', Passport::scopeIds()),
         ]);
         $token = Auth::user()->createToken($request->get('name'), $request->get('scopes') ?: []);
-        return view('admin.schooltokenshow', [ 'token' => $token ]);
+        return view('admin.schooltokenshow', [ 'dc' => $dc, 'token' => $token ]);
     }
 
 	private function chomp_address($address)

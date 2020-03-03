@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card card-default" style="margin-top: 20px">
-                <div class="card-header">修改個資</div>
+                <div class="card-header"><h4>修改個資</h4></div>
 
                 <div class="card-body">
 				@if (session('error'))

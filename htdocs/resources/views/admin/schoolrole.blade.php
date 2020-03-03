@@ -8,20 +8,22 @@
 <div class="container">
 	<div class="row">
 	@if (session('error'))
-	    <div class="alert alert-danger">
+	    <div class="col-sm-12 alert alert-danger">
 		{{ session('error') }}
 	    </div>
 	@endif
 	@if (empty($ous))
-		<div class="alert alert-danger">
+		<div class="col-sm-12 alert alert-danger">
 		尚未建立行政部門紀錄，所以無法新增任何職稱！
 	    </div>
 	@endif
 	@if (session('success'))
-	    <div class="alert alert-success">
+	    <div class="col-sm-12 alert alert-success">
 		{{ session('success') }}
 	    </div>
 	@endif
+	</div>
+	<div class="row">
 	<div class="col-sm-6">
 		<div class="panel panel-default">	  
 		<div class="panel-heading">

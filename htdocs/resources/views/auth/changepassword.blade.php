@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
 	<div class="col-md-8 col-md-offset-2">
 	    <div class="card card-default" style="margin-top: 20px">
-		<div class="card-header">變更密碼</div>
+		<div class="card-header"><h4>變更密碼</h4></div>
 		<div class="card-body">
 		@if (session('error'))
 		    <div class="alert alert-danger">

@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card card-default" style="margin-top: 20px">
-                <div class="card-header">重設密碼</div>
+                <div class="card-header"><h4>重設密碼</h4></div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('password.request') }}">

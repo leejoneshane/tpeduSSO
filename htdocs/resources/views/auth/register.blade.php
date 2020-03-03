@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card card-default" style="margin-top: 20px">
-                <div class="card-header">註冊家長帳號</div>
+                <div class="card-header"><h4>註冊家長帳號</h4></div>
 
                 <div class="card-body">
                     <p style="color:red">注意：如果您已經有教師帳號，請直接登入後綁定親子連結，請勿再次註冊家長帳號。</p>

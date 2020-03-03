@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8" style="margin-left: 20%">
             <div class="card card-default" style="margin-top: 20px">
-                <div class="card-header">我同意授權之專案</div>
+                <div class="card-header"><h4>我同意授權之專案</h4></div>
                 <div class="card-body">
                     @if (!$tokens)
                         <p class="mb-0">您尚未登入第三方應用服務。</p>

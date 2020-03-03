@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card card-default" style="margin-top: 20px">
-                <div class="card-header">社群帳號綁定</div>
+                <div class="card-header"><h4>社群帳號綁定</h4></div>
                 <div class="card-body">
 				@if (session('error'))
 		    		<div class="alert alert-danger">

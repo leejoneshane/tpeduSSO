@@ -8,17 +8,17 @@
 <div class="container">
 	<div class="row">
 	@if (session('error'))
-	    <div class="alert alert-danger">
+	    <div class="col-sm-6 alert alert-danger">
 		{{ session('error') }}
 	    </div>
 	@endif
 	@if (session('success'))
-	    <div class="alert alert-success">
+	    <div class="col-sm-6 alert alert-success">
 		{{ session('success') }}
 	    </div>
 	@endif
-    <div class="row justify-content-center">
-        <div class="col-md-6" style="margin-left: 25%">
+    <div class="col-sm-6 offset-sm-3">
+        <div class="col-sm-6" style="margin-left: 25%">
             <div class="card card-default" style="margin-top: 20px">
                 <div class="card-header">建立代理授權金鑰</div>
                 <div class="card-body">

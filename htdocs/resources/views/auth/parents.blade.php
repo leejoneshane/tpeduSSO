@@ -43,7 +43,7 @@
             <div class="col-md-6">
                 <div class="card card-default">
                     <div class="card-header">
-                        授權警告
+                        <h4>授權警告</h4>
                     </div>
                     <div class="card-body">
                         <div class="alert alert-danger">

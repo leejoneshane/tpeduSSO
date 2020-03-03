@@ -8,17 +8,17 @@
 <div class="container">
 	<div class="row">
 	@if (empty($roles))
-		<div class="alert alert-danger">
+		<div class="col-sm-8 alert alert-danger">
 		因為尚未設定行政部門與職稱，因此您無法新增或修改教師資訊！
 		</div>
 	@endif
 	@if (session('error'))
-	    <div class="alert alert-danger">
+	    <div class="col-sm-8 alert alert-danger">
 		{{ session('error') }}
 	    </div>
 	@endif
 	@if (session('success'))
-	    <div class="alert alert-success">
+	    <div class="col-sm-8 alert alert-success">
 		{{ session('success') }}
 	    </div>
 	@endif

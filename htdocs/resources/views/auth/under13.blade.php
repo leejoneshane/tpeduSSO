@@ -42,9 +42,7 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card card-default">
-                    <div class="card-header">
-                        授權警告
-                    </div>
+                    <div class="card-header"><h4>授權警告</h4></div>
                     <div class="card-body">
                         <div class="alert alert-danger">
                             <p><strong>依照個資法規定通知您：</strong></p>
