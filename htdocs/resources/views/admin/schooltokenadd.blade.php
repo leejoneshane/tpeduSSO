@@ -17,33 +17,35 @@
 		{{ session('success') }}
 	    </div>
 	@endif
-    <div class="col-sm-6 offset-sm-3">
-        <div class="col-sm-6" style="margin-left: 25%">
+    <div class="col-sm-4 offset-sm-4">
             <div class="card card-default" style="margin-top: 20px">
                 <div class="card-header">建立代理授權金鑰</div>
                 <div class="card-body">
-                    <form id="form" role="form" action="{{ route('school.createToken') }}" method="POST">
+                    <form id="form" role="form" action="{{ route('school.createToken', [ 'dc' => $dc ]) }}" method="POST">
                         @csrf
                         <div class="form-group">
-                            <label for="name" class="col-md-4 col-form-label text-md-right">用途說明</label>
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" name="name" required>
-                            </div>
+                            <label for="name" class="col-form-label text-md-right">用途說明</label>
+                            <input type="text" class="form-control" name="name" required>
                         </div>
                         <div class="form-group">
-                            <label class="col-md-4 col-form-label text-md-right">授權範圍</label>
-                            <div class="col-md-6">
+                            <label class="col-form-label text-md-right">授權範圍</label>
+                            <div class="offset-md-2 col-md-8">
                                 @foreach ($scopes as $scope)
                                     <div class="checkbox">
                                         <label>
                                             @if (in_array($scope->id, ['school', 'schoolAdmin']))
-                                            <input type="checkbox" name="scopes[]" value="{{ $scope->id }}" checked readonly>
-                                            @elseif ($scopd->id == 'admin')
-                                            <input type="checkbox" name="scopes[]" value="{{ $scope->id }}" disable>
+                                            <input type="checkbox" name="scopes[]" value="{{ $scope->id }}" checked disabled>
+                                                {{ $scope->id }}（必要）
+                                            @elseif ($scope->id == 'admin')
+                                            <input type="checkbox" name="scopes[]" value="{{ $scope->id }}" disabled>
+                                                {{ $scope->id }}（無法使用）
+                                            @elseif ($scope->id == 'profile')
+                                            <input type="checkbox" name="scopes[]" value="{{ $scope->id }}" checked>
+                                                {{ $scope->id }}（推薦）
                                             @else
-                                            <input type="checkbox" name="scopes[]" value="{{ $scope->id }}"{{ $scope->id == 'profile' ? ' checked' : '' }}>
+                                            <input type="checkbox" name="scopes[]" value="{{ $scope->id }}">
+                                                {{ $scope->id }}
                                             @endif
-                                            {{ $scope->id }}
                                         </label>
                                     </div>
                                 @endforeach
@@ -55,7 +57,6 @@
                     </form>
                 </div>
             </div>
-        </div>
 	</div>
 </div>
 @endsection

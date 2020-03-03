@@ -6,7 +6,7 @@
 
 @section('section')
 <div class="container">
-	<div class="row">
+	<div class="offset-md-2 col-md-8">
 	@if (session('error'))
 	    <div class="col-sm-8 alert alert-danger">
 		{{ session('error') }}
@@ -16,9 +16,9 @@
 	    <div class="col-sm-8 alert alert-success">
 		{{ session('success') }}
 	    </div>
-	@endif
-    <div class="row justify-content-center">
-        <div class="col-md-8" style="margin-left: 20%">
+    @endif
+    </div>
+        <div class="offset-md-2 col-md-8">
             <div class="card card-default" style="margin-top: 20px">
                 <div class="card-header">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -26,7 +26,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                @if (!$personal)
+                @if (empty($personal))
                     <p class="mb-0">您尚未建立任何全校授權金鑰。</p>
                 @else
                     <table class="table table-borderless mb-0">
@@ -42,7 +42,7 @@
                                 <td style="vertical-align: middle;">{{ $token->name }}</td>
                                 <td style="vertical-align: middle;">
                                     <button type="button" class="btn btn-danger"
-                                        onclick="$('#form').attr('action','{{ route('school.revokeToken', [ 'token_id' => $token->id ]) }}');
+                                        onclick="$('#form').attr('action','{{ route('school.revokeToken', [ 'dc' => $dc, 'token_id' => $token->id ]) }}');
                                             $('#form').submit();">刪除金鑰</button>
                                 </td>
                             </tr>
@@ -56,6 +56,5 @@
             @csrf
             </form>
         </div>
-	</div>
 </div>
 @endsection

@@ -93,7 +93,7 @@
                             <a href="#"><i class="fa fa-sitemap fa-fw"></i>資料維護</a>
                             <ul class="nav nav-second-level">
                                 <li {{ (Request::is('sync/fix/remove_description') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('sync.remove_description') }}">移除人員紀錄中的 Description 欄位</a>
+                                    <a href="{{ route('sync.remove_description') }}">移除人員紀錄中的描述欄位</a>
                                 </li>
                                 <li {{ (Request::is('sync/fix/remove_fake') ? 'class="active"' : '') }}>
                                     <a href="{{ route('sync.remove_fake') }}">移除假身份人員</a>

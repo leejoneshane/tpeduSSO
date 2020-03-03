@@ -19,7 +19,7 @@
                     <textarea class="form-control" rows="10">{{ $token->accessToken }}</textarea>
                 </div>
                 <div class="card-footer text-md-center">
-                    <a class="btn btn-secondary" href="{{ route('school.tokens') }}">關閉</a>
+                    <a class="btn btn-secondary" href="{{ route('school.tokens', [ 'dc' => $dc ]) }}">關閉</a>
                 </div>
             </div>
         </div>

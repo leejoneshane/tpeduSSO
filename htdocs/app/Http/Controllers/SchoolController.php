@@ -2317,7 +2317,7 @@ class SchoolController extends Controller
 		$pstokens = $tokens->load('client')->filter(function ($token) {
             return $token->client->personal_access_client && ! $token->revoked;
         })->values();
-        return view('admin.schooltoken', [ 'personal' => $pstokens ]);
+        return view('admin.schooltoken', [ 'dc' => $dc, 'personal' => $pstokens ]);
     }
 
 	public function revokeToken(Request $request, $dc, $token_id)
