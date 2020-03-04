@@ -148,7 +148,8 @@ class ParentController extends Controller
 				$authorizes[$d->client_id] = $d->trust_level;
 			}
 		}
-		return view('parents.guardianAuthForm', [ 'student' => $myidno, 'kids' => $kids, 'apps' => $apps, 'agreeAll' => $agreeAll, 'authorizes' => $authorizes, 'trust_level' => Config::get('app.trust_level') ]);		
+		$route = route('parent.guardianAuth');
+		return view('parents.guardianAuthForm', [ 'route' => $route, 'student' => $myidno, 'kids' => $kids, 'apps' => $apps, 'agreeAll' => $agreeAll, 'authorizes' => $authorizes, 'trust_level' => Config::get('app.trust_level') ]);		
 	}
 
 	public function applyGuardianAuth(Request $request)

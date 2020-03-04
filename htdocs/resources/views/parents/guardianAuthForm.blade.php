@@ -25,11 +25,12 @@
 					<li>服務對象中未滿 13 歲之兒童依法須由監護人行使個資同意權。您將以監護人身份代替貴子弟行使個人資料保護法明訂之權益，包含：查詢或請求閱覽、請求補充或更正、請求停止提供資料給第三方應用...等。</li>
 				</ul>
 				</p>
+				<hr>
 				<div class="col-md-16">
 					@if (empty($student))
 					<p>請先進行親子連結後再進行代理授權設定，謝謝！</p>
 					@else
-					<form id="form" action="{{ route('parent.applyGuardianAuth') }}" method="POST">
+					<form id="form" action="{{ $route }}" method="POST">
 					@csrf
 					<div class="input-group custom-search-form">
 						<label for="student" class="control-label">請選擇您13歲以下的小孩：</label>

@@ -7,6 +7,9 @@ use Validator;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Laravel\Passport\Passport;
+use App\PSLink;
+use App\PSAuthorize;
 use App\Project;
 use App\GQrcode;
 use App\Events\ProjectApply;
@@ -106,7 +109,8 @@ class GuestController extends Controller
 		foreach ($data as $d) {
 			$authorizes[$d->client_id] = $d->trust_level;
 		}
-		return view('parents.guardianAuthForm', [ 'student' => $student, 'kids' => $kids, 'apps' => $apps, 'agreeAll' => $agreeAll, 'authorizes' => $authorizes, 'trust_level' => Config::get('app.trust_level') ]);		
+		$route = route('qrcode', [ 'id' => $id ]);
+		return view('parents.guardianAuthForm', [ 'route' => $route, 'student' => $student, 'kids' => $kids, 'apps' => $apps, 'agreeAll' => $agreeAll, 'authorizes' => $authorizes, 'trust_level' => Config::get('app.trust_level') ]);		
 	}
 
 	public function applyGuardianAuth(Request $request, $id)
