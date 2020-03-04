@@ -83,29 +83,29 @@ class GuestController extends Controller
     {
 		$qrcode = GQrcode::find($id);
 		if ($qrcode && $qrcode->expired()) return redirect()->route('home');
-		$student_idno = $qrcode->user()->idno;
+		$student = $qrcode->user()->first();
 		$openldap = new LdapServiceProvider();
 		$kids = array();
-		$entry = $openldap->getUserEntry($student_idno);
+		$entry = $openldap->getUserEntry($student->idno);
 		$data = $openldap->getUserData($entry);
 		$age = Carbon::today()->subYears(13);
 		$str = $data['birthDate'];
 		$born = Carbon::createFromDate(substr($str,0,4), substr($str,4,2), substr($str,6,2), 'Asia/Taipei');
 		if ($born > $age) {
-			$kids[$student_idno] = $data['displayName'];
+			$kids[$student->idno] = $data['displayName'];
 		}
 		$apps = Passport::client()->all();
 		foreach ($apps as $k => $app) {
 			if ($app->firstParty()) unset($apps[$k]);
 		}
 		$agreeAll = null;
-		$agreeAll = PSAuthorize::where('student_idno', $student_idno)->where('client_id', '*')->first();
-		$data = PSAuthorize::where('student_idno', $student_idno)->where('client_id', '!=', '*')->get();
+		$agreeAll = PSAuthorize::where('student_idno', $student->idno)->where('client_id', '*')->first();
+		$data = PSAuthorize::where('student_idno', $student->idno)->where('client_id', '!=', '*')->get();
 		$authorizes = array();
 		foreach ($data as $d) {
 			$authorizes[$d->client_id] = $d->trust_level;
 		}
-		return view('parents.guardianAuthForm', [ 'myidno' => $student_idno, 'kids' => $kids, 'apps' => $apps, 'agreeAll' => $agreeAll, 'authorizes' => $authorizes, 'trust_level' => Config::get('app.trust_level') ]);		
+		return view('parents.guardianAuthForm', [ 'myidno' => $student->idno, 'kids' => $kids, 'apps' => $apps, 'agreeAll' => $agreeAll, 'authorizes' => $authorizes, 'trust_level' => Config::get('app.trust_level') ]);		
 	}
 
 	public function applyGuardianAuth(Request $request, $id)
@@ -113,19 +113,19 @@ class GuestController extends Controller
 		$parent_idno = 'qrcode';
 		$qrcode = GQrcode::find($id);
 		if ($qrcode && $qrcode->expired()) return redirect()->route('home');
-		$student_idno = $qrcode->user()->idno;
+		$student = $qrcode->user()->first();
 		$agreeAll = $request->get('agreeAll');
 		$agree = $request->get('agree');
 		if (!empty($agreeAll)) {
 			if ($agreeAll == 'new') {
 				PSAuthorize::create([
 					'parent_idno' => $parent_idno,
-					'student_idno' => $student_idno,
+					'student_idno' => $student->idno,
 					'client_id' => '*',
 					'trust_level' => 3,
 				]);
 			} else {
-				PSAuthorize::where('student_idno', $student_idno)->where('client_id', '!=', '*')->delete();
+				PSAuthorize::where('student_idno', $student->idno)->where('client_id', '!=', '*')->delete();
 			}
 		} else {
 			$apps = Passport::client()->all();
@@ -133,24 +133,24 @@ class GuestController extends Controller
 				if ($app->firstParty()) continue;
 				if (in_array($app->id, $agree)) {
 					$trust_level = $request->get($app->id.'level');
-					$old = PSAuthorize::where('student_idno', $student_idno)->where('client_id', $app->id)->first();
+					$old = PSAuthorize::where('student_idno', $student->idno)->where('client_id', $app->id)->first();
 					if ($old) {
 						$old->trust_level = $trust_level;
 						$old->save();
 					} else {
 						PSAuthorize::create([
 							'parent_idno' => $parent_idno,
-							'student_idno' => $student_idno,
+							'student_idno' => $student->idno,
 							'client_id' => $app->id,
 							'trust_level' => $trust_level,
 						]);
 					}
 				} else {
-					PSAuthorize::where('student_idno', $student_idno)->where('client_id', $app->id)->delete();
+					PSAuthorize::where('student_idno', $student->idno)->where('client_id', $app->id)->delete();
 				}
 			}
 		}
-		return redirect()->route('parent.guardianAuth')->with("success","已經為您更新代理授權設定！")->with("student",$request->get('student'));
+		return redirect()->route('qrcode', [ 'id' => $id ])->with("success","已經為您更新代理授權設定！");
 	}
 
 }

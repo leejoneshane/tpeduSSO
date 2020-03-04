@@ -191,7 +191,7 @@ class ParentController extends Controller
 				}
 			}
 		}
-		return redirect()->route('parent.guardianAuth')->with("success","已經為您更新代理授權設定！")->with("student",$request->get('student'));
+		return redirect()->route('parent.guardianAuth')->with("success","已經為您更新代理授權設定！")->with('myidno',$request->get('student'));
 	}
 
 }

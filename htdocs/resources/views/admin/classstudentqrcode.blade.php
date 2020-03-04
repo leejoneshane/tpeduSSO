@@ -41,7 +41,7 @@
 				<tbody>
 				@if ($students)
 					@foreach ($students as $student)
-					<tr title="{{ $student['entryUUID'] }}">
+					<tr>
 						<td style="vertical-align: inherit;">
 							<span>
 							<span>{{ $student['displayName'] }}</span>
