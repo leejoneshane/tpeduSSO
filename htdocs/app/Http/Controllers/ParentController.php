@@ -137,7 +137,7 @@ class ParentController extends Controller
 		foreach ($apps as $k => $app) {
 			if ($app->firstParty()) unset($apps[$k]);
 		}
-		$myidno = $request->get('myidno');
+		$myidno = $request->get('student');
 		$agreeAll = null;
 		$authorizes = array();
 		if ($idnos) {
@@ -148,7 +148,7 @@ class ParentController extends Controller
 				$authorizes[$d->client_id] = $d->trust_level;
 			}
 		}
-		return view('parents.guardianAuthForm', [ 'myidno' => $myidno, 'kids' => $kids, 'apps' => $apps, 'agreeAll' => $agreeAll, 'authorizes' => $authorizes, 'trust_level' => Config::get('app.trust_level') ]);		
+		return view('parents.guardianAuthForm', [ 'student' => $myidno, 'kids' => $kids, 'apps' => $apps, 'agreeAll' => $agreeAll, 'authorizes' => $authorizes, 'trust_level' => Config::get('app.trust_level') ]);		
 	}
 
 	public function applyGuardianAuth(Request $request)
@@ -191,7 +191,7 @@ class ParentController extends Controller
 				}
 			}
 		}
-		return redirect()->route('parent.guardianAuth')->with("success","已經為您更新代理授權設定！")->with('myidno',$request->get('student'));
+		return redirect()->route('parent.guardianAuth')->with("success","已經為您更新代理授權設定！")->with('student',$request->get('student'));
 	}
 
 }

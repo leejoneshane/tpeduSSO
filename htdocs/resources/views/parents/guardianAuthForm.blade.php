@@ -26,22 +26,22 @@
 				</ul>
 				</p>
 				<div class="col-md-16">
-					@if (empty($myidno))
+					@if (empty($student))
 					<p>請先進行親子連結後再進行代理授權設定，謝謝！</p>
 					@else
 					<form id="form" action="{{ route('parent.applyGuardianAuth') }}" method="POST">
 					@csrf
 					<div class="input-group custom-search-form">
 						<label for="student" class="control-label">請選擇您13歲以下的小孩：</label>
-						<select name="student" class="form-control pull-right" style="width: auto"  onchange="location='{{ url()->current() }}?myidno=' + $(this).val();">
+						<select name="student" class="form-control pull-right" style="width: auto"  onchange="location='{{ url()->current() }}?student=' + $(this).val();">
 						   @if ($kids)
 							   @foreach ($kids as $idno => $name)
-								   <option value="{{ $idno }}"{{ ($myidno == $idno) ? ' selected' : '' }}>{{ $name }}</option>
+								   <option value="{{ $idno }}"{{ ($student == $idno) ? ' selected' : '' }}>{{ $name }}</option>
 							   @endforeach
 						   @endif	
 				   		</select>
 					</div>
-					<input type="hidden" name="student" value="{{ $myidno }}">
+					<input type="hidden" name="student" value="{{ $student }}">
 					<div class="row">
 						<div class="col-md-10 text-md-left control-label">
 							<label><input id="agreeAll" name="agreeAll" type="checkbox" value="{{ $agreeAll ? $agreeAll->id : 'new' }}"{{ $agreeAll ? ' checked' : '' }} onclick="swap()">
