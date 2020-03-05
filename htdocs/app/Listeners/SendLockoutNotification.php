@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Providers\LdapServiceProvider;
 use App\Notifications\LockoutNotification;
+use App\Notifications\LockoutAdminNotification;
 
 class SendLockoutNotification
 {
