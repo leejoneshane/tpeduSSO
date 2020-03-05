@@ -17,22 +17,22 @@ return [
     'facebook' => [
         'client_id'     => env('FACEBOOK_CLIENT_ID'),
         'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
-        'redirect'      => env('FACEBOOK_REDIRECT')
+        'redirect'      => 'https://ldap.tp.edu.tw/login/facebook/callback',
        ],
     'google' => [
         'client_id'     => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-        'redirect'      => env('GOOGLE_REDIRECT')
+        'redirect'      => 'https://ldap.tp.edu.tw/login/google/callback',
     ],
     'yahoo' => [
         'client_id'     => env('YAHOO_CLIENT_ID'),
         'client_secret' => env('YAHOO_CLIENT_SECRET'),
-        'redirect'      => env('YAHOO_REDIRECT')
+        'redirect'      => 'https://ldap.tp.edu.tw/login/yahoo/callback',
     ],
     'line' => [
         'client_id'     => env('LINE_KEY'),
         'client_secret' => env('LINE_SECRET'),
-        'redirect'      => env('LINE_REDIRECT_URI')
+        'redirect'      => 'https://ldap.tp.edu.tw/login/line/callback',
     ],
 
 ];
