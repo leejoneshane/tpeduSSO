@@ -63,6 +63,16 @@ docker-compose up -d
 * __HS_ACCOUNT:__ 不可省略，高職校務行政系統介接參數。
 * __HS_PASSWORD:__ 不可省略，高職校務行政系統介接參數。
 * __HS_APISERVER:__ 不可省略，高職校務行政系統 Data API URL。
+* __GOOGLE_ADMIN_EMAIL:__ G Suite 網域管理員帳號
+* __GOOGLE_SERVICE_ACCOUNT_JSON_LOCATION:__ G Suite 服務帳號驗證金鑰檔案路徑
+* __GOOGLE_CLIENT_ID:__ Google Login OAuth 專案代號
+* __GOOGLE_CLIENT_SECRET:__ Google Login OAuth 專案金鑰
+* __FACEBOOK_CLIENT_ID:__ Facebook Login OAuth 專案代號
+* __FACEBOOK_CLIENT_SECRET:__ Facebook Login OAuth 專案金鑰
+* __YAHOO_CLIENT_ID:__ Yahoo Login OAuth 專案代號
+* __YAHOO_CLIENT_SECRET:__ Yahoo Login OAuth 專案金鑰
+* __LINE_CLIENT_ID:__ Line Login OAuth 專案代號
+* __LINE_CLIENT_SECRET:__ Line Login OAuth 專案金鑰  
 
 ## 關於 docker
 

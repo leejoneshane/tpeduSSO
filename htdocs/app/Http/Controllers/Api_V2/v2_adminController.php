@@ -47,10 +47,13 @@ class v2_adminController extends Controller
 	public function clients(Request $request)
     {
         $clients = Passport::client()->all();
+        $info = array();
         foreach ($clients as $k => $client) {
-            if ($client->is_firstParty()) unset($clients[$k]);
+            if (!($client->is_firstParty())) {
+                $info[] = [ 'id' => $client['id'], 'name' => $client['name'] ];        
+            }
         }
-        return response()->json($clients, 200, array(JSON_UNESCAPED_UNICODE));
+        return response()->json($info, 200, array(JSON_UNESCAPED_UNICODE));
     }
 
 	public function scopes(Request $request)
