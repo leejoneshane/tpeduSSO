@@ -5,7 +5,7 @@
            <nav class="navbar-light sidebar" style="margin-top: 0px" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
-                        <li>
+                        <li class="py-2">
                             <a href="#"><i class="fa fa-sitemap fa-fw"></i>全誼校務行政系統介接</a>
                             <ul class="nav nav-second-level">
                                 <li {{ (Request::is('sync/ps/runtime_test') ? 'class="active"' : '') }}>
@@ -31,7 +31,7 @@
                                 </li>
                             </ul>
                         </li>
-                        <li>
+                        <li class="py-2">
                             <a href="#"><i class="fa fa-sitemap fa-fw"></i>巨耀校務行政系統介接</a>
                             <ul class="nav nav-second-level">
                                 <li {{ (Request::is('sync/js/runtime_test') ? 'class="active"' : '') }}>
@@ -60,7 +60,7 @@
                                 </li>
                             </ul>
                         </li>
-                        <li>
+                        <li class="py-2">
                             <a href="#"><i class="fa fa-sitemap fa-fw"></i>虹橋校務行政系統介接</a>
                             <ul class="nav nav-second-level">
                                 <li {{ (Request::is('sync/hs/runtime_test') ? 'class="active"' : '') }}>
@@ -89,7 +89,7 @@
                                 </li>
                             </ul>
                         </li>
-                        <li>
+                        <li class="py-2">
                             <a href="#"><i class="fa fa-sitemap fa-fw"></i>資料維護</a>
                             <ul class="nav nav-second-level">
                                 <li {{ (Request::is('sync/fix/remove_description') ? 'class="active"' : '') }}>

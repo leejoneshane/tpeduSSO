@@ -20,7 +20,7 @@
                             </ul>
                         </li>
                         <li class="py-2">
-                            <a href="{{ route('bureau.group') }}"><i class="fa fa-group fa-fw"></i> 動態群組管理</a>
+                            <a href="{{ route('bureau.group') }}"><i class="fa fa-users fa-fw"></i> 動態群組管理</a>
                         </li>
                         <li class="py-2">
                             <a href="#"><i class="fa fa-user fa-fw"></i> 人員管理</a>
