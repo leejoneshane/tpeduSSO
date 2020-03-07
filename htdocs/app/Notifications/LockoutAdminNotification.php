@@ -20,8 +20,8 @@ class LockoutAdminNotification extends Notification implements ShouldQueue
      */
     public function __construct($request)
     {
-        self::$idno = $request->get('idno');
-        self::$username = $request->get('username');
+        $this->idno = $request->get('idno');
+        $this->username = $request->get('username');
     }
 
     /**
@@ -46,7 +46,7 @@ class LockoutAdminNotification extends Notification implements ShouldQueue
         return (new MailMessage)
                     ->error()
                     ->subject('緊急通知')
-                    ->line('系統接收到使用者 '.self::$username.'(身分證字號'.self::$idno.') 的鎖定帳號事件。')
+                    ->line('系統接收到使用者 '.$this->username.'(身分證字號'.$this->idno.') 的鎖定帳號事件。')
                     ->line('帳號鎖定將在'.Carbon::now()->addHour().'以後解除！')
                     ->line('系統已經發送電子郵件告知當事人，請留意後續處理情形。');
     }
