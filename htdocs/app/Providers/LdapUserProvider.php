@@ -27,12 +27,12 @@ class LdapUserProvider extends EloquentUserProvider
 				$id = $openldap->checkAccount($credentials['username']);
 			}
 		}
-//		if (isset($credentials['email'])) {
-//			$id = $openldap->checkEmail($credentials['email']);
-//		}
-//		if (isset($credentials['mobile'])) {
-//			$id = $openldap->checkMobile($credentials['mobile']);
-//		}
+		if (isset($credentials['email'])) {
+			$id = $openldap->checkEmail($credentials['email']);
+		}
+		if (isset($credentials['mobile'])) {
+			$id = $openldap->checkMobile($credentials['mobile']);
+		}
 		if ($id) {
 			$entry = $openldap->getUserEntry($id);
 			$data = $openldap->getUserData($entry);
