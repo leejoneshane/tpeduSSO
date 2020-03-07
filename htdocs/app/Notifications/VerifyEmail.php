@@ -44,10 +44,10 @@ class VerifyEmail extends Notification
         }
 
         return (new MailMessage)
-            ->subject(Lang::getFromJson('郵件地址驗證信'))
-            ->line(Lang::getFromJson('請點擊底下的按鈕，以便驗證您的電子郵件是否正確！'))
-            ->action(Lang::getFromJson('確認'), $verificationUrl)
-            ->line(Lang::getFromJson('如果您不知道為何會收到這封信，請直接忽略！'));
+            ->subject('郵件地址驗證信')
+            ->line('請點擊底下的按鈕，以便驗證您的電子郵件是否正確！')
+            ->action('確認', $verificationUrl)
+            ->line('如果您不知道為何會收到這封信，請直接忽略！');
     }
 
     /**
