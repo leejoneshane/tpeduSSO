@@ -30,8 +30,8 @@ return [
         'redirect'      => 'https://ldap.tp.edu.tw/login/yahoo/callback',
     ],
     'line' => [
-        'client_id'     => env('LINE_KEY'),
-        'client_secret' => env('LINE_SECRET'),
+        'client_id'     => env('LINE_CLIENT_ID'),
+        'client_secret' => env('LINE_CLIENT_SECRET'),
         'redirect'      => 'https://ldap.tp.edu.tw/login/line/callback',
     ],
 
