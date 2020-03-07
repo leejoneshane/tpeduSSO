@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use Log;
+use Socialite;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Auth\AuthenticatesUsers;
-use Socialite;
+use Illuminate\Http\Request;
 use App\SocialiteAccount;
 use App\User;
 
