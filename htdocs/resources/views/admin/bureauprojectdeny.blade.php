@@ -23,11 +23,8 @@
 			<h4>審核介接專案</h4>
 		</div>
 		<div class="panel-body">
-			<form role="form" method="POST" action="{{ route('bureau.denyProject') }}">
+			<form role="form" method="POST" action="{{ route('bureau.denyProject', [ 'uuid' => $project->uuid ]) }}">
 			@csrf
-			@if (isset($project))
-				<input type="hidden" name="id" value="{{ $project->id }}">
-			@endif
 			    <div class="form-group">
 					<label for="organization">申請單位（機關名稱）：{{ isset($project->organization) ?: '' }}</label>
 				</div>

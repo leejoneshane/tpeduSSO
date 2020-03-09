@@ -9,7 +9,7 @@
                 <div class="card-body">
 					<form role="form" method="POST" action="{{ route('3party.store') }}">
 						@csrf
-						<input type="hidden" name="id" value="{{ $project->id }}">
+						<input type="hidden" name="id" value="{{ $project->uuid }}">
 						<div class="form-group{{ $errors->has('organization') ? ' has-error' : '' }}">
 							<label for="organization">申請單位（機關名稱）</label>
 						<input type="text" class="form-control" name="organization" value="{{ $project->organization }}" required>

@@ -201,11 +201,11 @@ Route::group(['prefix' => 'bureau', 'middleware' => 'auth.admin'], function () {
 	Route::get('project', 'BureauController@listProjects')->name('bureau.project');
 	Route::get('project/new', 'BureauController@createProject')->name('bureau.createProject');
 	Route::post('project/store', 'BureauController@storeProject')->name('bureau.storeProject');
-	Route::get('project/{id}/update', 'BureauController@projectEditForm')->name('bureau.updateProject');
-	Route::post('project/{id}/remove', 'BureauController@removeProject')->name('bureau.removeProject');
-	Route::get('project/{id}/deny', 'BureauController@showDenyProjectForm');
-	Route::post('project/{id}/deny', 'BureauController@denyProject')->name('bureau.denyProject');
-	Route::post('project/{id}/pass', 'BureauController@passProject')->name('bureau.passProject');
+	Route::get('project/update/{uuid}', 'BureauController@projectEditForm')->name('bureau.updateProject');
+	Route::post('project/remove/{uuid}', 'BureauController@removeProject')->name('bureau.removeProject');
+	Route::get('project//deny/{uuid}', 'BureauController@showDenyProjectForm');
+	Route::post('project/deny/{uuid}', 'BureauController@denyProject')->name('bureau.denyProject');
+	Route::post('project/pass/{uuid}', 'BureauController@passProject')->name('bureau.passProject');
 	Route::get('client', 'BureauController@listClients')->name('bureau.client');
 	Route::get('client/{id}/update', 'BureauController@updateClient');
 	Route::post('client/{id}/update', 'BureauController@storeClient')->name('bureau.updateClient');

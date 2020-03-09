@@ -25,7 +25,7 @@
 		<div class="panel-body">
 			<form role="form" method="POST" action="{{ route('bureau.updateClient') }}">
 			@csrf
-				<input type="hidden" name="id" value="{{ $project->id }}">
+				<input type="hidden" name="id" value="{{ $project->uuid }}">
 			    <div class="form-group{{ $errors->has('applicationName') ? ' has-error' : '' }}">
 					<label for="applicationName">應用平臺名稱</label>
 					<input type="text" class="form-control" name="applicationName" value="{{ isset($project->applicationName) ? $project->applicationName : '' }}" placeholder="用於顯示在授權頁面，讓使用者得知：何種應用平臺透過單一身份驗證服務進行身份認證" required>

@@ -26,7 +26,7 @@
 			<form role="form" method="POST" action="{{ route('bureau.storeProject') }}">
 			@csrf
 			@if (isset($project))
-				<input type="hidden" name="id" value="{{ $project->id }}">
+				<input type="hidden" name="id" value="{{ $project->uuid }}">
 			@endif
 			    <div class="form-group{{ $errors->has('organization') ? ' has-error' : '' }}">
 					<label for="organization">申請單位（機關名稱）</label>

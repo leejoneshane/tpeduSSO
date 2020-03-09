@@ -78,7 +78,7 @@ class BureauController extends Controller
             'connTel' => 'required|digits_between:7,10',
         ]);
 		if ($request->get('id')) {
-			$project = Project::find($id);
+			$project = Project::find($request->get(id));
 			$project->forceFill([
 				'organization' => $request->get('organization'),
 				'applicationName' => $request->get('applicationName'),
@@ -120,38 +120,42 @@ class BureauController extends Controller
 		return redirect()->route('bureau.project');
 	}
 
-    public function projectEditForm(Request $request, $id)
+    public function projectEditForm(Request $request, $uuid)
 	{
-		$project = Project::find($id);
-		return view('admin.bureauprojectedit', [ 'project' => $project ]);		
+		$project = Project::where('uuid', $uuid)->first();
+		return view('admin.bureauprojectedit', [ 'project' => $project ]);	
 	}
 
-    public function removeProject(Request $request, $id)
+    public function removeProject(Request $request, $uuid)
 	{
-		Project::find($id)->delete();
+		$project = Project::where('uuid', $uuid)->first();
+		if ($project) $project->delete();
 		return redirect()->route('bureau.project');
 	}
 
-    public function showDenyProjectForm(Request $request, $id)
+    public function showDenyProjectForm(Request $request, $uuid)
 	{
-		$project = Project::find($id);
-		return view('admin.bureauprojectdeny', [ 'project' => $project ]);		
+		$project = Project::where('uuid', $uuid)->first();
+		return view('admin.bureauprojectdeny', [ 'project' => $project ]);
 	}
 
-    public function denyProject(Request $request, $id)
+    public function denyProject(Request $request, $uuid)
 	{
 		$reason = $reguest->get('reason');
-		Project::find($id)->reject()->sendMail([
-			'很遺憾，您申請的介接專案已經被駁回！理由如下：',
-			$reason,
-			'請您補齊文件後，儘速與承辦人員聯絡，以便處理後續事宜！',
-		]);
+		$project = Project::where('uuid', $uuid)->first();
+		if ($project) $project->reject()
+			->sendMail([
+				'很遺憾，您申請的介接專案已經被駁回！理由如下：',
+				$reason,
+				'請您補齊文件後，儘速與承辦人員聯絡，以便處理後續事宜！',
+			]);
 		return redirect()->route('bureau.project');
 	}
 
-    public function passProject(Request $request, $id)
+    public function passProject(Request $request, $uuid)
 	{
-		$project = Project::find($id)->allow();
+		$project = Project::where('uuid', $uuid)->first();
+		if ($project) $project->allow();
 		event(new ProjectAllowed($project));
 		return redirect()->route('bureau.project');
 	}
@@ -174,20 +178,20 @@ class BureauController extends Controller
 				$projects = Project::all();
 			}
 		}
-		return view('admin.bureauclient', [ 'projects' => $projects ]);		
+		return view('admin.bureauclient', [ 'projects' => $projects ]);
 	}
 
-    public function updateClient(Request $request, $id)
+    public function updateClient(Request $request, $uuid)
 	{
-		$project = Project::find($id);
-		$client = $project->client();
-		return view('admin.bureauclientedit', [ 'project' => $project, 'client' => $client ]);		
+		$project = Project::where('uuid', $uuid)->first();
+		if ($project) $client = $project->client();
+		return view('admin.bureauclientedit', [ 'project' => $project, 'client' => $client ]);
 	}
 
-    public function storeClient(Request $request, $id)
+    public function storeClient(Request $request, $uuid)
 	{
-		$project = Project::find($id);
-		$client = $project->client();
+		$project = Project::where('uuid', $uuid)->first();
+		if ($project) $client = $project->client();
 		$validatedData = $request->validate([
             'applicationName' => 'required|string|max:150',
             'redirect' => 'required|url',
@@ -200,19 +204,21 @@ class BureauController extends Controller
 		if ($request->get('secret')) $client->secret = Str::random(40);
 		$client->save();
 		event(new ClientChange($project));
-		return redirect()->route('bureau.client');		
+		return redirect()->route('bureau.client');
 	}
 
-    public function toggleClient(Request $request, $id)
+    public function toggleClient(Request $request, $uuid)
 	{
-		$project = Project::find($id);
-		$client = $project->client();
-		if ($client->revoked)
-			$client->revoked = false;
-		else
-			$client->revoked = true;
-		$client->save();
-		return redirect()->route('bureau.client');		
+		$project = Project::where('uuid', $uuid)->first();
+		if ($project) {
+			$client = $project->client();
+			if ($client->revoked)
+				$client->revoked = false;
+			else
+				$client->revoked = true;
+			$client->save();
+		}
+		return redirect()->route('bureau.client');
 	}
 
     public function bureauPeopleSearchForm(Request $request)

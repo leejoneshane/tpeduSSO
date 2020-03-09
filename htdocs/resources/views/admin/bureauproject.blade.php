@@ -36,7 +36,7 @@
 				</thead>
 				<tbody>
 					@foreach ($projects as $project)
-					<tr>
+					<tr title="{{ $project->uuid }}">
 		    			@csrf
 						<td style="vertical-align: inherit;">
 							<span>{{ $project->organization ?: '-'}}</span>
@@ -55,19 +55,19 @@
 						</td>
 						<td style="vertical-align: inherit;">
 							<button type="button" class="btn btn-primary"
-								 onclick="$('#form').attr('action','{{ route('bureau.updateProject', [ 'id' => $project->id ]) }}');
+								 onclick="$('#form').attr('action','{{ route('bureau.updateProject', [ 'uuid' => $project->uuid ]) }}');
 										 $('#form').attr('method', 'GET');
 										 $('#form').submit();">編輯</button>
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#form').attr('action','{{ route('bureau.removeProject', [ 'id' => $project->id ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('bureau.removeProject', [ 'uuid' => $project->uuid ]) }}');
 										 $('#form').submit();">刪除</button>
 							<button type="button" class="btn btn-warning"
-								onclick="$('#form').attr('action','{{ route('bureau.denyProject', [ 'id' => $project->id ]) }}');
+								onclick="$('#form').attr('action','{{ route('bureau.denyProject', [ 'uuid' => $project->uuid ]) }}');
 										 $('#form').attr('method', 'GET');
 										 $('#form').submit();">審核</button>
 							@if (! $project->audit))
 							<button type="button" class="btn btn-success"
-								onclick="$('#form').attr('action','{{ route('bureau.passProject', [ 'id' => $project->id ]) }}');
+								onclick="$('#form').attr('action','{{ route('bureau.passProject', [ 'uuid' => $project->uuid ]) }}');
 										 $('#form').submit();">核准</button>
 							@endif
 				   		</td>

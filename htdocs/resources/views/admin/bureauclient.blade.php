@@ -59,11 +59,11 @@ OAuth 用戶端管理
 						</td>
 						<td style="vertical-align: inherit;">
 							<button type="button" class="btn btn-primary"
-								onclick="$('#form').attr('action','{{ route('bureau.updateClient', [ 'id' => $project->id ]) }}');
+								onclick="$('#form').attr('action','{{ route('bureau.updateClient', [ 'uuid' => $project->uuid ]) }}');
 										 $('#form').attr('method','GET');
 										 $('#form').submit();">編輯</button>
 							<button type="button" class="btn btn-info"
-								onclick="$('#form').attr('action','{{ route('bureau.toggleClient', [ 'id' => $project->id ]) }}');
+								onclick="$('#form').attr('action','{{ route('bureau.toggleClient', [ 'uuid' => $project->uuid ]) }}');
 										 $('#form').submit();">{{ $project->client()->revoked ? '啟用' : '停用' }}</button>
 				   		</td>
 					</tr>

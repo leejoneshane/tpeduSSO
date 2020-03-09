@@ -15,7 +15,7 @@ class Project extends Model
     protected $table = 'projects';
 
     protected $fillable = [
-        'id', 'organizaton', 'applicationName', 'reason', 'website', 'redirect', 'kind', 'connName', 'connUnit', 'connEmail', 'connTel', 'memo', 'audit', 'client', 'privileged',
+        'uuid', 'organizaton', 'applicationName', 'reason', 'website', 'redirect', 'kind', 'connName', 'connUnit', 'connEmail', 'connTel', 'memo', 'audit', 'client', 'privileged',
     ];
     
     protected $casts = [
