@@ -23,28 +23,30 @@ class AboveAge12
         $authorize = PSAuthorize::where('student_idno', $user->idno)->where('client_id', '*')->first();
         if ($authorize) return $next($request);
         $authorize = PSAuthorize::where('student_idno', $user->idno)->where('client_id', $client_id)->first();
-        $trust = true;
-        switch($authorize->trust_level) {
-            case 0:
-                foreach ($scopes as $scope) {
-                    if ($scope != 'school') $trust = false;
-                }
-                break;
-            case 1:
-                foreach ($scopes as $scope) {
-                    if (!in_array($scope, ['school', 'me', 'email', 'user'])) $trust = false;
-                }
-                break;
-            case 2:
-                foreach ($scopes as $scope) {
-                    if (!in_array($scope, ['school', 'me', 'email', 'user', 'idno', 'profile'])) $trust = false;
-                }
-                break;
-            case 3:
-                $trust = true;
-                break;
+        if ($authorize) {
+            $trust = true;
+            switch($authorize->trust_level) {
+                case 0:
+                    foreach ($scopes as $scope) {
+                        if ($scope != 'school') $trust = false;
+                    }
+                    break;
+                case 1:
+                    foreach ($scopes as $scope) {
+                        if (!in_array($scope, ['school', 'me', 'email', 'user'])) $trust = false;
+                    }
+                    break;
+                case 2:
+                    foreach ($scopes as $scope) {
+                        if (!in_array($scope, ['school', 'me', 'email', 'user', 'idno', 'profile'])) $trust = false;
+                    }
+                    break;
+                case 3:
+                    $trust = true;
+                    break;    
+            }
+            if ($trust) return $next($request);
         }
-        if ($trust) return $next($request);
 
         $clients = Passport::client();
         $client = $clients->where($clients->getKeyName(), $client_id)->first();
