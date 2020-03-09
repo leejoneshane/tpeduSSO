@@ -427,13 +427,47 @@ class v2_adminController extends Controller
     public function people(Request $request, $uuid)
     {
         $openldap = new LdapServiceProvider();
-        $entry = $openldap->getUserEntry($uuid);
-		if (!$entry) return response()->json([ 'error' => '找不到指定的人員'], 404);
-		$json = $openldap->getUserData($entry);
-        if ($json)
-            return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
-        else
-            return response()->json([ 'error' => '找不到指定的人員'], 404);
+        $user = User::where('uuid', $uuid)->first();
+		if ($user->is_parent) {
+			$json = array();
+            $json['cn'] = $user->idno;
+            $json['employeeType'] = '家長';
+			$json['entryUUID'] = $user->uuid;
+			$json['displayName'] = $user->name;
+			$json['mail'] = $user->email;
+			$json['mobile'] = $user->mobile;
+			$kids = PSLink::where('parent_idno', $user->idno)->where('verified', 1)->get();
+			foreach ($kids as $kid) {
+				$idno = $kid->student_idno;
+				$uuid = $openldap->getUserUUID($idno);
+				if ($uuid) $json['child'][] = $uuid;
+			}
+		} else {
+            $entry = $openldap->getUserEntry($uuid);
+	    	if (!$entry) return response()->json([ 'error' => '找不到指定的人員'], 404);
+		    $json = $openldap->getUserData($entry);
+            if (!$json) return response()->json([ 'error' => '找不到指定的人員'], 404);
+            if ($json['employeeType'] == '學生') {
+				$kids = PSLink::where('student_idno', $json['cn'])->where('verified', 1)->get();
+				foreach ($kids as $kid) {
+					$idno = $kid->parent_idno;
+					$uuid = $openldap->getUserUUID($idno);
+					if (!$uuid) {
+						$user = User::where('idno', $idno)->first();
+						if ($user) $uuid = $user->uuid;
+					}
+					if ($uuid) $json['parent'][] = $uuid;
+				}
+            } else {
+				$kids = PSLink::where('parent_idno', $json['cn'])->where('verified', 1)->get();
+				foreach ($kids as $kid) {
+					$idno = $kid->student_idno;
+					$uuid = $openldap->getUserUUID($idno);
+					if ($uuid) $json['child'][] = $uuid;
+				}
+            }
+        }
+        return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
     }
 
 }

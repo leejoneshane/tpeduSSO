@@ -8,6 +8,8 @@ use App\Providers\LdapServiceProvider;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\User;
+use App\PSLink;
 
 class v2_profileController extends Controller
 {
@@ -44,15 +46,24 @@ class v2_profileController extends Controller
     public function user(Request $request)
     {
 		$user = $request->user();
-		if (!isset($user->ldap) || ! $user->ldap) return response()->json(["error" => "人員不存在"], 400, array(JSON_UNESCAPED_UNICODE));
-		$json = new \stdClass();
-		$json->role = $user->ldap['employeeType'];
-		$json->uuid = $user->uuid;
-		$json->name = $user->name;
-		$json->email = $user->email;
-		$json->email_login = $user->ldap['email_login'];
-		$json->mobile = $user->mobile;
-		$json->mobile_login = $user->ldap['mobile_login'];
+		if ($user->is_parent) {
+			$json = new \stdClass();
+			$json->role = '家長';
+			$json->uuid = $user->uuid;
+			$json->name = $user->name;
+			$json->email = $user->email;
+			$json->mobile = $user->mobile;
+		} else {
+			if (!isset($user->ldap) || ! $user->ldap) return response()->json(["error" => "人員不存在"], 400, array(JSON_UNESCAPED_UNICODE));
+			$json = new \stdClass();
+			$json->role = $user->ldap['employeeType'];
+			$json->uuid = $user->uuid;
+			$json->name = $user->name;
+			$json->email = $user->email;
+			$json->email_login = $user->ldap['email_login'];
+			$json->mobile = $user->mobile;
+			$json->mobile_login = $user->ldap['mobile_login'];	
+		}
 		return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
     }
 
@@ -66,27 +77,55 @@ class v2_profileController extends Controller
 
     public function profile(Request $request)
     {
+		$openldap = new LdapServiceProvider();
 		$user = $request->user();
-		if (!isset($user->ldap) || ! $user->ldap) return response()->json(["error" => "人員不存在"], 400, array(JSON_UNESCAPED_UNICODE));
-		$json = new \stdClass();
-		$json->role = $user->ldap['employeeType'];
-		if (array_key_exists('gender', $user->ldap)) $json->gender = $user->ldap['gender'];
-		if (array_key_exists('birthDate', $user->ldap)) $json->birthDate = $user->ldap['birthDate'];
-		if (array_key_exists('o', $user->ldap)) $json->o = $user->ldap['o'];
-		if (array_key_exists('school', $user->ldap)) $json->organization = $user->ldap['school'];
-		if ($json->role == '學生') {
-	    	if (array_key_exists('employeeNumber', $user->ldap)) $json->studentId = $user->ldap['employeeNumber'];
-		    if (array_key_exists('tpClass', $user->ldap)) $json->class = $user->ldap['tpClass'];
-			if (array_key_exists('tpClassTitle', $user->ldap)) $json->className = $user->ldap['tpClassTitle'];
-	    	if (array_key_exists('tpSeat', $user->ldap)) $json->seat = $user->ldap['tpSeat'];
+		if ($user->is_parent) {
+			$json = new \stdClass();
+			$json->role = '家長';
+			$kids = PSLink::where('parent_idno', $user->idno)->where('verified', 1)->get();
+			foreach ($kids as $kid) {
+				$idno = $kid->student_idno;
+				$uuid = $openldap->getUserUUID($idno);
+				if ($uuid) $json->child[] = $uuid;
+			}
 		} else {
-		    if (array_key_exists('employeeNumber', $user->ldap)) $json->teacherId = $user->ldap['employeeNumber'];
-	    	if (array_key_exists('department', $user->ldap)) $json->unit = (array) $user->ldap['department'];
-	    	if (array_key_exists('titleName', $user->ldap)) $json->title = (array) $user->ldap['titleName'];
-	    	if (array_key_exists('teachClass', $user->ldap)) $json->teachClass = (array) $user->ldap['teachClass'];
-	    	if (array_key_exists('tpTutorClass', $user->ldap)) $json->tutorClass = $user->ldap['tpTutorClass'];
+			if (!isset($user->ldap) || ! $user->ldap) return response()->json(["error" => "人員不存在"], 400, array(JSON_UNESCAPED_UNICODE));
+			$json = new \stdClass();
+			$json->role = $user->ldap['employeeType'];
+			if (array_key_exists('gender', $user->ldap)) $json->gender = $user->ldap['gender'];
+			if (array_key_exists('birthDate', $user->ldap)) $json->birthDate = $user->ldap['birthDate'];
+			if (array_key_exists('o', $user->ldap)) $json->o = $user->ldap['o'];
+			if (array_key_exists('school', $user->ldap)) $json->organization = $user->ldap['school'];
+			if ($json->role == '學生') {
+				if (array_key_exists('employeeNumber', $user->ldap)) $json->studentId = $user->ldap['employeeNumber'];
+				if (array_key_exists('tpClass', $user->ldap)) $json->class = $user->ldap['tpClass'];
+				if (array_key_exists('tpClassTitle', $user->ldap)) $json->className = $user->ldap['tpClassTitle'];
+				if (array_key_exists('tpSeat', $user->ldap)) $json->seat = $user->ldap['tpSeat'];
+				$kids = PSLink::where('student_idno', $user->idno)->where('verified', 1)->get();
+				foreach ($kids as $kid) {
+					$idno = $kid->parent_idno;
+					$uuid = $openldap->getUserUUID($idno);
+					if (!$uuid) {
+						$user = User::where('idno', $idno)->first();
+						if ($user) $uuid = $user->uuid;
+					}
+					if ($uuid) $json->parent[] = $uuid;
+				}
+			} else {
+				if (array_key_exists('employeeNumber', $user->ldap)) $json->teacherId = $user->ldap['employeeNumber'];
+				if (array_key_exists('department', $user->ldap)) $json->unit = (array) $user->ldap['department'];
+				if (array_key_exists('titleName', $user->ldap)) $json->title = (array) $user->ldap['titleName'];
+				if (array_key_exists('teachClass', $user->ldap)) $json->teachClass = (array) $user->ldap['teachClass'];
+				if (array_key_exists('tpTutorClass', $user->ldap)) $json->tutorClass = $user->ldap['tpTutorClass'];
+				$kids = PSLink::where('parent_idno', $user->idno)->where('verified', 1)->get();
+				foreach ($kids as $kid) {
+					$idno = $kid->student_idno;
+					$uuid = $openldap->getUserUUID($idno);
+					if ($uuid) $json->child[] = $uuid;
+				}
+			}
+			if (array_key_exists('tpCharacter', $user->ldap)) $json->character = $user->ldap['tpCharacter'];
 		}
-		if (array_key_exists('tpCharacter', $user->ldap)) $json->character = $user->ldap['tpCharacter'];
 		return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
     }
 
@@ -94,6 +133,7 @@ class v2_profileController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$user = $request->user();
+		if ($user->is_parent) return response()->json(["error" => "家長帳號不支援此功能！"], 400, array(JSON_UNESCAPED_UNICODE));
 		if (!isset($user->ldap) || ! $user->ldap) return response()->json(["error" => "人員不存在"], 400, array(JSON_UNESCAPED_UNICODE));
 		$userinfo = array();
 		$email = $request->get('email');
@@ -164,6 +204,7 @@ class v2_profileController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$user = $request->user();
+		if ($user->is_parent) return response()->json(["error" => "家長帳號不支援此功能！"], 400, array(JSON_UNESCAPED_UNICODE));
 		if (!isset($user->ldap) || ! $user->ldap) return response()->json(["error" => "人員不存在"], 400, array(JSON_UNESCAPED_UNICODE));
 		$userinfo = array();
 		$account = $request->get('account');

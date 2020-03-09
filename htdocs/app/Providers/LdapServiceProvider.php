@@ -944,18 +944,24 @@ class LdapServiceProvider extends ServiceProvider
   	{
 		if (strlen($identifier) == 10) return $identifier;
 		$entry = $this->getUserEntry($identifier);
-		$dn = ldap_get_dn(self::$ldap_read, $entry);
-		$augs = explode(',', $dn);
-		$cn = explode('=', $augs[0]);
-		return $cn[1];
+		if ($entry) {
+			$dn = ldap_get_dn(self::$ldap_read, $entry);
+			$augs = explode(',', $dn);
+			$cn = explode('=', $augs[0]);
+			return $cn[1];
+		}
+		return false;
 	}
 
 	public function getUserUUID($identifier)
   	{
 		if (strlen($identifier) > 10) return $identifier;
 		$entry = $this->getUserEntry($identifier);
-		$value = @ldap_get_values(self::$ldap_read, $entry, 'entryUUID');
-		return $value['count'] == 1 ? $value[0] : $identifier;
+		if ($entry) {
+			$value = @ldap_get_values(self::$ldap_read, $entry, 'entryUUID');
+			return $value['count'] == 1 ? $value[0] : false;
+		}
+		return false;
 	}
 
 	public function getUserName($identifier)
