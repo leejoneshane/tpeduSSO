@@ -29,6 +29,7 @@
                 @if (empty($personal))
                     <p class="mb-0">您尚未建立任何全校授權金鑰。</p>
                 @else
+                    <p class="mb-0">以下為貴校的全校授權金鑰：</p>
                     <table class="table table-borderless mb-0">
                         <thead>
                             <tr>
