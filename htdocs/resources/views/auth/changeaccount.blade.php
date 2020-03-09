@@ -21,15 +21,13 @@
 		<form class="form-horizontal" method="POST" action="{{ route('changeAccount') }}">
 		    {{ csrf_field() }}
 		    <div class="form-group{{ $errors->has('new-account') ? ' has-error' : '' }}">
-			<label for="new-account" class="col-md-4 col-form-label text-md-right">新帳號</label>
-			<div class="col-md-8">
+				<label for="new-account" class="col-form-label text-md-right">新帳號</label>
 			    <input id="new-account" type="text" class="form-control" name="new-account" required>
 			    @if ($errors->has('new-account'))
 			    <span class="help-block">
 				<strong>{{ $errors->first('new-account') }}</strong>
 			    </span>
 			    @endif
-			</div>
 		    </div>
 		    <div class="form-group">
 			<div class="col-md-8 col-md-offset-4">

@@ -21,15 +21,13 @@
 		<form class="form-horizontal" method="POST" action="{{ route('changePassword') }}">
 		    {{ csrf_field() }}
 		    <div class="form-group{{ $errors->has('new-password') ? ' has-error' : '' }}">
-			<label for="new-password" class="col-md-4 col-form-label text-md-right">新密碼</label>
-			<div class="col-md-6">
+				<label for="new-password" class="col-form-label text-md-right">新密碼</label>
 			    <input id="new-password" type="password" class="form-control" name="new-password" required>
 			    @if ($errors->has('new-password'))
 			    <span class="help-block">
 				<strong>{{ $errors->first('new-password') }}</strong>
 			    </span>
 			    @endif
-			</div>
 		    </div>
 
 		    <div class="form-group">
