@@ -40,8 +40,6 @@ class LdapUserProvider extends EloquentUserProvider
 			$user = User::where('idno', $id)->orWhere('uuid', $data['entryUUID'])->first();
 			if (is_null($user)) {
 				$user = new User();
-				$user->idno = $id;
-				$user->uuid = $data['entryUUID'];
 				if (isset($credentials['password'])) {
 					$user->password = \Hash::make($credentials['password']);
 				} else {
