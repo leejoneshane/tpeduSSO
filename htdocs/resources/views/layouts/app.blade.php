@@ -30,34 +30,35 @@
                 @guest
                     <li><a href="{{ route('login') }}"><i class="fa fa-sign-in-alt fa-fw"></i>登入</a></li>
                 @else
+                <?php $user = Auth::user(); ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-user fa-fw"></i>{{ Auth::user()->name }} 
+                            <i class="fa fa-user fa-fw"></i>{{ $user->name }} 
                         </a>
                         <ul  style="min-width:50px; left: -40px; top:120%" class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="{{ url('/') }}"><i class="fa fa-home fa-fw"></i>回首頁</a></li>
-                            @if (Auth::user()->is_admin || Auth::user()->id == 1)
+                            @if ($user->is_admin || $user->id == 1)
                                 <li><a class="dropdown-item" href="{{ route('sync') }}"><i class="fa fa-database fa-fw"></i>資料維護</a></li>
                         	    <li><a class="dropdown-item" href="{{ route('bureau') }}"><i class="fa fa-eye fa-fw"></i>局端管理</a></li>
                     	    @endif
-                            @if (Auth::user()->ldap['adminSchools'])
-                                @foreach (Auth::user()->ldap['adminSchools'] as $o)
+                            @if ($user->ldap['adminSchools'])
+                                @foreach ($user->ldap['adminSchools'] as $o)
                                     <li><a class="dropdown-item" href="{{ route('school', [ 'dc' => $o ]) }}"><i class="fa fa-university fa-fw"></i>學校管理：{{ $o }}</a></li>
                                 @endforeach
                             @endif
-                            @if (isset(Auth::user()->ldap['tpTutorClass']))
-                                <?php $tutor = Auth::user()->ldap['tpTutorClass']; ?>
-                                <li><a class="dropdown-item" href="{{ route('tutor', [ 'dc' => Auth::user()->ldap['adminSchools'][0], 'class' => $tutor ]) }}"><i class="fa fa-address-book fa-fw"></i>班級管理：{{ $tutor }}</a></li>
+                            @if (isset($user->ldap['tpTutorClass']))
+                                <?php $tutor = $user->ldap['tpTutorClass']; ?>
+                                <li><a class="dropdown-item" href="{{ route('tutor', [ 'dc' => $user->ldap['adminSchools'][0], 'class' => $tutor ]) }}"><i class="fa fa-address-book fa-fw"></i>班級管理：{{ $tutor }}</a></li>
                             @endif
-                            @if (Auth::user()->is_parent || Auth::user()->ldap['employeeType'] != '學生')
+                            @if ($user->is_parent || $user->ldap['employeeType'] != '學生')
                             <li><a class="dropdown-item" href="{{ route('parent.listLink') }}"><i class="fa fa-link fa-fw"></i>親子連結</a></li>
                             <li><a class="dropdown-item" href="{{ route('parent.guardianAuth') }}"><i class="fa fa-user-check fa-fw"></i>代理授權</a></li>
                             @endif
-                            @if (!(Auth::user()->is_parent))
+                            @if (!($user->is_parent))
                                 <li><a class="dropdown-item" href="{{ route('oauth') }}"><i class="fa fa-key fa-fw"></i>金鑰管理</a></li>
                             @endif
                             <li><a class="dropdown-item" href="{{ route('profile') }}"><i class="fa fa-edit fa-fw"></i>修改個資</a></li>
-                            @if (!(Auth::user()->is_parent))
+                            @if (!($user->is_parent))
                                 <li><a class="dropdown-item" href="{{ route('changeAccount') }}"><i class="fa fa-tag fa-fw"></i>變更帳號</a></li>
                             @endif
                             <li><a class="dropdown-item" href="{{ route('changePassword') }}"><i class="fa fa-lock fa-fw"></i>變更密碼</a></li>

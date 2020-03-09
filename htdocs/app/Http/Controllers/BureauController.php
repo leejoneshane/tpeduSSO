@@ -46,7 +46,7 @@ class BureauController extends Controller
 			if ($clients) {
 				foreach ($clients as $client) {
 					Project::create([
-						'id' => (string) Str::uuid(),
+						'uuid' => (string) Str::uuid(),
 						'applicationName' => $client->name,
 						'redirect' => $client->redirect,
 						'audit' => true,
@@ -102,7 +102,7 @@ class BureauController extends Controller
 			}
 		} else {
 			Project::create([
-				'id' => (string) Str::uuid(),
+				'uuid' => (string) Str::uuid(),
 				'organization' => $request->get('organization'),
 				'applicationName' => $request->get('applicationName'),
 				'reason' => $request->get('reason'),
