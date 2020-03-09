@@ -53,7 +53,7 @@ class CheckClientCredentialsWithClientId
 
         $client_id = $psr->getAttribute('oauth_client_id');
         $client = Passport::client()->find($client_id);
-        if ($vlient->firstParty() || Project::isPrivileged($client_id)) {
+        if ($client->firstParty() || Project::isPrivileged($client_id)) {
             return $next($request);
         } else {
             return response('Forbidden.', 403);
