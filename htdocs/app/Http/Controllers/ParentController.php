@@ -206,7 +206,7 @@ class ParentController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$qrcode = GQrcode::where('uuid', $uuid)->first();
-		if ($qrcode && $qrcode->expired()) return redirect()->route('home');
+		if (!$qrcode || $qrcode->expired()) return redirect()->route('home');
 		$student = $qrcode->idno;
 		$parent = Auth::user()->idno;
 		$link = PSLink::where('parent_idno', $parent)->where('student_idno', $student)->first();
@@ -215,6 +215,7 @@ class ParentController extends Controller
 			$link->verified_idno = $parent;
 			$link->verified_time = Carbon::now();
 			$link->save();
+			$qrcode->delete();
 			return redirect()->route('parent.listLink');
 		} else {
 			PSLink::create([
@@ -225,6 +226,7 @@ class ParentController extends Controller
 				'verified_idno' => $parent,
 				'verified_time' => Carbon::now(),
 			]);
+			$qrcode->delete();
 			return redirect()->route('parent.listLink');
 		}
 	}
