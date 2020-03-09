@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Laravel\Passport\Passport;
 
@@ -13,9 +14,9 @@ class OauthController extends Controller
     {
         $user = Auth::user();
         if ($user->is_parent) return redirect()->route('parent');
-        $tokens = Passport::token()->where('user_id', $user->getKey())->get();
+        $tokens = Passport::token()->where('user_id', $user->getKey())->where('revoked', 0)->where('expires_at', '>', Carbon::now())->get();
         $mytokens =  $tokens->load('client')->filter(function ($token) {
-            return ! $token->client->firstParty() && ! $token->revoked;
+            return ! $token->client->firstParty();
         })->values();
         return view('auth.oauthManager', [ 'tokens' => $mytokens ]);
     }
