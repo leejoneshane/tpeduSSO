@@ -47,7 +47,7 @@
                             @endif
                             @if (isset(Auth::user()->ldap['tpTutorClass']))
                                 <?php $tutor = Auth::user()->ldap['tpTutorClass']; ?>
-                                <li><a class="dropdown-item" href="{{ route('tutor', [ 'dc' => $o, 'class' => $tutor ]) }}"><i class="fa fa-address-book fa-fw"></i>班級管理：{{ $tutor }}</a></li>
+                                <li><a class="dropdown-item" href="{{ route('tutor', [ 'dc' => Auth::user()->ldap['adminSchools'][0], 'class' => $tutor ]) }}"><i class="fa fa-address-book fa-fw"></i>班級管理：{{ $tutor }}</a></li>
                             @endif
                             @if (Auth::user()->is_parent || Auth::user()->ldap['employeeType'] != '學生')
                             <li><a class="dropdown-item" href="{{ route('parent.listLink') }}"><i class="fa fa-link fa-fw"></i>親子連結</a></li>
