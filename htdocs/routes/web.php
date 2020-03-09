@@ -45,7 +45,7 @@ Route::group(['prefix' => 'oauth', 'middleware' => 'auth'], function () {
 	Route::get('/', 'OauthController@index')->name('oauth');
 	Route::post('tokens/{token_id}/revoke', 'OauthController@revokeToken')->name('revokeToken');
 	//RouteRegistrar::forAuthorization()
-	Route::get('authorize', '\Laravel\Passport\Http\Controllers\AuthorizationController@authorize')->middleware('age')->name('passport.authorizations.authorize');
+	Route::get('authorize', '\Laravel\Passport\Http\Controllers\AuthorizationController@authorize')->name('passport.authorizations.authorize');
 	Route::post('authorize', '\Laravel\Passport\Http\Controllers\ApproveAuthorizationController@approve')->name('passport.authorizations.approve');
 	Route::delete('authorize', '\Laravel\Passport\Http\Controllers\DenyAuthorizationController@deny')->name('passport.authorizations.deny');
 	//RouteRegistrar::forAccessTokens()
@@ -207,9 +207,9 @@ Route::group(['prefix' => 'bureau', 'middleware' => 'auth.admin'], function () {
 	Route::post('project/deny/{uuid}', 'BureauController@denyProject')->name('bureau.denyProject');
 	Route::post('project/pass/{uuid}', 'BureauController@passProject')->name('bureau.passProject');
 	Route::get('client', 'BureauController@listClients')->name('bureau.client');
-	Route::get('client/{id}/update', 'BureauController@updateClient');
-	Route::post('client/{id}/update', 'BureauController@storeClient')->name('bureau.updateClient');
-	Route::post('client/{id}/toggle', 'BureauController@toggleClient')->name('bureau.toggleClient');
+	Route::get('client/update/{uuid}', 'BureauController@updateClient');
+	Route::post('client/update/{uuid}', 'BureauController@storeClient')->name('bureau.updateClient');
+	Route::post('client/toggle/{uuid}', 'BureauController@toggleClient')->name('bureau.toggleClient');
 });
 
 Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () {
