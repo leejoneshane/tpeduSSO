@@ -27,18 +27,18 @@ class RevokeOldTokens
      */
     public function handle(AccessTokenCreated $event)
     {
-        /*try {
+        try {
             DB::table('oauth_access_tokens')
                 ->where('id', '<>', $event->tokenId)
                 ->where('user_id', $event->userId)
                 ->where('client_id', $event->clientId)
                 ->where('revoked', true)
-                ->delete();
+                ->save();
             DB::table('oauth_auth_codes')
                 ->where('user_id', $event->userId)
                 ->where('client_id', $event->clientId)
                 ->where('revoked', true)
-                ->delete();
-        } catch (\Exception $e) {}*/
+                ->save();
+        } catch (\Exception $e) {}
     }
 }
