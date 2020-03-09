@@ -77,8 +77,8 @@ class BureauController extends Controller
             'connEmail' => 'required|email:rfc,dns',
             'connTel' => 'required|digits_between:7,10',
         ]);
-		if ($request->get('id')) {
-			$project = Project::find($request->get(id));
+		if ($request->get('uuid')) {
+			$project = Project::where('uuid', $request->get(uuid))->first();
 			$project->forceFill([
 				'organization' => $request->get('organization'),
 				'applicationName' => $request->get('applicationName'),
