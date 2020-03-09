@@ -20,6 +20,7 @@ class LdapUserProvider extends EloquentUserProvider
             return;
         }
 		$openldap = new LdapServiceProvider();
+		$id = false;
 		if (isset($credentials['username'])) {
 			if (substr($credentials['username'],0,3) == 'cn=') {
 				$id = $openldap->checkIdno($credentials['username']);
