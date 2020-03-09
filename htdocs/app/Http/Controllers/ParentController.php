@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\User;
 use App\PSLink;
 use App\PSAuthorize;
+use App\GQrcode;
 use Laravel\Passport\Passport;
 use Illuminate\Http\Request;
 use App\Providers\SimsServiceProvider;
@@ -117,6 +118,12 @@ class ParentController extends Controller
 	public function showGuardianAuthForm(Request $request)
     {
 		$openldap = new LdapServiceProvider();
+		$link_id = $request->get('id');
+		$myidno = null;
+		if ($link_id) {
+			$link = PSLink::find($link_id);
+			$myidno = $link->student_idno;
+		}
 		$idno = Auth::user()->idno;
 		$links = PSLink::where('parent_idno', $idno)->orderBy('created_at','desc')->get();
 		$idnos = array();
@@ -130,14 +137,15 @@ class ParentController extends Controller
 			$str = $data['birthDate'];
 			$born = Carbon::createFromDate(substr($str,0,4), substr($str,4,2), substr($str,6,2), 'Asia/Taipei');
 			if ($born > $age) {
-				$kids[$student_idno] = $data['displayName'];
+				$kids[$l->id]['idno'] = $l->student_idno;
+				$kids[$l->id]['name'] = $data['displayName'];
+				if (empty($myidno)) $myidno = $l->student_idno; 
 			}
 		}
 		$apps = Passport::client()->all();
 		foreach ($apps as $k => $app) {
 			if ($app->firstParty()) unset($apps[$k]);
 		}
-		$myidno = $request->get('student');
 		$agreeAll = null;
 		$authorizes = array();
 		if ($idnos) {
@@ -148,8 +156,7 @@ class ParentController extends Controller
 				$authorizes[$d->client_id] = $d->trust_level;
 			}
 		}
-		$route = route('parent.guardianAuth');
-		return view('parents.guardianAuthForm', [ 'route' => $route, 'student' => $myidno, 'kids' => $kids, 'apps' => $apps, 'agreeAll' => $agreeAll, 'authorizes' => $authorizes, 'trust_level' => Config::get('app.trust_level') ]);		
+		return view('parents.guardianAuthForm', [ 'student' => $myidno, 'kids' => $kids, 'apps' => $apps, 'agreeAll' => $agreeAll, 'authorizes' => $authorizes, 'trust_level' => Config::get('app.trust_level') ]);		
 	}
 
 	public function applyGuardianAuth(Request $request)
@@ -193,6 +200,33 @@ class ParentController extends Controller
 			}
 		}
 		return redirect()->route('parent.guardianAuth')->with("success","已經為您更新代理授權設定！")->with('student',$request->get('student'));
+	}
+
+	public function qrcodeBind(Request $request, $uuid)
+    {
+		$openldap = new LdapServiceProvider();
+		$qrcode = GQrcode::where('uuid', $uuid)->first();
+		if ($qrcode && $qrcode->expired()) return redirect()->route('home');
+		$student = $qrcode->idno;
+		$parent = Auth::user()->idno;
+		$link = PSLink::where('parent_idno', $parent)->where('student_idno', $student)->first();
+		if ($link) {
+			$link->verified = true;
+			$link->verified_idno = $parent;
+			$link->verified_time = Carbon::now();
+			$link->save();
+			return redirect()->route('parent.listLink');
+		} else {
+			PSLink::create([
+				'parent_idno' => $parent,
+				'student_idno' => $student,
+				'relation' => '監護人',
+				'verified' => true,
+				'verified_idno' => $parent,
+				'verified_time' => Carbon::now(),
+			]);
+			return redirect()->route('parent.listLink');
+		}
 	}
 
 }

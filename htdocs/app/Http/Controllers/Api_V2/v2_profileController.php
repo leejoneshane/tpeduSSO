@@ -44,7 +44,7 @@ class v2_profileController extends Controller
     public function user(Request $request)
     {
 		$user = $request->user();
-		if (!isset($user->ldap)) return response()->json(["error" => "人員不存在"], 400);
+		if (!isset($user->ldap) || ! $user->ldap) return response()->json(["error" => "人員不存在"], 400, array(JSON_UNESCAPED_UNICODE));
 		$json = new \stdClass();
 		$json->role = $user->ldap['employeeType'];
 		$json->uuid = $user->uuid;
@@ -67,7 +67,7 @@ class v2_profileController extends Controller
     public function profile(Request $request)
     {
 		$user = $request->user();
-		if (!isset($user->ldap)) return response()->json(["error" => "人員不存在"], 400);
+		if (!isset($user->ldap) || ! $user->ldap) return response()->json(["error" => "人員不存在"], 400, array(JSON_UNESCAPED_UNICODE));
 		$json = new \stdClass();
 		$json->role = $user->ldap['employeeType'];
 		if (array_key_exists('gender', $user->ldap)) $json->gender = $user->ldap['gender'];
@@ -94,7 +94,7 @@ class v2_profileController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$user = $request->user();
-		if (!isset($user->ldap)) return response()->json(["error" => "人員不存在"], 400, array(JSON_UNESCAPED_UNICODE));
+		if (!isset($user->ldap) || ! $user->ldap) return response()->json(["error" => "人員不存在"], 400, array(JSON_UNESCAPED_UNICODE));
 		$userinfo = array();
 		$email = $request->get('email');
 		$mobile = $request->get('mobile');
@@ -164,7 +164,7 @@ class v2_profileController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$user = $request->user();
-		if (!isset($user->ldap)) return response()->json(["error" => "人員不存在"], 400, array(JSON_UNESCAPED_UNICODE));
+		if (!isset($user->ldap) || ! $user->ldap) return response()->json(["error" => "人員不存在"], 400, array(JSON_UNESCAPED_UNICODE));
 		$userinfo = array();
 		$account = $request->get('account');
 		$password = $request->get('password');

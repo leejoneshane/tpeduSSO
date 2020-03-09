@@ -30,18 +30,18 @@
 					@if (empty($student))
 					<p>請先進行親子連結後再進行代理授權設定，謝謝！</p>
 					@else
-					<form id="form" action="{{ $route }}" method="POST">
-					@csrf
 					<div class="input-group custom-search-form">
-						<label for="student" class="control-label">請選擇您13歲以下的小孩：</label>
-						<select name="student" class="form-control pull-right" style="width: auto"  onchange="location='{{ url()->current() }}?student=' + $(this).val();">
+						<label for="PSlink" class="control-label">請選擇您13歲以下的小孩：</label>
+						<select name="PSlink" class="form-control pull-right" style="width: auto"  onchange="location='{{ url()->current() }}?id=' + $(this).val();">
 						   @if ($kids)
-							   @foreach ($kids as $idno => $name)
-								   <option value="{{ $idno }}"{{ ($student == $idno) ? ' selected' : '' }}>{{ $name }}</option>
+							   @foreach ($kids as $id => $kid)
+								   <option value="{{ $id }}"{{ ($student == $kid['idno']) ? ' selected' : '' }}>{{ $kid['name'] }}</option>
 							   @endforeach
 						   @endif	
 				   		</select>
 					</div>
+					<form id="form" action="{{ route('parent.guardianAuth') }}" method="POST">
+					@csrf
 					<input type="hidden" name="student" value="{{ $student }}">
 					<div class="row">
 						<div class="col-md-10 text-md-left control-label">

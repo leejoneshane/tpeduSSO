@@ -14,7 +14,7 @@ class GQrcode extends Model
 	public $timestamps = false;
 
     protected $fillable = [
-        'id', 'idno', 'expired_at',
+        'uuid', 'idno', 'expired_at',
     ];
     
     protected $casts = [
@@ -28,7 +28,7 @@ class GQrcode extends Model
 
 	public function generate()
 	{
-		return QrCode::size(100)->generate(env('APP_URL').'/qrcode/'.$this->attributes['id']);
+		return QrCode::size(100)->generate(env('APP_URL').'/qrcode/'.$this->attributes['uuid']);
 	}
 
 	public function expired()

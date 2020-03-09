@@ -75,8 +75,6 @@ Route::post('changeAccount', 'HomeController@changeAccount')->name('changeAccoun
 Route::get('3party', 'GuestController@apply')->name('3party');
 Route::post('3party/store', 'GuestController@store')->name('3party.store');
 Route::post('3party/update', 'GuestController@edit')->name('3party.edit');
-Route::get('qrcode/{id}', 'GuestController@showGuardianAuthForm');
-Route::post('qrcode/{id}', 'GuestController@applyGuardianAuth')->name('qrcode');
 
 Route::group(['middleware' => 'auth'], function () {
 	Route::get('/', 'HomeController@index')->middleware('verified')->name('home');
@@ -95,6 +93,7 @@ Route::group(['prefix' => 'parent', 'middleware' => 'auth.parent'], function () 
 	Route::post('link/{id}/remove', 'ParentController@removeLink')->name('parent.removeLink');
 	Route::get('authorize', 'ParentController@showGuardianAuthForm');
 	Route::post('authorize', 'ParentController@applyGuardianAuth')->name('parent.guardianAuth');
+	Route::get('qrcode/{uuid}', 'ParentController@qrcodeBind');
 });
 
 Route::group(['prefix' => 'tutor', 'middleware' => 'auth.tutor'], function () {

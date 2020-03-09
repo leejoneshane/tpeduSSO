@@ -14,7 +14,7 @@ class CreateGuardianQrcodeTable extends Migration
     public function up()
     {
         Schema::create('guardian_qrcode', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->uuid('uuid')->primary();
 			$table->string('idno')->unique();
             $table->timestamp('expired_at');
         });
