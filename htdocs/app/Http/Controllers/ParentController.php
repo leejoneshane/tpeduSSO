@@ -71,6 +71,7 @@ class ParentController extends Controller
 		$relation = $request->get('relation');
 		$student = $openldap->getUserEntry($idno);
 		$data = $openldap->getUserData($student);
+		if (!isset($data['o'])) return back()->with("error","查不到貴子弟的就學記錄，確定他是臺北市的學生嗎？");
 		$dc = $data['o'];
 		$role = $data['employeeType'];
 		$stdno = $data['employeeNumber'];
