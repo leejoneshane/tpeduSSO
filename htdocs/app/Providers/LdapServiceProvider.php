@@ -1186,6 +1186,7 @@ class LdapServiceProvider extends ServiceProvider
     {
 		$this->administrator();
 		$data = $this->getUserData($entry, ['cn', 'uid', 'userPassword']);
+		if (!isset($data['cn'])) return;
 		$idno = $data['cn'];
 		$password = $data['userPassword'];
 		$this->addData($entry, array( "uid" => $account));

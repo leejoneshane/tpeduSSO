@@ -37,17 +37,14 @@ class LdapUserProvider extends EloquentUserProvider
 		if ($id) {
 			$entry = $openldap->getUserEntry($id);
 			$data = $openldap->getUserData($entry);
-			$user = User::where('idno', $id)->orWhere('uuid', $data['entryUUID'])->first();
-			if (is_null($user)) {
-				$user = new User();
-				if (isset($credentials['password'])) {
-					$user->password = \Hash::make($credentials['password']);
-				} else {
-					$user->password = \Hash::make(substr($id,-6));
-				}
-			}
+			$user = User::where('idno', $id)->orWhere('uuid', $data['entryUUID'])->firstOrCreate();
 			$user->idno = $id;
 			$user->uuid = $data['entryUUID'];
+			if (isset($credentials['password'])) {
+				$user->password = \Hash::make($credentials['password']);
+			} else {
+				$user->password = \Hash::make(substr($id,-6));
+			}
 			$user->name = $data['displayName'];
 			if (isset($credentials['email'])) {
 				$user->email = $credentials['email'];
@@ -69,6 +66,7 @@ class LdapUserProvider extends EloquentUserProvider
 			return $user;
 		} else {
 			if (isset($credentials['username'])) return User::where('email', $credentials['username'])->first();
+			if (isset($credentials['email'])) return User::where('email', $credentials['email'])->first();
 		}
 	}
 

@@ -97,7 +97,7 @@ class User extends Authenticatable implements MustVerifyEmail
     
     public function sendPasswordResetNotification($token)
     {
-		if ($this->attributes['is_parent']) {
+		if (isset($this->attributes['is_parent']) && $this->attributes['is_parent']) {
 			$accounts = $this->attributes['email'];
 		} else {
 			$openldap = new LdapServiceProvider();
@@ -114,7 +114,7 @@ class User extends Authenticatable implements MustVerifyEmail
 				$accounts = '尚未設定帳號，請使用 cn='.$this->attributes['idno'].' 登入設定！';
 			}
 		}
-		$this->notify(new ResetPasswordNotification($token, $accounts));
+		if ($this->hasVerifiedEmail()) $this->notify(new ResetPasswordNotification($token, $accounts));
     }
     
     public function resetLdapPassword($value)
