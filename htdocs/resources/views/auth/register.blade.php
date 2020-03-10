@@ -8,10 +8,17 @@
                 <div class="card-header"><h4>註冊家長帳號</h4></div>
 
                 <div class="card-body">
-                    <p style="color:red">注意：如果您已經有教師帳號，請直接登入後綁定親子連結，請勿再次註冊家長帳號。</p>
+                    <p style="color:red">注意事項：
+                        <ul>
+                            <li>如果您已經有教師帳號，請直接登入後綁定親子連結，請勿再次註冊家長帳號。每個身分證字號僅能註冊一個帳號。</li>
+                            <li>本網站所提供的家長帳號因涉及學生個資授權，為避免引起法律及親權爭議，請務必提供您的真實資料。</li>
+                            <li>若您提供之資料與學生學籍資料監護人之記載不同，本網站得依法不提供任何服務，包含您本人及未滿 13 歲之小孩，將無法使用本網站所介接的所有教育應用服務。</li>
+                            <li>若有冒用家長身份或其他人之身份註冊帳號，請自負偽造文書罪刑事責任。</li>
+                        </ul>
+                    </p>
+                    <hr>
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
-
                         <div class="form-group row">
                             <label for="name" class="col-md-4 col-form-label text-md-right">真實姓名</label>
 
