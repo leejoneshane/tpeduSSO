@@ -41,7 +41,7 @@
                                                 {{ $scope->id }}（無法使用）
                                             @elseif ($scope->id == 'profile')
                                             <input type="checkbox" name="scopes[]" value="{{ $scope->id }}" checked>
-                                                {{ $scope->id }}（推薦）
+                                                {{ $scope->id }}（建議）
                                             @else
                                             <input type="checkbox" name="scopes[]" value="{{ $scope->id }}">
                                                 {{ $scope->id }}
