@@ -227,6 +227,12 @@ class v2_profileController extends Controller
 		    if (!$openldap->accountAvailable($user->idno, $account)) {
 				return response()->json(["error" => "帳號已經被使用"], 400, array(JSON_UNESCAPED_UNICODE));
 		    }
+		    if (is_numeric($account)) {
+				return response()->json(["error" => "帳號應包含數字以外的字元"], 400, array(JSON_UNESCAPED_UNICODE));
+		    }
+		    if (strpos($account, '@')) {
+				return response()->json(["error" => "帳號不可以是電子郵件"], 400, array(JSON_UNESCAPED_UNICODE));
+		    }
 		    $entry = $openldap->getUserEntry($user->idno);
 	    	$openldap->renameAccount($entry, $current, $account);
 		    $messages = '帳號更新完成 ';
