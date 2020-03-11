@@ -130,6 +130,8 @@ class HomeController extends Controller
 		foreach ($accounts as $account) {
     		if ($new == $account) return back()->withInput()->with("error","新帳號不可以跟舊的帳號相同，請重新想一個新帳號再試一次！");
 		}
+		if (strpos($new, '@')) return back()->withInput()->with("error","新帳號不可以使用電子郵件，請重新想一個新帳號再試一次！"); 
+		if (is_numeric($new)) return back()->withInput()->with("error","新帳號不可以僅使用數字，請重新想一個新帳號再試一次！"); 
 		if($idno == $new) return back()->withInput()->with("error","新帳號不可以跟身分證字號相同，請重新想一個新帳號再試一次！");
 		if (!$openldap->accountAvailable($new)) return back()->withInput()->with("error","您輸入的帳號已經被別人使用，請您重新輸入一次！");
 		$entry = $openldap->getUserEntry($idno);
