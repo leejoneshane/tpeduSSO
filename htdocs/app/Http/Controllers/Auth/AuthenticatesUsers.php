@@ -168,6 +168,7 @@ trait AuthenticatesUsers
     {
         if (Auth::check()) {
             if (isset($request['SAMLRequest'])) {
+                if ($user->is_parent) return back()->with('error','很抱歉，家長不提供 SAML 介接！');
                 if ($user->nameID()) {
                     $this->handleSamlLoginRequest($request);
                 } else {
