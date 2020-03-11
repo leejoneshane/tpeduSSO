@@ -177,7 +177,7 @@ class ParentController extends Controller
 			} else {
 				PSAuthorize::where('student_idno', $student_idno)->where('client_id', '!=', '*')->delete();
 			}
-		} else {
+		} elseif (!empty($agree)) {
 			$apps = Passport::client()->all();
 			foreach ($apps as $app) {
 				if ($app->firstParty()) continue;
