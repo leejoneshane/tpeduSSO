@@ -2953,7 +2953,7 @@ class SyncController extends Controller
 				if ($new_gm) {
 					$gm->transfered = true;
 					$gm->save();
-					$messages[] = "已將帳號 $userKey 轉移到 gs.tp.edu.tw！";
+					$messages[] = "已將帳號'.$gm->nameID.'@ms.tp.edu.tw 轉移到 gs.tp.edu.tw！";
 				}
 			}
 			$messages[] = "每次僅能轉移 100 個帳號，請持續轉移到完成為止！";
