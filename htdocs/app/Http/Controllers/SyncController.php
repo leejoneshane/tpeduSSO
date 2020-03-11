@@ -2925,6 +2925,7 @@ class SyncController extends Controller
 
 	public function removeParent() {
 		$parents = User::where('is_parent', 1)->get();
+		$messages = array();
 		if (!$parents->isEmpty()) {
 			foreach ($parents as $p) {
 				$name = $p->name;
@@ -2942,6 +2943,7 @@ class SyncController extends Controller
 	public function transferDomain() {
 		$google = new GoogleServiceProvider();
 		$gmails = Gsuite::where('transfered', 0)->limit(100)->get();
+		$messages = array();
 		if ($gmails->isEmpty()) {
 			$messages[] = "所有帳號轉移成功！";
 		} else {
