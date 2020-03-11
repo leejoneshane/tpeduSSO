@@ -1,7 +1,7 @@
 @extends('layouts.syncboard')
 
 @section('page_heading')
-移除人員紀錄中的 Description 欄位
+移除未連結的家長帳號
 @endsection
 
 @section('section')

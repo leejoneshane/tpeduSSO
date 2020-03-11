@@ -150,6 +150,20 @@ class GoogleServiceProvider extends ServiceProvider
 		}
 	}
 
+	public function transferUser($new_domain, $userKey)
+	{
+		if (!strpos($userKey, '@')) return;
+		try {
+			$userObj = getUser($userKey);
+			$nameID = explode('@', $userKey);
+			$newKey = $nameID[0].'@'.$new_domain;
+			return $this->directory->users->update($userKey, $userObj);
+		} catch (\Google_Service_Exception $e) {
+			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
+			return false;
+		}
+	}
+
 	public function sync(User $user)
 	{
 		$new_user = false;

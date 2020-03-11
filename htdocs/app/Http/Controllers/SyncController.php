@@ -6,7 +6,10 @@ use Log;
 use Config;
 use Validator;
 use Auth;
+use Carbon\Carbon;
 use App\User;
+use App\Gsuite;
+use App\PSLink;
 use Illuminate\Http\Request;
 use App\Providers\LdapServiceProvider;
 use App\Providers\SimsServiceProvider;
@@ -2860,7 +2863,7 @@ class SyncController extends Controller
 	
 	public function removeFake() {
 		$openldap = new LdapServiceProvider();
-		$filter = '(&(objectClass=tpeduPerson)(|(cn=*123456789)(displayName=*測試*)(!(employeeType=*))))';
+		$filter = '(&(objectClass=tpeduPerson)(|(cn=*123456789)(displayName=*測試*)(displayName=*管理*)(displayName=*教師*)(!(employeeType=*))))';
 		$fake = $openldap->findUsers($filter);
 		$messages = array(); 
 		if (!empty($fake)) {
@@ -2920,22 +2923,34 @@ class SyncController extends Controller
 		return view('admin.syncremovedeleted', [ 'result' => $messages ]);
 	}
 
-	public function removeDescription() {
-		$openldap = new LdapServiceProvider();
-		$filter = '(description=*)';
-		$modifier = $openldap->findUserEntries($filter);
-		$messages = array();
-		if (empty($modifier)) {
-			$messages[] = "找不到符合條件的紀錄！";
-		} else {
-				$count = 0;
-			foreach ($modifier as $entry) {
-				$openldap->deleteData($entry, [ 'description' => array() ]);
-				$count++;
+	public function removeParent() {
+		$parents = User::where('is_parent', 1)->get();
+		if (!$parents->isEmpty()) {
+			foreach ($parents as $p) {
+				$name = $p->name;
+				$idno = $p->idno;
+				$link = PSLink::where('parent_idno', $idno)->count();
+				if ($link > 0) continue;
+				if ($p->created_at > Carbon::now()->subDays(30)) continue;
+				$p->delete();
+				$messages[] = "移除 30 天以上未建立親子連結的家長帳號：$name($idno)";
 			}
-			$messages[] = "共移除 $count 筆記錄！";
 		}
-		return view('admin.syncremovedescription', [ 'result' => $messages ]);
+		return view('admin.syncremoveparent', [ 'result' => $messages ]);
+	}
+
+	public function transferDomain() {
+		$google = new GoogleServiceProvider();
+		$gmails = Gsuite::where('transfered', 0)->limit(100)->get();
+		if ($gmails->isEmpty()) {
+			$messages[] = "所有帳號轉移成功！";
+		} else {
+			foreach ($gmails as $gm) {
+				$google->transferUser('gs.tp.edu.tw', $gm->nameID.'@ms.tp.edu.tw');
+			}
+			$messages[] = "每次僅能轉移 100 個帳號，請持續轉移到完成為止！";
+		}
+		return view('admin.transferdomain', [ 'result' => $messages ]);
 	}
 
 	function guess_name($myname) {

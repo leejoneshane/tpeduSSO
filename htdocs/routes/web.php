@@ -160,7 +160,8 @@ Route::group(['prefix' => 'sync', 'middleware' => 'auth.admin'], function () {
     Route::post('hs/auto', 'SyncController@hs_autoSync')->name('sync.hs.auto');
     Route::get('fix/remove_fake', 'SyncController@removeFake')->name('sync.remove_fake');
     Route::get('fix/remove_deleted', 'SyncController@removeDeleted')->name('sync.remove_deleted');
-    Route::get('fix/remove_description', 'SyncController@removeDescription')->name('sync.remove_description');
+    Route::get('fix/remove_parent', 'SyncController@removeParent')->name('sync.remove_parent');
+    Route::get('fix/transfer_domain', 'SyncController@transferDomain')->name('sync.transfer_domain');
 });
 
 Route::group(['prefix' => 'bureau', 'middleware' => 'auth.admin'], function () {
