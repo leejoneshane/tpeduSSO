@@ -77,10 +77,10 @@ class LdapUserProvider extends EloquentUserProvider
 		if (substr($credentials['username'],0,3) == 'cn=') {
 			return $openldap->userLogin($credentials['username'], $credentials['password']);
 		} else {
-			if ($openldap->authenticate($credentials['username'], $credentials['password']))
-				return true;
-			else
+			if ($user->is_parent) 
 				return $this->hasher->check($credentials['password'], $user->getAuthPassword());
+			else
+				return $openldap->authenticate($credentials['username'], $credentials['password']);
 		}
 	}
 }

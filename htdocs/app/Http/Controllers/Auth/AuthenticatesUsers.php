@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use DB;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\RedirectsUsers;
@@ -61,7 +62,7 @@ trait AuthenticatesUsers
             $idno = $openldap->checkAccount($username);
         }
         if (!$idno) {
-            $parent = DB::table('users')->where('email', $username)->first();
+            $parent = User::where('email', $username)->first();
             if ($parent) {
                 $idno = $parent->idno;
             } else {
