@@ -1033,6 +1033,13 @@ class SyncController extends Controller
 				$idno = strtoupper($idno);
 				$data = $http->hs_getPerson($sid, $idno);
 				if ($data) {
+					if (empty($data['name'])) continue;
+					if (strpos($data['name'],'測試')) continue;
+					if (strpos($data['name'],'教師')) continue;
+					if (strpos($data['name'],'管理')) continue;
+					if (empty($idno)) continue;
+					if (substr($idno, -9) == '123456789') continue;
+					if (substr($idno, -9) == '111111111') continue;
 					$validator = Validator::make(
 						[ 'idno' => $idno ], [ 'idno' => new idno ]
 					);
@@ -1346,6 +1353,13 @@ class SyncController extends Controller
 				$idno = strtoupper($idno);
 				$data = $http->js_getPerson($sid, $idno);
 				if ($data) {
+					if (empty($data['name'])) continue;
+					if (strpos($data['name'],'測試')) continue;
+					if (strpos($data['name'],'教師')) continue;
+					if (strpos($data['name'],'管理')) continue;
+					if (empty($idno)) continue;
+					if (substr($idno, -9) == '123456789') continue;
+					if (substr($idno, -9) == '111111111') continue;
 					$validator = Validator::make(
 						[ 'idno' => $idno ], [ 'idno' => new idno ]
 					);
@@ -1680,216 +1694,221 @@ class SyncController extends Controller
 		} else {
 			foreach ($teachers as $teaid) {
 				$data = $http->ps_getTeacher($sid, $teaid);
-				if (!empty($data['idno']) && !empty($data['name'])) {
-					$idno = strtoupper($data['idno']);
-					$validator = Validator::make(
-						[ 'idno' => $idno ], [ 'idno' => new idno ]
-					);
-					if ($validator->fails()) {
-						$messages[] = "cn=". $idno .",teaid=". $teaid .",name=". $data['name'] ." 身分證字號格式或內容不正確，跳過不處理！";
-						continue;
-					}
-					$current[] = $idno;
-					$user_entry = $openldap->getUserEntry($idno);
-					$orgs = array();
-					$units = array();
-					$roles = array();
-					$assign = array();
-					$educloud = array();
-					$role = '教師';
-					if ($user_entry) {
-						$original = $openldap->getUserData($user_entry);
-						$os = array();
-						if (!empty($original['o'])) {
-							if (is_array($original['o'])) {
-								$os = $original['o'];
-							} else {
-								$os[] = $original['o'];
-							}
-							foreach ($os as $o) {
-								if ($o != $dc) $orgs[] = $o;
-							}
-						}
-						$ous = array();
-						if (!empty($original['ou'])) {
-							if (is_array($original['ou'])) {
-								$ous = $original['ou'];
-							} else {
-								$ous[] = $original['ou'];
-							}
-							foreach ($ous as $ou_pair) {
-								$a = explode(',', $ou_pair);
-								if (count($a) == 2 && $a[0] != $dc) $units[] = $ou_pair;
-							}
-						}
-						$titles = array();
-						if (!empty($original['title'])) {
-							if (is_array($original['title'])) {
-								$titles = $original['title'];
-							} else {
-								$titles[] = $original['title'];
-							}
-							foreach ($titles as $title_pair) {
-								$a = explode(',', $title_pair);
-								if (count($a) == 3 && $a[0] != $dc) $roles[] = $title_pair;
-							}
-						}
-						$tclass = array();
-						if (!empty($original['tpTeachClass'])) {
-							if (is_array($original['tpTeachClass'])) {
-								$tclass = $original['tpTeachClass'];
-							} else {
-								$tclass[] = $original['tpTeachClass'];
-							}
-							foreach ($tclass as $pair) {
-								$a = explode(',', $pair);
-								if (count($a) == 3 && $a[0] != $dc) $assign[] = $pair;
-							}
-						}
-						$orgs[] = $dc;
-						if (!empty($original['info'])) {
-							if (is_array($original['info'])) {
-								$educloud = $original['info'];
-							} else {
-								$educloud[] = $original['info'];
-							}
-							foreach ($educloud as $k => $c) {
-								$i = (array) json_decode($c, true);
-								if (array_key_exists('sid', $i) && $i['sid'] == $sid) unset($educloud[$k]);
-							}
-						}
-						if (!empty($data['job_title'])) {
-							foreach ($data['job_title'] as $job) {
-								if (strpos($job, '校長')) $role = '校長';
-								if (strpos($job, '工友')) $role = '職工';
-								if (strpos($job, '警衛')) $role = '職工';
-								if (strpos($job, '幹事')) $role = '職工';
-								if (strpos($job, '心')) $role = '職工';
-								if (strpos($job, '護')) $role = '職工';
-								$k = base64_encode($job);
-								if (isset($allroles[$k]) && !empty($allroles[$k])) {
-									$units[] = "$dc," . $allroles[$k]['ou'];
-									$roles[] = "$dc," . $allroles[$k]['title'];
-								}
-							}
-						}
-						$educloud[] = json_encode(array("sid" => $sid, "role" => $role), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
-						if (!empty($data['assign'])) {
-							$classes = $data['assign'];
-							foreach ($classes as $class => $subjects) {
-								foreach ($subjects as $s) {
-									$k = base64_encode($s);
-									if (isset($allsubject[$k]) && !empty($allsubject[$k])) {
-										$assign[] = "$dc,$class," . $allsubject[$k];
-									}
-								}
-							}
-						}
-						$info = array();
-						$info['o'] = array_values(array_unique($orgs));
-						$info['ou'] = array_values(array_unique($units));
-						$info['title'] = array_values(array_unique($roles));
-						$info['info'] = array_values(array_unique($educloud));
-						if (!empty($assign)) $info['tpTeachClass'] = array_values(array_unique($assign));
-						if (!empty($data['class'])) $info['tpTutorClass'] = $data['class'];
-						$info['inetUserStatus'] = 'active';
-						$info['employeeType'] = $role;
-						$info['employeeNumber'] = $teaid;
-						$name = $this->guess_name($data['name']);
-						$info['sn'] = $name[0];
-						$info['givenName'] = $name[1];
-						$info['displayName'] = $data['name'];
-						if (!empty($data['gender'])) $info['gender'] = (int) $data['gender'];
-						if (!empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'].'000000Z';
-						if (!empty($data['address'])) $info['registeredAddress'] = $data['address'];
-						if (!empty($data['mail'])) $info['mail'] = $data['mail'];
-						if (!empty($data['tel'])) $info['mobile'] = $data['tel'];
-						$result = $openldap->updateData($user_entry, $info);
-						if ($result) {
-							$messages[] = "cn=". $idno .",teaid=". $teaid .",name=". $data['name'] ." 資料及帳號更新完成！";
+				if (empty($data['name'])) continue;
+				if (strpos($data['name'],'測試')) continue;
+				if (strpos($data['name'],'教師')) continue;
+				if (strpos($data['name'],'管理')) continue;
+				if (empty($data['idno'])) continue;
+				if (substr($data['idno'], -9) == '123456789') continue;
+				if (substr($data['idno'], -9) == '111111111') continue;
+				$idno = strtoupper($data['idno']);
+				$validator = Validator::make(
+					[ 'idno' => $idno ], [ 'idno' => new idno ]
+				);
+				if ($validator->fails()) {
+					$messages[] = "cn=". $idno .",teaid=". $teaid .",name=". $data['name'] ." 身分證字號格式或內容不正確，跳過不處理！";
+					continue;
+				}
+				$current[] = $idno;
+				$user_entry = $openldap->getUserEntry($idno);
+				$orgs = array();
+				$units = array();
+				$roles = array();
+				$assign = array();
+				$educloud = array();
+				$role = '教師';
+				if ($user_entry) {
+					$original = $openldap->getUserData($user_entry);
+					$os = array();
+					if (!empty($original['o'])) {
+						if (is_array($original['o'])) {
+							$os = $original['o'];
 						} else {
-							$messages[] = "cn=". $idno .",teaid=". $teaid .",name=". $data['name'] ." 無法更新教師資料：". $openldap->error();
+							$os[] = $original['o'];
+						}
+						foreach ($os as $o) {
+							if ($o != $dc) $orgs[] = $o;
+						}
+					}
+					$ous = array();
+					if (!empty($original['ou'])) {
+						if (is_array($original['ou'])) {
+							$ous = $original['ou'];
+						} else {
+							$ous[] = $original['ou'];
+						}
+						foreach ($ous as $ou_pair) {
+							$a = explode(',', $ou_pair);
+							if (count($a) == 2 && $a[0] != $dc) $units[] = $ou_pair;
+						}
+					}
+					$titles = array();
+					if (!empty($original['title'])) {
+						if (is_array($original['title'])) {
+							$titles = $original['title'];
+						} else {
+							$titles[] = $original['title'];
+						}
+						foreach ($titles as $title_pair) {
+							$a = explode(',', $title_pair);
+							if (count($a) == 3 && $a[0] != $dc) $roles[] = $title_pair;
+						}
+					}
+					$tclass = array();
+					if (!empty($original['tpTeachClass'])) {
+						if (is_array($original['tpTeachClass'])) {
+							$tclass = $original['tpTeachClass'];
+						} else {
+							$tclass[] = $original['tpTeachClass'];
+						}
+						foreach ($tclass as $pair) {
+							$a = explode(',', $pair);
+							if (count($a) == 3 && $a[0] != $dc) $assign[] = $pair;
+						}
+					}
+					$orgs[] = $dc;
+					if (!empty($original['info'])) {
+						if (is_array($original['info'])) {
+							$educloud = $original['info'];
+						} else {
+							$educloud[] = $original['info'];
+						}
+						foreach ($educloud as $k => $c) {
+							$i = (array) json_decode($c, true);
+							if (array_key_exists('sid', $i) && $i['sid'] == $sid) unset($educloud[$k]);
+						}
+					}
+					if (!empty($data['job_title'])) {
+						foreach ($data['job_title'] as $job) {
+							if (strpos($job, '校長')) $role = '校長';
+							if (strpos($job, '工友')) $role = '職工';
+							if (strpos($job, '警衛')) $role = '職工';
+							if (strpos($job, '幹事')) $role = '職工';
+							if (strpos($job, '心')) $role = '職工';
+							if (strpos($job, '護')) $role = '職工';
+							$k = base64_encode($job);
+							if (isset($allroles[$k]) && !empty($allroles[$k])) {
+								$units[] = "$dc," . $allroles[$k]['ou'];
+								$roles[] = "$dc," . $allroles[$k]['title'];
+							}
+						}
+					}
+					$educloud[] = json_encode(array("sid" => $sid, "role" => $role), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
+					if (!empty($data['assign'])) {
+						$classes = $data['assign'];
+						foreach ($classes as $class => $subjects) {
+							foreach ($subjects as $s) {
+								$k = base64_encode($s);
+								if (isset($allsubject[$k]) && !empty($allsubject[$k])) {
+									$assign[] = "$dc,$class," . $allsubject[$k];
+								}
+							}
+						}
+					}
+					$info = array();
+					$info['o'] = array_values(array_unique($orgs));
+					$info['ou'] = array_values(array_unique($units));
+					$info['title'] = array_values(array_unique($roles));
+					$info['info'] = array_values(array_unique($educloud));
+					if (!empty($assign)) $info['tpTeachClass'] = array_values(array_unique($assign));
+					if (!empty($data['class'])) $info['tpTutorClass'] = $data['class'];
+					$info['inetUserStatus'] = 'active';
+					$info['employeeType'] = $role;
+					$info['employeeNumber'] = $teaid;
+					$name = $this->guess_name($data['name']);
+					$info['sn'] = $name[0];
+					$info['givenName'] = $name[1];
+					$info['displayName'] = $data['name'];
+					if (!empty($data['gender'])) $info['gender'] = (int) $data['gender'];
+					if (!empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'].'000000Z';
+					if (!empty($data['address'])) $info['registeredAddress'] = $data['address'];
+					if (!empty($data['mail'])) $info['mail'] = $data['mail'];
+					if (!empty($data['tel'])) $info['mobile'] = $data['tel'];
+					$result = $openldap->updateData($user_entry, $info);
+					if ($result) {
+						$messages[] = "cn=". $idno .",teaid=". $teaid .",name=". $data['name'] ." 資料及帳號更新完成！";
+					} else {
+						$messages[] = "cn=". $idno .",teaid=". $teaid .",name=". $data['name'] ." 無法更新教師資料：". $openldap->error();
+					}
+				} else {
+					$account = array();
+					$account["uid"] = $dc.substr($idno, -9);
+					$account["userPassword"] = $openldap->make_ssha_password(substr($idno, -6));
+					$account["objectClass"] = "radiusObjectProfile";
+					$account["cn"] = $idno;
+					$account["description"] = '從校務行政系統同步';
+					$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
+					$acc_entry = $openldap->getAccountEntry($account["uid"]);
+					if ($acc_entry) {
+						unset($account['dn']);
+						$result = $openldap->updateData($acc_entry, $account);
+						if (!$result) {
+							$messages[] = "cn=". $idno .",teaid=". $teaid .",name=". $data['name'] . "因為預設帳號無法更新，教師新增失敗！".$openldap->error();
+							continue;
 						}
 					} else {
-						$account = array();
-						$account["uid"] = $dc.substr($idno, -9);
-						$account["userPassword"] = $openldap->make_ssha_password(substr($idno, -6));
-						$account["objectClass"] = "radiusObjectProfile";
-						$account["cn"] = $idno;
-						$account["description"] = '從校務行政系統同步';
-						$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
-						$acc_entry = $openldap->getAccountEntry($account["uid"]);
-						if ($acc_entry) {
-							unset($account['dn']);
-							$result = $openldap->updateData($acc_entry, $account);
-							if (!$result) {
-								$messages[] = "cn=". $idno .",teaid=". $teaid .",name=". $data['name'] . "因為預設帳號無法更新，教師新增失敗！".$openldap->error();
-								continue;
-							}
-						} else {
-							$result = $openldap->createEntry($account);
-							if (!$result) {
-								$messages[] = "cn=". $idno .",teaid=". $teaid .",name=". $data['name'] . "因為預設帳號無法建立，教師新增失敗！".$openldap->error();
-								continue;
+						$result = $openldap->createEntry($account);
+						if (!$result) {
+							$messages[] = "cn=". $idno .",teaid=". $teaid .",name=". $data['name'] . "因為預設帳號無法建立，教師新增失敗！".$openldap->error();
+							continue;
+						}
+					}
+					if (!empty($data['job_title'])) {
+						foreach ($data['job_title'] as $job) {
+							if (strpos($job, '校長')) $role = '校長';
+							if (strpos($job, '工友')) $role = '職工';
+							if (strpos($job, '警衛')) $role = '職工';
+							if (strpos($job, '幹事')) $role = '職工';
+							if (strpos($job, '員')) $role = '職工';
+							if (strpos($job, '心')) $role = '職工';
+							if (strpos($job, '護')) $role = '職工';
+							$k = base64_encode($job);
+							if (isset($allroles[$k]) && !empty($allroles[$k])) {
+								$units[] = "$dc," . $allroles[$k]['ou'];
+								$roles[] = "$dc," . $allroles[$k]['title'];
 							}
 						}
-						if (!empty($data['job_title'])) {
-							foreach ($data['job_title'] as $job) {
-								if (strpos($job, '校長')) $role = '校長';
-								if (strpos($job, '工友')) $role = '職工';
-								if (strpos($job, '警衛')) $role = '職工';
-								if (strpos($job, '幹事')) $role = '職工';
-								if (strpos($job, '員')) $role = '職工';
-								if (strpos($job, '心')) $role = '職工';
-								if (strpos($job, '護')) $role = '職工';
-								$k = base64_encode($job);
-								if (isset($allroles[$k]) && !empty($allroles[$k])) {
-									$units[] = "$dc," . $allroles[$k]['ou'];
-									$roles[] = "$dc," . $allroles[$k]['title'];
+					}
+					if (!empty($data['assign'])) {
+						$classes = $data['assign'];
+						foreach ($classes as $class => $subjects) {
+							foreach ($subjects as $s) {
+								$k = base64_encode($s);
+								if (isset($allsubject[$k])) {
+									$assign[] = "$dc,$class," . $allsubject[$k];
 								}
 							}
 						}
-						if (!empty($data['assign'])) {
-							$classes = $data['assign'];
-							foreach ($classes as $class => $subjects) {
-								foreach ($subjects as $s) {
-									$k = base64_encode($s);
-									if (isset($allsubject[$k])) {
-										$assign[] = "$dc,$class," . $allsubject[$k];
-									}
-								}
-							}
-						}
-						$info = array();
-						$info['dn'] = "cn=$idno,".Config::get('ldap.userdn');
-						$info['objectClass'] = array('tpeduPerson', 'inetUser');
-						$info['cn'] = $idno;
-						$info["uid"] = $account["uid"];
-						$info["userPassword"] = $account["userPassword"];
-						$info['o'] = $dc;
-						$info['ou'] = array_values(array_unique($units));
-						$info['title'] = array_values(array_unique($roles));
-						$info['info'] = json_encode(array("sid" => $sid, "role" => $role), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
-						if (!empty($assign)) $info['tpTeachClass'] = array_values(array_unique($assign));
-						if (!empty($data['class'])) $info['tpTutorClass'] = $data['class'];
-						$info['inetUserStatus'] = 'active';
-						$info['employeeType'] = $role;
-						$info['employeeNumber'] = $teaid;
-						$name = $this->guess_name($data['name']);
-						$info['sn'] = $name[0];
-						$info['givenName'] = $name[1];
-						$info['displayName'] = $data['name'];
-						if (!empty($data['gender'])) $info['gender'] = (int) $data['gender'];
-						if (!empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'].'000000Z';
-						if (!empty($data['address'])) $info['registeredAddress'] = $data['address'];
-						if (!empty($data['mail'])) $info['mail'] = $data['mail'];
-						if (!empty($data['tel'])) $info['mobile'] = $data['tel'];
-						$result = $openldap->createEntry($info);
-						if ($result) {
-							$messages[] = "cn=". $idno .",teaid=". $teaid .",name=". $data['name'] . "已經為您建立教師資料！";
-						} else {
-							$messages[] = "cn=". $idno .",teaid=". $teaid .",name=". $data['name'] . "教師新增失敗！".$openldap->error();
-						}
+					}
+					$info = array();
+					$info['dn'] = "cn=$idno,".Config::get('ldap.userdn');
+					$info['objectClass'] = array('tpeduPerson', 'inetUser');
+					$info['cn'] = $idno;
+					$info["uid"] = $account["uid"];
+					$info["userPassword"] = $account["userPassword"];
+					$info['o'] = $dc;
+					$info['ou'] = array_values(array_unique($units));
+					$info['title'] = array_values(array_unique($roles));
+					$info['info'] = json_encode(array("sid" => $sid, "role" => $role), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
+					if (!empty($assign)) $info['tpTeachClass'] = array_values(array_unique($assign));
+					if (!empty($data['class'])) $info['tpTutorClass'] = $data['class'];
+					$info['inetUserStatus'] = 'active';
+					$info['employeeType'] = $role;
+					$info['employeeNumber'] = $teaid;
+					$name = $this->guess_name($data['name']);
+					$info['sn'] = $name[0];
+					$info['givenName'] = $name[1];
+					$info['displayName'] = $data['name'];
+					if (!empty($data['gender'])) $info['gender'] = (int) $data['gender'];
+					if (!empty($data['birthdate'])) $info['birthDate'] = $data['birthdate'].'000000Z';
+					if (!empty($data['address'])) $info['registeredAddress'] = $data['address'];
+					if (!empty($data['mail'])) $info['mail'] = $data['mail'];
+					if (!empty($data['tel'])) $info['mobile'] = $data['tel'];
+					$result = $openldap->createEntry($info);
+					if ($result) {
+						$messages[] = "cn=". $idno .",teaid=". $teaid .",name=". $data['name'] . "已經為您建立教師資料！";
+					} else {
+						$messages[] = "cn=". $idno .",teaid=". $teaid .",name=". $data['name'] . "教師新增失敗！".$openldap->error();
 					}
 				}
 			}
