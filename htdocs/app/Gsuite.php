@@ -9,6 +9,8 @@ class Gsuite extends Model
 
 	protected $table = 'gsuite';
 
+	protected $primaryKey = 'idno';
+
     protected $fillable = [
         'idno', 'gmail', 'primary', 'transfered',
     ];

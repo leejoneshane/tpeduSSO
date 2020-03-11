@@ -14,6 +14,8 @@ class Project extends Model
 
     protected $table = 'projects';
 
+    protected $primaryKey = 'uuid';
+
     protected $fillable = [
         'uuid', 'organizaton', 'applicationName', 'reason', 'website', 'redirect', 'kind', 'connName', 'connUnit', 'connEmail', 'connTel', 'memo', 'audit', 'client', 'privileged',
     ];

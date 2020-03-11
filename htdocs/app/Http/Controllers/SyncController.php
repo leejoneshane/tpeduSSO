@@ -2951,7 +2951,7 @@ class SyncController extends Controller
 			foreach ($gmails as $gm) {
 				$new_gm = $google->transferUser('gs.tp.edu.tw', $gm->nameID.'@ms.tp.edu.tw');
 				if ($new_gm) {
-					$gm->transfered = 1;
+					$gm->transfered = true;
 					$gm->save();
 					$messages[] = "已將帳號 $userKey 轉移到 gs.tp.edu.tw！";
 				}

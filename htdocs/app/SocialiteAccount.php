@@ -8,6 +8,8 @@ class SocialiteAccount extends Model
 {
     protected $table = 'socialite_account';
 
+    protected $primaryKey = 'idno';
+
     protected $fillable = [
         'idno', 'socialite', 'userID',
     ];

@@ -13,6 +13,8 @@ class GQrcode extends Model
 
 	public $timestamps = false;
 
+	protected $primaryKey = 'uuid';
+
     protected $fillable = [
         'uuid', 'idno', 'expired_at',
     ];
