@@ -2977,7 +2977,9 @@ class SyncController extends Controller
 			}
 			$messages[] = "每次僅能轉移 100 個帳號，請持續轉移到完成為止！";
 		}
-		return view('admin.transferdomain', [ 'result' => $messages ]);
+		$flag = false;
+		if (Gsuite::where('transfered', 0)->limit(100)->count() > 0) $flag = true;
+		return view('admin.transferdomain', [ 'result' => $messages, 'notfin' => $flag ]);
 	}
 
 	function guess_name($myname) {

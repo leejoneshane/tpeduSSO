@@ -14,6 +14,17 @@
 		@endforeach
 	    </div>
 	@endif
+	@if ($notfin)
+	<form id="sync" role="form" method="POST" action="{{ route('sync.transfer_domain') }}">
+		@csrf
+		<span class="input-group-btn" style="width: auto">
+			<button class="btn btn-default" type="submit">
+				繼續轉移
+			</button>
+		</span>
+	</form>
+	<script>setTimeout("$('#sync').submit()", 60000);</script>
+	@endif
 	</div>
 </div>
 @endsection
