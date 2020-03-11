@@ -13,6 +13,7 @@ use App\PSLink;
 use Illuminate\Http\Request;
 use App\Providers\LdapServiceProvider;
 use App\Providers\SimsServiceProvider;
+use App\Providers\GoogleServiceProvider;
 use App\Rules\idno;
 use App\Rules\ipv4cidr;
 use App\Rules\ipv6cidr;
@@ -2948,7 +2949,12 @@ class SyncController extends Controller
 			$messages[] = "所有帳號轉移成功！";
 		} else {
 			foreach ($gmails as $gm) {
-				$google->transferUser('gs.tp.edu.tw', $gm->nameID.'@ms.tp.edu.tw');
+				$new_gm = $google->transferUser('gs.tp.edu.tw', $gm->nameID.'@ms.tp.edu.tw');
+				if ($new_gm) {
+					$gm->transfered = 1;
+					$gm->save();
+					$messages[] = "已將帳號 $userKey 轉移到 gs.tp.edu.tw！";
+				}
 			}
 			$messages[] = "每次僅能轉移 100 個帳號，請持續轉移到完成為止！";
 		}

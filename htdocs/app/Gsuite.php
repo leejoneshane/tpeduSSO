@@ -10,11 +10,12 @@ class Gsuite extends Model
 	protected $table = 'gsuite';
 
     protected $fillable = [
-        'idno', 'gmail', 'primary',
+        'idno', 'gmail', 'primary', 'transfered',
     ];
     
     protected $casts = [
 		'primary' => 'boolean',
+		'transfered' => 'boolean',
     ];
 
 	public function user()

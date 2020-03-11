@@ -154,7 +154,7 @@ class GoogleServiceProvider extends ServiceProvider
 	{
 		if (!strpos($userKey, '@')) return;
 		try {
-			$userObj = getUser($userKey);
+			$userObj = $this->directory->users->get($userKey);
 			$nameID = explode('@', $userKey);
 			$newKey = $nameID[0].'@'.$new_domain;
 			return $this->directory->users->update($userKey, $userObj);
