@@ -59,7 +59,13 @@ class User extends Authenticatable implements MustVerifyEmail
 	public function nameID()
 	{
 		$gsuite = $this->gmails()->where('primary', 1)->first();
-		if ($gsuite) return $gsuite->nameID;
+		if ($gsuite) {
+			if ($gsuite->transfered) {
+				return $gsuite->nameID.'@gs.tp.edu.tw';
+			} else {
+				return $gsuite->nameID.'@ms.tp.edu.tw';
+			}
+		}
     	return false;
 	}
 
