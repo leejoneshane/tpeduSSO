@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-	<div class="col-md-8 col-md-offset-2">
+	<div class="col-md-6">
 	    <div class="card card-default" style="margin-top: 20px">
 		<div class="card-header"><h4>變更密碼</h4></div>
 		<div class="card-body">
@@ -21,7 +21,7 @@
 		<form class="form-horizontal" method="POST" action="{{ route('changePassword') }}">
 		    {{ csrf_field() }}
 		    <div class="form-group{{ $errors->has('new-password') ? ' has-error' : '' }}">
-				<label for="new-password" class="col-form-label text-md-right">新密碼</label>
+				<label for="new-password" class="col-form-label">新密碼</label>
 			    <input id="new-password" type="password" class="form-control" name="new-password" required>
 			    @if ($errors->has('new-password'))
 			    <span class="help-block">
@@ -31,8 +31,8 @@
 		    </div>
 
 		    <div class="form-group">
-			<label for="new-password-confirm" class="col-md-4 col-form-label text-md-right">請再輸入一次新密碼</label>
-			<div class="col-md-6">
+			<label for="new-password-confirm" class="col-form-label">請再輸入一次新密碼</label>
+			<div>
 			    <input id="new-password-confirm" type="password" class="form-control" name="new-password_confirmation" required>
 			</div>
 		    </div>
