@@ -67,11 +67,11 @@ return [
     'sp' => [        
         
         /**
-         * SP Entry ID for G suits domain ms.tp.edu.tw
+         * SP Entry ID for G suits domain gs.tp.edu.tw(Base64 encoded URL)
          */
-        'aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS9hL21zLnRwLmVkdS50dy9hY3M=' => [        
+        'aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS9hL2dzLnRwLmVkdS50dy9hY3M=' => [        
             // The destination is the consuming SAML URL. This might be a SamlAuthController receiving the SAML response.  
-            'destination' => 'https://www.google.com/a/ms.tp.edu.tw/acs',
+            'destination' => 'https://www.google.com/a/gs.tp.edu.tw/acs',
             // Issuer could be anything, mostly it makes sense to pass the metadata URL
             'issuer' => 'google.com',
             //'nameID' => 'idno',
@@ -79,7 +79,7 @@ return [
             // OPTIONAL: Use a specific audience restriction value when creating the SAMLRequest object.
             //           Default value is the assertion consumer service URL (the base64 encoded SP url). 
             //           This is a bugfix for Nextcloud as SP and can be removed for normal SPs.
-            //'audience_restriction' => 'https://www.google.com/a/ms.tp.edu.tw/acs',
+            //'audience_restriction' => 'https://www.google.com/a/gs.tp.edu.tw/acs',
         ],
         
     ],
