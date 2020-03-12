@@ -61,11 +61,7 @@ class User extends Authenticatable implements MustVerifyEmail
 	{
 		$gsuite = $this->gmails()->where('primary', 1)->first();
 		if ($gsuite) {
-			if ($gsuite->transfered) {
-				return $gsuite->nameID.'@gs.tp.edu.tw';
-			} else {
-				return $gsuite->nameID.'@ms.tp.edu.tw';
-			}
+			return $gsuite->nameID.'@'.Config::get('saml.email_domain');
 		}
     	return false;
 	}
