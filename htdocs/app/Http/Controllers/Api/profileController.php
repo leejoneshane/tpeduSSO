@@ -96,7 +96,7 @@ class profileController extends Controller
 			if (isset($user->ldap['tpClassTitle']) && !empty($user->ldap['tpClassTitle'])) $json->className = $user->ldap['tpClassTitle'];
 			if (isset($user->ldap['tpSeat']) && !empty($user->ldap['tpSeat'])) $json->seat = $user->ldap['tpSeat'];
 		} else {
-			if ($o) {
+			if (isset($o) && $o) {
 				if (isset($user->ldap['department'][$o]) && !empty($user->ldap['department'][$o])) $json->unit = $user->ldap['department'][$o][0]->name;
 				if (isset($user->ldap['titleName'][$o]) && !empty($user->ldap['titleName'][$o])) $json->title = $user->ldap['titleName'][$o][0]->name;
 				if (isset($user->ldap['teachClass'][$o]) && !empty($user->ldap['teachClass'][$o])) $json->teachClass = $user->ldap['teachClass'][$o];
