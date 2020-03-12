@@ -101,7 +101,7 @@ class ParentController extends Controller
 			}
 			if ($match) {
 				$info['verified'] = 1;
-				$info['verified_time'] = time();
+				$info['verified_time'] = Carbon::now();
 			} else {
 				$info['denyReason'] = implode('、', $reason);
 			}
