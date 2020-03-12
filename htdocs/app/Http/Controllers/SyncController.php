@@ -2978,6 +2978,7 @@ class SyncController extends Controller
 					}	
 				} else {
 					$messages[] = '找不到'.$gm->nameID.'@ms.tp.edu.tw 帳號，無法轉移！';
+					$gm->delete();
 				}
 			}
 			$messages[] = "每次僅能轉移 100 個帳號，請持續轉移到完成為止！";
