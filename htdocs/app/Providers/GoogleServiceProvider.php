@@ -157,6 +157,7 @@ class GoogleServiceProvider extends ServiceProvider
 			$userObj = $this->directory->users->get($userKey);
 			$nameID = explode('@', $userKey);
 			$newKey = $nameID[0].'@'.$new_domain;
+			$userObj->setPrimaryEmail($newKey);
 			return $this->directory->users->update($userKey, $userObj);
 		} catch (\Google_Service_Exception $e) {
 			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");

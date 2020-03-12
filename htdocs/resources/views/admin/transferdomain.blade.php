@@ -15,8 +15,7 @@
 	    </div>
 	@endif
 	@if ($notfin)
-	<form id="sync" role="form" method="POST" action="{{ route('sync.transfer_domain') }}">
-		@csrf
+	<form id="sync" role="form" method="GET" action="{{ route('sync.transfer_domain') }}">
 		<span class="input-group-btn" style="width: auto">
 			<button class="btn btn-default" type="submit">
 				繼續轉移
