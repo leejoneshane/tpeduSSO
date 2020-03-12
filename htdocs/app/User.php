@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Providers\LdapServiceProvider;;
 use App\Notifications\ResetPasswordNotification;
+use App\Notifications\VerifyEmail;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -195,4 +196,9 @@ class User extends Authenticatable implements MustVerifyEmail
 		return false;
     }
 
+	public function sendEmailVerificationNotification()
+    {
+        $this->notify(new VerifyEmail);
+	}
+	
 }
