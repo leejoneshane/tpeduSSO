@@ -123,7 +123,7 @@ class SimsServiceProvider extends ServiceProvider
         }
         $res = $this->js_send($url);
         $json = json_decode((string) $res->getBody());
-        if ($json->statusCode != '00') {
+        if (isset($json->statusCode) && $json->statusCode != '00') {
             self::$error = $json->statusMsg;
             if (Config::get('sims.js.debug')) Log::debug('Oauth call:'.$url.' failed! Server response:'.$res->getBody());
             return false;
