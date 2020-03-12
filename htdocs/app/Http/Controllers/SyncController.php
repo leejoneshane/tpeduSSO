@@ -2960,6 +2960,23 @@ class SyncController extends Controller
 		return view('admin.syncremoveparent', [ 'result' => $messages ]);
 	}
 
+	public function removeGsuite() {
+		$google = new GoogleServiceProvider();
+		$gmails = Gsuite::all();
+		$messages = array();
+		if ($gmails->isEmpty()) {
+			$messages[] = "查無需要檢查的 Gsuite 帳號！";
+		} else {
+			foreach ($gmails as $gm) {
+				$userKey = $gm->nameID.'@'.Config::get('saml.email_domain');
+				$guser = $google->getUser($userKey);
+				if (!$guser) $gm->delete();
+				$messages[] = "移除不存在的 Gsuite 帳號紀錄：$userKey";
+			}
+		}
+		return view('admin.syncremovegsuite', [ 'result' => $messages ]);
+	}
+
 	public function transferDomain() {
 		$google = new GoogleServiceProvider();
 		$gmails = Gsuite::where('transfered', 0)->limit(100)->get();

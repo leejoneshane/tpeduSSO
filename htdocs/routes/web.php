@@ -162,6 +162,7 @@ Route::group(['prefix' => 'sync', 'middleware' => 'auth.admin'], function () {
     Route::get('fix/remove_deleted', 'SyncController@removeDeleted')->name('sync.remove_deleted');
     Route::get('fix/remove_parent', 'SyncController@removeParent')->name('sync.remove_parent');
     Route::get('fix/transfer_domain', 'SyncController@transferDomain')->name('sync.transfer_domain');
+    Route::get('fix/remove_gsuite', 'SyncController@removeGsuite')->name('sync.remove_gsuite');
 });
 
 Route::group(['prefix' => 'bureau', 'middleware' => 'auth.admin'], function () {

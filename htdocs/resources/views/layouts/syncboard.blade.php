@@ -96,6 +96,9 @@
                                     <a href="{{ route('sync.transfer_domain') }}">Gsuite 域名轉移</a>
                                 </li>
                                 <li>
+                                    <a href="{{ route('sync.remove_gsuite') }}">移除同步失敗的 Gsuite</a>
+                                </li>
+                                <li>
                                     <a href="{{ route('sync.remove_parent') }}">移除未連結家長帳號</a>
                                 </li>
                                 <li>
