@@ -2968,11 +2968,16 @@ class SyncController extends Controller
 			$messages[] = "所有帳號轉移成功！";
 		} else {
 			foreach ($gmails as $gm) {
-				$new_gm = $google->transferUser('gs.tp.edu.tw', $gm->nameID.'@ms.tp.edu.tw');
-				if ($new_gm) {
-					$gm->transfered = true;
-					$gm->save();
-					$messages[] = '已將帳號'.$gm->nameID.'@ms.tp.edu.tw 轉移到 gs.tp.edu.tw！';
+				$guser = $google->getUser($gm->nameID.'@ms.tp.edu.tw');
+				if ($guser) {
+					$new_gm = $google->transferUser('gs.tp.edu.tw', $gm->nameID.'@ms.tp.edu.tw');
+					if ($new_gm) {
+						$gm->transfered = true;
+						$gm->save();
+						$messages[] = '已將帳號'.$gm->nameID.'@ms.tp.edu.tw 轉移到 gs.tp.edu.tw！';
+					}	
+				} else {
+					$messages[] = '找不到'.$gm->nameID.'@ms.tp.edu.tw 帳號，無法轉移！';
 				}
 			}
 			$messages[] = "每次僅能轉移 100 個帳號，請持續轉移到完成為止！";
