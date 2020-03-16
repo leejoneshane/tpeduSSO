@@ -277,32 +277,32 @@ class GoogleServiceProvider extends ServiceProvider
 		return false;
 	}
 
-	public function createUserAlias($email, $alias)
+	public function createUserAlias($userKey, $alias)
 	{
 		$email_alias = new \Google_Service_Directory_Alias();
 		$email_alias->setAlias($alias);
 		try {
-			return $this->directory->users_aliases->insert($email,$email_alias);
+			return $this->directory->users_aliases->insert($userKey, $email_alias);
 		} catch (\Google_Service_Exception $e) {
 			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
 			return false;
 		}
 	}
 
-	public function listUserAliases($email)
+	public function listUserAliases($userKey)
 	{
 		try {
-			return $this->directory->users_aliases->listUsersAliases($email);
+			return $this->directory->users_aliases->listUsersAliases($userKey);
 		} catch (\Google_Service_Exception $e) {
 			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
 			return false;
 		}
 	}
 
-	public function removeUserAlias($email, $alias)
+	public function removeUserAlias($userKey, $alias)
 	{
 		try {
-			return $this->directory->users_aliases->delete($email, $alias);
+			return $this->directory->users_aliases->delete($userKey, $alias);
 		} catch (\Google_Service_Exception $e) {
 			if (Config::get('google.debug')) Log::debug('Google Service Caught exception: '.  $e->getMessage() ."\n");
 			return false;

@@ -2979,29 +2979,26 @@ class SyncController extends Controller
 
 	public function transferDomain() {
 		$google = new GoogleServiceProvider();
-		$gmails = Gsuite::where('transfered', 0)->limit(100)->get();
+		$gmails = Gsuite::where('transfered', 1)->limit(100)->get();
 		$messages = array();
 		if ($gmails->isEmpty()) {
-			$messages[] = "所有帳號轉移成功！";
+			$messages[] = "所有 ms.tp.edu.tw 別名移除成功！";
 		} else {
 			foreach ($gmails as $gm) {
-				$guser = $google->getUser($gm->nameID.'@ms.tp.edu.tw');
+				$guser = $google->getUser($gm->nameID.'@gs.tp.edu.tw');
 				if ($guser) {
-					$new_gm = $google->transferUser('gs.tp.edu.tw', $gm->nameID.'@ms.tp.edu.tw');
+					$new_gm = $google->removeUserAlias($gm->nameID.'gs.tp.edu.tw', $gm->nameID.'@ms.tp.edu.tw');
 					if ($new_gm) {
-						$gm->transfered = true;
+						$gm->transfered = false;
 						$gm->save();
-						$messages[] = '已將帳號'.$gm->nameID.'@ms.tp.edu.tw 轉移到 gs.tp.edu.tw！';
+						$messages[] = '已將別名'.$gm->nameID.'@ms.tp.edu.tw 移除！';
 					}	
-				} else {
-					$messages[] = '找不到'.$gm->nameID.'@ms.tp.edu.tw 帳號，無法轉移！';
-					$gm->delete();
 				}
 			}
-			$messages[] = "每次僅能轉移 100 個帳號，請持續轉移到完成為止！";
+			$messages[] = "每次僅能處理 100 個帳號，請持續到完成為止！";
 		}
 		$flag = false;
-		if (Gsuite::where('transfered', 0)->limit(100)->count() > 0) $flag = true;
+		if (Gsuite::where('transfered', 1)->limit(100)->count() > 0) $flag = true;
 		return view('admin.transferdomain', [ 'result' => $messages, 'notfin' => $flag ]);
 	}
 

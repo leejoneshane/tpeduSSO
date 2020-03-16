@@ -7,6 +7,7 @@ use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Contracts\Hashing\Hasher as HasherContract;
 use Illuminate\Contracts\Auth\Authenticatable as UserContract;
 use App\Providers\LdapServiceProvider;
+use App\User;
 
 class LdapUserProvider extends EloquentUserProvider
 {
@@ -18,31 +19,30 @@ class LdapUserProvider extends EloquentUserProvider
             array_key_exists('password', $credentials))) {
             return;
 		}
-		$query = $this->newModelQuery();
 		$openldap = new LdapServiceProvider();
 		$id = false;
 		if (isset($credentials['username'])) {
 			if (substr($credentials['username'],0,3) == 'cn=') {
 				$idno = substr($credentials['username'],3);
-				if ($user = $query->where('idno', $idno)->first()) return $user;
+				if ($user = User::where('idno', $idno)->first()) return $user;
 				$id = $openldap->checkIdno($credentials['username']);
 			} else {
-				if ($user = $query->where('is_parent', 1)->where('email', $credentials['username'])->first()) return $user;
+				if ($user = User::where('is_parent', 1)->where('email', $credentials['username'])->first()) return $user;
 				$id = $openldap->checkAccount($credentials['username']);
 			}
 		}
 		if (isset($credentials['email'])) {
-			if ($user = $query->where('email', $credentials['email'])->first()) return $user;
+			if ($user = User::where('email', $credentials['email'])->first()) return $user;
 			$id = $openldap->checkEmail($credentials['email']);
 		}
 		if (isset($credentials['mobile'])) {
-			if ($user = $query->where('mobile', $credentials['mobile'])->first()) return $user;
+			if ($user = User::where('mobile', $credentials['mobile'])->first()) return $user;
 			$id = $openldap->checkMobile($credentials['mobile']);
 		}
 		if ($id) {
 			$entry = $openldap->getUserEntry($id);
 			$data = $openldap->getUserData($entry);
-			$user = $query->where('idno', $id)->first();
+			$user = User::where('idno', $id)->first();
 			if (is_null($user)) {
 				$user = $this->createModel();
 				$user->idno = $id;
@@ -54,7 +54,7 @@ class LdapUserProvider extends EloquentUserProvider
 				$user->password = \Hash::make(substr($id,-6));
 			}
 			$user->name = $data['displayName'];
-			$user->email = null;
+			$email = null;
 			if (!empty($data['mail'])) {
 				if (is_array($data['mail']))
 					$email = $data['mail'][0];
@@ -63,7 +63,7 @@ class LdapUserProvider extends EloquentUserProvider
 			}
 			if ($openldap->emailAvailable($id, $email)) $user->email = $email;
 			if ($query->where('idno', '!=', $id)->where('email', $email)->exists()) $user->email = null;
-			$user->mobile = null;
+			$mobile = null;
 			if (!empty($data['mobile'])) {
 				if (is_array($data['mobile']))
 					$mobile = $data['mobile'][0];
@@ -71,7 +71,7 @@ class LdapUserProvider extends EloquentUserProvider
 					$mobile = $data['mobile'];
 			}
 			if (!$openldap->mobileAvailable($id, $mobile)) $user->mobile = $mobile;
-			if ($query->where('idno', '!=', $id)->where('mobile', $mobile)->exists()) $user->email = null;
+			if (User::where('idno', '!=', $id)->where('mobile', $mobile)->exists()) $user->email = null;
 			$user->save();
 			return $user;
 		}
