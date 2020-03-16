@@ -61,14 +61,7 @@ trait AuthenticatesUsers
         } else {
             $idno = $openldap->checkAccount($username);
         }
-        if (!$idno) {
-            $parent = User::where('email', $username)->first();
-            if ($parent) {
-                $idno = $parent->idno;
-            } else {
-                return back()->with("error","查無此使用者帳號！");
-            }
-        } else {
+        if ($idno) {
             $status = $openldap->checkStatus($idno);
             if ($status == 'inactive') return back()->with("error","很抱歉，您已經被管理員停權！");
             if ($status == 'deleted') return back()->with("error","很抱歉，您已經被管理員刪除！");
@@ -89,9 +82,8 @@ trait AuthenticatesUsers
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
         // the IP address of the client making these requests into this application.
-        $request['idno'] = $idno;
         if ($this->hasTooManyLoginAttempts($request)) {
-            $this->fireLockoutEvent($request);
+//            $this->fireLockoutEvent($request + ['idno' => $idno]);
             return $this->sendLockoutResponse($request);
         }
         if ($this->attemptLogin($request)) {
