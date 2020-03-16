@@ -59,7 +59,7 @@ class LdapUserProvider extends EloquentUserProvider
 					$email = $data['mail'][0];
 				else
 					$email = $data['mail'];
-				if ($query->where('idno', '!=', $id)->where('email', $email)->exists()) $email = false;
+				if (User::where('idno', '!=', $id)->where('email', $email)->exists()) $email = false;
 				if ($email && $openldap->emailAvailable($id, $email)) $user->email = $email;
 			}
 			if (!empty($data['mobile'])) {
