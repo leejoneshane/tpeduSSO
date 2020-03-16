@@ -43,9 +43,11 @@ class LdapUserProvider extends EloquentUserProvider
 			$entry = $openldap->getUserEntry($id);
 			$data = $openldap->getUserData($entry);
 			$user = $query->where('idno', $id)->first();
-			if (is_null($user)) $user = $this->createModel();
-			$user->idno = $id;
-			$user->uuid = $data['entryUUID'];
+			if (is_null($user)) {
+				$user = $this->createModel();
+				$user->idno = $id;
+				$user->uuid = $data['entryUUID'];
+			}
 			if (isset($credentials['password'])) {
 				$user->password = \Hash::make($credentials['password']);
 			} else {
