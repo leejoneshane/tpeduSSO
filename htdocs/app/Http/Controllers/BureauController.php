@@ -12,6 +12,7 @@ use App\User;
 use App\Project;
 use App\Providers\LdapServiceProvider;
 use App\Rules\idno;
+use App\Rules\idnoAvail;
 use App\Rules\ipv4cidr;
 use App\Rules\ipv6cidr;
 use App\Events\ProjectAllowed;
@@ -387,9 +388,9 @@ class BureauController extends Controller
 					$messages[] = "第 $i 筆記錄，無身分證字號，跳過不處理！";
 		    		continue;
 				}
-				$validator = Validator::make(
-    				[ 'idno' => $person->id ], [ 'idno' => new idno ]
-    			);
+				$validator = Validator::make([ 'idno' => $person->id ], [
+					'idno' => new idno,
+				]);
 				if ($validator->fails()) {
 					$messages[] = "第 $i 筆記錄，".$person->name."身分證字號格式或內容不正確，跳過不處理！";
 		    		continue;
@@ -636,7 +637,7 @@ class BureauController extends Controller
 		$keywords = $request->session()->get('keywords');
 		$area = $request->get('area')[0];
 		$validatedData = $request->validate([
-			'idno' => new idno,
+			'idno' => [new idno, new idnoAvail],
 			'sn' => 'required|string',
 			'gn' => 'required|string',
 			'raddress' => 'nullable|string',
@@ -908,7 +909,7 @@ class BureauController extends Controller
 			if ($original['cn'] != $idno) {
 				$result = $openldap->renameUser($original['cn'], $idno);
 				if ($result) {
-	        		$model = new \App\User();
+	        		$model = new User();
 					$user = $model->newQuery()
 	        		->where('idno', $original['cn'])
 	        		->first();
@@ -1040,7 +1041,7 @@ class BureauController extends Controller
 			if ($original['cn'] != $idno) {
 				$result = $openldap->renameUser($original['cn'], $idno);
 				if ($result) {
-	        		$model = new \App\User();
+	        		$model = new User();
 					$user = $model->newQuery()
 	        		->where('idno', $original['cn'])
 	        		->first();

@@ -11,6 +11,7 @@ use Laravel\Passport\Passport;
 use App\User;
 use App\Providers\LdapServiceProvider;
 use App\Rules\idno;
+use App\Rules\idnoAvail;
 use App\Rules\ipv4cidr;
 use App\Rules\ipv6cidr;
 
@@ -138,7 +139,6 @@ class SchoolController extends Controller
     		$json = json_decode($content);
     		if (!$json)
 				return back()->with("error", "檔案剖析失敗，請檢查 JSON 格式是否正確？");
-			$rule = new idno;
 			$students = array();
 			if (is_array($json)) { //批量匯入
 				$students = $json;
@@ -161,9 +161,9 @@ class SchoolController extends Controller
 					$messages[] = "第 $i 筆記錄，".$person->name."無身分證字號，跳過不處理！";
 		    		continue;
 				}
-				$validator = Validator::make(
-    				[ 'idno' => $idno ], [ 'idno' => new idno ]
-    			);
+				$validator = Validator::make([ 'idno' => $idno ], [
+					'idno' => new idno, 
+				]);
 				if ($validator->fails()) {
 					$messages[] = "第 $i 筆記錄，".$person->name."身分證字號格式或內容不正確，跳過不處理！";
 		    		continue;
@@ -429,7 +429,7 @@ class SchoolController extends Controller
 		$openldap = new LdapServiceProvider();
 		$sid = $openldap->getOrgId($dc);
 		$validatedData = $request->validate([
-			'idno' => new idno,
+			'idno' => [new idno, new idnoAvail],
 			'sn' => 'required|string',
 			'gn' => 'required|string',
 			'stdno' => 'required|string',
@@ -785,9 +785,9 @@ class SchoolController extends Controller
 					$messages[] = "第 $i 筆記錄，".$person->name."無身分證字號，跳過不處理！";
 		    		continue;
 				}
-				$validator = Validator::make(
-    				[ 'idno' => $idno ], [ 'idno' => new idno ]
-    			);
+				$validator = Validator::make([ 'idno' => $idno ], [
+					'idno' => new idno,
+				]);
 				if ($validator->fails()) {
 					$messages[] = "第 $i 筆記錄，".$person->name."身分證字號格式或內容不正確，跳過不處理！";
 		    		continue;

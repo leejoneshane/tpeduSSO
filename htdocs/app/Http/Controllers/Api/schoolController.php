@@ -9,6 +9,7 @@ use App\Providers\LdapServiceProvider;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\User;
 
 class schoolController extends Controller
 {
@@ -505,7 +506,7 @@ class schoolController extends Controller
             if ($person['cn'] != $idno) {
                 $result = $openldap->renameUser($person['cn'], $idno);
                 if ($result) {
-                    $model = new \App\User();
+                    $model = new User();
                     $user = $model->newQuery()
                     ->where('idno', $person['cn'])
                     ->first();

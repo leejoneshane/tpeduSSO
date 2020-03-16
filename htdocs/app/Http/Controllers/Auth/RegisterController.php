@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use App\Rules\idno;
+use App\Rules\idnoAvail;
+
 
 class RegisterController extends Controller
 {
@@ -52,7 +54,7 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => 'required|string|max:255',
-            'idno' => ['required', 'string', 'size:10', 'unique:users', new idno],
+            'idno' => ['required', 'string', 'size:10', 'unique:users', new idno, new idnoAvail],
             'email' => 'required|string|email|max:255|unique:users',
             'mobile' => 'string|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',

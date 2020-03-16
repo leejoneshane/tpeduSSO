@@ -11,6 +11,7 @@ use App\User;
 use App\Project;
 use App\Providers\LdapServiceProvider;
 use App\Rules\idno;
+use App\Rules\idnoAvail;
 use App\Rules\ipv4cidr;
 use App\Rules\ipv6cidr;
 
@@ -209,7 +210,7 @@ class v2_adminController extends Controller
     {
 		$validatedData = $request->validate([
 			'school' => 'required|string',
-			'idno' => new idno,
+			'idno' => [new idno, new idnoAvail],
 			'lastname' => 'required|string',
 			'firstname' => 'required|string',
 			'type' => 'required|string',
@@ -398,7 +399,7 @@ class v2_adminController extends Controller
             if ($person['cn'] != $idno) {
                 $result = $openldap->renameUser($person['cn'], $idno);
                 if ($result) {
-                    $model = new \App\User();
+                    $model = new User();
                     $user = $model->newQuery()
                     ->where('idno', $person['cn'])
                     ->first();
