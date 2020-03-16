@@ -62,7 +62,7 @@ class LdapUserProvider extends EloquentUserProvider
 					$email = $data['mail'];
 			}
 			if ($openldap->emailAvailable($id, $email)) $user->email = $email;
-			if ($query->where('email', $email)->exists()) $user->email = null;
+			if ($query->where('idno', '!=', $id)->where('email', $email)->exists()) $user->email = null;
 			$user->mobile = null;
 			if (!empty($data['mobile'])) {
 				if (is_array($data['mobile']))
@@ -71,7 +71,7 @@ class LdapUserProvider extends EloquentUserProvider
 					$mobile = $data['mobile'];
 			}
 			if (!$openldap->mobileAvailable($id, $mobile)) $user->mobile = $mobile;
-			if ($query->where('mobile', $mobile)->exists()) $user->email = null;
+			if ($query->where('idno', '!=', $id)->where('mobile', $mobile)->exists()) $user->email = null;
 			$user->save();
 			return $user;
 		}
