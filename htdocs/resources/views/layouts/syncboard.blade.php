@@ -93,6 +93,9 @@
                             <a href="#"><i class="fa fa-sitemap fa-fw"></i>資料維護</a>
                             <ul class="nav nav-second-level">
                                 <li>
+                                    <a href="{{ route('sync.transfer_domain') }}">移除舊網域別名</a>
+                                </li>
+                                <li>
                                     <a href="{{ route('sync.remove_gsuite') }}">移除同步失敗的 Gsuite</a>
                                 </li>
                                 <li>

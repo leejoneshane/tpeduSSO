@@ -2977,6 +2977,31 @@ class SyncController extends Controller
 		return view('admin.syncremovegsuite', [ 'result' => $messages ]);
 	}
 
+	public function transferDomain() {
+		$google = new GoogleServiceProvider();
+		$gmails = Gsuite::where('transfered', 1)->limit(100)->get();
+		$messages = array();
+		if ($gmails->isEmpty()) {
+			$messages[] = "所有 ms.tp.edu.tw 別名移除成功！";
+		} else {
+			foreach ($gmails as $gm) {
+				$guser = $google->getUser($gm->nameID.'@gs.tp.edu.tw');
+				if ($guser) {
+					$new_gm = $google->removeUserAlias($gm->nameID.'gs.tp.edu.tw', $gm->nameID.'@ms.tp.edu.tw');
+					if ($new_gm) {
+						$gm->transfered = false;
+						$gm->save();
+						$messages[] = '已將別名'.$gm->nameID.'@ms.tp.edu.tw 移除！';
+					}	
+				}
+			}
+			$messages[] = "每次僅能處理 100 個帳號，請持續到完成為止！";
+		}
+		$flag = false;
+		if (Gsuite::where('transfered', 1)->limit(100)->count() > 0) $flag = true;
+		return view('admin.transferdomain', [ 'result' => $messages, 'notfin' => $flag ]);
+	}
+	
 	function guess_name($myname) {
 		$len = mb_strlen($myname, "UTF-8");
 		if ($len > 3) {
