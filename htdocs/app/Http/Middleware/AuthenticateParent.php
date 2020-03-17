@@ -9,17 +9,20 @@ class AuthenticateParent
 {
     public function handle($request, Closure $next, $guard = null)
     {
-        $user = Auth::user();
-        if ($user->is_parent) return $next($request);
-        $role = '';
-        if (isset($user->ldap['employeeType'])) $role = $user->ldap['employeeType'];
-        if (Auth::guard($guard)->guest() || $role == '學生') {
+        if (Auth::guard($guard)->guest()) {
             if ($request->ajax() || $request->wantsJson()) {
                 return response('Unauthorized.', 401);
             } else {
-                return redirect('/');
+                return redirect()->route('login');
             }
         }
-        return $next($request);
+        $user = Auth::guard($guard)->user();
+        if ($user->is_parent) return $next($request);
+        if (isset($user->ldap['employeeType']) && $user->ldap['employeeType'] != '學生') return $next($request);
+        if ($request->ajax() || $request->wantsJson()) {
+            return response('Unauthorized.', 401);
+        } else {
+            return redirect('/');
+        }
     }
 }

@@ -9,8 +9,7 @@ class AuthenticateTutor
 {
     public function handle($request, Closure $next, $guard = null)
     {
-        $user = Auth::user();
-        if (Auth::guard($guard)->guest() || !isset($user->ldap['tpTutorClass'])) {
+        if (Auth::guard($guard)->guest() || !isset(Auth::guard($guard)->user()->ldap['tpTutorClass'])) {
             if ($request->ajax() || $request->wantsJson()) {
                 return response('Unauthorized.', 401);
             } else {

@@ -9,9 +9,16 @@ class AuthenticateSchoolAdmin
 {
     public function handle($request, Closure $next, $guard = null)
     {
-        $user = Auth::user();
+        if (Auth::guard($guard)->guest()) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response('Unauthorized.', 401);
+            } else {
+                return redirect('/');
+            }
+        }
+        $user = Auth::guard($guard)->user();
         $dc = $request->route('dc');
-        if (Auth::guard($guard)->guest() || $user->is_parent || !is_array($user->ldap['adminSchools']) || !in_array($dc, $user->ldap['adminSchools'])) {
+        if ($user->is_parent || !is_array($user->ldap['adminSchools']) || !in_array($dc, $user->ldap['adminSchools'])) {
             if ($request->ajax() || $request->wantsJson()) {
                 return response('Unauthorized.', 401);
             } else {
