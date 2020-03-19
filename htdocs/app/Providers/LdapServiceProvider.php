@@ -414,9 +414,10 @@ class LdapServiceProvider extends ServiceProvider
 			$filter = '(&(o='.$o[1].')(tpTutorClass='.$info['ou'].'))';
 			$tutors = $this->findUsers($filter,'entryUUID');
 			$teachers = array();
-			foreach ($tutors as $t) {
-				$teachers[] = $t['entryUUID'];
-			}
+			if (!empty($tutors))
+				foreach ($tutors as $t) {
+					$teachers[] = $t['entryUUID'];
+				}
 			$info['tpTutor'] = $teachers;
 		}
 		return $info;

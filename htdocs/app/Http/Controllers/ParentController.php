@@ -87,9 +87,9 @@ class ParentController extends Controller
 			$uno = $odata['tpUniformNumbers'];
 			$parents = $alle->ps_call('student_parents_info', [ 'sid' => $uno, 'stdno' => $stdno ]);
 			$match = false;
+			$reason = array();
 			foreach ($parents as $p) {
 				if ($p->name == $user->name) {
-					$reason = array();
 					if ($user->mobile && empty($p->telephone)) 
 						$reason[] = '學籍資料缺家長手機號碼';
 					elseif ($user->mobile != $p->telephone)

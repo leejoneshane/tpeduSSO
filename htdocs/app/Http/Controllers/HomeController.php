@@ -68,6 +68,8 @@ class HomeController extends Controller
 			]);
 	    	if (!$openldap->emailAvailable($idno, $email))
 				return back()->withInput()->with("error","您輸入的電子郵件已經被別人使用，請您重新輸入一次！");
+			if (User::where('idno', '!=', $idno)->where('email', $email)->exists())
+				return back()->withInput()->with("error","您輸入的手機號碼已經被別人使用，請您重新輸入一次！");
 	    	$userinfo['mail'] = $email;
 	    	$user->email = $email;
 		}
@@ -80,6 +82,8 @@ class HomeController extends Controller
 			    'mobile' => 'nullable|string|digits:10|numeric',
 			]);
 			if (!$openldap->mobileAvailable($idno, $mobile))
+				return back()->withInput()->with("error","您輸入的手機號碼已經被別人使用，請您重新輸入一次！");
+			if (User::where('idno', '!=', $idno)->where('mobile', $mobile)->exists())
 				return back()->withInput()->with("error","您輸入的手機號碼已經被別人使用，請您重新輸入一次！");
     		$userinfo['mobile'] = $mobile;
     		$user->mobile = $mobile;

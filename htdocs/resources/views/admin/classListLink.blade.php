@@ -40,6 +40,9 @@
 					</tr>
 				</thead>
 				<tbody>
+					@if (empty($links))
+					<tr colspan="9"><td>尚未有家長建立親子連結！</td></tr>
+					@else
 					@foreach ($links as $l)
 					<tr>
 						<td style="vertical-align: inherit;">
@@ -79,6 +82,7 @@
 						</td>
 					</tr>
 					@endforeach
+					@endif
 				</tbody>
 			</table>
 		</div>

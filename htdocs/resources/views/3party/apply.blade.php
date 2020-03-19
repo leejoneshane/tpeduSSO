@@ -7,6 +7,17 @@
             <div class="card card-default" style="margin-top: 20px">
                 <div class="card-header"><h4>申請第三方應用介接專案</h4></div>
                 <div class="card-body">
+					<div>
+					@if (session('error'))
+						<div class="alert alert-danger">
+						{{ session('error') }}
+						</div>
+					@endif
+					@if (session('success'))
+						<div class="alert alert-success">
+						{{ session('success') }}
+						</div>
+					@endif
 					<form role="form" method="POST" action="{{ route('3party.edit') }}">
 					@csrf
 						<label for="uuid">如果您想要修改先前申請的表單，請於下面文字框輸入該表單的唯一識別碼：</label>

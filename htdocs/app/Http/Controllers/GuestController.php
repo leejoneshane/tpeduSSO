@@ -55,8 +55,8 @@ class GuestController extends Controller
 				])->save();	
 			}
 		} else {
-			Project::create([
-				'id' => (string) Str::uuid(),
+			$project = Project::create([
+				'uuid' => (string) Str::uuid(),
 				'organization' => $request->get('organization'),
 				'applicationName' => $request->get('applicationName'),
 				'reason' => $request->get('reason'),
@@ -70,14 +70,18 @@ class GuestController extends Controller
 			]);	
 		}
 		event(new ProjectApply($project));
-        return view('3party.store');
+        return view('3party.store', [ 'uuid' =>  $project->uuid ]);
 	}
 
     public function edit(Request $request)
 	{
 		$id = $request->get('uuid');
-		$project = Project::find($id);
-		return view('3party.edit', [ 'project' => $project ]);		
+		if ($id) {
+			$project = Project::find($id);
+			return view('3party.edit', [ 'project' => $project ]);
+		} else {
+			return back()->with('error','UUID 不存在！');
+		}
 	}
 
 }

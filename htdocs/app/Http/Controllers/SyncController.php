@@ -2088,14 +2088,14 @@ class SyncController extends Controller
 				$request->session()->put('classes', $classes);
 			}
 			$classes = $request->session()->pull('classes');
-			$clsid = key($classes);
-			$clsname = $classes[$clsid];
-			unset($classes[$clsid]);
-			if (!empty($classes)) $request->session()->put('classes', $classes);
-			if ($sys == 'bridge') $result = $this->hs_syncStudent($dc, $sid, $clsid, $clsname);
-			if ($sys == 'oneplus') $result = $this->js_syncStudent($dc, $sid, $clsid, $clsname);
-			if ($sys == 'alle') $result = $this->ps_syncStudent($dc, $sid, $clsid, $clsname);
 			if (!empty($classes)) {
+				$clsid = key($classes);
+				$clsname = $classes[$clsid];
+				unset($classes[$clsid]);
+				if (!empty($classes)) $request->session()->put('classes', $classes);
+				if ($sys == 'bridge') $result = $this->hs_syncStudent($dc, $sid, $clsid, $clsname);
+				if ($sys == 'oneplus') $result = $this->js_syncStudent($dc, $sid, $clsid, $clsname);
+				if ($sys == 'alle') $result = $this->ps_syncStudent($dc, $sid, $clsid, $clsname);
 				$nextid = key($classes);
 				return view('admin.syncstudentinfo', [ 'sims' => $sys, 'dc' => $dc, 'clsid' => $nextid, 'result' => $result ]);	
 			} else {
@@ -2979,26 +2979,21 @@ class SyncController extends Controller
 
 	public function transferDomain() {
 		$google = new GoogleServiceProvider();
-		$gmails = Gsuite::where('transfered', 1)->limit(100)->get();
+		$gmails = Gsuite::where('transfered', 0)->limit(100)->get();
 		$messages = array();
 		if ($gmails->isEmpty()) {
 			$messages[] = "所有 ms.tp.edu.tw 別名移除成功！";
 		} else {
 			foreach ($gmails as $gm) {
-				$guser = $google->getUser($gm->nameID.'@gs.tp.edu.tw');
-				if ($guser) {
-					$new_gm = $google->removeUserAlias($gm->nameID.'gs.tp.edu.tw', $gm->nameID.'@ms.tp.edu.tw');
-					if ($new_gm) {
-						$gm->transfered = false;
-						$gm->save();
-						$messages[] = '已將別名'.$gm->nameID.'@ms.tp.edu.tw 移除！';
-					}	
-				}
+				$google->removeUserAlias($gm->nameID.'@gs.tp.edu.tw', $gm->nameID.'@ms.tp.edu.tw');
+				$gm->transfered = true;
+				$gm->save();
+				$messages[] = '已將別名'.$gm->nameID.'@ms.tp.edu.tw 移除！';
 			}
 			$messages[] = "每次僅能處理 100 個帳號，請持續到完成為止！";
 		}
 		$flag = false;
-		if (Gsuite::where('transfered', 1)->limit(100)->count() > 0) $flag = true;
+		if (Gsuite::where('transfered', 0)->limit(100)->count() > 0) $flag = true;
 		return view('admin.transferdomain', [ 'result' => $messages, 'notfin' => $flag ]);
 	}
 	
