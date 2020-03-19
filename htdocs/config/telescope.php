@@ -122,7 +122,7 @@ return [
         ],
 
         Watchers\GateWatcher::class => [
-            'enabled' => env('TELESCOPE_GATE_WATCHER', true),
+            'enabled' => env('TELESCOPE_GATE_WATCHER', false),
             'ignore_abilities' => [],
             'ignore_packages' => true,
         ],
