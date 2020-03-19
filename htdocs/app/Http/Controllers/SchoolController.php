@@ -1573,7 +1573,7 @@ class SchoolController extends Controller
 		$data = $openldap->getOus($dc, '行政部門');
 		if ($data) {
 			foreach ($data as $ou) {
-				if (!$my_ou) $my_ou = $ou->ou;
+				if ($my_ou == 'null') $my_ou = $ou->ou;
 				if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
 			}
 			if ($my_ou) $roles = $openldap->getRoles($dc, $my_ou);
