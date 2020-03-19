@@ -87,10 +87,10 @@ return [
     */
 
     'watchers' => [
-        Watchers\CacheWatcher::class => env('TELESCOPE_CACHE_WATCHER', true),
+        Watchers\CacheWatcher::class => env('TELESCOPE_CACHE_WATCHER', false),
 
         Watchers\CommandWatcher::class => [
-            'enabled' => env('TELESCOPE_COMMAND_WATCHER', true),
+            'enabled' => env('TELESCOPE_COMMAND_WATCHER', false),
             'ignore' => [],
         ],
 
@@ -99,14 +99,14 @@ return [
         Watchers\ExceptionWatcher::class => env('TELESCOPE_EXCEPTION_WATCHER', true),
         Watchers\JobWatcher::class => env('TELESCOPE_JOB_WATCHER', true),
         Watchers\LogWatcher::class => env('TELESCOPE_LOG_WATCHER', true),
-        Watchers\MailWatcher::class => env('TELESCOPE_MAIL_WATCHER', true),
+        Watchers\MailWatcher::class => env('TELESCOPE_MAIL_WATCHER', false),
 
         Watchers\ModelWatcher::class => [
-            'enabled' => env('TELESCOPE_MODEL_WATCHER', true),
+            'enabled' => env('TELESCOPE_MODEL_WATCHER', false),
             'events' => ['eloquent.*'],
         ],
 
-        Watchers\NotificationWatcher::class => env('TELESCOPE_NOTIFICATION_WATCHER', true),
+        Watchers\NotificationWatcher::class => env('TELESCOPE_NOTIFICATION_WATCHER', false),
 
         Watchers\QueryWatcher::class => [
             'enabled' => env('TELESCOPE_QUERY_WATCHER', true),
@@ -114,10 +114,10 @@ return [
             'slow' => 100,
         ],
 
-        Watchers\RedisWatcher::class => env('TELESCOPE_REDIS_WATCHER', true),
+        Watchers\RedisWatcher::class => env('TELESCOPE_REDIS_WATCHER', false),
 
         Watchers\RequestWatcher::class => [
-            'enabled' => env('TELESCOPE_REQUEST_WATCHER', true),
+            'enabled' => env('TELESCOPE_REQUEST_WATCHER', false),
             'size_limit' => env('TELESCOPE_RESPONSE_SIZE_LIMIT', 64),
         ],
 
