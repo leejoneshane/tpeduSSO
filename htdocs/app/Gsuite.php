@@ -12,7 +12,7 @@ class Gsuite extends Model
 	protected $primaryKey = 'idno';
 
     protected $fillable = [
-        'idno', 'gmail', 'primary', 'transfered',
+        'idno', 'nameID', 'primary', 'transfered',
     ];
     
     protected $casts = [
