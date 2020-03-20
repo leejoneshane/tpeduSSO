@@ -31,8 +31,8 @@
                     <div class="col-md-8">
                         Google 帳號：{{ $google->userId }}
                         <button type="button" class="btn btn-danger"
-							 	onclick="$('#socialite').value('google');
-                                         $('#userid').value('{{ $google->userId }}');
+							 	onclick="$('#socialite').val('google');
+                                         $('#userid').val('{{ $google->userId }}');
 										 $('#form').submit();">解除</button>
                     </div>
                 @else
@@ -45,8 +45,8 @@
                     <div class="col-md-8">
                         Facebook 帳號：{{ $facebook->userId }}
                         <button type="button" class="btn btn-danger"
-							 	onclick="$('#socialite').value('facebook');
-                                         $('#userid').value('{{ $facebook->userId }}');
+							 	onclick="$('#socialite').val('facebook');
+                                         $('#userid').val('{{ $facebook->userId }}');
 										 $('#form').submit();">解除</a>
                     </div>
                 @else
@@ -59,8 +59,8 @@
                     <div class="col-md-8">
                         Yahoo 帳號：{{ $yahoo->userId }}
                         <button type="button" class="btn btn-danger"
-							 	onclick="$('#socialite').value('yahoo');
-                                         $('#userid').value('{{ $yahoo->userId }}');
+							 	onclick="$('#socialite').val('yahoo');
+                                         $('#userid').val('{{ $yahoo->userId }}');
 										 $('#form').submit();">解除</button>
                     </div>
                 @else
@@ -73,8 +73,8 @@
                     <div class="col-md-8">
                         Line 帳號：{{ $line->userId }}
                         <button type="button" class="btn btn-danger"
-							 	onclick="$('#socialite').value('line');
-                                         $('#userid').value('{{ $line->userId}}');
+							 	onclick="$('#socialite').val('line');
+                                         $('#userid').val('{{ $line->userId}}');
 										 $('#form').submit();">解除</button>
                     </div>
                 @else
