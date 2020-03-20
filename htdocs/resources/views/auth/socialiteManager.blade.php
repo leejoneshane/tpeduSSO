@@ -31,9 +31,7 @@
                     <div class="col-md-8">
                         Google 帳號：{{ $google->userId }}
                         <button type="button" class="btn btn-danger"
-							 	onclick="$('#form').attr('action','{{ route('socialite.remove') }}');
-                                         $('#form').attr('method', 'POST');
-                                         $('#socialite').value('Google');
+							 	onclick="$('#socialite').value('google');
                                          $('#userid').value($google->userId);
 										 $('#form').submit();">解除</button>
                     </div>
@@ -47,9 +45,7 @@
                     <div class="col-md-8">
                         Facebook 帳號：{{ $facebook->userId }}
                         <button type="button" class="btn btn-danger"
-							 	onclick="$('#form').attr('action','{{ route('socialite.remove') }}');
-                                         $('#form').attr('method', 'POST');
-                                         $('#socialite').value('facebook');
+							 	onclick="$('#socialite').value('facebook');
                                          $('#userid').value($facebook->userId);
 										 $('#form').submit();">解除</a>
                     </div>
@@ -63,9 +59,7 @@
                     <div class="col-md-8">
                         Yahoo 帳號：{{ $yahoo->userId }}
                         <button type="button" class="btn btn-danger"
-							 	onclick="$('#form').attr('action','{{ route('socialite.remove') }}');
-                                         $('#form').attr('method', 'POST');
-                                         $('#socialite').value('Yahoo');
+							 	onclick="$('#socialite').value('yahoo');
                                          $('#userid').value($yahoo->userId);
 										 $('#form').submit();">解除</button>
                     </div>
@@ -79,9 +73,7 @@
                     <div class="col-md-8">
                         Line 帳號：{{ $line->userId }}
                         <button type="button" class="btn btn-danger"
-							 	onclick="$('#form').attr('action','{{ route('socialite.remove') }}');
-                                         $('#form').attr('method', 'POST');
-                                         $('#socialite').value('line');
+							 	onclick="$('#socialite').value('line');
                                          $('#userid').value($line->userId);
 										 $('#form').submit();">解除</button>
                     </div>
@@ -91,7 +83,7 @@
                         <a href="/login/line" class="btn btn-primary">綁定</a>
                     </div>
                 @endif
-                <form id="form" action="" method="" style="display: none;">
+                <form id="form" action="{{ route('socialite.remove') }}" method="POST" style="display: none;">
                 @csrf
                 <input type="hidden" id='socialite' name='socialite' value="">
                 <input type="hidden" id='userid' name='userid' value="">
