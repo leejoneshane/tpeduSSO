@@ -14,14 +14,8 @@
 // Authentication Routes...
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
-Route::get('login/google', 'Auth\LoginController@redirectToGoogle')->name('login.google');
-Route::match(array('GET','POST'), 'login/google/callback', 'Auth\LoginController@handleGoogleCallback');
-Route::get('login/facebook', 'Auth\LoginController@redirectToFacebook')->name('login.facebook');;
-Route::match(array('GET','POST'), 'login/facebook/callback', 'Auth\LoginController@handleFacebookCallback');
-Route::get('login/yahoo', 'Auth\LoginController@redirectToYahoo')->name('login.yahoo');
-Route::match(array('GET','POST'), 'login/yahoo/callback', 'Auth\LoginController@handleYahooCallback');
-Route::get('login/line', 'Auth\LoginController@redirectToLine')->name('login.line');
-Route::match(array('GET','POST'), 'login/line/callback', 'Auth\LoginController@handleLineCallback');
+Route::get('login/{provider}', 'Auth\LoginController@redirect');
+Route::get('login/{provider}/callback', 'Auth\LoginController@handleCallback');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('api/logout', 'Api\profileController@logout');
 Route::get('api/v2/logout', 'Api_V2\v2_profileController@logout');

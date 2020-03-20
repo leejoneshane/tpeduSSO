@@ -40,7 +40,7 @@
                 @else
                     <div class="col-md-8">
                         Google 帳號：
-                        <a href="{{ route('login.google') }}" class="btn btn-primary">綁定</a>
+                        <a href="/login/Google" class="btn btn-primary">綁定</a>
                     </div>
                 @endif
                 @if ($facebook)
@@ -49,14 +49,14 @@
                         <button type="button" class="btn btn-danger"
 							 	onclick="$('#form').attr('action','{{ route('socialite.remove') }}');
                                          $('#form').attr('method', 'POST');
-                                         $('#socialite').value('Facebook');
+                                         $('#socialite').value('facebook');
                                          $('#userid').value($facebook->userID);
 										 $('#form').submit();">解除</a>
                     </div>
                 @else
                     <div class="col-md-8">
                         Facebook 帳號：
-                        <a href="{{ route('login.facebook') }}" class="btn btn-primary">綁定</a>
+                        <a href="/login/facebook" class="btn btn-primary">綁定</a>
                     </div>
                 @endif
                 @if ($yahoo)
@@ -72,7 +72,7 @@
                 @else
                     <div class="col-md-8">
                         Yahoo 帳號：
-                        <a href="{{ route('login.yahoo') }}" class="btn btn-primary">綁定</a>
+                        <a href="/login/Yahoo" class="btn btn-primary">綁定</a>
                     </div>
                 @endif
                 @if ($yahoo)
@@ -81,14 +81,14 @@
                         <button type="button" class="btn btn-danger"
 							 	onclick="$('#form').attr('action','{{ route('socialite.remove') }}');
                                          $('#form').attr('method', 'POST');
-                                         $('#socialite').value('Line');
+                                         $('#socialite').value('line');
                                          $('#userid').value($line->userID);
 										 $('#form').submit();">解除</button>
                     </div>
                 @else
                     <div class="col-md-8">
                         Line 帳號：
-                        <a href="{{ route('login.line') }}" class="btn btn-primary">綁定</a>
+                        <a href="/login/line" class="btn btn-primary">綁定</a>
                     </div>
                 @endif
                 <form id="form" action="" method="" style="display: none;">

@@ -59,9 +59,9 @@
             </form>
             <div class="row">
                 <div class="col-sm-12 social-login-buttons" style="text-align:center;">
-                    <a href="/login/google"><i style="color:FireBrick" class="fab fa-2x fa-google" title="使用 Google 登入"></i></a>　
+                    <a href="/login/Google"><i style="color:FireBrick" class="fab fa-2x fa-google" title="使用 Google 登入"></i></a>　
                     <a href="/login/facebook"><i style="color:blue" class="fab fa-2x fa-facebook" title="使用 Facebook 登入"></i></a>　
-                    <a href="/login/yahoo"><i style="color:RebeccaPurple" class="fab fa-2x fa-yahoo" title="使用 Yahoo 登入"></i></a>　
+                    <a href="/login/Yahoo"><i style="color:RebeccaPurple" class="fab fa-2x fa-yahoo" title="使用 Yahoo 登入"></i></a>　
                     <a href="/login/line"><i style="color:green" class="fab fa-2x fa-line" title="使用 Line 登入"></i></a>　　
                     <a href="/3party"><i style="color:gray" class="fa fa-2x fa-users" title="申請介接專案"></i></a>
                 </div>
