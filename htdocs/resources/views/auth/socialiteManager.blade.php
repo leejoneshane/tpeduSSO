@@ -75,7 +75,7 @@
                         <a href="/login/yahoo" class="btn btn-primary">綁定</a>
                     </div>
                 @endif
-                @if ($yahoo)
+                @if ($line)
                     <div class="col-md-8">
                         Line 帳號：{{ $line->userID }}
                         <button type="button" class="btn btn-danger"
