@@ -32,7 +32,7 @@
                         Google 帳號：{{ $google->userId }}
                         <button type="button" class="btn btn-danger"
 							 	onclick="$('#socialite').value('google');
-                                         $('#userid').value($google->userId);
+                                         $('#userid').value('{{ $google->userId }}');
 										 $('#form').submit();">解除</button>
                     </div>
                 @else
@@ -46,7 +46,7 @@
                         Facebook 帳號：{{ $facebook->userId }}
                         <button type="button" class="btn btn-danger"
 							 	onclick="$('#socialite').value('facebook');
-                                         $('#userid').value($facebook->userId);
+                                         $('#userid').value('{{ $facebook->userId }}');
 										 $('#form').submit();">解除</a>
                     </div>
                 @else
@@ -60,7 +60,7 @@
                         Yahoo 帳號：{{ $yahoo->userId }}
                         <button type="button" class="btn btn-danger"
 							 	onclick="$('#socialite').value('yahoo');
-                                         $('#userid').value($yahoo->userId);
+                                         $('#userid').value('{{ $yahoo->userId }}');
 										 $('#form').submit();">解除</button>
                     </div>
                 @else
@@ -74,7 +74,7 @@
                         Line 帳號：{{ $line->userId }}
                         <button type="button" class="btn btn-danger"
 							 	onclick="$('#socialite').value('line');
-                                         $('#userid').value($line->userId);
+                                         $('#userid').value('{{ $line->userId}}');
 										 $('#form').submit();">解除</button>
                     </div>
                 @else
