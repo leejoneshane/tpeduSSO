@@ -52,8 +52,7 @@ class LoginController extends Controller
         try {
             $user = Socialite::driver($provider)->user();
             $userID = $user->getId();
-            if (Auth::check()) {
-                $myuser = Auth::user();
+            if ($myuser = $request->user()) {
                 SocialiteAccount::create([
                     'idno' => $myuser->idno,
                     'socialite' => $provider,
