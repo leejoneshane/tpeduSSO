@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use DB;
-use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\RedirectsUsers;

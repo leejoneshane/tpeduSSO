@@ -33,8 +33,8 @@ class GuestController extends Controller
             'connEmail' => 'required|email:rfc,dns',
             'connTel' => 'required|digits_between:7,10',
 		]);
-		if ($request->get('id')) {
-			$project = Project::find($id);
+		if ($request->get('uuid')) {
+			$project = Project::find($uuid);
 			$project->forceFill([
 				'organization' => $request->get('organization'),
 				'applicationName' => $request->get('applicationName'),
@@ -75,9 +75,9 @@ class GuestController extends Controller
 
     public function edit(Request $request)
 	{
-		$id = $request->get('uuid');
-		if ($id) {
-			$project = Project::find($id);
+		$uuid = $request->get('uuid');
+		if ($uuid) {
+			$project = Project::find($uuid);
 			return view('3party.edit', [ 'project' => $project ]);
 		} else {
 			return back()->with('error','UUID 不存在！');

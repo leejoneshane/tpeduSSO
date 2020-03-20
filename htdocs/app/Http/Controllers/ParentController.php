@@ -6,7 +6,6 @@ use Config;
 use Auth;
 use Log;
 use Carbon\Carbon;
-use App\User;
 use App\PSLink;
 use App\PSAuthorize;
 use App\GQrcode;
@@ -76,10 +75,13 @@ class ParentController extends Controller
 		$role = $data['employeeType'];
 		$stdno = $data['employeeNumber'];
 		if ($role != '學生') return back()->with("error","該身份證字號不屬於貴子弟所有！");
-		$info = array();
-		$info['parent_idno'] = $user->idno;
-		$info['student_idno'] = $idno;
-		$info['relation'] = $relation;
+		$link = PSLink::where('parent_idno', $user->idno)->where('student_idno', $idno)->first();
+		if (is_null($lnk)) {
+			$link = new PSLink();
+			$link->parent_idno = $user->idno;
+			$link->student_idno = $idno;
+		}
+		$link->relation = $relation;
 		$org = $openldap->getOrgEntry($dc);
 		$odata = $openldap->getOrgData($org);
 		if (!empty($odata['tpSims'])) $sims = $odata['tpSims'];
@@ -100,13 +102,13 @@ class ParentController extends Controller
 				}
 			}
 			if ($match) {
-				$info['verified'] = 1;
-				$info['verified_time'] = Carbon::now();
+				$link->verified = 1;
+				$link->verified_time = Carbon::now();
 			} else {
-				$info['denyReason'] = implode('、', $reason);
+				$link->denyReason = implode('、', $reason);
 			}
 		}
-		PSLink::create($info);
+		$link->save();
 		return redirect()->route('parent.listLink');
 	}
 	
@@ -168,6 +170,7 @@ class ParentController extends Controller
 		$agree = $request->get('agree');
 		if (!empty($agreeAll)) {
 			if ($agreeAll == 'new') {
+				PSAuthorize::where('student_idno', $student_idno)->delete();
 				PSAuthorize::create([
 					'parent_idno' => $parent_idno,
 					'student_idno' => $student_idno,
@@ -178,6 +181,7 @@ class ParentController extends Controller
 				PSAuthorize::where('student_idno', $student_idno)->where('client_id', '!=', '*')->delete();
 			}
 		} elseif (!empty($agree)) {
+			PSAuthorize::where('student_idno', $student_idno)->where('client_id', '*')->delete();
 			$apps = Passport::client()->all();
 			foreach ($apps as $app) {
 				if ($app->firstParty()) continue;
@@ -206,7 +210,7 @@ class ParentController extends Controller
 	public function qrcodeBind(Request $request, $uuid)
     {
 		$openldap = new LdapServiceProvider();
-		$qrcode = GQrcode::where('uuid', $uuid)->first();
+		$qrcode = GQrcode::find($uuid);
 		if (!$qrcode || $qrcode->expired()) return redirect()->route('home');
 		$student = $qrcode->idno;
 		$parent = Auth::user()->idno;

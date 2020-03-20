@@ -14,8 +14,8 @@
 // Authentication Routes...
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
-Route::get('login/{provider}', 'Auth\LoginController@redirect');
-Route::get('login/{provider}/callback', 'Auth\LoginController@handleCallback');
+Route::get('login/{provider}', 'Auth\SocialiteController@redirect');
+Route::get('login/{provider}/callback', 'Auth\SocialiteController@handleCallback');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('api/logout', 'Api\profileController@logout');
 Route::get('api/v2/logout', 'Api_V2\v2_profileController@logout');
@@ -75,8 +75,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('profile', 'HomeController@showProfileForm');
     Route::post('profile', 'HomeController@changeProfile')->name('profile');
 	Route::get('gsuite/sync', 'HomeController@syncToGsuite')->name('createGsuite');
-	Route::get('socialite', 'OauthController@socialite')->name('socialite');
-	Route::post('socialite/remove', 'OauthController@removeSocialite')->name('socialite.remove');
+	Route::get('socialite', 'Auth\SocialiteController@socialite')->name('socialite');
+	Route::post('socialite/remove', 'Auth\SocialiteController@removeSocialite')->name('socialite.remove');
 });
 
 Route::group(['prefix' => 'parent', 'middleware' => 'auth.parent'], function () {

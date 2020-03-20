@@ -123,27 +123,27 @@ class BureauController extends Controller
 
     public function projectEditForm(Request $request, $uuid)
 	{
-		$project = Project::where('uuid', $uuid)->first();
+		$project = Project::find($uuid);
 		return view('admin.bureauprojectedit', [ 'project' => $project ]);	
 	}
 
     public function removeProject(Request $request, $uuid)
 	{
-		$project = Project::where('uuid', $uuid)->first();
+		$project = Project::find($uuid);
 		if ($project) $project->delete();
 		return redirect()->route('bureau.project');
 	}
 
     public function showDenyProjectForm(Request $request, $uuid)
 	{
-		$project = Project::where('uuid', $uuid)->first();
+		$project = Project::find($uuid);
 		return view('admin.bureauprojectdeny', [ 'project' => $project ]);
 	}
 
     public function denyProject(Request $request, $uuid)
 	{
 		$reason = $reguest->get('reason');
-		$project = Project::where('uuid', $uuid)->first();
+		$project = Project::find($uuid);
 		if ($project) $project->reject()
 			->sendMail([
 				'很遺憾，您申請的介接專案已經被駁回！理由如下：',
@@ -155,7 +155,7 @@ class BureauController extends Controller
 
     public function passProject(Request $request, $uuid)
 	{
-		$project = Project::where('uuid', $uuid)->first();
+		$project = Project::find($uuid);
 		if ($project) $project->allow();
 		event(new ProjectAllowed($project));
 		return redirect()->route('bureau.project');
@@ -184,14 +184,14 @@ class BureauController extends Controller
 
     public function updateClient(Request $request, $uuid)
 	{
-		$project = Project::where('uuid', $uuid)->first();
+		$project = Project::find($uuid);
 		if ($project) $client = $project->client();
 		return view('admin.bureauclientedit', [ 'project' => $project, 'client' => $client ]);
 	}
 
     public function storeClient(Request $request, $uuid)
 	{
-		$project = Project::where('uuid', $uuid)->first();
+		$project = Project::find($uuid);
 		if ($project) $client = $project->client();
 		$validatedData = $request->validate([
             'applicationName' => 'required|string|max:150',
@@ -210,7 +210,7 @@ class BureauController extends Controller
 
     public function toggleClient(Request $request, $uuid)
 	{
-		$project = Project::where('uuid', $uuid)->first();
+		$project = Project::find($uuid);
 		if ($project) {
 			$client = $project->client();
 			if ($client->revoked)

@@ -40,7 +40,7 @@
                 @else
                     <div class="col-md-8">
                         Google 帳號：
-                        <a href="/login/Google" class="btn btn-primary">綁定</a>
+                        <a href="/login/google" class="btn btn-primary">綁定</a>
                     </div>
                 @endif
                 @if ($facebook)
@@ -72,7 +72,7 @@
                 @else
                     <div class="col-md-8">
                         Yahoo 帳號：
-                        <a href="/login/Yahoo" class="btn btn-primary">綁定</a>
+                        <a href="/login/yahoo" class="btn btn-primary">綁定</a>
                     </div>
                 @endif
                 @if ($yahoo)

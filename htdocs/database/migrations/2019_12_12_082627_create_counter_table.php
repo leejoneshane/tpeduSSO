@@ -14,7 +14,7 @@ class CreateCounterTable extends Migration
     public function up()
     {
         Schema::create('counter', function (Blueprint $table) {
-            $table->date('count_at')->index();
+            $table->date('count_at')->primary();
             $table->bigInteger('count')->default(0);
         });
     }
