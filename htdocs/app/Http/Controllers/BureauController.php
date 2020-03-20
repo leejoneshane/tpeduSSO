@@ -472,7 +472,7 @@ class BureauController extends Controller
 						$oclass = new \stdClass;
 						$oclass->dc = $person->o;
 						$oclass->id = $person->class;
-						$classname = $person->classtitle;
+						if (isset($person->classtitle)) $classname = $person->classtitle;
 						if (empty($classname)) $classname = $person->class;
 						$entry["tpClassTitle"] = $classname;
 						$oclass->name = $classname;

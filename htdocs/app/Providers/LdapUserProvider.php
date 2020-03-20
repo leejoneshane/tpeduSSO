@@ -72,7 +72,7 @@ class LdapUserProvider extends EloquentUserProvider
 				if (User::where('idno', '!=', $id)->where('mobile', $mobile)->exists()) $mobile = false;
 				if ($mobile && $openldap->mobileAvailable($id, $mobile)) $user->mobile = $mobile;
 			}
-			if ($new && User::where('uuid', $user->uuid)->exists()) return;
+			if ($new && $olduser = User::where('uuid', $user->uuid)->first()) return $olduser;
 			$user->save();
 			return $user;
 		}

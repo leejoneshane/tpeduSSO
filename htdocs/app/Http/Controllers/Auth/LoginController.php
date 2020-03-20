@@ -45,7 +45,7 @@ class LoginController extends Controller
 
     public function redirectToGoogle()
     {
-        return Socialite::with('google')->redirect();
+        return Socialite::with('Google')->redirect();
     }
 
     public function handleGoogleCallback(Request $request)
@@ -55,8 +55,8 @@ class LoginController extends Controller
             return $this->SocialiteLogin($request, 'Google', $user);
         } catch (\Exception $e){
             Log::debug('使用 Google 帳號登入失敗：'.$e->getMessage());
+            return redirect()->route('login');
         }
-        return redirect()->route('login');
     }
 
     public function redirectToFacebook()
@@ -71,25 +71,24 @@ class LoginController extends Controller
             return $this->SocialiteLogin($request, 'Facebook', $user);
         } catch (\Exception $e){
             Log::debug('使用 Facebook 帳號登入失敗：'.$e->getMessage());
+            return redirect()->route('login');
         }
-        return redirect()->route('login');
     }
 
     public function redirectToYahoo()
     {
-        return Socialite::with('yahoo')->redirect();
+        return Socialite::with('Yahoo')->redirect();
     }
 
     public function handleYahooCallback(Request $request)
     {
         try {
-            $user = Socialite::driver('yahoo')->user();
+            $user = Socialite::driver('Yahoo')->user();
             return $this->SocialiteLogin($request, 'Yahoo', $user);
         } catch (\Exception $e){
             Log::debug('使用 Yahoo 帳號登入失敗：'.$e->getMessage());
+            return redirect()->route('login');
         }
-        return redirect()->route('login');
-
     }
 
     public function redirectToLine()
@@ -104,9 +103,8 @@ class LoginController extends Controller
             return $this->SocialiteLogin($request, 'Line', $user);
         } catch (\Exception $e){
             Log::debug('使用 Line 帳號登入失敗：'.$e->getMessage());
+            return redirect()->route('login');
         }
-        return redirect()->route('login');
-
     }
 
     public function SocialiteLogin(Request $request, $socialite, $user) 

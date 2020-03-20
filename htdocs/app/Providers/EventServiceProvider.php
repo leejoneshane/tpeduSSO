@@ -33,6 +33,8 @@ class EventServiceProvider extends ServiceProvider
 //            'App\Listeners\PruneOldTokens',
 //        ],
         SocialiteWasCalled::class => [
+            'SocialiteProviders\Google\GoogleExtendSocialite@handle',
+            'SocialiteProviders\Facebook\FacebookExtendSocialite@handle',
             'SocialiteProviders\Yahoo\YahooExtendSocialite@handle',
             'SocialiteProviders\Line\LineExtendSocialite@handle',
         ],
