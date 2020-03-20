@@ -74,7 +74,7 @@
                         Line 帳號：{{ $line->userId }}
                         <button type="button" class="btn btn-danger"
 							 	onclick="$('#socialite').val('line');
-                                         $('#userid').val('{{ $line->userId}}');
+                                         $('#userid').val('{{ $line->userId }}');
 										 $('#form').submit();">解除</button>
                     </div>
                 @else
