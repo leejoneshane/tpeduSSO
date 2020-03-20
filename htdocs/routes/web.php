@@ -45,7 +45,7 @@ Route::group(['prefix' => 'oauth', 'middleware' => 'auth'], function () {
 	Route::get('/', 'OauthController@index')->name('oauth');
 	Route::post('tokens/{token_id}/revoke', 'OauthController@revokeToken')->name('revokeToken');
 	//RouteRegistrar::forAuthorization()
-	Route::get('authorize', '\Laravel\Passport\Http\Controllers\AuthorizationController@authorize')->name('passport.authorizations.authorize');
+	Route::get('authorize', '\Laravel\Passport\Http\Controllers\AuthorizationController@authorize')->name('passport.authorizations.authorize'); //->middleware('age')
 	Route::post('authorize', '\Laravel\Passport\Http\Controllers\ApproveAuthorizationController@approve')->name('passport.authorizations.approve');
 	Route::delete('authorize', '\Laravel\Passport\Http\Controllers\DenyAuthorizationController@deny')->name('passport.authorizations.deny');
 	//RouteRegistrar::forAccessTokens()
@@ -77,7 +77,7 @@ Route::post('3party/store', 'GuestController@store')->name('3party.store');
 Route::post('3party/update', 'GuestController@edit')->name('3party.edit');
 
 Route::group(['middleware' => 'auth'], function () {
-	Route::get('/', 'HomeController@index')->middleware('verified')->name('home');
+	Route::get('/', 'HomeController@index')->name('home'); //->middleware('verified')
     Route::get('profile', 'HomeController@showProfileForm');
     Route::post('profile', 'HomeController@changeProfile')->name('profile');
 	Route::get('gsuite/sync', 'HomeController@syncToGsuite')->name('createGsuite');

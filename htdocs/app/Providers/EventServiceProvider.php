@@ -23,15 +23,15 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        Lockout::class => [
-            'App\Listeners\SendLockoutNotification',
-        ],
-        'Laravel\Passport\Events\AccessTokenCreated' => [
-            'App\Listeners\RevokeOldTokens',
-        ],
-        'Laravel\Passport\Events\RefreshTokenCreated' => [
-            'App\Listeners\PruneOldTokens',
-        ],
+//        Lockout::class => [
+//            'App\Listeners\SendLockoutNotification',
+//        ],
+//        'Laravel\Passport\Events\AccessTokenCreated' => [
+//            'App\Listeners\RevokeOldTokens',
+//        ],
+//        'Laravel\Passport\Events\RefreshTokenCreated' => [
+//            'App\Listeners\PruneOldTokens',
+//        ],
         SocialiteWasCalled::class => [
             'SocialiteProviders\Yahoo\YahooExtendSocialite@handle',
             'SocialiteProviders\Line\LineExtendSocialite@handle',
