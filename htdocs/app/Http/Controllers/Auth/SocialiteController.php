@@ -58,21 +58,26 @@ class SocialiteController extends Controller
     public function socialite(Request $request)
     {
         $user = Auth::user();
-        $query = $user->socialite_accounts();
-        $google = $query->where('socialite', 'google')->first();
-        $facebook = $query->where('socialite', 'facebook')->first();
-        $yahoo = $query->where('socialite', 'yahoo')->first();
-        $line = $query->where('socialite', 'line')->first();
+        $google = false;
+        $facebook = false;
+        $yahoo = false;
+        $line = false;
+        $accounts = $user->socialite_accounts;
+        foreach ($accounts as $a) {
+            if ($a->socialite == 'google') $google = $a;
+            if ($a->socialite == 'facebook') $facebook = $a;
+            if ($a->socialite == 'yahoo') $yahoo = $a;
+            if ($a->socialite == 'line') $line = $a;
+        }
         return view('auth.socialiteManager', [ 'google' => $google, 'facebook' => $facebook, 'yahoo' => $yahoo, 'line' => $line ]);
     }
 
     public function removeSocialite(Request $request)
     {
         $user = Auth::user();
-        $query = $user->socialite_accounts();
         $socialite = $request->get('socialite');
         $userid = $request->get('userid');
-        $account = $query->where('socialite', $socialite)->where('userID', $userid)->delete();
+        $account = SocialiteAccount::where('idno', $user->idno)->where('socialite', $socialite)->where('userId', $userid)->delete();
         return redirect()->route('socialite');
     }
 

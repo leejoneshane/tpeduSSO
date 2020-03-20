@@ -29,12 +29,12 @@
                 <hr>
                 @if ($google)
                     <div class="col-md-8">
-                        Google 帳號：{{ $google->userID }}
+                        Google 帳號：{{ $google->userId }}
                         <button type="button" class="btn btn-danger"
 							 	onclick="$('#form').attr('action','{{ route('socialite.remove') }}');
                                          $('#form').attr('method', 'POST');
                                          $('#socialite').value('Google');
-                                         $('#userid').value($google->userID);
+                                         $('#userid').value($google->userId);
 										 $('#form').submit();">解除</button>
                     </div>
                 @else
@@ -45,12 +45,12 @@
                 @endif
                 @if ($facebook)
                     <div class="col-md-8">
-                        Facebook 帳號：{{ $facebook->userID }}
+                        Facebook 帳號：{{ $facebook->userId }}
                         <button type="button" class="btn btn-danger"
 							 	onclick="$('#form').attr('action','{{ route('socialite.remove') }}');
                                          $('#form').attr('method', 'POST');
                                          $('#socialite').value('facebook');
-                                         $('#userid').value($facebook->userID);
+                                         $('#userid').value($facebook->userId);
 										 $('#form').submit();">解除</a>
                     </div>
                 @else
@@ -61,12 +61,12 @@
                 @endif
                 @if ($yahoo)
                     <div class="col-md-8">
-                        Yahoo 帳號：{{ $yahoo->userID }}
+                        Yahoo 帳號：{{ $yahoo->userId }}
                         <button type="button" class="btn btn-danger"
 							 	onclick="$('#form').attr('action','{{ route('socialite.remove') }}');
                                          $('#form').attr('method', 'POST');
                                          $('#socialite').value('Yahoo');
-                                         $('#userid').value($yahoo->userID);
+                                         $('#userid').value($yahoo->userId);
 										 $('#form').submit();">解除</button>
                     </div>
                 @else
@@ -77,12 +77,12 @@
                 @endif
                 @if ($line)
                     <div class="col-md-8">
-                        Line 帳號：{{ $line->userID }}
+                        Line 帳號：{{ $line->userId }}
                         <button type="button" class="btn btn-danger"
 							 	onclick="$('#form').attr('action','{{ route('socialite.remove') }}');
                                          $('#form').attr('method', 'POST');
                                          $('#socialite').value('line');
-                                         $('#userid').value($line->userID);
+                                         $('#userid').value($line->userId);
 										 $('#form').submit();">解除</button>
                     </div>
                 @else
