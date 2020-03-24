@@ -44,12 +44,11 @@ class LdapUserProvider extends EloquentUserProvider
 			$entry = $openldap->getUserEntry($id);
 			$data = $openldap->getUserData($entry);
 			$user = User::where('idno', $id)->first();
-			if (is_null($user)) {
-				$user = $this->createModel();
-				$user->idno = $id;
-				$user->uuid = $data['entryUUID'];
-				$new = true;
-			}
+			if ($user) return $user;
+			$user = $this->createModel();
+			$user->idno = $id;
+			$user->uuid = $data['entryUUID'];
+			$new = true;
 			if (isset($credentials['password'])) {
 				$user->password = \Hash::make($credentials['password']);
 			} else {
@@ -72,7 +71,6 @@ class LdapUserProvider extends EloquentUserProvider
 				if (User::where('idno', '!=', $id)->where('mobile', $mobile)->exists()) $mobile = false;
 				if ($mobile && $openldap->mobileAvailable($id, $mobile)) $user->mobile = $mobile;
 			}
-			if ($new && $olduser = User::where('uuid', $user->uuid)->first()) return $olduser;
 			$user->save();
 			return $user;
 		}

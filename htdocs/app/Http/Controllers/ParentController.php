@@ -76,7 +76,7 @@ class ParentController extends Controller
 		$stdno = $data['employeeNumber'];
 		if ($role != '學生') return back()->with("error","該身份證字號不屬於貴子弟所有！");
 		$link = PSLink::where('parent_idno', $user->idno)->where('student_idno', $idno)->first();
-		if (is_null($lnk)) {
+		if (is_null($link)) {
 			$link = new PSLink();
 			$link->parent_idno = $user->idno;
 			$link->student_idno = $idno;
@@ -90,17 +90,18 @@ class ParentController extends Controller
 			$parents = $alle->ps_call('student_parents_info', [ 'sid' => $uno, 'stdno' => $stdno ]);
 			$match = false;
 			$reason = array();
-			foreach ($parents as $p) {
-				if ($p->name == $user->name) {
-					if ($user->mobile && empty($p->telephone)) 
-						$reason[] = '學籍資料缺家長手機號碼';
-					elseif ($user->mobile != $p->telephone)
-						$reason[] = '手機號碼不吻合';
-					if ($p->relation == $relation) $reason[] = '親子關係不吻合';
-					if (empty($reason)) $match = true;
-					break;
+			if (!empty($parents))
+				foreach ($parents as $p) {
+					if ($p->name == $user->name) {
+						if ($user->mobile && empty($p->telephone)) 
+							$reason[] = '學籍資料缺家長手機號碼';
+						elseif ($user->mobile != $p->telephone)
+							$reason[] = '手機號碼不吻合';
+						if ($p->relation == $relation) $reason[] = '親子關係不吻合';
+						if (empty($reason)) $match = true;
+						break;
+					}
 				}
-			}
 			if ($match) {
 				$link->verified = 1;
 				$link->verified_time = Carbon::now();

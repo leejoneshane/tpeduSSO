@@ -51,7 +51,7 @@ class SocialiteController extends Controller
                 return redirect()->route('login')->with('error', '這個社群帳號尚未綁定使用者，所以無法登入！');
             }
         } catch (\Exception $e){
-            return redirect()->route('login')->with('error', "使用 $provider 帳號登入失敗 $e->getMessage()");
+            return redirect()->route('login')->with('error', "使用 $provider 帳號登入失敗");
         }
     }
 
