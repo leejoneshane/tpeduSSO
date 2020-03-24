@@ -426,6 +426,7 @@ class LdapServiceProvider extends ServiceProvider
     public function getOuTitle($dc, $ou)
     {
 		if (empty($dc)) return '';
+		if (is_array($dc)) $dc = $dc[0];
 		$this->administrator();
 		$sch_dn = "dc=$dc,".Config::get('ldap.rdn');
 		$filter = "ou=$ou";

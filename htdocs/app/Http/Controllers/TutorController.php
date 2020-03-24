@@ -11,6 +11,7 @@ use App\GQrcode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Providers\LdapServiceProvider;
+use App\Rules\idno;
 
 class TutorController extends Controller
 {

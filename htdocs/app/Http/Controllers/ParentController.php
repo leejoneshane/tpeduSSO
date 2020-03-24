@@ -73,6 +73,7 @@ class ParentController extends Controller
 		if (!isset($data['o'])) return back()->with("error","查不到貴子弟的就學記錄，確定他是臺北市的學生嗎？");
 		$dc = $data['o'];
 		$role = $data['employeeType'];
+		if (!isset($data['employeeNumber'])) return back()->with("error","查不到貴子弟的學號，請向註冊組反應：校務行政系統未登載學號！");
 		$stdno = $data['employeeNumber'];
 		if ($role != '學生') return back()->with("error","該身份證字號不屬於貴子弟所有！");
 		$link = PSLink::where('parent_idno', $user->idno)->where('student_idno', $idno)->first();
@@ -90,7 +91,7 @@ class ParentController extends Controller
 			$parents = $alle->ps_call('student_parents_info', [ 'sid' => $uno, 'stdno' => $stdno ]);
 			$match = false;
 			$reason = array();
-			if (!empty($parents))
+			if (!empty($parents)) {
 				foreach ($parents as $p) {
 					if ($p->name == $user->name) {
 						if ($user->mobile && empty($p->telephone)) 
@@ -102,6 +103,7 @@ class ParentController extends Controller
 						break;
 					}
 				}
+			}
 			if ($match) {
 				$link->verified = 1;
 				$link->verified_time = Carbon::now();

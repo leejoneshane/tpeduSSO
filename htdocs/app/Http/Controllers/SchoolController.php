@@ -81,6 +81,9 @@ class SchoolController extends Controller
 		$students = array();
 		if (!empty($filter)) {
 			$students = $openldap->findUsers($filter, ["cn", "displayName", "o", "tpClass", "tpSeat", "entryUUID", "uid", "inetUserStatus"]);
+			foreach ($students as $s) {
+				if (!iseset($s['tpSeat'])) $s['tpSeat'] = '';
+			}
 			usort($students, function ($a, $b) { return $a['tpSeat'] <=> $b['tpSeat']; });
 		}
 		$school = $openldap->getOrgEntry($dc);
@@ -1756,7 +1759,7 @@ class SchoolController extends Controller
 			}
 		$ous = $openldap->getOus($dc, '行政部門');
 		if (empty($my_ou) && !empty($ous)) $my_ou = $ous[0]->ou;
-		$teachers = $openldap->findUsers("(&(o=$dc)(ou=*$my_ou))");
+		$teachers = $openldap->findUsers("(&(objectClass=tpeduPerson)(o=$dc)(ou=*$my_ou))");
 		$school = $openldap->getOrgEntry($dc);
 		$data = $openldap->getOrgData($school, "tpSims");
 		$sims = '';
