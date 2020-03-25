@@ -71,9 +71,10 @@ Route::post('3party/store', 'GuestController@store')->name('3party.store');
 Route::post('3party/update', 'GuestController@edit')->name('3party.edit');
 
 Route::group(['middleware' => 'auth'], function () {
-	Route::get('/', 'HomeController@index')->name('home'); //->middleware('verified')
+	Route::get('/', 'HomeController@index')->middleware('verified')->name('home');
     Route::get('profile', 'HomeController@showProfileForm');
     Route::post('profile', 'HomeController@changeProfile')->name('profile');
+	Route::get('gsuite', 'HomeController@gsuite')->middleware('verified')->name('gsuite');
 	Route::get('gsuite/sync', 'HomeController@syncToGsuite')->name('createGsuite');
 	Route::get('socialite', 'Auth\SocialiteController@socialite')->name('socialite');
 	Route::post('socialite/remove', 'Auth\SocialiteController@removeSocialite')->name('socialite.remove');

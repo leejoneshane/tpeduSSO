@@ -55,7 +55,8 @@
                             <li><a class="dropdown-item" href="{{ route('parent.guardianAuth') }}"><i class="fa fa-user-check fa-fw"></i>代理授權</a></li>
                             @endif
                             @if (!($user->is_parent))
-                                <li><a class="dropdown-item" href="{{ route('oauth') }}"><i class="fa fa-key fa-fw"></i>金鑰管理</a></li>
+                            <li><a class="dropdown-item" href="{{ route('gsuite') }}"><i class="fa fa-envelope fa-fw"></i>我的 Gsuite</a></li>
+                            <li><a class="dropdown-item" href="{{ route('oauth') }}"><i class="fa fa-key fa-fw"></i>金鑰管理</a></li>
                             @endif
                             <li><a class="dropdown-item" href="{{ route('profile') }}"><i class="fa fa-edit fa-fw"></i>修改個資</a></li>
                             @if (!($user->is_parent))

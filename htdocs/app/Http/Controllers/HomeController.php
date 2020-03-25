@@ -31,6 +31,18 @@ class HomeController extends Controller
 		if ($user->is_parent) {
 			return redirect()->route('parent');
 		} else {
+			return view('home');	
+		}
+    }
+    
+    public function gsuite(Request $request)
+    {
+		$user = Auth::user();
+		if (!isset($user->email) || empty($user->email)) return redirect()->route('profile');
+
+		if ($user->is_parent) {
+			return redirect()->route('parent');
+		} else {
 			$openldap = new LdapServiceProvider();
 			$account = $user->account();
 			$gsuite = $user->nameID();
@@ -45,7 +57,7 @@ class HomeController extends Controller
 				$create_gsuite = true;
 				$gsuite = $account;
 			}
-			return view('home', [ 'account_ready' => $account_ready, 'create_gsuite' => $create_gsuite, 'gsuite_ready' => $gsuite_ready, 'gsuite' => $gsuite ]);	
+			return view('gsuite', [ 'account_ready' => $account_ready, 'create_gsuite' => $create_gsuite, 'gsuite_ready' => $gsuite_ready, 'gsuite' => $gsuite ]);	
 		}
     }
     
