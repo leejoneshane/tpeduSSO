@@ -18,7 +18,7 @@
 		<form role="form" method="POST" action="{{ route('sync.ps.auto') }}">
 			@csrf
 			<div class="form-group">
-				<button class="btn btn-default" type="submit" name="submit" value="true">
+				<button class="btn btn-primary" type="submit" name="submit" value="true">
 					我瞭解了，請開始同步
 				</button>
 			</div>

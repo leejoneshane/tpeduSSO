@@ -37,7 +37,7 @@
 			    @endforeach
 			</select>
             <span class="input-group-btn" style="width: auto">
-            	<button class="btn btn-default" type="submit">
+            	<button class="btn btn-primary" type="submit">
             		開始同步
             	</button>
         	</span>

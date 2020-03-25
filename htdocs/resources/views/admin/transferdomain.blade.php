@@ -17,7 +17,7 @@
 	@if ($notfin)
 	<form id="sync" role="form" method="GET" action="{{ route('sync.transfer_domain') }}">
 		<span class="input-group-btn" style="width: auto">
-			<button class="btn btn-default" type="submit">
+			<button class="btn btn-primary" type="submit">
 				繼續轉移
 			</button>
 		</span>

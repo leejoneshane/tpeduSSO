@@ -19,7 +19,7 @@
 			@csrf
 			<input type="hidden" name="clsid" value="{{ $clsid }}">
 			<span class="input-group-btn" style="width: auto">
-				<button class="btn btn-default" type="submit">
+				<button class="btn btn-primary" type="submit">
 					繼續同步下一個班級：{{ $clsid }}
 				</button>
 			</span>
@@ -65,7 +65,7 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<button class="btn btn-default" type="submit" name="submit" value="true">
+				<button class="btn btn-primary" type="submit" name="submit" value="true">
 					我瞭解了，請開始同步
 				</button>
 			</div>

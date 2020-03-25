@@ -64,7 +64,7 @@
 				</div>
 			</div>
 			<span class="input-group-btn" style="width: auto">
-            	<button class="btn btn-default" type="submit">
+            	<button class="btn btn-primary" type="submit">
             		開始同步
             	</button>
         	</span>
@@ -85,7 +85,7 @@
 		<input type="hidden" name="dc" value="{{ $dc }}">
 		<input type="hidden" name="clsid" value="{{ $clsid }}">
 		<span class="input-group-btn" style="width: auto">
-			<button class="btn btn-default" type="submit">
+			<button class="btn btn-primary" type="submit">
 				繼續同步下一個班級：{{ $clsid }}
 			</button>
 		</span>
