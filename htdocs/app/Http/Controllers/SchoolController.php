@@ -82,7 +82,7 @@ class SchoolController extends Controller
 		if (!empty($filter)) {
 			$students = $openldap->findUsers($filter, ["cn", "displayName", "o", "tpClass", "tpSeat", "entryUUID", "uid", "inetUserStatus"]);
 			foreach ($students as $s) {
-				if (!iseset($s['tpSeat'])) $s['tpSeat'] = '';
+				if (!isset($s['tpSeat'])) $s['tpSeat'] = '';
 			}
 			usort($students, function ($a, $b) { return $a['tpSeat'] <=> $b['tpSeat']; });
 		}
