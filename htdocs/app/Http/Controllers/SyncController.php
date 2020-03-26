@@ -2099,7 +2099,7 @@ class SyncController extends Controller
 				$nextid = key($classes);
 				return view('admin.syncstudentinfo', [ 'sims' => $sys, 'dc' => $dc, 'clsid' => $nextid, 'result' => $result ]);	
 			} else {
-				$result = '同步完成';
+				$result[] = '同步完成';
 				return view('admin.syncstudentinfo', [ 'sims' => $sys, 'dc' => $dc, 'result' => $result ]);	
 			}
 		} else {
