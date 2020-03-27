@@ -143,7 +143,7 @@
                     	</div>
             	    	<div class="row">
             			<div class="col-md-4 text-md-right">座號</div>
-            			<div class="col-md-6">{{ $user->ldap['tpSeat'] }}</div>
+            			<div class="col-md-6">{{ !isset($user->ldap['tpSeat']) ? $user->ldap['tpSeat'] : '未輸入' }}</div>
                     	</div>
                     @endif
                     <div class="form-group row mb-0">
