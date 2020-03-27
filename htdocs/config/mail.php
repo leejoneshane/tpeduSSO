@@ -29,7 +29,7 @@ return [
     |
     */
 
-    'host' => env('MAIL_HOST', '127.0.0.1'),
+    'host' => env('MAIL_HOST', 'postfix'),
 
     /*
     |--------------------------------------------------------------------------
@@ -56,7 +56,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_USERNAME', ''),
+        'address' => env('MAIL_USERNAME', 'webmaster@ldap.tp.edu.tw'),
+        
         'name' => '臺北市教育人員單一身份驗證服務',
     ],
 
@@ -71,7 +72,7 @@ return [
     |
     */
 
-    'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+    'encryption' => env('MAIL_ENCRYPTION', ''),
 
     /*
     |--------------------------------------------------------------------------
@@ -84,9 +85,9 @@ return [
     |
     */
 
-    'username' => env('MAIL_USERNAME', ''),
+    'username' => env('MAIL_USERNAME', 'webmaster'),
 
-    'password' => env('MAIL_PASSWORD', ''),
+    'password' => env('MAIL_PASSWORD', 'mx4lx4fx2x4'),
 
     /*
     |--------------------------------------------------------------------------
@@ -99,7 +100,7 @@ return [
     |
     */
 
-    'sendmail' => '/usr/sbin/sendmail -bs',
+    'sendmail' => '/usr/sbin/sendmail -i -t',
 
     /*
     |--------------------------------------------------------------------------
