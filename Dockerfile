@@ -1,37 +1,6 @@
 FROM alpine
 
 ENV TZ Asia/Taipei
-ENV DOMAIN ldap.tp.edu.tw
-ENV APP_URL https://ldap.tp.edu.tw
-ENV APP_DEBUG false
-ENV DB_HOST mysql
-ENV DB_PORT 3306
-ENV DB_DATABASE laravel
-ENV DB_USERNAME root
-ENV DB_PASSWORD password
-ENV LDAP_HOST ldaps://ldap.tp.edu.tw
-ENV LDAP_ROOTDN cn=admin,dc=tp,dc=edu,dc=tw
-ENV LDAP_ROOTPWD password
-ENV REDIS_HOST redis
-ENV REDIS_PORT 6379
-ENV REDIS_PASSWORD null
-ENV CACHE_DRIVER redis
-ENV SESSION_DRIVER redis
-ENV MAIL_DRIVER smtp
-ENV MAIL_HOST smtp.gmail.com
-ENV MAIL_PORT 587
-ENV MAIL_USERNAME your@gmail.com
-ENV MAIL_PASSWORD password
-ENV MAIL_ENCRYPTION tls
-ENV FACEBOOK_CLIENT_ID null
-ENV FACEBOOK_CLIENT_SECRET null
-ENV FACEBOOK_REDIRECT null
-ENV GOOGLE_CLIENT_ID null
-ENV GOOGLE_CLIENT_SECRET null
-ENV GOOGLE_REDIRECT null
-ENV YAHOO_CLIENT_ID null
-ENV YAHOO_CLIENT_SECRET null
-ENV YAHOO_REDIRECT null
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY restore.sh /usr/local/bin/restore
