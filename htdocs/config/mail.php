@@ -56,7 +56,7 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_USERNAME', 'webmaster@ldap.tp.edu.tw'),
+        'address' => env('MAIL_USERNAME', ''),
         
         'name' => '臺北市教育人員單一身份驗證服務',
     ],
@@ -85,9 +85,9 @@ return [
     |
     */
 
-    'username' => env('MAIL_USERNAME', 'webmaster'),
+    'username' => env('MAIL_USERNAME', ''),
 
-    'password' => env('MAIL_PASSWORD', 'mx4lx4fx2x4'),
+    'password' => env('MAIL_PASSWORD', ''),
 
     /*
     |--------------------------------------------------------------------------
