@@ -31,6 +31,17 @@
 						@endif
 					</div>
 					</div>
+					<div class="form-group{{ $errors->has('birthday') ? ' has-error' : '' }}">
+						<label for="birthday" class="col-md-4 col-form-label text-md-right">學生的出生日期</label>
+						<div class="col-md-4">
+							<input id="birthday" type="text" class="form-control" name="birthday" pattern="[0-9]{8}" placeholder="格式如：20120101" required>
+							@if ($errors->has('birthday'))
+							<span class="help-block">
+							<strong>{{ $errors->first('birthday') }}</strong>
+							</span>
+							@endif
+							</div>
+					</div>
 					<div class="form-group{{ $errors->has('relation') ? ' has-error' : '' }}">
 						<label for="relation" class="col-md-4 col-form-label text-md-right">與學生的關係</label>
 						<div class="col-md-4">
