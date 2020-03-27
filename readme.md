@@ -50,9 +50,10 @@ docker-compose up -d
 * __MAIL_DRIVER: smtp__ 不可省略，可使用的設定值包含：smtp、sendmail、mail、log、mailgun、mandrill...等。
 * __MAIL_HOST: smtp.gmail.com__ 不可省略，外部郵件伺服器的網址名稱或IP。
 * __MAIL_PORT: 587__ 不可省略，外部郵件伺服器的寄信埠號。
-* __MAIL_USERNAME: your@gmail.com__ 不可省略，外部郵件伺服器的寄信帳號。
-* __MAIL_PASSWORD: password__ 不可省略，外部郵件伺服器的寄信密碼。
-* __MAIL_ENCRYPTION: tls__ 不可省略，外部郵件伺服器的所使用的加密協定，可能為 ssl 或 tls。
+* __MAIL_ADDRESS: your@gmail.com__ 不可省略，外部郵件伺服器的郵件地址。
+* __MAIL_USERNAME: your@gmail.com__ 不可省略，外部郵件伺服器的登入帳號。
+* __MAIL_PASSWORD: password__ 不可省略，外部郵件伺服器的登入密碼。
+* __MAIL_ENCRYPTION: tls__ 可省略，外部郵件伺服器的所使用的加密協定，可能為 ssl 或 tls。
 * __SAML_MAIL: ms.tp.edu.tw__ 不可省略，gmail 服務的領域名稱，將附加在使用者 uid 後面。
 * __PS_CLIENT_ID:__ 不可省略，國小校務行政系統介接參數。
 * __PS_CLIENT_SECRET:__ 不可省略，國小校務行政系統介接參數。
