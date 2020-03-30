@@ -41,9 +41,9 @@ class BureauController extends Controller
 
     public function listProjects(Request $request)
 	{
-		$projects = Project::all();
+		$projects = Project::latest()->get();
 		if ($projects->isEmpty()) {
-			$clients = Passport::client()->where('personal_access_client', 0)->where('password_client', 0)->get();
+			$clients = Passport::client()->where('personal_access_client', 0)->where('password_client', 0)->latest()->get();
 			if ($clients) {
 				foreach ($clients as $client) {
 					Project::create([
@@ -161,9 +161,9 @@ class BureauController extends Controller
 
     public function listClients(Request $request)
 	{
-		$projects = Project::whereNotNull('client')->get();
+		$projects = Project::whereNotNull('client')->latest()->get();
 		if ($projects->isEmpty()) {
-			$clients = Passport::client()->where('personal_access_client', 0)->where('password_client', 0)->get();
+			$clients = Passport::client()->where('personal_access_client', 0)->where('password_client', 0)->latest()->get();
 			if ($clients) {
 				foreach ($clients as $client) {
 					Project::create([

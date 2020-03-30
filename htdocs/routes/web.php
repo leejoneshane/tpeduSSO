@@ -198,7 +198,7 @@ Route::group(['prefix' => 'bureau', 'middleware' => 'auth.admin'], function () {
 	Route::post('project/store', 'BureauController@storeProject')->name('bureau.storeProject');
 	Route::get('project/update/{uuid}', 'BureauController@projectEditForm')->name('bureau.updateProject');
 	Route::post('project/remove/{uuid}', 'BureauController@removeProject')->name('bureau.removeProject');
-	Route::get('project//deny/{uuid}', 'BureauController@showDenyProjectForm');
+	Route::get('project/deny/{uuid}', 'BureauController@showDenyProjectForm');
 	Route::post('project/deny/{uuid}', 'BureauController@denyProject')->name('bureau.denyProject');
 	Route::post('project/pass/{uuid}', 'BureauController@passProject')->name('bureau.passProject');
 	Route::get('client', 'BureauController@listClients')->name('bureau.client');

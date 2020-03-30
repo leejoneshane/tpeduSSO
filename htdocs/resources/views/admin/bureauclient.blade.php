@@ -57,10 +57,7 @@ OAuth 用戶端管理
 							<span>{{ $project->getClient()->redirect }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<button type="button" class="btn btn-primary"
-								onclick="$('#form').attr('action','{{ route('bureau.updateClient', [ 'uuid' => $project->uuid ]) }}');
-										 $('#form').attr('method','GET');
-										 $('#form').submit();">編輯</button>
+							<a class="btn btn-primary" href="{{ route('bureau.updateClient', [ 'uuid' => $project->uuid ]) }}">編輯</a>
 							<button type="button" class="btn btn-info"
 								onclick="$('#form').attr('action','{{ route('bureau.toggleClient', [ 'uuid' => $project->uuid ]) }}');
 										 $('#form').submit();">{{ $project->getClient()->revoked ? '啟用' : '停用' }}</button>

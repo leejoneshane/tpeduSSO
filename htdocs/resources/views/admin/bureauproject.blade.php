@@ -54,17 +54,11 @@
 							<span>{{ $project->audit ? '核准' : '待審' }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<button type="button" class="btn btn-primary"
-								 onclick="$('#form').attr('action','{{ route('bureau.updateProject', [ 'uuid' => $project->uuid ]) }}');
-										 $('#form').attr('method', 'GET');
-										 $('#form').submit();">編輯</button>
+							<a class="btn btn-primary" href="{{ route('bureau.updateProject', [ 'uuid' => $project->uuid ]) }}">編輯</a>
 							<button type="button" class="btn btn-danger"
 							 	onclick="$('#form').attr('action','{{ route('bureau.removeProject', [ 'uuid' => $project->uuid ]) }}');
 										 $('#form').submit();">刪除</button>
-							<button type="button" class="btn btn-warning"
-								onclick="$('#form').attr('action','{{ route('bureau.denyProject', [ 'uuid' => $project->uuid ]) }}');
-										 $('#form').attr('method', 'GET');
-										 $('#form').submit();">審核</button>
+							<a class="btn btn-warning" href="{{ route('bureau.denyProject', [ 'uuid' => $project->uuid ]) }}">審核</a>
 							@if (! $project->audit)
 							<button type="button" class="btn btn-success"
 								onclick="$('#form').attr('action','{{ route('bureau.passProject', [ 'uuid' => $project->uuid ]) }}');

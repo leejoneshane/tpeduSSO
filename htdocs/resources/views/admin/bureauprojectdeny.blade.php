@@ -26,19 +26,19 @@
 			<form role="form" method="POST" action="{{ route('bureau.denyProject', [ 'uuid' => $project->uuid ]) }}">
 			@csrf
 			    <div class="form-group">
-					<label for="organization">申請單位（機關名稱）：{{ isset($project->organization) ?: '' }}</label>
+					<label for="organization">申請單位（機關名稱）：{{ isset($project->organization) ? $project->organization : '' }}</label>
 				</div>
 			    <div class="form-group">
-					<label for="applicationName">應用平臺名稱（網站服務入口）：{{ isset($project->applicationName) ?: '' }}</label>
+					<label for="applicationName">應用平臺名稱（網站服務入口）：{{ isset($project->applicationName) ? $project->applicationName : '' }}</label>
 				</div>
 			    <div class="form-group">
-					<label for="reason">應用平臺之申請背景說明：{{ isset($project->reason) ?: '' }}</label>
+					<label for="reason">應用平臺之申請背景說明：{{ isset($project->reason) ? $project->reason : '' }}</label>
 				</div>
 			    <div class="form-group">
-					<label for="website">應用平台網址：{{ isset($project->website) ?: '' }}</label>
+					<label for="website">應用平台網址：{{ isset($project->website) ? $project->website : '' }}</label>
 				</div>
 			    <div class="form-group">
-					<label for="redirect">SSO認證後授權碼重導向URL：{{ isset($project->redirect) ?: '' }}</label>
+					<label for="redirect">SSO認證後授權碼重導向URL：{{ isset($project->redirect) ? $project->redirect : '' }}</label>
 				</div>
 			    <div class="form-group">
 					<label for="redirect">特權專案：{{ isset($project->privileged) && $project->privileged ? '是' : '否' }}</label>
