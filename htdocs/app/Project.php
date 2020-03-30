@@ -16,6 +16,10 @@ class Project extends Model
 
     protected $primaryKey = 'uuid';
 
+    protected $keyType = 'string';
+
+    public $incrementing = false;
+
     protected $fillable = [
         'uuid', 'organizaton', 'applicationName', 'reason', 'website', 'redirect', 'kind', 'connName', 'connUnit', 'connEmail', 'connTel', 'memo', 'audit', 'client', 'privileged',
     ];
@@ -24,6 +28,15 @@ class Project extends Model
         'audit' => 'boolean',
         'privileged' => 'boolean',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function (Model $model) {
+            $model->setAttribute($model->getKeyName(), (string) Str::uuid());
+        });
+    }
 
     public function routeNotificationForMail($notification)
     {
@@ -36,9 +49,9 @@ class Project extends Model
         $this->notify(new ProjectNotification($this, $messages, $header));
     }
 
-    public function client() //取得 OAuth 用戶端
+    public function getClient() //取得 OAuth 用戶端
     {
-        if (empty($this->client)) return false;
+        if (empty($this->attributes['client'])) return false;
         return Passport::client()->where('id', $this->attributes['client'])->first();
     }
 
@@ -105,15 +118,15 @@ class Project extends Model
 
     public function revoke() //廢止用戶端
     {
-        $client = $this->client();
-        if ($client) $this->forceFill(['revoked' => true])->save();
+        $client = $this->getClient();
+        if ($client) $client->forceFill(['revoked' => true])->save();
         return $this;
     }
 
     public function keep() //回復用戶端
     {
-        $client = $this->client();
-        if ($client) $this->forceFill(['revoked' => false])->save();
+        $client = $this->getClient();
+        if ($client) $client->forceFill(['revoked' => false])->save();
         return $this;
     }
 

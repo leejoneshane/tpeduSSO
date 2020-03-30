@@ -4,6 +4,7 @@ namespace App;
 
 use QrCode;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
 class GQrcode extends Model
@@ -15,6 +16,10 @@ class GQrcode extends Model
 
 	protected $primaryKey = 'uuid';
 
+	protected $keyType = 'string';
+
+    public $incrementing = false;
+
     protected $fillable = [
         'uuid', 'idno', 'expired_at',
     ];
@@ -22,6 +27,15 @@ class GQrcode extends Model
     protected $casts = [
 		'expired_at' => 'datetime',
     ];
+
+	protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function (Model $model) {
+            $model->setAttribute($model->getKeyName(), (string) Str::uuid());
+        });
+    }
 
 	public function user()
 	{

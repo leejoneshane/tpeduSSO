@@ -120,7 +120,12 @@ class User extends Authenticatable implements MustVerifyEmail
 		}
 		if ($this->hasVerifiedEmail()) $this->notify(new ResetPasswordNotification($token, $accounts));
     }
-    
+	
+	public function sendEmailVerificationNotification()
+	{
+		if (!empty($this->attributes['email'])) $this->notify(new VerifyEmail);
+	}
+
     public function resetLdapPassword($value)
     {
 		if ($this->attributes['is_parent']) return;
@@ -192,10 +197,5 @@ class User extends Authenticatable implements MustVerifyEmail
 		if ($account && preg_match("/^([a-z]+)[0-9]+/", $account, $matches) && $openldap->checkSchool($matches[1])) return true;
 		return false;
     }
-
-	public function sendEmailVerificationNotification()
-    {
-        $this->notify(new VerifyEmail);
-	}
 	
 }

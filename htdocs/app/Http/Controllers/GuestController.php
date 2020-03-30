@@ -47,7 +47,7 @@ class GuestController extends Controller
 				'connEmail' => $request->get('connEmail') ?: '',
 				'connTel' => $request->get('connTel'),
 			])->save();
-			$client = $project->client();
+			$client = $project->getClient();
 			if ($client) {
 				$client->forceFill([
 					'name' => $request->get('applicationName'),
@@ -56,7 +56,6 @@ class GuestController extends Controller
 			}
 		} else {
 			$project = Project::create([
-				'uuid' => (string) Str::uuid(),
 				'organization' => $request->get('organization'),
 				'applicationName' => $request->get('applicationName'),
 				'reason' => $request->get('reason'),

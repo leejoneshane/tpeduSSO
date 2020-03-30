@@ -47,7 +47,6 @@ class BureauController extends Controller
 			if ($clients) {
 				foreach ($clients as $client) {
 					Project::create([
-						'uuid' => (string) Str::uuid(),
 						'applicationName' => $client->name,
 						'redirect' => $client->redirect,
 						'audit' => true,
@@ -94,7 +93,7 @@ class BureauController extends Controller
 				'connTel' => $request->get('connTel'),
 				'memo' => $request->get('memo'),
 			])->save();
-			$client = $project->client();
+			$client = $project->getClient();
 			if ($client) {
 				$client->forceFill([
 					'name' => $request->get('applicationName'),
@@ -103,7 +102,6 @@ class BureauController extends Controller
 			}
 		} else {
 			Project::create([
-				'uuid' => (string) Str::uuid(),
 				'organization' => $request->get('organization'),
 				'applicationName' => $request->get('applicationName'),
 				'reason' => $request->get('reason'),
@@ -169,7 +167,6 @@ class BureauController extends Controller
 			if ($clients) {
 				foreach ($clients as $client) {
 					Project::create([
-						'id' => (string) Str::uuid(),
 						'applicationName' => $client->name,
 						'redirect' => $client->redirect,
 						'audit' => true,
@@ -185,14 +182,14 @@ class BureauController extends Controller
     public function updateClient(Request $request, $uuid)
 	{
 		$project = Project::find($uuid);
-		if ($project) $client = $project->client();
+		if ($project) $client = $project->getClient();
 		return view('admin.bureauclientedit', [ 'project' => $project, 'client' => $client ]);
 	}
 
     public function storeClient(Request $request, $uuid)
 	{
 		$project = Project::find($uuid);
-		if ($project) $client = $project->client();
+		if ($project) $client = $project->getClient();
 		$validatedData = $request->validate([
             'applicationName' => 'required|string|max:150',
             'redirect' => 'required|url',
@@ -212,7 +209,7 @@ class BureauController extends Controller
 	{
 		$project = Project::find($uuid);
 		if ($project) {
-			$client = $project->client();
+			$client = $project->getClient();
 			if ($client->revoked)
 				$client->revoked = false;
 			else

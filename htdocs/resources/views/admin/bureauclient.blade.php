@@ -38,7 +38,6 @@ OAuth 用戶端管理
 				<tbody>
 					@foreach ($projects as $project)
 					<tr>
-		    			@csrf
 						<td style="vertical-align: inherit;">
 							<span>{{ $project->organization }}</span>
 						</td>
@@ -49,13 +48,13 @@ OAuth 用戶端管理
 							<span>{{ $project->website }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<span>{{ $project->client()->id }}</span>
+							<span>{{ $project->getClient()->id }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<span>{{ $project->client()->secret }}</span>
+							<span>{{ $project->getClient()->secret }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
-							<span>{{ $project->client()->redirect }}</span>
+							<span>{{ $project->getClient()->redirect }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
 							<button type="button" class="btn btn-primary"
@@ -64,7 +63,7 @@ OAuth 用戶端管理
 										 $('#form').submit();">編輯</button>
 							<button type="button" class="btn btn-info"
 								onclick="$('#form').attr('action','{{ route('bureau.toggleClient', [ 'uuid' => $project->uuid ]) }}');
-										 $('#form').submit();">{{ $project->client()->revoked ? '啟用' : '停用' }}</button>
+										 $('#form').submit();">{{ $project->getClient()->revoked ? '啟用' : '停用' }}</button>
 				   		</td>
 					</tr>
 					@endforeach

@@ -65,7 +65,7 @@
 								onclick="$('#form').attr('action','{{ route('bureau.denyProject', [ 'uuid' => $project->uuid ]) }}');
 										 $('#form').attr('method', 'GET');
 										 $('#form').submit();">審核</button>
-							@if (! $project->audit))
+							@if (! $project->audit)
 							<button type="button" class="btn btn-success"
 								onclick="$('#form').attr('action','{{ route('bureau.passProject', [ 'uuid' => $project->uuid ]) }}');
 										 $('#form').submit();">核准</button>

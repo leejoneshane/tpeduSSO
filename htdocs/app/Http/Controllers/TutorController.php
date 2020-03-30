@@ -214,7 +214,6 @@ class TutorController extends Controller
 		$qrcode = GQrcode::where('idno', $idno)->first();
 		if ($qrcode) $qrcode->delete();
 		GQrcode::create([
-			'uuid' => (string) Str::uuid(),
 			'idno' => $idno,
 			'expired_at' => Carbon::today()->addDays(Config::get('app.QRCodeExpireDays')),
 		]);
