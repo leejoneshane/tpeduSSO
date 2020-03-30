@@ -17,7 +17,7 @@ OAuth 用戶端管理
 		{{ session('success') }}
 	    </div>
 	@endif
-	<div class="col-sm-8">
+	<div class="col-sm-16">
 		<div class="panel panel-default">	  
 		<div class="panel-heading">
 			<h4>OAuth 用戶端一覽表</h4>
