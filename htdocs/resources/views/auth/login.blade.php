@@ -68,6 +68,7 @@
             </div>
         </div>
     </div>
+{{--
     <div class="col-sm-4 col-sm-offset-4 form-box">
 	    <div class="form-top"></div>
         <div class="form-bottom">
@@ -76,6 +77,7 @@
             </form>
         </div>
     </div>
+--}}
 </div>
 <div class="row">					  
     <div class="col-sm-6 col-sm-offset-3 credits">        
