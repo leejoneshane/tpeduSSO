@@ -129,7 +129,7 @@
 					<textarea rows="3" cols="40" class="form-control" name="memo">{{ isset($project->memo) ? $project->memo : '' }}</textarea>
 				</div>
 			    <div class="form-group">
-					<button type="submit" class="btn btn-success">新增</button>
+					<button type="submit" class="btn btn-success">{{ isset($project) ? '儲存' : '新增' }}</button>
 				</div>
 			</form>
 		</div>

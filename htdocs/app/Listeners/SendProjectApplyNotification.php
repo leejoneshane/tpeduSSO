@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Events\ProjectApply;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Notifications\ProjectApplyNotification;
 
 class SendProjectApplyNotification
 {

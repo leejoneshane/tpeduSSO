@@ -68,7 +68,7 @@ class Project extends Model
                 $this->attributes['client'] = $client->id;
                 $this->keep()->save();
             } else {
-                $client = Passport::client()->forceFill([
+                Passport::client()->forceFill([
                     'user_id' => Auth::user()->getKey(),
                     'name' => $this->attributes['applicationName'],
                     'secret' => Str::random(40),
@@ -77,6 +77,7 @@ class Project extends Model
                     'password_client' => 0,
                     'revoked' => false,
                 ])->save();
+                $client = $this->findClient();
                 $this->attributes['client'] = $client->id;
                 $this->save();
             }

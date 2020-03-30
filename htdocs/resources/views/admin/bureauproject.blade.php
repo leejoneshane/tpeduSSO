@@ -58,8 +58,8 @@
 							<button type="button" class="btn btn-danger"
 							 	onclick="$('#form').attr('action','{{ route('bureau.removeProject', [ 'uuid' => $project->uuid ]) }}');
 										 $('#form').submit();">刪除</button>
-							<a class="btn btn-warning" href="{{ route('bureau.denyProject', [ 'uuid' => $project->uuid ]) }}">審核</a>
 							@if (! $project->audit)
+							<a class="btn btn-warning" href="{{ route('bureau.denyProject', [ 'uuid' => $project->uuid ]) }}">駁回</a>
 							<button type="button" class="btn btn-success"
 								onclick="$('#form').attr('action','{{ route('bureau.passProject', [ 'uuid' => $project->uuid ]) }}');
 										 $('#form').submit();">核准</button>

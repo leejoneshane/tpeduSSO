@@ -2,9 +2,10 @@
 
 namespace App\Listeners;
 
-use App\Events\ProjectAllowed;
+use App\Events\ClientChange;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Notifications\ClientChangeNotification;
 
 class SendClientChangeNotification
 {
@@ -18,7 +19,7 @@ class SendClientChangeNotification
         //
     }
 
-    public function handle(ProjectAllowed $event)
+    public function handle(ClientChange $event)
     {
         $project = $event->project;
         if (!empty($this->connEmail)) {

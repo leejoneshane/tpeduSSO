@@ -26,9 +26,7 @@ OAuth 用戶端管理
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th>申請單位</th>
 						<th>應用平台名稱</th>
-						<th>應用平台網址</th>
 						<th>用戶端代號</th>
 						<th>用戶端密鑰</th>
 						<th>授權碼回傳網址</th>
@@ -39,13 +37,7 @@ OAuth 用戶端管理
 					@foreach ($projects as $project)
 					<tr>
 						<td style="vertical-align: inherit;">
-							<span>{{ $project->organization }}</span>
-						</td>
-						<td style="vertical-align: inherit;">
 							<span>{{ $project->applicationName }}</span>
-						</td>
-						<td style="vertical-align: inherit;">
-							<span>{{ $project->website }}</span>
 						</td>
 						<td style="vertical-align: inherit;">
 							<span>{{ $project->getClient()->id }}</span>

@@ -23,7 +23,7 @@
 			<h4>編輯 OAuth 用戶端</h4>
 		</div>
 		<div class="panel-body">
-			<form role="form" method="POST" action="{{ route('bureau.updateClient') }}">
+			<form role="form" method="POST" action="{{ route('bureau.updateClient', [ 'uuid' => $project->uuid ]) }}">
 			@csrf
 				<input type="hidden" name="id" value="{{ $project->uuid }}">
 			    <div class="form-group{{ $errors->has('applicationName') ? ' has-error' : '' }}">
