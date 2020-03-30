@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Events\ProjectAllowed;
+use App\Events\ProjectApply;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -18,7 +18,7 @@ class SendProjectApplyNotification
         //
     }
 
-    public function handle(ProjectAllowed $event)
+    public function handle(ProjectApply $event)
     {
         $project = $event->project;
         $users = User::where('is_admin', 1)->get();
