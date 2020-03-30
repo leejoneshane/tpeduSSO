@@ -15,7 +15,7 @@ class CreateProjectsTable extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
-            $table->string('organizaton',150)->nullable();
+            $table->string('organization',150)->nullable();
             $table->string('applicationName',150);
             $table->string('reason',255)->nullable();
             $table->string('website',255)->nullable();

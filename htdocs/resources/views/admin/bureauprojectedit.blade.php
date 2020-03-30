@@ -29,7 +29,7 @@
 				<input type="hidden" name="uuid" value="{{ $project->uuid }}">
 			@endif
 			    <div class="form-group{{ $errors->has('organization') ? ' has-error' : '' }}">
-					<label for="organization">申請單位（機關名稱）</label>
+				<label for="organization">申請單位（機關名稱）</label>
 				<input type="text" class="form-control" name="organization" value="{{ isset($project->organization) ? $project->organization : '' }}" required>
 					@if ($errors->has('organization'))
 						<p class="help-block">
