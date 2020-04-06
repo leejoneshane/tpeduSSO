@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('page_heading')
-代理授權金鑰管理
+全校授權金鑰管理
 @endsection
 
 @section('section')
@@ -22,7 +22,7 @@
             <div class="card card-default" style="margin-top: 20px">
                 <div class="card-header">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <h4>代理授權金鑰管理</h4>
+                        <h4>全校授權金鑰管理</h4>
                     </div>
                 </div>
                 <div class="card-body">

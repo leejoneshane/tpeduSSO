@@ -102,7 +102,7 @@
                             <a href="#"><i class="fa fa-key fa-fw"></i> 授權管理</a>
                             <ul class="nav nav-second-level">
                                 <li {{ (Request::is('/school/tokens') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.tokens', [ 'dc' => $dc ]) }}">瀏覽代理授權</a>
+                                    <a href="{{ route('school.tokens', [ 'dc' => $dc ]) }}">瀏覽全校授權</a>
                                 </li>
                                 <li {{ (Request::is('/school/tokens/new') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.createToken', [ 'dc' => $dc ]) }}">新增授權金鑰</a>

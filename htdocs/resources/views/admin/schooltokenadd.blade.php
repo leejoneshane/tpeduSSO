@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('page_heading')
-建立代理授權金鑰
+建立全校授權金鑰
 @endsection
 
 @section('section')
@@ -19,7 +19,7 @@
 	@endif
     <div class="col-sm-4 offset-sm-4">
             <div class="card card-default" style="margin-top: 20px">
-                <div class="card-header">建立代理授權金鑰</div>
+                <div class="card-header">建立全校授權金鑰</div>
                 <div class="card-body">
                     <form id="form" role="form" action="{{ route('school.createToken', [ 'dc' => $dc ]) }}" method="POST">
                         @csrf

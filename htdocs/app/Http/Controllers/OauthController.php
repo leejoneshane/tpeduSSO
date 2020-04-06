@@ -14,7 +14,7 @@ class OauthController extends Controller
     {
         $user = Auth::user();
         if ($user->is_parent) return redirect()->route('parent');
-        $tokens = Passport::token()->where('user_id', $user->getKey())->where('revoked', 0)->where('expires_at', '>', Carbon::now())->get();
+        $tokens = Passport::token()->where('user_id', $user->getKey())->where('revoked', 0)->where('expires_at', '>', Carbon::now())->latest('expires_at')->get();
         $mytokens =  $tokens->load('client')->filter(function ($token) {
             return ! $token->client->firstParty();
         })->values();
