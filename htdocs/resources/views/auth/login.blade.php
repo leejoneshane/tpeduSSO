@@ -55,7 +55,7 @@
                     </label>
             	    <a class="btn-link pull-right" href="{{ route('password.request') }}">忘記帳號、密碼？</a>
                 </div>
-                <button type="submit" index="0" role="button" class="btn btn-warning">登入</button>
+                <button type="submit" index="0" role="button" class="btn btn-warning" onclick="$(this).attr('disabled', true);">登入</button>
             </form>
             <div class="row">
                 <div class="col-sm-12 social-login-buttons" style="text-align:center;">
