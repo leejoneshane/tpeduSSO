@@ -1,6 +1,6 @@
 #!/bin/sh
 set -euo pipefail
-if ! [ -d /var/www/localhost/htdocs/vendor ]; then
+if ! [ -f /var/www/localhost/htdocs/vendor/autoload.php ]; then
   composer update
   chown -R apache:apache /var/www/localhost/htdocs
 fi
