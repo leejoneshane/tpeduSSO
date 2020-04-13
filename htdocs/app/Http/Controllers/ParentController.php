@@ -77,7 +77,7 @@ class ParentController extends Controller
 		$role = $data['employeeType'];
 		if (!isset($data['employeeNumber'])) return back()->with("error","查不到貴子弟的學號，請向註冊組反應：校務行政系統未登載學號！");
 		if ($role != '學生') return back()->with("error","該身份證字號不屬於貴子弟所有！");
-		if ($birthday != $data['birthDate']) return back()->with("error","貴子弟的出生日期不正確！");
+		if ($birthday != substr($data['birthDate'], 0, 8)) return back()->with("error","貴子弟的出生日期不正確！");
 		$stdno = $data['employeeNumber'];
 		$link = PSLink::where('parent_idno', $user->idno)->where('student_idno', $idno)->first();
 		if (is_null($link)) {
