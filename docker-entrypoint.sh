@@ -1,5 +1,10 @@
 #!/bin/sh
 set -euo pipefail
+
+if ! [ -f /var/www/localhost/htdocs/artisan ]; then
+  restore
+fi
+
 if ! [ -f /var/www/localhost/htdocs/vendor/autoload.php ]; then
   composer update
   chown -R apache:apache /var/www/localhost/htdocs
