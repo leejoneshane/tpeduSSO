@@ -2099,7 +2099,7 @@ class SchoolController extends Controller
 			'st' => 'required|string',
 			'fax' => 'nullable|string',
 			'telephoneNumber' => 'required|string',
-			'postalCode' => 'required|digits_between:3,5',
+			'postalCode' => 'required|digits_between:3,6',
 			'street' => 'required|string',
 			'postOfficeBox' => 'required|digits:3',
 			'wWWHomePage' => 'nullable|url',
