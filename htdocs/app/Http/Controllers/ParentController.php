@@ -97,8 +97,10 @@ class ParentController extends Controller
 			if (!empty($parents)) {
 				foreach ($parents as $p) {
 					if ($p->name == $user->name) {
-						if ($user->mobile && empty($p->telephone)) 
-							$reason[] = '學籍資料缺家長手機號碼';
+						if (empty($user->mobile))
+							$reason[] = '家長未填寫手機號碼';
+						elseif (empty($p->telephone))
+							$reason[] = '學籍資料查無家長手機號碼';
 						elseif ($user->mobile != $p->telephone)
 							$reason[] = '手機號碼不吻合';
 						if ($p->relation == $relation) $reason[] = '親子關係不吻合';
