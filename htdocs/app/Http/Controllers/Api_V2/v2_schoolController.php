@@ -132,12 +132,13 @@ class v2_schoolController extends Controller
 
     public function allTeachersByUnit(Request $request, $dc, $ou_id)
     {
-		$json = array();
-		$openldap = new LdapServiceProvider();
-		$teachers = $openldap->findUsers("(&(o=$dc)(ou=*$ou_id)(inetUserStatus=active))", "entryUUID");
-		foreach ($teachers as $teacher) {
+	$json = array();
+	$openldap = new LdapServiceProvider();
+	$teachers = $openldap->findUsers("(&(o=$dc)(ou=*$ou_id)(inetUserStatus=active))", "entryUUID");
+	if (is_array($teachers))
+	    foreach ($teachers as $teacher) {
 	    	$json[] = $teacher['entryUUID'];
-		}
+	    }
         if ($json)
             return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
         else
