@@ -69,7 +69,7 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        User::create([
             'idno' => $data['idno'],
             'uuid' => (string) Str::uuid(),
             'name' => $data['name'],
@@ -78,5 +78,8 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
             'is_parent' => 1,
         ]);
+        $user = User::where('idno', $data['idno'])->first();
+        $user->sendEmailVerificationNotification();
+        return $user;
     }
 }

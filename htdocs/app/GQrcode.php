@@ -44,7 +44,7 @@ class GQrcode extends Model
 
 	public function generate()
 	{
-		return QrCode::size(100)->generate(env('APP_URL').'/qrcode/'.$this->attributes['uuid']);
+		return QrCode::size(100)->generate(config('app.url').'/parent/qrcode/'.$this->attributes['uuid']);
 	}
 
 	public function expired()
