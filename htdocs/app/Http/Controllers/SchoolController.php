@@ -10,6 +10,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Laravel\Passport\Passport;
 use App\User;
+use App\PSLink;
+use App\GQrcode;
 use App\Providers\LdapServiceProvider;
 use App\Rules\idno;
 use App\Rules\idnoAvail;
