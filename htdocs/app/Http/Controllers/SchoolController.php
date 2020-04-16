@@ -6,6 +6,7 @@ use Log;
 use Config;
 use Validator;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Laravel\Passport\Passport;
 use App\User;
@@ -2346,6 +2347,131 @@ class SchoolController extends Controller
         $token = Auth::user()->createToken($request->get('name'), $request->get('scopes') ?: []);
         return view('admin.schooltokenshow', [ 'dc' => $dc, 'token' => $token ]);
     }
+
+	public function schoolLinkForm(Request $request, $dc)
+	{
+		$openldap = new LdapServiceProvider();
+		$data = $openldap->getOus($dc, '教學班級');
+		$ous = array();
+		if ($data) {
+			$my_ou = $data[0]->ou;
+			foreach ($data as $ou) {
+				if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
+			}
+		}
+		$my_field = $request->get('field');
+		if (empty($my_field) && isset($my_ou)) $my_field = $my_ou;
+		$request->session()->put('field', $my_field);
+		$school = $openldap->getOrgEntry($dc);
+		$data = $openldap->getOrgData($school, "tpSims");
+		$sims = '';
+		if (array_key_exists('tpSims', $data)) $sims = $data['tpSims'];
+		$links = PSLink::byClass($dc, $my_field);
+		$records = array();
+		if ($links) {
+			foreach ($links as $l) {
+				$link_id = $l->id;
+				$parent = $l->parent();
+				$student_idno = $l->student_idno;
+				$entry = $openldap->getUserEntry($student_idno);
+				$data = $openldap->getUserData($entry);
+				$k = array();
+				$k['parent'] = $parent->name;
+				$k['email'] = $parent->email;
+				$k['mobile'] = $parent->mobile;
+				$k['student'] = $data['displayName'];
+				$k['seat'] = $data['tpSeat'];
+				$records[$link_id] = $k;
+			}	
+		}
+		return view('admin.schoolListLink', [ 'dc' => $dc, 'sims' => $sims, 'my_field' => $my_field, 'classes' => $ous, 'links' => $links, 'records' => $records ]);
+	}
+
+	public function schoolQrcodeForm(Request $request, $dc)
+    {
+		$openldap = new LdapServiceProvider();
+		$data = $openldap->getOus($dc, '教學班級');
+		$ous = array();
+		if ($data) {
+			$my_ou = $data[0]->ou;
+			foreach ($data as $ou) {
+				if (!array_key_exists($ou->ou, $ous)) $ous[$ou->ou] = $ou->description;
+			}
+		}
+		$my_field = $request->get('field');
+		if (empty($my_field) && isset($my_ou)) $my_field = $my_ou;
+		$request->session()->put('field', $my_field);
+		$school = $openldap->getOrgEntry($dc);
+		$data = $openldap->getOrgData($school, "tpSims");
+		$sims = '';
+		if (array_key_exists('tpSims', $data)) $sims = $data['tpSims'];
+		$filter = "(&(o=$dc)(tpClass=$my_field)(employeeType=學生)(!(inetUserStatus=deleted)))";
+		$students = $openldap->findUsers($filter, ["cn", "displayName", "o", "tpClass", "tpSeat", "entryUUID", "uid", "inetUserStatus"]);
+		usort($students, function ($a, $b) { return $a['tpSeat'] <=> $b['tpSeat']; });
+		$cnt = 0;
+		foreach ($students as $k => $st) {
+			$qrcode = GQrcode::where('idno', $st['cn'])->first();
+			if ($qrcode) {
+				$students[$k]['QRCODE'] = $qrcode->generate();
+				$students[$k]['expired'] = $qrcode->expired_at;
+				$cnt ++;
+			}
+		}
+		if ($cnt == 0) {
+			foreach ($students as $k => $st) {
+				GQrcode::create([
+					'idno' => $st['cn'],
+					'expired_at' => Carbon::today()->addDays(Config::get('app.QRCodeExpireDays')),
+				]);
+				$qrcode = GQrcode::where('idno', $st->idno)->first();
+				$students[$k]['QRCODE'] = $qrcode->generate();
+				$students[$k]['expired'] = $qrcode->expired_at;
+			}
+		}
+		return view('admin.schoolListLink', [ 'dc' => $dc, 'sims' => $sims, 'my_field' => $my_field, 'classes' => $ous, 'students' => $students ]);
+	}
+
+	public function denyLink(Request $request, $id)
+	{
+		$link = PSLink::find($id);
+		$link->verified = 0;
+		$link->verified_idno = Auth::user()->idno;
+		$link->verified_time = Carbon::now();
+		$link->save();
+		return back()->with("success","已經解除指定的親子連結！");
+	}
+
+	public function verifyLink(Request $request, $id)
+	{
+		$link = PSLink::find($id);
+		$link->verified = 1;
+		$link->verified_idno = Auth::user()->idno;
+		$link->verified_time = Carbon::now();
+		$link->save();
+		return back()->with("success","已經將指定的親子連結設為有效！");
+	}
+
+	public function qrcodeGenerate(Request $request, $uuid)
+    {
+		$openldap = new LdapServiceProvider();
+		$idno = $openldap->getUserIDNO($uuid);
+		$qrcode = GQrcode::where('idno', $idno)->first();
+		if ($qrcode) $qrcode->delete();
+		GQrcode::create([
+			'idno' => $idno,
+			'expired_at' => Carbon::today()->addDays(Config::get('app.QRCodeExpireDays')),
+		]);
+		return back()->with("success","已經重新產生 QRCODE！");
+	}
+
+	public function qrcodeRemove(Request $request, $uuid)
+    {
+		$openldap = new LdapServiceProvider();
+		$idno = $openldap->getUserIDNO($uuid);
+		$qrcode = GQrcode::where('idno', $idno)->first();
+		if ($qrcode) $qrcode->delete();
+		return back()->with("success","已經移除 QRCODE！");
+	}
 
 	private function chomp_address($address)
 	{

@@ -18,6 +18,20 @@
 	    </div>
 	@endif
 	<div class="col-sm-12">
+    	<div class="input-group custom-search-form">
+			<select id="field" name="field" class="form-control" style="width: auto" onchange="location='{{ url()->current() }}?field=' + $(this).val();">
+				@foreach ($classes as $ou => $desc)
+			    	<option value="{{ $ou }}" {{ $my_field == $ou ? 'selected' : '' }}>{{ $desc }}</option>
+			    @endforeach
+			</select>
+            <span class="input-group-btn" style="width: auto">
+            	<button class="btn btn-default" type="button">
+            		<i class="fa fa-search"></i>
+            	</button>
+        	</span>
+    	</div>
+	</div>
+	<div class="col-sm-12">
 		<div class="panel panel-default">
 		<div class="panel-heading">
 			<h4>
@@ -69,11 +83,11 @@
 						</td>
 						<td style="vertical-align: inherit;">
 							<button type="button" class="btn btn-primary"
-							 	onclick="$('#form').attr('action','{{ route('tutor.generateQrcode', [ 'uuid' => $student['entryUUID'] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('school.generateQrcode', [ 'uuid' => $student['entryUUID'] ]) }}');
 										 $('#form').submit();">重新產生</button>
 							@if (isset($student['QRCODE']))
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#form').attr('action','{{ route('tutor.removeQrcode', [ 'uuid' => $student['entryUUID'] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('school.removeQrcode', [ 'uuid' => $student['entryUUID'] ]) }}');
 										 $('#form').submit();">刪除 QRCODE</button>
 							@endif
 						</td>
