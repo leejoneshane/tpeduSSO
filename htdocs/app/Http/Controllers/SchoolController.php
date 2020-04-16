@@ -2479,29 +2479,29 @@ class SchoolController extends Controller
 
 	private function convert_tel($tel)
 	{
-  	$ret='';
+  		$ret='';
 		for ($i=0; $i<strlen($tel); $i++) {
-  		$charter=substr($tel,$i,1);
+  			$charter=substr($tel,$i,1);
 			$asc=ord($charter);
-   		if ($asc>=48 && $asc<=57) $ret.=$charter;
-  	}
-  	if (substr($ret,0,3)=="886") {
-   		$area = substr($ret,3,1);
-   		if ($area=="8" || $area=="9") {
+   			if ($asc>=48 && $asc<=57) $ret.=$charter;
+  		}
+  		if (substr($ret,0,3)=="886") {
+   			$area = substr($ret,3,1);
+   			if ($area=="8" || $area=="9") {
 				$ret="(0".substr($ret,3,3).")".substr($ret,6);
 			} else {
-    		$ret = "(0".$area.")".substr($ret,4);
-    	}
-  	}
-  	if (substr($ret,0,1)=="0") {
-    	$area=substr($ret,0,2);
-    	if ($area=="08" || $area=="09") {
-  			$ret="(".substr($ret,0,4).")".substr($ret,4);
-    	} else {
-    		$ret="(".substr($ret,0,2).")".substr($ret,2);
-    	}
-  	} elseif (substr($ret,0,1)!="(") {
-  		$ret="(02)".$ret;
+    			$ret = "(0".$area.")".substr($ret,4);
+    		}
+  		}
+  		if (substr($ret,0,1)=="0") {
+    		$area=substr($ret,0,2);
+    		if ($area=="08" || $area=="09") {
+  				$ret="(".substr($ret,0,4).")".substr($ret,4);
+    		} else {
+    			$ret="(".substr($ret,0,2).")".substr($ret,2);
+    		}
+  		} elseif (substr($ret,0,1)!="(") {
+  			$ret="(02)".$ret;
  		}
 		return $ret;
 	}
