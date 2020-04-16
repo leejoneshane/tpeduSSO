@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\User;
+use App\PSLink;
 
 class v2_schoolController extends Controller
 {
@@ -292,6 +293,30 @@ class v2_schoolController extends Controller
             return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
         else
             return response()->json([ 'error' => '該班級查無學生'], 404, array(JSON_UNESCAPED_UNICODE));
+    }
+
+    public function allParentsByClass(Request $request, $dc, $class_id)
+    {
+		$json = array();
+		$openldap = new LdapServiceProvider();
+		$students = $openldap->findUsers("(&(o=$dc)(tpClass=$class_id)(inetUserStatus=active))", "entryUUID");
+		foreach ($students as $student) {
+            $student_idno = $student['cn'];
+            $kids = PSLink::where('student_idno', $student_idno)->where('verified', 1)->get();
+            foreach ($kids as $kid) {
+                $idno = $kid->parent_idno;
+                $uuid = $openldap->getUserUUID($idno);
+                if (!$uuid) {
+                    $user = User::where('idno', $idno)->first();
+                    if ($user) $uuid = $user->uuid;
+                }
+                if ($uuid) $json[] = $uuid;
+            }
+		}
+        if ($json)
+            return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
+        else
+            return response()->json([ 'error' => '該班級查無已驗證的家長'], 404, array(JSON_UNESCAPED_UNICODE));
     }
 
     public function allSubjectsByClass(Request $request, $dc, $class_id)
@@ -605,20 +630,57 @@ class v2_schoolController extends Controller
             return response()->json(["error" => "你未被權限管理此機關學校"], 403, array(JSON_UNESCAPED_UNICODE));
         }
 
-        $entry = $openldap->getUserEntry($uuid);
-        $person = $openldap->getUserData($entry);
-        $orgs = array();
-        if (!array_key_exists('o',$person)) {
-            return response()->json([ 'error' => '找不到指定的人員'], 404, array(JSON_UNESCAPED_UNICODE));
-        } else {
-            if (is_array($person['o'])) {
-                $orgs = $person['o'];
+        $user = User::where('uuid', $uuid)->first();
+		if ($user->is_parent) {
+			$json = array();
+            $json['cn'] = $user->idno;
+            $json['employeeType'] = '家長';
+			$json['entryUUID'] = $user->uuid;
+			$json['displayName'] = $user->name;
+			$json['mail'] = $user->email;
+			$json['mobile'] = $user->mobile;
+			$kids = PSLink::where('parent_idno', $user->idno)->where('verified', 1)->get();
+			foreach ($kids as $kid) {
+				$idno = $kid->student_idno;
+				$uuid = $openldap->getUserUUID($idno);
+				if ($uuid) $json['child'][] = $uuid;
+			}
+		} else {
+            $entry = $openldap->getUserEntry($uuid);
+	    	if (!$entry) return response()->json([ 'error' => '找不到指定的人員'], 404);
+		    $person = $openldap->getUserData($entry);
+            if (!$json) return response()->json([ 'error' => '找不到指定的人員'], 404);
+            $orgs = array();
+            if (!array_key_exists('o',$person)) {
+                return response()->json([ 'error' => '找不到指定的人員'], 404, array(JSON_UNESCAPED_UNICODE));
             } else {
-                $orgs[] = $person['o'];
+                if (is_array($person['o'])) {
+                    $orgs = $person['o'];
+                } else {
+                    $orgs[] = $person['o'];
+                }
+                if (!in_array($dc, $orgs)) return response()->json([ 'error' => '找不到指定的人員'], 404, array(JSON_UNESCAPED_UNICODE));
             }
-            if (!in_array($dc, $orgs)) return response()->json([ 'error' => '找不到指定的人員'], 404, array(JSON_UNESCAPED_UNICODE));
+            if ($person['employeeType'] == '學生') {
+				$kids = PSLink::where('student_idno', $json['cn'])->where('verified', 1)->get();
+				foreach ($kids as $kid) {
+					$idno = $kid->parent_idno;
+					$uuid = $openldap->getUserUUID($idno);
+					if (!$uuid) {
+						$user = User::where('idno', $idno)->first();
+						if ($user) $uuid = $user->uuid;
+					}
+					if ($uuid) $person['parent'][] = $uuid;
+				}
+            } else {
+				$kids = PSLink::where('parent_idno', $json['cn'])->where('verified', 1)->get();
+				foreach ($kids as $kid) {
+					$idno = $kid->student_idno;
+					$uuid = $openldap->getUserUUID($idno);
+					if ($uuid) $person['child'][] = $uuid;
+				}
+            }
         }
-
         return response()->json($person, 200, array(JSON_UNESCAPED_UNICODE));
     }
 
