@@ -101,8 +101,8 @@
                         <li class="py-2">
                             <a href="#"><i class="fa fa-child fa-fw"></i> 親子連結管理</a>
                             <ul class="nav nav-second-level">
-                                <li {{ (Request::is('/school/pslink') ? 'class="active"' : '') }}>
-                                    <a href="{{ route('school.pslink', [ 'dc' => $dc ]) }}">審核親子連結</a>
+                                <li {{ (Request::is('/school/link') ? 'class="active"' : '') }}>
+                                    <a href="{{ route('school.link', [ 'dc' => $dc ]) }}">審核親子連結</a>
                                 </li>
                                 <li {{ (Request::is('/school/qrcode') ? 'class="active"' : '') }}>
                                     <a href="{{ route('school.qrcode', [ 'dc' => $dc ]) }}">學生 QRCODE 管理</a>
