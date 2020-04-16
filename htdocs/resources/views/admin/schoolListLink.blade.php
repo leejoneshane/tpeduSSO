@@ -1,4 +1,4 @@
-@extends('layouts.tutorboard')
+@extends('layouts.dashboard')
 
 @section('page_heading')
 審核親子連結
@@ -19,7 +19,7 @@
 	@endif
 	<div class="col-sm-12">
     	<div class="input-group custom-search-form">
-			<select id="field" name="field" class="form-control" style="width: auto" onchange="location='{{ url()->current() }}?field=' + $(this).val();">
+			<select id="field" name="field" class="form-control" style="flex: none; width: auto" onchange="location='{{ url()->current() }}?field=' + $(this).val();">
 				@foreach ($classes as $ou => $desc)
 			    	<option value="{{ $ou }}" {{ $my_field == $ou ? 'selected' : '' }}>{{ $desc }}</option>
 			    @endforeach
