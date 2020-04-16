@@ -72,11 +72,11 @@
 						<td style="vertical-align: inherit;">
 							@if ($l->verified)
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#form').attr('action','{{ route('tutor.denyLink', [ 'id' => $l->id ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('tutor.denyLink', [ 'dc' => $dc, 'id' => $l->id ]) }}');
 										 $('#form').submit();">拒絕</button>
 							@else
 							<button type="button" class="btn btn-success"
-							 	onclick="$('#form').attr('action','{{ route('tutor.verifyLink', [ 'id' => $l->id ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('tutor.verifyLink', [ 'dc' => $dc, 'id' => $l->id ]) }}');
 										 $('#form').submit();">同意</button>
 							@endif
 						</td>

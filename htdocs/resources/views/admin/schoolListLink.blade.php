@@ -84,11 +84,11 @@
 						<td style="vertical-align: inherit;">
 							@if ($l->verified)
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#form').attr('action','{{ route('school.denyLink', [ 'id' => $l->id ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('school.denyLink', [ 'dc' => $dc, 'id' => $l->id ]) }}');
 										 $('#form').submit();">拒絕</button>
 							@else
 							<button type="button" class="btn btn-success"
-							 	onclick="$('#form').attr('action','{{ route('school.verifyLink', [ 'id' => $l->id ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('school.verifyLink', [ 'dc' => $dc, 'id' => $l->id ]) }}');
 										 $('#form').submit();">同意</button>
 							@endif
 						</td>

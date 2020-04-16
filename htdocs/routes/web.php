@@ -101,11 +101,11 @@ Route::group(['prefix' => 'tutor', 'middleware' => 'auth.tutor'], function () {
 	Route::post('{dc}/people/{uuid}/undo', 'SchoolController@undo')->name('tutor.undo');
 	Route::post('{dc}/people/{uuid}/resetpass', 'SchoolController@resetpass')->name('tutor.resetpass');
 	Route::get('{dc}/{ou}/link', 'TutorController@classLinkForm')->name('tutor.link');
-	Route::post('link/{id}/deny', 'SchoolController@denyLink')->name('tutor.denyLink');
-	Route::post('link/{id}/verify', 'SchoolController@verifyLink')->name('tutor.verifyLink');
+	Route::post('{dc}/link/{id}/deny', 'SchoolController@denyLink')->name('tutor.denyLink');
+	Route::post('{dc}/link/{id}/verify', 'SchoolController@verifyLink')->name('tutor.verifyLink');
 	Route::get('{dc}/{ou}/qrcode', 'TutorController@classQrcodeForm')->name('tutor.qrcode');
-	Route::post('qrcode/{uuid}', 'SchoolController@qrcodeGenerate')->name('tutor.generateQrcode');
-	Route::post('qrcode/{uuid}/remove', 'SchoolController@qrcodeRemove')->name('tutor.removeQrcode');
+	Route::post('{dc}/qrcode/{uuid}', 'SchoolController@qrcodeGenerate')->name('tutor.generateQrcode');
+	Route::post('{dc}/qrcode/{uuid}/remove', 'SchoolController@qrcodeRemove')->name('tutor.removeQrcode');
 });
 
 Route::group(['prefix' => 'sync', 'middleware' => 'auth.admin'], function () {
@@ -266,9 +266,9 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
 	Route::post('{dc}/tokens/new', 'SchoolController@storeToken')->name('school.createToken');
 	Route::post('{dc}/tokens/{token_id}/revoke', 'SchoolController@revokeToken')->name('school.revokeToken');
 	Route::get('{dc}/link', 'SchoolController@schoolLinkForm')->name('school.link');
-	Route::post('link/{id}/deny', 'SchoolController@denyLink')->name('school.denyLink');
-	Route::post('link/{id}/verify', 'SchoolController@verifyLink')->name('school.verifyLink');
+	Route::post('{dc}/link/{id}/deny', 'SchoolController@denyLink')->name('school.denyLink');
+	Route::post('{dc}/link/{id}/verify', 'SchoolController@verifyLink')->name('school.verifyLink');
 	Route::get('{dc}/qrcode', 'SchoolController@schoolQrcodeForm')->name('school.qrcode');
-	Route::post('qrcode/{uuid}', 'SchoolController@qrcodeGenerate')->name('school.generateQrcode');
-	Route::post('qrcode/{uuid}/remove', 'SchoolController@qrcodeRemove')->name('school.removeQrcode');
+	Route::post('{dc}/qrcode/{uuid}', 'SchoolController@qrcodeGenerate')->name('school.generateQrcode');
+	Route::post('{dc}/qrcode/{uuid}/remove', 'SchoolController@qrcodeRemove')->name('school.removeQrcode');
 });

@@ -69,11 +69,11 @@
 						</td>
 						<td style="vertical-align: inherit;">
 							<button type="button" class="btn btn-primary"
-							 	onclick="$('#form').attr('action','{{ route('tutor.generateQrcode', [ 'uuid' => $student['entryUUID'] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('tutor.generateQrcode', [ 'dc' => $dc, 'uuid' => $student['entryUUID'] ]) }}');
 										 $('#form').submit();">重新產生</button>
 							@if (isset($student['QRCODE']))
 							<button type="button" class="btn btn-danger"
-							 	onclick="$('#form').attr('action','{{ route('tutor.removeQrcode', [ 'uuid' => $student['entryUUID'] ]) }}');
+							 	onclick="$('#form').attr('action','{{ route('tutor.removeQrcode', [ 'dc' => $dc, 'uuid' => $student['entryUUID'] ]) }}');
 										 $('#form').submit();">刪除 QRCODE</button>
 							@endif
 						</td>

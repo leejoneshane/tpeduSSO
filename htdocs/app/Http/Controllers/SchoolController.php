@@ -2432,7 +2432,7 @@ class SchoolController extends Controller
 		return view('admin.schoolstudentqrcode', [ 'dc' => $dc, 'sims' => $sims, 'my_field' => $my_field, 'classes' => $ous, 'students' => $students ]);
 	}
 
-	public function denyLink(Request $request, $id)
+	public function denyLink(Request $request, $dc, $id)
 	{
 		$link = PSLink::find($id);
 		$link->verified = 0;
@@ -2442,7 +2442,7 @@ class SchoolController extends Controller
 		return back()->with("success","已經解除指定的親子連結！");
 	}
 
-	public function verifyLink(Request $request, $id)
+	public function verifyLink(Request $request, $dc, $id)
 	{
 		$link = PSLink::find($id);
 		$link->verified = 1;
@@ -2452,7 +2452,7 @@ class SchoolController extends Controller
 		return back()->with("success","已經將指定的親子連結設為有效！");
 	}
 
-	public function qrcodeGenerate(Request $request, $uuid)
+	public function qrcodeGenerate(Request $request, $dc, $uuid)
     {
 		$openldap = new LdapServiceProvider();
 		$idno = $openldap->getUserIDNO($uuid);
@@ -2464,7 +2464,7 @@ class SchoolController extends Controller
 		return back()->with("success","已經重新產生 QRCODE！");
 	}
 
-	public function qrcodeRemove(Request $request, $uuid)
+	public function qrcodeRemove(Request $request, $dc, $uuid)
     {
 		$openldap = new LdapServiceProvider();
 		$idno = $openldap->getUserIDNO($uuid);
