@@ -186,7 +186,7 @@ class TutorController extends Controller
 		$link = PSLink::find($id);
 		$link->verified = 1;
 		$link->verified_idno = Auth::user()->idno;
-		$link->verified_time = Carbon::new();
+		$link->verified_time = Carbon::now();
 		$link->save();
 		return back()->with("success","已經將指定的親子連結設為有效！");
 	}
@@ -204,7 +204,7 @@ class TutorController extends Controller
 				$students[$k]['expired'] = $qrcode->expired_at;
 			} else {
 				GQrcode::create([
-					'idno' => $st->cn,
+					'idno' => $st['cn'],
 					'expired_at' => Carbon::today()->addDays(Config::get('app.QRCodeExpireDays')),
 				]);
 				$qrcode = GQrcode::where('idno', $st->idno)->first();
