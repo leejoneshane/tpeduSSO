@@ -59,9 +59,11 @@ class v2_schoolController extends Controller
         $filter = "(&(o=$dc)(!(employeeType=學生))(inetUserStatus=active))";
         $teachers = $openldap->findUsers($filter, "entryUUID");
 		$json = array();
-		foreach ($teachers as $teacher) {
-	    	$json[] = $teacher['entryUUID'];
-		}
+        if (is_array($teachers)) {
+            foreach ($teachers as $teacher) {
+    	    	$json[] = $teacher['entryUUID'];
+            }
+        }
         if ($json)
             return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
         else
@@ -173,9 +175,11 @@ class v2_schoolController extends Controller
 		$json = array();
 		$openldap = new LdapServiceProvider();
 		$teachers = $openldap->findUsers("(&(o=$dc)(tpTeachClass=*$subj_id)(inetUserStatus=active))", "entryUUID");
-		foreach ($teachers as $teacher) {
-	    	$json[] = $teacher['entryUUID'];
-		}
+        if (is_array($teachers)) {
+            foreach ($teachers as $teacher) {
+    	    	$json[] = $teacher['entryUUID'];
+            }
+        }
         if ($json)
             return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
         else
@@ -187,19 +191,21 @@ class v2_schoolController extends Controller
         $json = array();
         $classes = array();
 		$openldap = new LdapServiceProvider();
-		$teachers = $openldap->findUsers("(&(o=$dc)(tpTeachClass=*$subj_id))", ["o", "tpTeachClass"]);
-		foreach ($teachers as $teacher) {
-            if (is_array($teacher['tpTeachClass'])) {
-                $classes = $teacher['tpTeachClass'];
-            } else {
-                $classes[] = $teacher['tpTeachClass'];
-            }
-            foreach ($classes as $class) {
-                $a = explode(',', $class);
-                if (count($a) == 3 && $a[0] == $dc && $a[2] == $subj_id && !in_array($a[1], $json)) $json[] = $a[1];
-                if (count($a) == 2 && $a[1] == $subj_id && !in_array($a[0], $json)) $json[] = $a[0];
-            }
-		}
+        $teachers = $openldap->findUsers("(&(o=$dc)(tpTeachClass=*$subj_id))", ["o", "tpTeachClass"]);
+        if (is_array($teachers)) {
+            foreach ($teachers as $teacher) {
+                if (is_array($teacher['tpTeachClass'])) {
+                    $classes = $teacher['tpTeachClass'];
+                } else {
+                    $classes[] = $teacher['tpTeachClass'];
+                }
+                foreach ($classes as $class) {
+                    $a = explode(',', $class);
+                    if (count($a) == 3 && $a[0] == $dc && $a[2] == $subj_id && !in_array($a[1], $json)) $json[] = $a[1];
+                    if (count($a) == 2 && $a[1] == $subj_id && !in_array($a[0], $json)) $json[] = $a[0];
+                }
+            }    
+        }
         if ($json)
             return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
         else
@@ -232,10 +238,12 @@ class v2_schoolController extends Controller
     {
 		$json = array();
 		$openldap = new LdapServiceProvider();
-		$teachers = $openldap->findUsers("(&(o=$dc)(ou=*$ou_id)(title=*$role_id)(inetUserStatus=active))", "entryUUID");
-		foreach ($teachers as $teacher) {
-	    	$json[] = $teacher['entryUUID'];
-		}
+        $teachers = $openldap->findUsers("(&(o=$dc)(ou=*$ou_id)(title=*$role_id)(inetUserStatus=active))", "entryUUID");
+        if (is_array($teachers)) {
+            foreach ($teachers as $teacher) {
+                $json[] = $teacher['entryUUID'];
+            }    
+        }
         if ($json)
             return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
         else
@@ -271,10 +279,12 @@ class v2_schoolController extends Controller
     {
 		$json = array();
 		$openldap = new LdapServiceProvider();
-		$teachers = $openldap->findUsers("(&(o=$dc)(tpTeachClass=*$class_id*)(inetUserStatus=active))", "entryUUID");
-		foreach ($teachers as $teacher) {
-	    	$json[] = $teacher['entryUUID'];
-		}
+        $teachers = $openldap->findUsers("(&(o=$dc)(tpTeachClass=*$class_id*)(inetUserStatus=active))", "entryUUID");
+        if (is_array($teachers)) {
+            foreach ($teachers as $teacher) {
+                $json[] = $teacher['entryUUID'];
+            }    
+        }
         if ($json)
             return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
         else
@@ -285,10 +295,12 @@ class v2_schoolController extends Controller
     {
 		$json = array();
 		$openldap = new LdapServiceProvider();
-		$students = $openldap->findUsers("(&(o=$dc)(tpClass=$class_id)(inetUserStatus=active))", "entryUUID");
-		foreach ($students as $student) {
-	    	$json[] = $student['entryUUID'];
-		}
+        $students = $openldap->findUsers("(&(o=$dc)(tpClass=$class_id)(inetUserStatus=active))", "entryUUID");
+        if (is_array($students)) {
+            foreach ($students as $student) {
+                $json[] = $student['entryUUID'];
+            }    
+        }
         if ($json)
             return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
         else
@@ -299,20 +311,22 @@ class v2_schoolController extends Controller
     {
 		$json = array();
 		$openldap = new LdapServiceProvider();
-		$students = $openldap->findUsers("(&(o=$dc)(tpClass=$class_id)(inetUserStatus=active))", "entryUUID");
-		foreach ($students as $student) {
-            $student_idno = $student['cn'];
-            $kids = PSLink::where('student_idno', $student_idno)->where('verified', 1)->get();
-            foreach ($kids as $kid) {
-                $idno = $kid->parent_idno;
-                $uuid = $openldap->getUserUUID($idno);
-                if (!$uuid) {
-                    $user = User::where('idno', $idno)->first();
-                    if ($user) $uuid = $user->uuid;
+        $students = $openldap->findUsers("(&(o=$dc)(tpClass=$class_id)(inetUserStatus=active))", "entryUUID");
+        if (is_array($students)) {
+            foreach ($students as $student) {
+                $student_idno = $student['cn'];
+                $kids = PSLink::where('student_idno', $student_idno)->where('verified', 1)->get();
+                foreach ($kids as $kid) {
+                    $idno = $kid->parent_idno;
+                    $uuid = $openldap->getUserUUID($idno);
+                    if (!$uuid) {
+                        $user = User::where('idno', $idno)->first();
+                        if ($user) $uuid = $user->uuid;
+                    }
+                    if ($uuid) $json[] = $uuid;
                 }
-                if ($uuid) $json[] = $uuid;
-            }
-		}
+            }    
+        }
         if ($json)
             return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
         else
@@ -324,19 +338,21 @@ class v2_schoolController extends Controller
         $json = array();
         $classes = array();
 		$openldap = new LdapServiceProvider();
-		$teachers = $openldap->findUsers("(&(o=$dc)(tpTeachClass=*,$class_id,*))", ["o", "tpTeachClass"]);
-		foreach ($teachers as $teacher) {
-            if (is_array($teacher['tpTeachClass'])) {
-                $classes = $teacher['tpTeachClass'];
-            } else {
-                $classes[] = $teacher['tpTeachClass'];
-            }
-            foreach ($classes as $class) {
-                $a = explode(',', $class);
-                if (count($a) == 3 && $a[0] == $dc && $a[1] == $class_id && !in_array($a[2], $json)) $json[] = $a[2];
-                if (count($a) == 2 && $a[0] == $class_id && !in_array($a[1], $json)) $json[] = $a[1];
-            }
-		}
+        $teachers = $openldap->findUsers("(&(o=$dc)(tpTeachClass=*,$class_id,*))", ["o", "tpTeachClass"]);
+        if (is_array($teachers)) {
+            foreach ($teachers as $teacher) {
+                if (is_array($teacher['tpTeachClass'])) {
+                    $classes = $teacher['tpTeachClass'];
+                } else {
+                    $classes[] = $teacher['tpTeachClass'];
+                }
+                foreach ($classes as $class) {
+                    $a = explode(',', $class);
+                    if (count($a) == 3 && $a[0] == $dc && $a[1] == $class_id && !in_array($a[2], $json)) $json[] = $a[2];
+                    if (count($a) == 2 && $a[0] == $class_id && !in_array($a[1], $json)) $json[] = $a[1];
+                }
+            }    
+        }
         if ($json)
             return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
         else
