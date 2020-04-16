@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use Config;
 use Closure;
 use League\OAuth2\Server\ResourceServer;
 use Illuminate\Auth\AuthenticationException;

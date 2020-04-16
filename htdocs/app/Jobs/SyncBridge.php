@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use Log;
-use Config;
 use Validator;
 use App\Rules\idno;
 use App\Rules\ipv4cidr;
@@ -63,7 +62,7 @@ class SyncBridge implements ShouldQueue
 					$info['businessCategory']='行政部門';
 					$info['ou'] = $unit->ou;
 					$info['description'] = $unit->name;
-					$info['dn'] = "ou=".$info['ou'].",dc=$dc,".Config::get('ldap.rdn');
+					$info['dn'] = "ou=".$info['ou'].",dc=$dc,".config('ldap.rdn');
 					$result = $openldap->createEntry($info);
 				}
 			}
@@ -90,7 +89,7 @@ class SyncBridge implements ShouldQueue
 					$info['businessCategory']='教學班級';
 					$info['ou'] = $clsid;
 					$info['description'] = $clsname;
-					$info['dn'] = "ou=".$info['ou'].",dc=$dc,".Config::get('ldap.rdn');
+					$info['dn'] = "ou=".$info['ou'].",dc=$dc,".config('ldap.rdn');
 					$result = $openldap->createEntry($info);
 				}
 			}
@@ -124,7 +123,7 @@ class SyncBridge implements ShouldQueue
     				$info['objectClass'] = 'tpeduSubject';
 	    			$info['tpSubject'] = $subj_id;
 		    		$info['description'] = $subj_name;
-			    	$info['dn'] = "tpSubject=".$subj_id.",dc=$dc,".Config::get('ldap.rdn');
+			    	$info['dn'] = "tpSubject=".$subj_id.",dc=$dc,".config('ldap.rdn');
 				    $result = $openldap->createEntry($info);
                 }
             }
@@ -250,7 +249,7 @@ class SyncBridge implements ShouldQueue
 						$account["objectClass"] = "radiusObjectProfile";
 						$account["cn"] = $idno;
 						$account["description"] = '從校務行政系統同步';
-						$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
+						$account["dn"] = "uid=".$account['uid'].",".config('ldap.authdn');
 						$acc_entry = $openldap->getAccountEntry($account["uid"]);
 						if ($acc_entry) {
 							unset($account['dn']);
@@ -269,7 +268,7 @@ class SyncBridge implements ShouldQueue
 							}
 						}
 						$info = array();
-						$info['dn'] = "cn=$idno,".Config::get('ldap.userdn');
+						$info['dn'] = "cn=$idno,".config('ldap.userdn');
 						$info['objectClass'] = array('tpeduPerson', 'inetUser');
 						$info['cn'] = $idno;
 						$info["uid"] = $account["uid"];
@@ -427,7 +426,7 @@ class SyncBridge implements ShouldQueue
 		        			$account["objectClass"] = "radiusObjectProfile";
 				        	$account["cn"] = $idno;
         					$account["description"] = '從校務行政系統同步';
-		        			$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
+		        			$account["dn"] = "uid=".$account['uid'].",".config('ldap.authdn');
 				        	$acc_entry = $openldap->getAccountEntry($account["uid"]);
         					if ($acc_entry) {
 		        				unset($account['dn']);
@@ -442,7 +441,7 @@ class SyncBridge implements ShouldQueue
         						}
 		        			}
         					$info = array();
-		        			$info['dn'] = "cn=$idno,".Config::get('ldap.userdn');
+		        			$info['dn'] = "cn=$idno,".config('ldap.userdn');
 				        	$info['objectClass'] = array('tpeduPerson', 'inetUser');
         					$info['cn'] = $idno;
 		        			$info["uid"] = $account["uid"];

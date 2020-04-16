@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Config;
 use Validator;
 use Auth;
 use Illuminate\Http\Request;
@@ -222,7 +221,7 @@ class BureauController extends Controller
     public function bureauPeopleSearchForm(Request $request)
     {
 		$my_field = $request->get('field');
-		$areas = Config::get('app.areas');
+		$areas = config('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "st=$area";
@@ -279,8 +278,8 @@ class BureauController extends Controller
 		$dc = $request->session()->get('dc');
 		$my_field = $request->session()->get('field');
 		$keywords = $request->session()->get('keywords');
-		$types = Config::get('app.employeeTypes');
-		$areas = Config::get('app.areas');
+		$types = config('app.employeeTypes');
+		$areas = config('app.areas');
 		if (empty($area)) $area = $areas[0];
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getOrgs();
@@ -444,7 +443,7 @@ class BureauController extends Controller
 					$educloud[] = json_encode([ "sid" => $sid, "role" => $person->type ], JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 				}
 				$idno = strtoupper($person->id);
-				$user_dn = "cn=$idno,".Config::get('ldap.userdn');
+				$user_dn = "cn=$idno,".config('ldap.userdn');
 				$entry = array();
 				$entry["objectClass"] = array("tpeduPerson","inetUser");
  				$entry["inetUserStatus"] = "active";
@@ -491,7 +490,7 @@ class BureauController extends Controller
 					$entry["uid"] = $account["uid"];
 					$password = $openldap->make_ssha_password(substr($idno, -6));
 					$account["userPassword"] = $password;
-					$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
+					$account["dn"] = "uid=".$account['uid'].",".config('ldap.authdn');
 					$entry["userPassword"] = $password;
 				 }
 		    	if (isset($person->character)) {
@@ -611,7 +610,7 @@ class BureauController extends Controller
 			if (!empty($classes)) {
 				foreach($classes as $oclass) {
 					$info = array();
-					$info['dn'] = "ou=$oclass->id,dc=$oclass->dc,".Config::get('ldap.rdn'); 
+					$info['dn'] = "ou=$oclass->id,dc=$oclass->dc,".config('ldap.rdn'); 
 					$info["objectClass"] = "organizationalUnit";
 					$info["ou"] = $oclass->id;
 					$info["businessCategory"] = '教學班級';
@@ -652,7 +651,7 @@ class BureauController extends Controller
 		}
 		$account = array();
 		$info = array();
-		$info['dn'] = "cn=$idno,".Config::get('ldap.userdn');
+		$info['dn'] = "cn=$idno,".config('ldap.userdn');
 		$info['objectClass'] = array('tpeduPerson', 'inetUser');
 		$info['cn'] = $idno;
 		$info['o'] = $orgs;
@@ -676,7 +675,7 @@ class BureauController extends Controller
 		$account["objectClass"] = "radiusObjectProfile";
 		$account["cn"] = $idno;
 		$account["description"] = '管理員新增';
-		$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
+		$account["dn"] = "uid=".$account['uid'].",".config('ldap.authdn');
 		$result = $openldap->createEntry($account);
 		if (!$result) {
 			return redirect('bureau/people?area='.$area.'&dc='.$orgs[0].'&field='.$my_field.'&keywords='.$keywords)->with("error", "因為預設帳號無法建立，人員新增失敗！".$openldap->error());
@@ -1131,7 +1130,7 @@ class BureauController extends Controller
 			$account["objectClass"] = "radiusObjectProfile";
 			$account["cn"] = $idno;
 			$account["description"] = '管理員新增';
-			$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
+			$account["dn"] = "uid=".$account['uid'].",".config('ldap.authdn');
 			$openldap->createEntry($account);
 			$info["uid"] = $account["uid"];
 		}	
@@ -1181,7 +1180,7 @@ class BureauController extends Controller
 		} else {
 			return back()->withInput()->with("error", "過濾條件填寫不完整！");
 		}
-		$info['dn'] = 'cn='.$info['cn'].','.Config::get('ldap.groupdn');
+		$info['dn'] = 'cn='.$info['cn'].','.config('ldap.groupdn');
 		$openldap = new LdapServiceProvider();
 		$result = $openldap->createEntry($info);
 		if ($result) {
@@ -1218,7 +1217,7 @@ class BureauController extends Controller
 
     public function bureauOrgForm(Request $request)
     {
-		$areas = Config::get('app.areas');
+		$areas = config('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "st=$area";
@@ -1229,9 +1228,9 @@ class BureauController extends Controller
 
     public function bureauOrgEditForm(Request $request, $dc = '')
     {
-		$sims = Config::get('app.sims');
-		$category = Config::get('app.schoolCategory');
-		$areas = Config::get('app.areas');
+		$sims = config('app.sims');
+		$category = config('app.schoolCategory');
+		$areas = config('app.areas');
 		$openldap = new LdapServiceProvider();
 		if (!empty($dc)) {
 			$entry = $openldap->getOrgEntry($dc);
@@ -1301,7 +1300,7 @@ class BureauController extends Controller
 		$info['tpSims'] = $request->get('tpSims');
 		if (!empty($request->get('tpIpv4'))) $info['tpIpv4'] = $request->get('tpIpv4');
 		if (!empty($request->get('tpIpv6'))) $info['tpIpv6'] = $request->get('tpIpv6');
-		$info['dn'] = "dc=".$request->get('dc').",".Config::get('ldap.rdn');
+		$info['dn'] = "dc=".$request->get('dc').",".config('ldap.rdn');
 				
 		if ($openldap->createEntry($info)) {
 			return redirect('bureau/organization?area='.$request->get('st'))->with("success", "已經為您建立新的教育機構！");
@@ -1433,20 +1432,20 @@ class BureauController extends Controller
 		    		continue;
 				}
 				$validator = Validator::make(
-    				[ 'category' => $org->category ], [ 'category' => 'required|in:'.implode(',', Config::get('app.schoolCategory')) ]
+    				[ 'category' => $org->category ], [ 'category' => 'required|in:'.implode(',', config('app.schoolCategory')) ]
     			);
     			if ($validator->fails()) {
 					$messages[] = "第 $i 筆記錄，".$org->name."機構類別資訊不正確，跳過不處理！";
 	    			continue;
 				}
 				$validator = Validator::make(
-    				[ 'area' => $org->area ], [ 'area' => 'required|in:'.implode(',', Config::get('app.areas')) ]
+    				[ 'area' => $org->area ], [ 'area' => 'required|in:'.implode(',', config('app.areas')) ]
     			);
     			if ($validator->fails()) {
 					$messages[] = "第 $i 筆記錄，".$org->name."行政區資訊不正確，跳過不處理！";
 	    			continue;
 				}
-				$org_dn = "dc=$org->id,".Config::get('ldap.rdn');
+				$org_dn = "dc=$org->id,".config('ldap.rdn');
 				$entry = array();
 				$entry["objectClass"] = array("tpeduSchool");
    				$entry["o"] = $org->id;

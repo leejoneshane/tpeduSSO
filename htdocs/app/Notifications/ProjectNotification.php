@@ -2,7 +2,6 @@
 
 namespace App\Notifications;
 
-use Config;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -24,7 +23,7 @@ class ProjectNotification extends Notification implements ShouldQueue
      */
     public function __construct(Project $project, array $messages, $header = '')
     {
-        if (empty($header)) $header = Config::get('app.name').'通知';
+        if (empty($header)) $header = config('app.name').'通知';
         $this->project = $project;
         $this->header = $header;
         $this->messages = $messages;

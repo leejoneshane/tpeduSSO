@@ -68,9 +68,9 @@
 					<dt>name</dt>
 					<dd>機構全銜，是單一資料。</dd>
 					<dt>category</dt>
-					<dd>機構類別，是單一資料。請從右列資料擇一：{{ implode('、', Config::get('app.schoolCategory')) }}。</dd>
+					<dd>機構類別，是單一資料。請從右列資料擇一：{{ implode('、', config('app.schoolCategory')) }}。</dd>
 					<dt>area</dt>
-					<dd>行政區，是單一資料。請從右列資料擇一：{{ implode('、', Config::get('app.areas')) }}。</dd>
+					<dd>行政區，是單一資料。請從右列資料擇一：{{ implode('、', config('app.areas')) }}。</dd>
 					<dt>fax</dt>
 					<dd>傳真電話，允許多筆資料，格式如：(02)23093736。可省略。</dd>
 					<dt>tel</dt>

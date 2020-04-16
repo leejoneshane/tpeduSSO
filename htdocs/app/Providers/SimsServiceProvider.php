@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use Log;
-use Config;
 use Illuminate\Support\ServiceProvider;
 
 class SimsServiceProvider extends ServiceProvider
@@ -19,17 +18,17 @@ class SimsServiceProvider extends ServiceProvider
         if (is_null(self::$oauth_ps))
             self::$oauth_ps = new \GuzzleHttp\Client([
                 'verify' => false,
-                'base_uri' => Config::get('sims.ps.base_uri'),
+                'base_uri' => config('sims.ps.base_uri'),
             ]);
         if (is_null(self::$oauth_js))
             self::$oauth_js = new \GuzzleHttp\Client([
                 'verify' => false,
-                'base_uri' => Config::get('sims.js.base_uri'),
+                'base_uri' => config('sims.js.base_uri'),
             ]);
         if (is_null(self::$oauth_hs))
             self::$oauth_hs = new \GuzzleHttp\Client([
                 'verify' => false,
-                'base_uri' => Config::get('sims.hs.base_uri'),
+                'base_uri' => config('sims.hs.base_uri'),
             ]);
         self::$seme = $this->seme();
     }
@@ -42,10 +41,10 @@ class SimsServiceProvider extends ServiceProvider
     public function hs_send($url)
     {
         //get token
-        $response = self::$oauth_hs->request('POST', Config::get('sims.hs.token'), [
+        $response = self::$oauth_hs->request('POST', config('sims.hs.token'), [
             'form_params' => [
-                'account' => Config::get('sims.hs.oauth_account'),
-                'password' => Config::get('sims.hs.oauth_password'),
+                'account' => config('sims.hs.oauth_account'),
+                'password' => config('sims.hs.oauth_password'),
             ],
             'headers' => [ 'Accept' => 'application/json', 'Content-Type' => 'application/x-www-form-urlencoded' ],
             'http_errors' => false,
@@ -73,15 +72,15 @@ class SimsServiceProvider extends ServiceProvider
                 $search[] = '{'.$key.'}';
                 $values[] = $data;
             }
-            $url = str_replace($search, $values, Config::get("sims.hs.$info"));
+            $url = str_replace($search, $values, config("sims.hs.$info"));
         } else {
-            $url = Config::get("sims.hs.$info");
+            $url = config("sims.hs.$info");
         }
         $res = $this->hs_send($url);
         $json = json_decode((string) $res->getBody());
         if (isset($json->Message)) {
             self::$error = $json->Message;
-            if (Config::get('sims.hs.debug')) Log::debug('Oauth call:'.$url.' failed! Server response:'.$res->getBody());
+            if (config('sims.hs.debug')) Log::debug('Oauth call:'.$url.' failed! Server response:'.$res->getBody());
             return false;
         } else {
             if (isset($json->Data)) return $json->Data;
@@ -93,11 +92,11 @@ class SimsServiceProvider extends ServiceProvider
     {
         //SHA1
         $t = time();
-        $e = strtoupper(sha1( Config::get('sims.js.oauth_id') . 'time' . $t . Config::get('sims.js.oauth_secret')));
+        $e = strtoupper(sha1( config('sims.js.oauth_id') . 'time' . $t . config('sims.js.oauth_secret')));
 
         $response = self::$oauth_js->request('POST', $url, [
             'json' => [
-                'appKey' => Config::get('sims.js.oauth_id'),
+                'appKey' => config('sims.js.oauth_id'),
                 'sign' => $e,
                 'time' => $t,
             ],
@@ -117,15 +116,15 @@ class SimsServiceProvider extends ServiceProvider
                 $search[] = '{'.$key.'}';
                 $values[] = $data;
             }
-            $url = str_replace($search, $values, Config::get("sims.js.$info"));
+            $url = str_replace($search, $values, config("sims.js.$info"));
         } else {
-            $url = Config::get("sims.js.$info");
+            $url = config("sims.js.$info");
         }
         $res = $this->js_send($url);
         $json = json_decode((string) $res->getBody());
         if (isset($json->statusCode) && $json->statusCode != '00') {
             self::$error = $json->statusMsg;
-            if (Config::get('sims.js.debug')) Log::debug('Oauth call:'.$url.' failed! Server response:'.$res->getBody());
+            if (config('sims.js.debug')) Log::debug('Oauth call:'.$url.' failed! Server response:'.$res->getBody());
             return false;
         } else {
             if (isset($json->DATA_LIST)) return $json->DATA_LIST;
@@ -137,14 +136,14 @@ class SimsServiceProvider extends ServiceProvider
     public function ps_send($url)
     {
         //AES-128-CBC
-/*        $p = md5(Config::get('sims.ps.oauth_secret'), true);
+/*        $p = md5(config('sims.ps.oauth_secret'), true);
         $m = 'aes-128-cbc';
-        $iv = md5(Config::get('sims.ps.aes_iv') . date('YmdH'), true);
+        $iv = md5(config('sims.ps.aes_iv') . date('YmdH'), true);
         $e = base64_encode(openssl_encrypt($url, $m, $p, OPENSSL_ZERO_PADDING, $iv));
 
         $response = self::$oauth_ps->request('GET', $url, [
             'headers' => [
-                'Authorization' => 'Special key '.Config::get('sims.ps.oauth_id'),
+                'Authorization' => 'Special key '.config('sims.ps.oauth_id'),
                 'SpecialVerify' => $e,
                 'Accept' => 'application/json',
             ],
@@ -153,7 +152,7 @@ class SimsServiceProvider extends ServiceProvider
 */
         $response = self::$oauth_ps->request('GET', $url, [
             'headers' => [
-                'Authorization' => 'Special ip '.Config::get('sims.ps.oauth_id'),
+                'Authorization' => 'Special ip '.config('sims.ps.oauth_id'),
                 'Accept' => 'application/json',
             ],
             'http_errors' => false,
@@ -172,7 +171,7 @@ class SimsServiceProvider extends ServiceProvider
         }
         $search[] = "{seme}";
         $values[] = self::$seme;
-        $url = str_replace($search, $values, Config::get("sims.ps.$info"));
+        $url = str_replace($search, $values, config("sims.ps.$info"));
         $res = $this->ps_send($url);
         $json = json_decode((string) $res->getBody());
         if (isset($json->status) && $json->status == 'ok') {
@@ -180,7 +179,7 @@ class SimsServiceProvider extends ServiceProvider
             return false;
         } else {
             if (isset($json->error)) self::$error = $json->error;
-            if (Config::get('sims.ps.debug')) Log::debug('Oauth call:'.$url.' failed! Server response:'.$res->getBody());
+            if (config('sims.ps.debug')) Log::debug('Oauth call:'.$url.' failed! Server response:'.$res->getBody());
             return false;
         }
     }

@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use Log;
-use Config;
 use Validator;
 use App\Rules\idno;
 use App\Rules\ipv4cidr;
@@ -64,7 +63,7 @@ class SyncAlle implements ShouldQueue
 					$info['businessCategory']='教學班級';
 					$info['ou'] = $class->clsid;
 					$info['description'] = $class->clsname;
-					$info['dn'] = "ou=".$info['ou'].",dc=$dc,".Config::get('ldap.rdn');
+					$info['dn'] = "ou=".$info['ou'].",dc=$dc,".config('ldap.rdn');
 					$result = $openldap->createEntry($info);
 				}
 			}
@@ -108,7 +107,7 @@ class SyncAlle implements ShouldQueue
 	    			$info['objectClass'] = 'tpeduSubject';
 		    		$info['tpSubject'] = $new_id;
 			    	$info['description'] = $subj_name;
-				    $info['dn'] = "tpSubject=".$new_id.",dc=$dc,".Config::get('ldap.rdn');
+				    $info['dn'] = "tpSubject=".$new_id.",dc=$dc,".config('ldap.rdn');
     				$result = $openldap->createEntry($info);
 			    }
             }
@@ -272,7 +271,7 @@ class SyncAlle implements ShouldQueue
 						$account["objectClass"] = "radiusObjectProfile";
 						$account["cn"] = $idno;
 						$account["description"] = '從校務行政系統同步';
-						$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
+						$account["dn"] = "uid=".$account['uid'].",".config('ldap.authdn');
 						$acc_entry = $openldap->getAccountEntry($account["uid"]);
 						if ($acc_entry) {
 							unset($account['dn']);
@@ -314,7 +313,7 @@ class SyncAlle implements ShouldQueue
 							}
 						}
 						$info = array();
-						$info['dn'] = "cn=$idno,".Config::get('ldap.userdn');
+						$info['dn'] = "cn=$idno,".config('ldap.userdn');
 						$info['objectClass'] = array('tpeduPerson', 'inetUser');
 						$info['cn'] = $idno;
 						$info["uid"] = $account["uid"];
@@ -468,7 +467,7 @@ class SyncAlle implements ShouldQueue
                                 $account["objectClass"] = "radiusObjectProfile";
                                 $account["cn"] = $idno;
                                 $account["description"] = '從校務行政系統同步';
-                                $account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
+                                $account["dn"] = "uid=".$account['uid'].",".config('ldap.authdn');
                                 $acc_entry = $openldap->getAccountEntry($account["uid"]);
                                 if ($acc_entry) {
                                     unset($account['dn']);
@@ -483,7 +482,7 @@ class SyncAlle implements ShouldQueue
                                     }
                                 }
                                 $info = array();
-                                $info['dn'] = "cn=$idno,".Config::get('ldap.userdn');
+                                $info['dn'] = "cn=$idno,".config('ldap.userdn');
                                 $info['objectClass'] = array('tpeduPerson', 'inetUser');
                                 $info['cn'] = $idno;
                                 $info["uid"] = $account["uid"];

@@ -99,7 +99,7 @@ class v2_adminController extends Controller
 		if (!empty($request->get('ipv4'))) $schoolinfo['tpIpv4'] = $request->get('ipv4');
 		if (!empty($request->get('ipv6'))) $schoolinfo['tpIpv6'] = $request->get('ipv6');
 		if (!empty($request->get('admins'))) $schoolinfo['tpAdministrator'] = $request->get('admins');
-		$schoolinfo['dn'] = "dc=$dc,".Config::get('ldap.rdn');
+		$schoolinfo['dn'] = "dc=$dc,".config('ldap.rdn');
 		if (!$openldap->createEntry($schoolinfo)) {
 		    return response()->json([ 'error' => '教育機構建立失敗：' . $openldap->error() ], 500);
 		}
@@ -224,7 +224,7 @@ class v2_adminController extends Controller
         if (empty($request->get('type'))) return response()->json(["error" => "請提供該使用者的身份"], 400);
         if (empty($request->get('lastname')) || empty($request->get('firstname'))) return response()->json(["error" => "請提供該使用者的真實姓名"], 400);
 		$info = array();
-		$info['dn'] = "cn=".$idno.",".Config::get('ldap.userdn');
+		$info['dn'] = "cn=".$idno.",".config('ldap.userdn');
 		$info["objectClass"] = array("tpeduPerson","inetUser");
  		$info["inetUserStatus"] = "Active";
         $info["cn"] = $idno;

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Auth;
 use Log;
-use Config;
 use Carbon\Carbon;
 use App\PSLink;
 use App\GQrcode;
@@ -190,7 +189,7 @@ class TutorController extends Controller
 			foreach ($students as $k => $st) {
 				GQrcode::create([
 					'idno' => $st['cn'],
-					'expired_at' => Carbon::today()->addDays(Config::get('app.QRCodeExpireDays')),
+					'expired_at' => Carbon::today()->addDays(config('app.QRCodeExpireDays')),
 				]);
 				$qrcode = GQrcode::where('idno', $st->idno)->first();
 				$students[$k]['QRCODE'] = $qrcode->generate();

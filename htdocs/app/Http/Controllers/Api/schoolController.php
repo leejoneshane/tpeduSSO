@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use Log;
 use Auth;
-use Config;
 use App\Providers\LdapServiceProvider;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -312,7 +311,7 @@ class schoolController extends Controller
         if (empty($request->get('type'))) return response()->json(["error" => "請提供該使用者的身份"], 400, array(JSON_UNESCAPED_UNICODE));
         if (empty($request->get('lastname')) || empty($request->get('firstname'))) return response()->json(["error" => "請提供該使用者的真實姓名"], 400, array(JSON_UNESCAPED_UNICODE));
 		$info = array();
-		$info['dn'] = "cn=".$idno.",".Config::get('ldap.userdn');
+		$info['dn'] = "cn=".$idno.",".config('ldap.userdn');
 		$info["objectClass"] = array("tpeduPerson","inetUser");
  		$info["inetUserStatus"] = "Active";
         $info["cn"] = $idno;

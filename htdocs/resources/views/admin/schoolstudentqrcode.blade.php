@@ -18,7 +18,9 @@
 	    </div>
 	@endif
 	<div class="col-sm-12">
-    	<div class="input-group custom-search-form">
+		<div class="panel panel-default">
+		<div class="panel-heading">
+			<div class="input-group custom-search-form">
 			<select id="field" name="field" class="form-control" style="flex: none; width: auto" onchange="location='{{ url()->current() }}?field=' + $(this).val();">
 				@foreach ($classes as $ou => $desc)
 			    	<option value="{{ $ou }}" {{ $my_field == $ou ? 'selected' : '' }}>{{ $desc }}</option>
@@ -29,11 +31,7 @@
             		<i class="fa fa-search"></i>
             	</button>
         	</span>
-    	</div>
-	</div>
-	<div class="col-sm-12">
-		<div class="panel panel-default">
-		<div class="panel-heading">
+	    	</div>
 			<h4>
 				學生 QRCODE 一覽表
 			</h4>

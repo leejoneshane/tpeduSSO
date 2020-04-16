@@ -44,7 +44,7 @@ class ProjectAllowedNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject(Config::get('app.name').'通知')
+                    ->subject(config('app.name').'通知')
                     ->line('系統收到介接專案申請表，內容如下：')
                     ->line('申請單位：'.$this->project->organization)
                     ->line('應用平臺名稱：'.$this->project->applicationName)

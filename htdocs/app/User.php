@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Config;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -62,7 +61,7 @@ class User extends Authenticatable implements MustVerifyEmail
 	{
 		$gsuite = $this->gmails()->where('primary', 1)->first();
 		if ($gsuite) {
-			return $gsuite->nameID.'@'.Config::get('saml.email_domain');
+			return $gsuite->nameID.'@'.config('saml.email_domain');
 		}
     	return false;
 	}

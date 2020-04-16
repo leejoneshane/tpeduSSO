@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Log;
-use Config;
 use Validator;
 use Auth;
 use Carbon\Carbon;
@@ -44,7 +43,7 @@ class SyncController extends Controller
     
 	public function hs_testForm(Request $request)
 	{
-		$areas = Config::get('app.areas');
+		$areas = config('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=bridge))";
@@ -91,7 +90,7 @@ class SyncController extends Controller
 	
 	public function js_testForm(Request $request)
 	{
-		$areas = Config::get('app.areas');
+		$areas = config('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=oneplus))";
@@ -135,7 +134,7 @@ class SyncController extends Controller
 	
 	public function ps_testForm(Request $request)
 	{
-		$areas = Config::get('app.areas');
+		$areas = config('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=alle))";
@@ -293,7 +292,7 @@ class SyncController extends Controller
 						}
 					} else {
 						$info = array();
-						$info['dn'] = 'dc='.$sch->o.','.Config::get('ldap.rdn');
+						$info['dn'] = 'dc='.$sch->o.','.config('ldap.rdn');
 						$info['objectClass'] = array('top', 'tpeduSchool');
 						$info['dc'] = $sch->o;
 						$info['o'] = $sch->o;
@@ -337,7 +336,7 @@ class SyncController extends Controller
 
 	public function hs_syncOuForm(Request $request)
 	{
-		$areas = Config::get('app.areas');
+		$areas = config('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=bridge))";
@@ -377,7 +376,7 @@ class SyncController extends Controller
 					$info['businessCategory']='行政部門';
 					$info['ou'] = $unit->ou;
 					$info['description'] = $unit->name;
-					$info['dn'] = "ou=".$unit->ou.",dc=$dc,".Config::get('ldap.rdn');
+					$info['dn'] = "ou=".$unit->ou.",dc=$dc,".config('ldap.rdn');
 					$result = $openldap->createEntry($info);
 					if ($result) {
 						$messages[] = "ou=". $unit->ou ." 已經為您建立行政部門，單位名稱為：". $unit->name;
@@ -404,7 +403,7 @@ class SyncController extends Controller
 						$info['objectClass'] = array('organizationalRole');
 						$info['cn'] = $role->cn;
 						$info['description'] = $role->name;
-						$info['dn'] = "cn=".$role->cn.",ou=".$unit->ou.",dc=$dc,".Config::get('ldap.rdn');
+						$info['dn'] = "cn=".$role->cn.",ou=".$unit->ou.",dc=$dc,".config('ldap.rdn');
 						$result = $openldap->createEntry($info);
 						if ($result) {
 							$messages[] = "cn=". $role->cn ." 已經為您建立單位職稱，職稱為：". $role->name;
@@ -441,7 +440,7 @@ class SyncController extends Controller
 
 	public function js_syncOuForm(Request $request)
 	{
-		$areas = Config::get('app.areas');
+		$areas = config('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=oneplus))";
@@ -481,7 +480,7 @@ class SyncController extends Controller
 					$info['businessCategory']='行政部門';
 					$info['ou'] = $unit->ou;
 					$info['description'] = $unit->name;
-					$info['dn'] = "ou=".$unit->ou.",dc=$dc,".Config::get('ldap.rdn');
+					$info['dn'] = "ou=".$unit->ou.",dc=$dc,".config('ldap.rdn');
 					$result = $openldap->createEntry($info);
 					if ($result) {
 						$messages[] = "ou=". $unit->ou ." 已經為您建立行政部門，單位名稱為：". $unit->name;
@@ -508,7 +507,7 @@ class SyncController extends Controller
 						$info['objectClass'] = array('organizationalRole');
 						$info['cn'] = $role->cn;
 						$info['description'] = $role->name;
-						$info['dn'] = "cn=".$role->cn.",ou=".$unit->ou.",dc=$dc,".Config::get('ldap.rdn');
+						$info['dn'] = "cn=".$role->cn.",ou=".$unit->ou.",dc=$dc,".config('ldap.rdn');
 						$result = $openldap->createEntry($info);
 						if ($result) {
 							$messages[] = "cn=". $role->cn ." 已經為您建立單位職稱，職稱為：". $role->name;
@@ -562,7 +561,7 @@ class SyncController extends Controller
 	
 	public function hs_syncClassForm(Request $request)
 	{
-		$areas = Config::get('app.areas');
+		$areas = config('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=bridge))";
@@ -604,7 +603,7 @@ class SyncController extends Controller
 					$info['businessCategory']='教學班級';
 					$info['ou'] = $clsid;
 					$info['description'] = $clsname;
-					$info['dn'] = "ou=".$info['ou'].",dc=$dc,".Config::get('ldap.rdn');
+					$info['dn'] = "ou=".$info['ou'].",dc=$dc,".config('ldap.rdn');
 					$result = $openldap->createEntry($info);
 					if ($result) {
 						$messages[] = "ou=". $clsid ." 已經為您建立班級，班級名稱為：". $clsname;
@@ -633,7 +632,7 @@ class SyncController extends Controller
 
 	public function js_syncClassForm(Request $request)
 	{
-		$areas = Config::get('app.areas');
+		$areas = config('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=oneplus))";
@@ -675,7 +674,7 @@ class SyncController extends Controller
 					$info['businessCategory']='教學班級';
 					$info['ou'] = $clsid;
 					$info['description'] = $clsname;
-					$info['dn'] = "ou=".$info['ou'].",dc=$dc,".Config::get('ldap.rdn');
+					$info['dn'] = "ou=".$info['ou'].",dc=$dc,".config('ldap.rdn');
 					$result = $openldap->createEntry($info);
 					if ($result) {
 						$messages[] = "ou=". $clsid ." 已經為您建立班級，班級名稱為：". $clsname;
@@ -704,7 +703,7 @@ class SyncController extends Controller
 
 	public function ps_syncClassForm(Request $request)
 	{
-		$areas = Config::get('app.areas');
+		$areas = config('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=alle))";
@@ -745,7 +744,7 @@ class SyncController extends Controller
 					$info['businessCategory']='教學班級';
 					$info['ou'] = $class->clsid;
 					$info['description'] = $class->clsname;
-					$info['dn'] = "ou=".$info['ou'].",dc=$dc,".Config::get('ldap.rdn');
+					$info['dn'] = "ou=".$info['ou'].",dc=$dc,".config('ldap.rdn');
 					$result = $openldap->createEntry($info);
 					if ($result) {
 						$messages[] = "ou=". $class->clsid ." 已經為您建立班級，班級名稱為：". $class->clsname;
@@ -790,7 +789,7 @@ class SyncController extends Controller
 	
     public function hs_syncSubjectForm(Request $request)
     {
-		$areas = Config::get('app.areas');
+		$areas = config('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=bridge))";
@@ -840,7 +839,7 @@ class SyncController extends Controller
 				$info['objectClass'] = 'tpeduSubject';
 				$info['tpSubject'] = $subj_id;
 				$info['description'] = $subj_name;
-				$info['dn'] = "tpSubject=".$subj_id.",dc=$dc,".Config::get('ldap.rdn');
+				$info['dn'] = "tpSubject=".$subj_id.",dc=$dc,".config('ldap.rdn');
 				$result = $openldap->createEntry($info);
 				if ($result) {
 					$messages[] = "subject=". $subj_id ." 已將科目名稱設定為：". $subj_name;
@@ -855,7 +854,7 @@ class SyncController extends Controller
 	
     public function js_syncSubjectForm(Request $request)
     {
-		$areas = Config::get('app.areas');
+		$areas = config('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=oneplus))";
@@ -905,7 +904,7 @@ class SyncController extends Controller
 				$info['objectClass'] = 'tpeduSubject';
 				$info['tpSubject'] = $subj_id;
 				$info['description'] = $subj_name;
-				$info['dn'] = "tpSubject=".$subj_id.",dc=$dc,".Config::get('ldap.rdn');
+				$info['dn'] = "tpSubject=".$subj_id.",dc=$dc,".config('ldap.rdn');
 				$result = $openldap->createEntry($info);
 				if ($result) {
 					$messages[] = "subject=". $subj_id ." 已將科目名稱設定為：". $subj_name;
@@ -920,7 +919,7 @@ class SyncController extends Controller
 
     public function ps_syncSubjectForm(Request $request)
     {
-		$areas = Config::get('app.areas');
+		$areas = config('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=alle))";
@@ -975,7 +974,7 @@ class SyncController extends Controller
 				$info['objectClass'] = 'tpeduSubject';
 				$info['tpSubject'] = $new_id;
 				$info['description'] = $subj_name;
-				$info['dn'] = "tpSubject=".$new_id.",dc=$dc,".Config::get('ldap.rdn');
+				$info['dn'] = "tpSubject=".$new_id.",dc=$dc,".config('ldap.rdn');
 				$result = $openldap->createEntry($info);
 				if ($result) {
 					$messages[] = "subject=". $new_id ." 已將科目名稱設定為：". $subj_name;
@@ -1007,7 +1006,7 @@ class SyncController extends Controller
 	
     public function hs_syncTeacherForm(Request $request)
     {
-		$areas = Config::get('app.areas');
+		$areas = config('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=bridge))";
@@ -1160,7 +1159,7 @@ class SyncController extends Controller
 						$account["objectClass"] = "radiusObjectProfile";
 						$account["cn"] = $idno;
 						$account["description"] = '從校務行政系統同步';
-						$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
+						$account["dn"] = "uid=".$account['uid'].",".config('ldap.authdn');
 						$acc_entry = $openldap->getAccountEntry($account["uid"]);
 						if ($acc_entry) {
 							unset($account['dn']);
@@ -1187,7 +1186,7 @@ class SyncController extends Controller
 							}
 						}
 						$info = array();
-						$info['dn'] = "cn=$idno,".Config::get('ldap.userdn');
+						$info['dn'] = "cn=$idno,".config('ldap.userdn');
 						$info['objectClass'] = array('tpeduPerson', 'inetUser');
 						$info['cn'] = $idno;
 						$info["uid"] = $account["uid"];
@@ -1327,7 +1326,7 @@ class SyncController extends Controller
 
     public function js_syncTeacherForm(Request $request)
     {
-		$areas = Config::get('app.areas');
+		$areas = config('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=oneplus))";
@@ -1480,7 +1479,7 @@ class SyncController extends Controller
 						$account["objectClass"] = "radiusObjectProfile";
 						$account["cn"] = $idno;
 						$account["description"] = '從校務行政系統同步';
-						$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
+						$account["dn"] = "uid=".$account['uid'].",".config('ldap.authdn');
 						$acc_entry = $openldap->getAccountEntry($account["uid"]);
 						if ($acc_entry) {
 							unset($account['dn']);
@@ -1507,7 +1506,7 @@ class SyncController extends Controller
 							}
 						}
 						$info = array();
-						$info['dn'] = "cn=$idno,".Config::get('ldap.userdn');
+						$info['dn'] = "cn=$idno,".config('ldap.userdn');
 						$info['objectClass'] = array('tpeduPerson', 'inetUser');
 						$info['cn'] = $idno;
 						$info["uid"] = $account["uid"];
@@ -1647,7 +1646,7 @@ class SyncController extends Controller
 
     public function ps_syncTeacherForm(Request $request)
     {
-		$areas = Config::get('app.areas');
+		$areas = config('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$filter = "(&(st=$area)(tpSims=alle))";
@@ -1837,7 +1836,7 @@ class SyncController extends Controller
 					$account["objectClass"] = "radiusObjectProfile";
 					$account["cn"] = $idno;
 					$account["description"] = '從校務行政系統同步';
-					$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
+					$account["dn"] = "uid=".$account['uid'].",".config('ldap.authdn');
 					$acc_entry = $openldap->getAccountEntry($account["uid"]);
 					if ($acc_entry) {
 						unset($account['dn']);
@@ -1881,7 +1880,7 @@ class SyncController extends Controller
 						}
 					}
 					$info = array();
-					$info['dn'] = "cn=$idno,".Config::get('ldap.userdn');
+					$info['dn'] = "cn=$idno,".config('ldap.userdn');
 					$info['objectClass'] = array('tpeduPerson', 'inetUser');
 					$info['cn'] = $idno;
 					$info["uid"] = $account["uid"];
@@ -2118,7 +2117,7 @@ class SyncController extends Controller
 	
     public function hs_syncStudentForm(Request $request)
     {
-		$areas = Config::get('app.areas');
+		$areas = config('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$openldap = new LdapServiceProvider();
@@ -2268,7 +2267,7 @@ class SyncController extends Controller
 					$account["objectClass"] = "radiusObjectProfile";
 					$account["cn"] = $idno;
 					$account["description"] = '從校務行政系統同步';
-					$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
+					$account["dn"] = "uid=".$account['uid'].",".config('ldap.authdn');
 					$acc_entry = $openldap->getAccountEntry($account["uid"]);
 					if ($acc_entry) {
 						unset($account['dn']);
@@ -2285,7 +2284,7 @@ class SyncController extends Controller
 						}
 					}
 					$info = array();
-					$info['dn'] = "cn=$idno,".Config::get('ldap.userdn');
+					$info['dn'] = "cn=$idno,".config('ldap.userdn');
 					$info['objectClass'] = array('tpeduPerson', 'inetUser');
 					$info['cn'] = $idno;
 					$info["uid"] = $account["uid"];
@@ -2355,7 +2354,7 @@ class SyncController extends Controller
 
     public function js_syncStudentForm(Request $request)
     {
-		$areas = Config::get('app.areas');
+		$areas = config('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$openldap = new LdapServiceProvider();
@@ -2505,7 +2504,7 @@ class SyncController extends Controller
 					$account["objectClass"] = "radiusObjectProfile";
 					$account["cn"] = $idno;
 					$account["description"] = '從校務行政系統同步';
-					$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
+					$account["dn"] = "uid=".$account['uid'].",".config('ldap.authdn');
 					$acc_entry = $openldap->getAccountEntry($account["uid"]);
 					if ($acc_entry) {
 						unset($account['dn']);
@@ -2522,7 +2521,7 @@ class SyncController extends Controller
 						}
 					}
 					$info = array();
-					$info['dn'] = "cn=$idno,".Config::get('ldap.userdn');
+					$info['dn'] = "cn=$idno,".config('ldap.userdn');
 					$info['objectClass'] = array('tpeduPerson', 'inetUser');
 					$info['cn'] = $idno;
 					$info["uid"] = $account["uid"];
@@ -2592,7 +2591,7 @@ class SyncController extends Controller
 
     public function ps_syncStudentForm(Request $request)
     {
-		$areas = Config::get('app.areas');
+		$areas = config('app.areas');
 		$area = $request->get('area');
 		if (empty($area)) $area = $areas[0];
 		$openldap = new LdapServiceProvider();
@@ -2743,7 +2742,7 @@ class SyncController extends Controller
 						$account["objectClass"] = "radiusObjectProfile";
 						$account["cn"] = $idno;
 						$account["description"] = '從校務行政系統同步';
-						$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
+						$account["dn"] = "uid=".$account['uid'].",".config('ldap.authdn');
 						$acc_entry = $openldap->getAccountEntry($account["uid"]);
 						if ($acc_entry) {
 							unset($account['dn']);
@@ -2760,7 +2759,7 @@ class SyncController extends Controller
 							}
 						}
 						$info = array();
-						$info['dn'] = "cn=$idno,".Config::get('ldap.userdn');
+						$info['dn'] = "cn=$idno,".config('ldap.userdn');
 						$info['objectClass'] = array('tpeduPerson', 'inetUser');
 						$info['cn'] = $idno;
 						$info["uid"] = $account["uid"];
@@ -2969,7 +2968,7 @@ class SyncController extends Controller
 			$messages[] = "查無需要檢查的 Gsuite 帳號！";
 		} else {
 			foreach ($gmails as $gm) {
-				$userKey = $gm->nameID.'@'.Config::get('saml.email_domain');
+				$userKey = $gm->nameID.'@'.config('saml.email_domain');
 				$guser = $google->getUser($userKey);
 				if (!$guser) $gm->delete();
 				$messages[] = "移除不存在的 Gsuite 帳號紀錄：$userKey";

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Log;
 use Auth;
 use App\User;
-use Config;
 use Notification;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;

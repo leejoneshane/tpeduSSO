@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Config;
 use Auth;
 use Log;
 use Carbon\Carbon;
@@ -167,7 +166,7 @@ class ParentController extends Controller
 				$authorizes[$d->client_id] = $d->trust_level;
 			}
 		}
-		return view('parents.guardianAuthForm', [ 'student' => $myidno, 'kids' => $kids, 'apps' => $apps, 'agreeAll' => $agreeAll, 'authorizes' => $authorizes, 'trust_level' => Config::get('app.trust_level') ]);		
+		return view('parents.guardianAuthForm', [ 'student' => $myidno, 'kids' => $kids, 'apps' => $apps, 'agreeAll' => $agreeAll, 'authorizes' => $authorizes, 'trust_level' => config('app.trust_level') ]);		
 	}
 
 	public function applyGuardianAuth(Request $request)

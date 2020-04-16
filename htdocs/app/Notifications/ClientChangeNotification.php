@@ -44,7 +44,7 @@ class ClientChangeNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject(Config::get('app.name').'通知')
+                    ->subject(config('app.name').'通知')
                     ->greeting('OAuth 用戶端異動：')
                     ->line('管理員已經為您申請的介接專案：'.$this->project->applicationName.'進行資料變更，新的設定如下：')
                     ->line('OAuth 用戶端代號為：'.$this->project->getClient()->id.'。')

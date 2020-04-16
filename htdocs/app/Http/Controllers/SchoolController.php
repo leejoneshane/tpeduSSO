@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Log;
-use Config;
 use Validator;
 use Auth;
 use Carbon\Carbon;
@@ -208,7 +207,7 @@ class SchoolController extends Controller
 					$messages[] = "第 $i 筆記錄，".$person->name."出生日期格式或內容不正確，跳過不處理！";
 		    		continue;
 				}
-				$user_dn = "cn=$idno,".Config::get('ldap.userdn');
+				$user_dn = "cn=$idno,".config('ldap.userdn');
 				$user_entry = $openldap->getUserEntry($idno);
 				$orgs = array();
 				if ($user_entry) {
@@ -264,7 +263,7 @@ class SchoolController extends Controller
 					$entry["uid"] = $account["uid"];
 					$password = $openldap->make_ssha_password(substr($idno, -6));
 					$account["userPassword"] = $password;
-					$account['dn'] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
+					$account['dn'] = "uid=".$account['uid'].",".config('ldap.authdn');
 					$entry["userPassword"] = $password;
 				 }				   
 				 if (isset($person->character)) {
@@ -388,7 +387,7 @@ class SchoolController extends Controller
 			}
 			foreach($classes as $oclass) {
 				$info = array();
-				$info['dn'] = "ou=$oclass->id,dc=$dc,".Config::get('ldap.rdn'); 
+				$info['dn'] = "ou=$oclass->id,dc=$dc,".config('ldap.rdn'); 
 				$info["objectClass"] = "organizationalUnit";
 				$info["ou"] = $oclass->id;
 				$info["businessCategory"] = '教學班級';
@@ -453,13 +452,13 @@ class SchoolController extends Controller
 		$account["objectClass"] = "radiusObjectProfile";
 		$account["cn"] = $idno;
 		$account["description"] = '管理員新增';
-		$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
+		$account["dn"] = "uid=".$account['uid'].",".config('ldap.authdn');
 		$result = $openldap->createEntry($account);
 		if (!$result) {
 			return redirect('school/'.$dc.'/teacher?field='.$my_field)->with("error", "因為預設帳號無法建立，學生新增失敗！".$openldap->error());
 		}
 		$info = array();
-		$info['dn'] = "cn=$idno,".Config::get('ldap.userdn');
+		$info['dn'] = "cn=$idno,".config('ldap.userdn');
 		$info['objectClass'] = array('tpeduPerson', 'inetUser');
 		$info['cn'] = $idno;
 		$info["uid"] = $account["uid"];
@@ -820,7 +819,7 @@ class SchoolController extends Controller
 					$messages[] = "第 $i 筆記錄，".$person->name."出生日期格式或內容不正確，跳過不處理！";
 		    		continue;
 				}
-				$user_dn = "cn=$idno,".Config::get('ldap.userdn');
+				$user_dn = "cn=$idno,".config('ldap.userdn');
 				$user_entry = $openldap->getUserEntry($idno);
 				$original = $openldap->getUserData($user_entry);
 				$orgs = array();
@@ -884,7 +883,7 @@ class SchoolController extends Controller
 					$info["uid"] = $account["uid"];
 					$password = $openldap->make_ssha_password(substr($idno, -6));
 					$account["userPassword"] = $password;
-					$account['dn'] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
+					$account['dn'] = "uid=".$account['uid'].",".config('ldap.authdn');
 					$info["userPassword"] = $password;
 				}
 				$orgs[] = $dc;
@@ -1070,7 +1069,7 @@ class SchoolController extends Controller
 	
     public function schoolTeacherEditForm(Request $request, $dc, $uuid = null)
     {
-		$types = Config::get('app.employeeTypes');
+		$types = config('app.employeeTypes');
 		$my_field = $request->session()->get('field');
 		$keywords = $request->session()->get('keywords');
 		$openldap = new LdapServiceProvider();
@@ -1157,7 +1156,7 @@ class SchoolController extends Controller
 		$account["objectClass"] = "radiusObjectProfile";
 		$account["cn"] = $idno;
 		$account["description"] = '管理員新增';
-		$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
+		$account["dn"] = "uid=".$account['uid'].",".config('ldap.authdn');
 		$result = $openldap->createEntry($account);
 		if (!$result) {
 			return redirect('school/'.$dc.'/teacher?field='.$my_field)->with("error", "因為預設帳號無法建立，教師新增失敗！".$openldap->error());
@@ -1169,7 +1168,7 @@ class SchoolController extends Controller
 		$info['inetUserStatus'] = 'active';
 		$info['info'] = json_encode(array("sid" => $sid, "role" => $info['employeeType']), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 		$info['cn'] = $idno;
-		$info['dn'] = "cn=$idno,".Config::get('ldap.userdn');
+		$info['dn'] = "cn=$idno,".config('ldap.userdn');
 		$units = array();
 		$roles = array();
 		$titles = $request->get('roles');
@@ -1554,7 +1553,7 @@ class SchoolController extends Controller
 			$account["objectClass"] = "radiusObjectProfile";
 			$account["cn"] = $idno;
 			$account["description"] = '管理員新增';
-			$account["dn"] = "uid=".$account['uid'].",".Config::get('ldap.authdn');
+			$account["dn"] = "uid=".$account['uid'].",".config('ldap.authdn');
 			$openldap->createEntry($account);
 			$info["uid"] = $account["uid"];
 		}
@@ -1602,7 +1601,7 @@ class SchoolController extends Controller
 		$info['cn'] = $request->get('new-role');
 		$info['ou'] = $ou;
 		$info['description'] = $request->get('new-desc');
-		$info['dn'] = "cn=".$info['cn'].",ou=$ou,dc=$dc,".Config::get('ldap.rdn');
+		$info['dn'] = "cn=".$info['cn'].",ou=$ou,dc=$dc,".config('ldap.rdn');
 		$openldap = new LdapServiceProvider();
 		$result = $openldap->createEntry($info);
 		if ($result) {
@@ -1707,7 +1706,7 @@ class SchoolController extends Controller
 						$info["ou"] = $class->ou;
 						$info["businessCategory"] = '教學班級';
 						$info["description"] = $class->description;
-						$info["dn"] = "ou=$class->ou,dc=$dc,".Config::get('ldap.rdn');
+						$info["dn"] = "ou=$class->ou,dc=$dc,".config('ldap.rdn');
 						$openldap->createEntry($info);
 					}
 				}
@@ -1856,7 +1855,7 @@ class SchoolController extends Controller
 		$info['businessCategory']='教學班級'; //右列選一:行政部門,教學領域,教師社群或社團,學生社團或營隊
 		$info['ou'] = $class;
 		$info['description'] = $request->get('new-desc');
-		$info['dn'] = "ou=$class,dc=$dc,".Config::get('ldap.rdn');
+		$info['dn'] = "ou=$class,dc=$dc,".config('ldap.rdn');
 		$result = $openldap->createEntry($info);
 		if ($result) {
 			return back()->withInput()->with("success", "已經為您建立班級！");
@@ -1939,7 +1938,7 @@ class SchoolController extends Controller
 		$info['tpSubject'] = $request->get('new-subj');
 		$info['tpSubjectDomain'] = $request->get('new-dom');
 		$info['description'] = $request->get('new-desc');
-		$info['dn'] = "tpSubject=".$info['tpSubject'].",dc=$dc,".Config::get('ldap.rdn');
+		$info['dn'] = "tpSubject=".$info['tpSubject'].",dc=$dc,".config('ldap.rdn');
 		$openldap = new LdapServiceProvider();
 		$result = $openldap->createEntry($info);
 		if ($result) {
@@ -2006,7 +2005,7 @@ class SchoolController extends Controller
 		$info['businessCategory']='行政部門'; //右列選一:行政部門,教學領域,教師社群或社團,學生社團或營隊
 		$info['ou'] = $request->get('new-ou');
 		$info['description'] = $request->get('new-desc');
-		$info['dn'] = "ou=".$info['ou'].",dc=$dc,".Config::get('ldap.rdn');
+		$info['dn'] = "ou=".$info['ou'].",dc=$dc,".config('ldap.rdn');
 		$openldap = new LdapServiceProvider();
 		$result = $openldap->createEntry($info);
 		if ($result) {
@@ -2083,8 +2082,8 @@ class SchoolController extends Controller
 
     public function schoolProfileForm(Request $request, $dc)
     {
-		$categorys = Config::get('app.schoolCategory');
-		$areas = Config::get('app.areas');
+		$categorys = config('app.schoolCategory');
+		$areas = config('app.areas');
 		$openldap = new LdapServiceProvider();
 		$school = $openldap->getOrgEntry($dc);
 		$data = $openldap->getOrgData($school);
@@ -2423,7 +2422,7 @@ class SchoolController extends Controller
 			foreach ($students as $k => $st) {
 				GQrcode::create([
 					'idno' => $st['cn'],
-					'expired_at' => Carbon::today()->addDays(Config::get('app.QRCodeExpireDays')),
+					'expired_at' => Carbon::today()->addDays(config('app.QRCodeExpireDays')),
 				]);
 				$qrcode = GQrcode::where('idno', $st['cn'])->first();
 				$students[$k]['QRCODE'] = $qrcode->generate();
@@ -2457,11 +2456,10 @@ class SchoolController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$idno = $openldap->getUserIDNO($uuid);
-		$qrcode = GQrcode::where('idno', $idno)->first();
-		if ($qrcode) $qrcode->delete();
+		GQrcode::where('idno', $idno)->delete();
 		GQrcode::create([
 			'idno' => $idno,
-			'expired_at' => Carbon::today()->addDays(Config::get('app.QRCodeExpireDays')),
+			'expired_at' => Carbon::today()->addDays(config('app.QRCodeExpireDays')),
 		]);
 		return back()->with("success","已經重新產生 QRCODE！");
 	}
@@ -2470,8 +2468,7 @@ class SchoolController extends Controller
     {
 		$openldap = new LdapServiceProvider();
 		$idno = $openldap->getUserIDNO($uuid);
-		$qrcode = GQrcode::where('idno', $idno)->first();
-		if ($qrcode) $qrcode->delete();
+		GQrcode::where('idno', $idno)->delete();
 		return back()->with("success","已經移除 QRCODE！");
 	}
 

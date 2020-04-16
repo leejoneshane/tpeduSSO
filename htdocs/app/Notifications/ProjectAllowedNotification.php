@@ -44,7 +44,7 @@ class ProjectAllowedNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject(Config::get('app.name').'通知')
+                    ->subject(config('app.name').'通知')
                     ->greeting('恭喜您！')
                     ->line('管理員已經核准您申請的介接專案：'.$this->project->applicationName.'。')
                     ->line('OAuth 用戶端代號為：'.$this->project->getClient()->id.'。')
