@@ -2430,7 +2430,7 @@ class SchoolController extends Controller
 				$students[$k]['expired'] = $qrcode->expired_at;
 			}
 		}
-		return view('admin.schoolListLink', [ 'dc' => $dc, 'sims' => $sims, 'my_field' => $my_field, 'classes' => $ous, 'students' => $students ]);
+		return view('admin.schoolstudentqrcode', [ 'dc' => $dc, 'sims' => $sims, 'my_field' => $my_field, 'classes' => $ous, 'students' => $students ]);
 	}
 
 	public function denyLink(Request $request, $id)
