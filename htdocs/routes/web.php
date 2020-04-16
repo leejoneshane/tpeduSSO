@@ -265,10 +265,10 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
 	Route::get('{dc}/tokens/new', 'SchoolController@showCreateTokenForm');
 	Route::post('{dc}/tokens/new', 'SchoolController@storeToken')->name('school.createToken');
 	Route::post('{dc}/tokens/{token_id}/revoke', 'SchoolController@revokeToken')->name('school.revokeToken');
-	Route::get('{dc}/link', 'SchoolController@classLinkForm')->name('school.link');
+	Route::get('{dc}/link', 'SchoolController@schoolLinkForm')->name('school.link');
 	Route::post('link/{id}/deny', 'SchoolController@denyLink')->name('school.denyLink');
 	Route::post('link/{id}/verify', 'SchoolController@verifyLink')->name('school.verifyLink');
-	Route::get('{dc}/qrcode', 'SchoolController@classQrcodeForm')->name('school.qrcode');
+	Route::get('{dc}/qrcode', 'SchoolController@schoolQrcodeForm')->name('school.qrcode');
 	Route::post('qrcode/{uuid}', 'SchoolController@qrcodeGenerate')->name('school.generateQrcode');
 	Route::post('qrcode/{uuid}/remove', 'SchoolController@qrcodeRemove')->name('school.removeQrcode');
 });
