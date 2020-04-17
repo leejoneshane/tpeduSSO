@@ -48,7 +48,6 @@ Route::group(['middleware' => 'client:school'], function () {
     Route::get('school/{dc}/class/{class_id}', 'Api\schoolController@oneClass');
     Route::get('school/{dc}/class/{class_id}/teachers', 'Api\schoolController@allTeachersByClass');
     Route::get('school/{dc}/class/{class_id}/students', 'Api\schoolController@allStudentsByClass');
-    Route::get('school/{dc}/class/{class_id}/parents', 'Api\schoolController@allParentsByClass');
     Route::get('school/{dc}/class/{class_id}/subjects', 'Api\schoolController@allSubjectsByClass');
 });
 
@@ -102,6 +101,7 @@ Route::group(['prefix' => 'v2'], function () {
         Route::get('school/{dc}/class/{class_id}', 'Api_V2\v2_schoolController@oneClass');
         Route::get('school/{dc}/class/{class_id}/teachers', 'Api_V2\v2_schoolController@allTeachersByClass');
         Route::get('school/{dc}/class/{class_id}/students', 'Api_V2\v2_schoolController@allStudentsByClass');
+        Route::get('school/{dc}/class/{class_id}/parents', 'Api_V2\v2_schoolController@allParentsByClass');
         Route::get('school/{dc}/class/{class_id}/subjects', 'Api_V2\v2_schoolController@allSubjectsByClass');
     });
 });

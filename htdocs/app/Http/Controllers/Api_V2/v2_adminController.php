@@ -430,7 +430,7 @@ class v2_adminController extends Controller
     {
         $openldap = new LdapServiceProvider();
         $user = User::where('uuid', $uuid)->first();
-		if ($user->is_parent) {
+		if ($user && $user->is_parent) {
 			$json = array();
             $json['cn'] = $user->idno;
             $json['employeeType'] = '家長';

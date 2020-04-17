@@ -77,6 +77,7 @@ class v2_profileController extends Controller
 
     public function profile(Request $request)
     {
+		$openldap = new LdapServiceProvider();
 		$user = $request->user();
 		if ($user->is_parent) {
 			$json = new \stdClass();
@@ -88,7 +89,6 @@ class v2_profileController extends Controller
 				if ($uuid) $json->child[] = $uuid;
 			}
 		} else {
-			$openldap = new LdapServiceProvider();
 			if (!isset($user->ldap) || ! $user->ldap) return response()->json(["error" => "人員不存在"], 400, array(JSON_UNESCAPED_UNICODE));
 			$json = new \stdClass();
 			$json->role = $user->ldap['employeeType'];
