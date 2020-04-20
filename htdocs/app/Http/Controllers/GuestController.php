@@ -76,6 +76,7 @@ class GuestController extends Controller
 		$uuid = $request->get('uuid');
 		if ($uuid) {
 			$project = Project::find($uuid);
+			if (!$project) return back()->with('error','UUID 不存在！');
 			return view('3party.edit', [ 'project' => $project ]);
 		} else {
 			return back()->with('error','UUID 不存在！');
