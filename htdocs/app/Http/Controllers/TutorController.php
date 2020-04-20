@@ -191,7 +191,7 @@ class TutorController extends Controller
 					'idno' => $st['cn'],
 					'expired_at' => Carbon::today()->addDays(config('app.QRCodeExpireDays')),
 				]);
-				$qrcode = GQrcode::where('idno', $st->idno)->first();
+				$qrcode = GQrcode::where('idno', $st['cn'])->first();
 				$students[$k]['QRCODE'] = $qrcode->generate();
 				$students[$k]['expired'] = $qrcode->expired_at;
 			}

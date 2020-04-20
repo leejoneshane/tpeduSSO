@@ -405,7 +405,7 @@ class LdapServiceProvider extends ServiceProvider
 				}
 			}
 		}
-		if ($info['businessCategory'] == '教學班級') {
+		if (isset($info['businessCategory']) && $info['businessCategory'] == '教學班級') {
 			$info['grade'] = substr($info['ou'], 0, 1);
 			$dn = ldap_get_dn(self::$ldap_read,$entry);
 			$augs = explode(',', $dn);

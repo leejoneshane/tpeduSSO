@@ -1809,13 +1809,15 @@ class SchoolController extends Controller
 				$result = $openldap->addData($entry, $info);
 				if (!$result) $erros[] = $tname."：新增配課資訊失敗！";
 			} elseif ($act == 'rep') {
-				$tclass = $data['tpTeachClass'];
-				if (!is_array($tclass)) $tclass[] = $tclass;
-				foreach ($tclass as $assign_pair) {
-					$a = explode(',', $assign_pair);
-					if (count($a) == 3 && $a[0] != $dc) {
-						$assign[] = $assign_pair;
-					}
+				if (isset($data['tpTeachClass'])) {
+					$tclass = $data['tpTeachClass'];
+					if (!is_array($tclass)) $tclass[] = $tclass;
+					foreach ($tclass as $assign_pair) {
+						$a = explode(',', $assign_pair);
+						if (count($a) == 3 && $a[0] != $dc) {
+							$assign[] = $assign_pair;
+						}
+					}	
 				}
 				$result = $openldap->updateData($entry, [ "tpTeachClass" => $assign ]);
 				if (!$result) $erros[] = $tname."：取代配課資訊失敗！";
@@ -2330,7 +2332,7 @@ class SchoolController extends Controller
         $user = Auth::user();
         $token = Passport::token()->where('id', $token_id)->where('user_id', $user->getKey())->first();
         $token->revoke();
-        return redirect()->route('admin.schooltoken', [ 'dc' => $dc ]);
+        return redirect()->back();
     }
 
     public function showCreateTokenForm(Request $request, $dc)
