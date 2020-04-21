@@ -54,6 +54,8 @@ class GuestController extends Controller
 				])->save();	
 			}
 		} else {
+			$project = Project::where('redirect', $request->get('redirect'))->first();
+			if ($project) return redirect()->back()->with('error', '專案已經存在！請勿重複申請！');
 			$project = Project::create([
 				'organization' => $request->get('organization'),
 				'applicationName' => $request->get('applicationName'),
