@@ -310,7 +310,7 @@ class v2_schoolController extends Controller
     {
 		$json = array();
 		$openldap = new LdapServiceProvider();
-        $students = $openldap->findUsers("(&(o=$dc)(tpClass=$class_id)(objectClass=tpeduPerson)(inetUserStatus=active))", "entryUUID");
+        $students = $openldap->findUsers("(&(o=$dc)(tpClass=$class_id)(objectClass=tpeduPerson)(inetUserStatus=active))", "cn");
         if (!empty($students)) {
             foreach ($students as $student) {
                 $student_idno = $student['cn'];
