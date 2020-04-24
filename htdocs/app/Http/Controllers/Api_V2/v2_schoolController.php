@@ -323,7 +323,7 @@ class v2_schoolController extends Controller
                     if ($uuid) $json[] = $uuid;
                 }
             }
-            array_unique($json);
+            $json = array_unique($json);
         }
         if ($json)
             return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
