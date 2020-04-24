@@ -104,11 +104,9 @@ class v2_profileController extends Controller
 				$kids = PSLink::where('student_idno', $user->idno)->where('verified', 1)->get();
 				foreach ($kids as $kid) {
 					$idno = $kid->parent_idno;
-					$uuid = $openldap->getUserUUID($idno);
-					if (!$uuid) {
-						$user = User::where('idno', $idno)->first();
-						if ($user) $uuid = $user->uuid;
-					}
+					$uuid = false;
+                    $parent = User::where('idno', $idno)->first();
+                    if ($parent) $uuid = $parent->uuid;
 					if ($uuid) $json->parent[] = $uuid;
 				}
 			} else {

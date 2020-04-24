@@ -317,14 +317,13 @@ class v2_schoolController extends Controller
                 $kids = PSLink::where('student_idno', $student_idno)->where('verified', 1)->get();
                 foreach ($kids as $kid) {
                     $idno = $kid->parent_idno;
-                    $uuid = $openldap->getUserUUID($idno);
-                    if (!$uuid) {
-                        $user = User::where('idno', $idno)->first();
-                        if ($user) $uuid = $user->uuid;
-                    }
+                    $uuid = false;
+                    $user = User::where('idno', $idno)->first();
+                    if ($user) $uuid = $user->uuid;
                     if ($uuid) $json[] = $uuid;
                 }
-            }    
+            }
+            array_unique($json);
         }
         if ($json)
             return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
