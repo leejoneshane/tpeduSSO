@@ -294,8 +294,8 @@ class v2_schoolController extends Controller
     {
 		$json = array();
 		$openldap = new LdapServiceProvider();
-        $students = $openldap->findUsers("(&(o=$dc)(tpClass=$class_id)(inetUserStatus=active))", "entryUUID");
-        if (is_array($students)) {
+        $students = $openldap->findUsers("(&(o=$dc)(tpClass=$class_id)(objectClass=tpeduPerson)(inetUserStatus=active))", "entryUUID");
+        if (!empty($students)) {
             foreach ($students as $student) {
                 $json[] = $student['entryUUID'];
             }    
@@ -310,8 +310,8 @@ class v2_schoolController extends Controller
     {
 		$json = array();
 		$openldap = new LdapServiceProvider();
-        $students = $openldap->findUsers("(&(o=$dc)(tpClass=$class_id)(inetUserStatus=active))", "entryUUID");
-        if (is_array($students)) {
+        $students = $openldap->findUsers("(&(o=$dc)(tpClass=$class_id)(objectClass=tpeduPerson)(inetUserStatus=active))", "entryUUID");
+        if (!empty($students)) {
             foreach ($students as $student) {
                 $student_idno = $student['cn'];
                 $kids = PSLink::where('student_idno', $student_idno)->where('verified', 1)->get();
@@ -337,8 +337,8 @@ class v2_schoolController extends Controller
         $json = array();
         $classes = array();
 		$openldap = new LdapServiceProvider();
-        $teachers = $openldap->findUsers("(&(o=$dc)(tpTeachClass=*,$class_id,*))", ["o", "tpTeachClass"]);
-        if (is_array($teachers)) {
+        $teachers = $openldap->findUsers("(&(o=$dc)(tpTeachClass=*,$class_id,*)(objectClass=tpeduPerson))", ["o", "tpTeachClass"]);
+        if (!empty($teachers)) {
             foreach ($teachers as $teacher) {
                 if (is_array($teacher['tpTeachClass'])) {
                     $classes = $teacher['tpTeachClass'];
