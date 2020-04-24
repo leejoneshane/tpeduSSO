@@ -4,6 +4,7 @@
 <div class="row">
     <div class="col-sm-8 col-sm-offset-2 text shadow">
         <img src="{{ asset('img/TaipeiEduLogo.png') }}" class="img-fluid logo" alt="Responsive image">
+        <h1></h1>
         <div class="description">
     	    <p><strong><font style="color:white;font-size:24pt;">{{ config('app.name') }}</font></strong></p>
     	</div>
