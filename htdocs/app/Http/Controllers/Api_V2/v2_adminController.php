@@ -51,7 +51,7 @@ class v2_adminController extends Controller
         $clients = Passport::client()->all();
         $info = array();
         foreach ($clients as $k => $client) {
-            if (!($client->is_firstParty())) {
+            if (!($client->firstParty())) {
                 $info[] = [ 'id' => $client['id'], 'name' => $client['name'] ];        
             }
         }
