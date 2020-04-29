@@ -50,7 +50,7 @@
                                 <?php $tutor = $user->ldap['tpTutorClass']; ?>
                                 <li><a class="dropdown-item" href="{{ route('tutor', [ 'dc' => $user->ldap['adminSchools'][0], 'class' => $tutor ]) }}"><i class="fa fa-address-book fa-fw"></i>班級管理：{{ $tutor }}</a></li>
                             @endif
-                            @if ($user->is_parent || $user->ldap['employeeType'] != '學生')
+                            @if ($user->is_parent || ( isset($user->ldap['employeeType']) && $user->ldap['employeeType'] != '學生'))
                             <li><a class="dropdown-item" href="{{ route('parent.listLink') }}"><i class="fa fa-link fa-fw"></i>親子連結</a></li>
                             <li><a class="dropdown-item" href="{{ route('parent.guardianAuth') }}"><i class="fa fa-user-check fa-fw"></i>代理授權</a></li>
                             @endif
