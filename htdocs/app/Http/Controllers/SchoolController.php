@@ -2424,7 +2424,7 @@ class SchoolController extends Controller
 			foreach ($students as $k => $st) {
 				GQrcode::create([
 					'idno' => $st['cn'],
-					'expired_at' => Carbon::today()->addDays(config('app.QRCodeExpireDays')),
+					'expired_at' => Carbon::today()->addDays(config('app.qrcode_expired')),
 				]);
 				$qrcode = GQrcode::where('idno', $st['cn'])->first();
 				$students[$k]['QRCODE'] = $qrcode->generate();
@@ -2461,7 +2461,7 @@ class SchoolController extends Controller
 		GQrcode::where('idno', $idno)->delete();
 		GQrcode::create([
 			'idno' => $idno,
-			'expired_at' => Carbon::today()->addDays(config('app.QRCodeExpireDays')),
+			'expired_at' => Carbon::today()->addDays(config('app.qrcode_expired')),
 		]);
 		return back()->with("success","已經重新產生 QRCODE！");
 	}

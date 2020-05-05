@@ -189,7 +189,7 @@ class TutorController extends Controller
 			foreach ($students as $k => $st) {
 				GQrcode::create([
 					'idno' => $st['cn'],
-					'expired_at' => Carbon::today()->addDays(config('app.QRCodeExpireDays')),
+					'expired_at' => Carbon::today()->addDays(config('app.qrcode_expired')),
 				]);
 				$qrcode = GQrcode::where('idno', $st['cn'])->first();
 				$students[$k]['QRCODE'] = $qrcode->generate();
