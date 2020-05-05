@@ -7,19 +7,17 @@ use Storage;
 use Illuminate\Http\Request;
 use LightSaml\Model\Protocol\Response as Response;
 use LightSaml\Credential\X509Certificate;
-
 // For debug purposes, include the Log facade
 use Illuminate\Support\Facades\Log;
 
 trait SamlAuth
 {
-
     /*
     |--------------------------------------------------------------------------
     | File handling (metadata, certificates)
     |--------------------------------------------------------------------------
     */
-    
+
     /**
      * Get either the url or the content of a given file.
      */
@@ -28,27 +26,30 @@ trait SamlAuth
         if ($url) {
             return Storage::disk('saml')->url($configPath);
         }
+
         return Storage::disk('saml')->get($configPath);
     }
-    
+
     /**
      * Get either the url or the content of the saml metadata file.
      *
-     * @param boolean url   Set to true to get the metadata url, otherwise the
+     * @param bool url   Set to true to get the metadata url, otherwise the
      *                      file content will be returned. Defaults to false.
-     * @return String with either the url or the content
+     *
+     * @return string with either the url or the content
      */
     protected function metadata($url = false)
     {
         return $this->getSamlFile(config('saml.idp.metadata'), $url);
     }
-    
+
     /**
      * Get either the url or the content of the certificate file.
      *
-     * @param boolean url   Set to true to get the certificate url, otherwise the
+     * @param bool url   Set to true to get the certificate url, otherwise the
      *                      file content will be returned. Defaults to false.
-     * @return String with either the url or the content
+     *
+     * @return string with either the url or the content
      */
     protected function certfile($url = false)
     {
@@ -58,15 +59,16 @@ trait SamlAuth
     /**
      * Get either the url or the content of the certificate keyfile.
      *
-     * @param boolean url   Set to true to get the certificate key url, otherwise
+     * @param bool url   Set to true to get the certificate key url, otherwise
      *                      the file content will be returned. Defaults to false.
-     * @return String with either the url or the content
+     *
+     * @return string with either the url or the content
      */
     protected function keyfile($url = false)
     {
         return $this->getSamlFile(config('saml.idp.key'), $url);
     }
-    
+
     /*
     |--------------------------------------------------------------------------
     | Saml authentication
@@ -77,8 +79,7 @@ trait SamlAuth
      * Handle an http request as saml authentication request. Note that the method
      * should only be called in case a saml request is also included.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return void
+     * @param \Illuminate\Http\Request $request
      */
     public function handleSamlLoginRequest($request)
     {
@@ -105,8 +106,10 @@ trait SamlAuth
     /**
      * Make a saml authentication attempt by building the saml response.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\RedirectResponse
+     *
      * @see https://www.lightsaml.com/LightSAML-Core/Cookbook/How-to-make-Response/
      * @see https://imbringingsyntaxback.com/implementing-a-saml-idp-with-laravel/
      */
@@ -127,11 +130,11 @@ trait SamlAuth
 
         if (config('saml.debug_saml_request')) {
             Log::debug('<SamlAuth::buildSAMLResponse>');
-            Log::debug('Assertion URL: ' . $authnRequest->getAssertionConsumerServiceURL());
-            Log::debug('Assertion URL: ' . base64_encode($authnRequest->getAssertionConsumerServiceURL()));
-            Log::debug('Destination: ' . $destination);
-            Log::debug('Issuer: ' . $issuer);
-            Log::debug('Certificate: ' . $this->certfile());
+            Log::debug('Assertion URL: '.$authnRequest->getAssertionConsumerServiceURL());
+            Log::debug('Assertion URL: '.base64_encode($authnRequest->getAssertionConsumerServiceURL()));
+            Log::debug('Destination: '.$destination);
+            Log::debug('Issuer: '.$issuer);
+            Log::debug('Certificate: '.$this->certfile());
         }
 
         // Generate the response object
@@ -150,15 +153,15 @@ trait SamlAuth
 
         // We are responding with both the email and the username as attributes
         // TODO: Add here other attributes, e.g. groups / roles / permissions
-        $user   = Auth::user();
+        $user = Auth::user();
         $nameID = $user->nameID();
-        
+
         // Generate the SAML assertion for the response xml object
         $assertion
             ->setId(\LightSaml\Helper::generateID())
             ->setIssueInstant(new \DateTime())
             ->setIssuer(new \LightSaml\Model\Assertion\Issuer($issuer))
-            
+
             ->setSubject(
                 (new \LightSaml\Model\Assertion\Subject())
                         ->setNameID(new \LightSaml\Model\Assertion\NameID(
@@ -185,7 +188,7 @@ trait SamlAuth
                             config(
                                 'saml.sp.'.base64_encode($authnRequest->getAssertionConsumerServiceURL()).'.audience_restriction',
                                 $authnRequest->getAssertionConsumerServiceURL()
-                            )])
+                            ), ])
                     )
             )
             ->addItem(
@@ -197,15 +200,16 @@ trait SamlAuth
                        ->setAuthnContextClassRef(\LightSaml\SamlConstants::AUTHN_CONTEXT_PASSWORD_PROTECTED_TRANSPORT)
                 )
             );
-            
+
         // Send out the saml response
         $this->sendSamlResponse($response);
     }
 
     /**
-     * Send saml response object (print out)
+     * Send saml response object (print out).
      *
-     * @param  \LightSaml\Model\Protocol\Response  $response
+     * @param \LightSaml\Model\Protocol\Response $response
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     protected function sendSamlResponse(Response $response)
@@ -216,7 +220,7 @@ trait SamlAuth
         $messageContext->setMessage($response)->asResponse();
         /** @var \Symfony\Component\HttpFoundation\Response $httpResponse */
         $httpResponse = $postBinding->send($messageContext);
-        print $httpResponse->getContent()."\n\n";
+        echo $httpResponse->getContent()."\n\n";
     }
 
     /**
@@ -229,5 +233,4 @@ trait SamlAuth
             session()->remove('RelayState');
         }
     }
-
 }

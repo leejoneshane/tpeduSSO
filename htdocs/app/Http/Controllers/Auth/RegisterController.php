@@ -11,7 +11,6 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use App\Rules\idno;
 use App\Rules\idnoAvail;
 
-
 class RegisterController extends Controller
 {
     /*
@@ -36,8 +35,6 @@ class RegisterController extends Controller
 
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -47,14 +44,15 @@ class RegisterController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
+     * @param array $data
+     *
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
     {
         return Validator::make($data, [
             'name' => 'required|string|max:255',
-            'idno' => ['required', 'string', 'size:10', 'unique:users', new idno, new idnoAvail],
+            'idno' => ['required', 'string', 'size:10', 'unique:users', new idno(), new idnoAvail()],
             'email' => 'required|string|email|max:255|unique:users',
             'mobile' => 'string|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
@@ -64,7 +62,8 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
+     * @param array $data
+     *
      * @return \App\User
      */
     protected function create(array $data)
@@ -80,6 +79,7 @@ class RegisterController extends Controller
         ]);
         $user = User::where('idno', $data['idno'])->first();
         $user->sendEmailVerificationNotification();
+
         return $user;
     }
 }

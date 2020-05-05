@@ -31,14 +31,12 @@ class ResetPasswordController extends Controller
 
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
         $this->middleware('guest');
     }
-    
+
     protected function resetPassword($user, $password)
     {
         $user->resetLdapPassword($password);
@@ -48,5 +46,4 @@ class ResetPasswordController extends Controller
         event(new PasswordReset($user));
         $this->guard()->login($user);
     }
-
 }

@@ -30,8 +30,6 @@ class VerificationController extends Controller
 
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -43,10 +41,12 @@ class VerificationController extends Controller
     public function show(Request $request)
     {
         $user = $request->user();
-        if (!isset($user->email) || empty($user->email)) return redirect()->route('profile');
+        if (!isset($user->email) || empty($user->email)) {
+            return redirect()->route('profile');
+        }
+
         return $user->hasVerifiedEmail()
                     ? redirect($this->redirectPath())
                     : view('auth.verify');
     }
-
 }

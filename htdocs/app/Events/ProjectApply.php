@@ -3,7 +3,6 @@
 namespace App\Events;
 
 use App\Project;
-use App\Events\Event;
 use Illuminate\Queue\SerializesModels;
 
 class ProjectApply extends Event
@@ -15,8 +14,7 @@ class ProjectApply extends Event
     /**
      * Create a new event instance.
      *
-     * @param  \App\Project  $project
-     * @return void
+     * @param \App\Project $project
      */
     public function __construct(Project $project)
     {

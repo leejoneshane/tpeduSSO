@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Validation\ValidationException;
-use App\Http\Controllers\Auth\SamlAuth;
 use App\Providers\LdapServiceProvider;
 
 trait AuthenticatesUsers
@@ -31,7 +30,8 @@ trait AuthenticatesUsers
     /**
      * Handle a login request to the application.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      *
      * @throws \Illuminate\Validation\ValidationException
@@ -41,44 +41,53 @@ trait AuthenticatesUsers
         $this->validateLogin($request);
 
         $openldap = new LdapServiceProvider();
-		$username = $request->get('username');
-		$password = $request->get('password');
-		if (substr($username,0,3) == 'dc=') {
-	    	if (!$openldap->checkSchoolAdmin($username))
-				return back()->with("error","學校代號不存在！");
-	    	if ($openldap->schoolLogin($username, $password)) {
-				$dc = substr($username,3);
-				$request->session()->put('dc', $dc);
-				return redirect()->route('schoolAdmin');
-	    	} else {
-				return back()->with("error","學校管理密碼不正確！");
-	    	}
-		}
+        $username = $request->get('username');
+        $password = $request->get('password');
+        if (substr($username, 0, 3) == 'dc=') {
+            if (!$openldap->checkSchoolAdmin($username)) {
+                return back()->with('error', '學校代號不存在！');
+            }
+            if ($openldap->schoolLogin($username, $password)) {
+                $dc = substr($username, 3);
+                $request->session()->put('dc', $dc);
 
-        if (substr($username,0,3) == 'cn=') {
+                return redirect()->route('schoolAdmin');
+            } else {
+                return back()->with('error', '學校管理密碼不正確！');
+            }
+        }
+
+        if (substr($username, 0, 3) == 'cn=') {
             $idno = $openldap->checkIdno($username);
         } else {
             $idno = $openldap->checkAccount($username);
         }
         if ($idno) {
             $status = $openldap->checkStatus($idno);
-            if ($status == 'inactive') return back()->with("error","很抱歉，您已經被管理員停權！");
-            if ($status == 'deleted') return back()->with("error","很抱歉，您已經被管理員刪除！");
-            if (substr($username,-9) == substr($idno, -9)) {
-                if ($openldap->authenticate($username,$password)) {
+            if ($status == 'inactive') {
+                return back()->with('error', '很抱歉，您已經被管理員停權！');
+            }
+            if ($status == 'deleted') {
+                return back()->with('error', '很抱歉，您已經被管理員刪除！');
+            }
+            if (substr($username, -9) == substr($idno, -9)) {
+                if ($openldap->authenticate($username, $password)) {
                     $request->session()->put('idno', $idno);
-                    if ($password == substr($idno, -6)) $request->session()->put('mustChangePW', true);
+                    if ($password == substr($idno, -6)) {
+                        $request->session()->put('mustChangePW', true);
+                    }
+
                     return redirect()->route('changeAccount');
                 }
             }
-/*
-            if ($password == substr($idno, -6)) {
-                if ($openldap->authenticate($username,$password)) {
-                    $request->session()->put('idno', $idno);
-                    return redirect()->route('changePassword');
-                }
-            }
-*/
+            /*
+                        if ($password == substr($idno, -6)) {
+                            if ($openldap->authenticate($username,$password)) {
+                                $request->session()->put('idno', $idno);
+                                return redirect()->route('changePassword');
+                            }
+                        }
+            */
         }
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
@@ -94,14 +103,14 @@ trait AuthenticatesUsers
         // to login and redirect the user back to the login form. Of course, when this
         // user surpasses their maximum number of attempts they will get locked out.
         $this->incrementLoginAttempts($request);
+
         return $this->sendFailedLoginResponse($request);
     }
 
     /**
      * Validate the user login request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return void
+     * @param \Illuminate\Http\Request $request
      */
     protected function validateLogin(Request $request)
     {
@@ -114,7 +123,8 @@ trait AuthenticatesUsers
     /**
      * Attempt to log the user into the application.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return bool
      */
     protected function attemptLogin(Request $request)
@@ -127,7 +137,8 @@ trait AuthenticatesUsers
     /**
      * Get the needed authorization credentials from the request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return array
      */
     protected function credentials(Request $request)
@@ -138,7 +149,8 @@ trait AuthenticatesUsers
     /**
      * Send the response after the user was authenticated.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     protected function sendLoginResponse(Request $request)
@@ -153,15 +165,18 @@ trait AuthenticatesUsers
     /**
      * The user has been authenticated.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  mixed  $user
+     * @param \Illuminate\Http\Request $request
+     * @param mixed                    $user
+     *
      * @return mixed
      */
     protected function authenticated(Request $request, $user)
     {
         if (Auth::check()) {
             if (isset($request['SAMLRequest'])) {
-                if ($user->is_parent) return back()->with('error','很抱歉，家長不提供 SAML 介接！');
+                if ($user->is_parent) {
+                    return back()->with('error', '很抱歉，家長不提供 SAML 介接！');
+                }
                 if ($user->nameID()) {
                     $this->handleSamlLoginRequest($request);
                 } else {
@@ -172,7 +187,7 @@ trait AuthenticatesUsers
             if ($counter) {
                 DB::table('counter')->where('count_at', date('Y-m-d'))->increment('count');
             } else {
-                DB::table('counter')->insert(array( 'count_at' => date('Y-m-d'), 'count' => 1 ));
+                DB::table('counter')->insert(array('count_at' => date('Y-m-d'), 'count' => 1));
             }
         }
     }
@@ -180,7 +195,8 @@ trait AuthenticatesUsers
     /**
      * Get the failed login response instance.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws \Illuminate\Validation\ValidationException
@@ -205,25 +221,29 @@ trait AuthenticatesUsers
     /**
      * Log the user out of the application.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function logout(Request $request)
     {
         $this->guard()->logout();
         $request->session()->invalidate();
+
         return $this->loggedOut($request) ?: redirect('/');
     }
+
     /**
      * The user has logged out of the application.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return mixed
      */
     protected function loggedOut(Request $request)
     {
-        //
     }
+
     /**
      * Get the guard to be used during authentication.
      *

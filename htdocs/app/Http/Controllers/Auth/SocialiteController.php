@@ -38,19 +38,22 @@ class SocialiteController extends Controller
                     'socialite' => $provider,
                     'userID' => $userID,
                 ]);
+
                 return redirect()->route('socialite')->with('success', "$provider 社群帳號： $userID 綁定完成！");
             } else {
                 $account = SocialiteAccount::where('userId', $userID)->where('socialite', $provider)->first();
-                if($account) {
+                if ($account) {
                     $myuser = $account->user;
                     if ($myuser) {
                         Auth::login($myuser);
+
                         return redirect('/');
-                    } 
+                    }
                 }
+
                 return redirect()->route('login')->with('error', '這個社群帳號尚未綁定使用者，所以無法登入！');
             }
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             return redirect()->route('login')->with('error', "使用 $provider 帳號登入失敗");
         }
     }
@@ -64,12 +67,21 @@ class SocialiteController extends Controller
         $line = false;
         $accounts = $user->socialite_accounts;
         foreach ($accounts as $a) {
-            if ($a->socialite == 'google') $google = $a;
-            if ($a->socialite == 'facebook') $facebook = $a;
-            if ($a->socialite == 'yahoo') $yahoo = $a;
-            if ($a->socialite == 'line') $line = $a;
+            if ($a->socialite == 'google') {
+                $google = $a;
+            }
+            if ($a->socialite == 'facebook') {
+                $facebook = $a;
+            }
+            if ($a->socialite == 'yahoo') {
+                $yahoo = $a;
+            }
+            if ($a->socialite == 'line') {
+                $line = $a;
+            }
         }
-        return view('auth.socialiteManager', [ 'google' => $google, 'facebook' => $facebook, 'yahoo' => $yahoo, 'line' => $line ]);
+
+        return view('auth.socialiteManager', ['google' => $google, 'facebook' => $facebook, 'yahoo' => $yahoo, 'line' => $line]);
     }
 
     public function removeSocialite(Request $request)
@@ -78,7 +90,7 @@ class SocialiteController extends Controller
         $socialite = $request->get('socialite');
         $userid = $request->get('userid');
         $account = SocialiteAccount::where('idno', $user->idno)->where('socialite', $socialite)->where('userId', $userid)->delete();
+
         return redirect()->route('socialite');
     }
-
 }

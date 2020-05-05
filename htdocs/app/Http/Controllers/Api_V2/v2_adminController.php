@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api_V2;
 
-use Cookie;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -18,149 +17,203 @@ use App\PSLink;
 
 class v2_adminController extends Controller
 {
-	public function valid_token(Request $request, $token)
+    public function valid_token(Request $request, $token)
     {
-		$openldap = new LdapServiceProvider();
-		$psr = (new \Lcobucci\JWT\Parser())->parse($token);
-		$token_id = $psr->getClaim('jti');
-		$token = Passport::token()->find($token_id);
-		if (!$token) {
-			return response()->json(['error' => 'The token is invliad!'], 404);
-		} elseif ($token->revoked) {
-			return response()->json(['error' => 'The token is revoked!'], 410);
-		} else {
+        $openldap = new LdapServiceProvider();
+        $psr = (new \Lcobucci\JWT\Parser())->parse($token);
+        $token_id = $psr->getClaim('jti');
+        $token = Passport::token()->find($token_id);
+        if (!$token) {
+            return response()->json(['error' => 'The token is invliad!'], 404);
+        } elseif ($token->revoked) {
+            return response()->json(['error' => 'The token is revoked!'], 410);
+        } else {
             $client = $token->client();
             $project = Project::byClient($client->id);
-			$user = $token->user;
-			$validate = array();
-			if (isset($user->uuid)) $validate['user'] = $user->uuid;
-			if ($client->firstParty()) {
+            $user = $token->user;
+            $validate = array();
+            if (isset($user->uuid)) {
+                $validate['user'] = $user->uuid;
+            }
+            if ($client->firstParty()) {
                 $entry = $openldap->getUserEntry($user->uuid);
                 $admin = $openldap->getUserData($entry, 'tpAdminSchools');
                 $validate['admin_schools'] = $admin['tpAdminSchools'];
             }
-            if ($project->privileged) $validate['privileged'] = 'true';
-			$validate['client_id'] = $client->id;
-			$validate['scopes'] = $token->scopes;
-			return response()->json($validate);
-		}
-	}
+            if ($project->privileged) {
+                $validate['privileged'] = 'true';
+            }
+            $validate['client_id'] = $client->id;
+            $validate['scopes'] = $token->scopes;
 
-	public function clients(Request $request)
+            return response()->json($validate);
+        }
+    }
+
+    public function clients(Request $request)
     {
         $clients = Passport::client()->all();
         $info = array();
         foreach ($clients as $k => $client) {
             if (!($client->firstParty())) {
-                $info[] = [ 'id' => $client['id'], 'name' => $client['name'] ];        
+                $info[] = ['id' => $client['id'], 'name' => $client['name']];
             }
         }
+
         return response()->json($info, 200, array(JSON_UNESCAPED_UNICODE));
     }
 
-	public function scopes(Request $request)
+    public function scopes(Request $request)
     {
         $scopes = Passport::scopes();
+
         return response()->json($scopes, 200, array(JSON_UNESCAPED_UNICODE));
     }
 
     public function schoolAdd(Request $request)
     {
-		$validatedData = $request->validate([
-			'o' => 'required|string',
-			'name' => 'required|string',
-			'type' => 'required|string',
-			'area' => 'required|string',
-			'uno' => 'required|string|size:6',
-			'fax' => 'nullable|string',
-			'tel' => 'nullable|string',
-			'postal' => 'nullable|digits_between:3,5',
-			'address' => 'nullable|string',
-			'mbox' => 'nullable|digits:3',
-			'www' => 'nullable|url',
-			'ipv4' => new ipv4cidr,
-			'ipv6' => new ipv6cidr,
-		]);
+        $validatedData = $request->validate([
+            'o' => 'required|string',
+            'name' => 'required|string',
+            'type' => 'required|string',
+            'area' => 'required|string',
+            'uno' => 'required|string|size:6',
+            'fax' => 'nullable|string',
+            'tel' => 'nullable|string',
+            'postal' => 'nullable|digits_between:3,5',
+            'address' => 'nullable|string',
+            'mbox' => 'nullable|digits:3',
+            'www' => 'nullable|url',
+            'ipv4' => new ipv4cidr(),
+            'ipv6' => new ipv6cidr(),
+        ]);
         $schoolinfo = array();
-		$openldap = new LdapServiceProvider();
-		$dc = $request->get('o');
-		$schoolinfo['objectClass'] = array('tpeduSchool','top');
-		$schoolinfo['o'] = $dc;
-		$schoolinfo['businessCategory'] = $request->get('type');
+        $openldap = new LdapServiceProvider();
+        $dc = $request->get('o');
+        $schoolinfo['objectClass'] = array('tpeduSchool', 'top');
+        $schoolinfo['o'] = $dc;
+        $schoolinfo['businessCategory'] = $request->get('type');
         $schoolinfo['st'] = $request->get('area');
-		$schoolinfo['description'] = $request->get('name');
-		$schoolinfo['tpUniformNumbers'] = $request->get('uno');
-		if (!empty($request->get('fax'))) $schoolinfo['facsimileTelephoneNumber'] = $request->get('fax');
-		if (!empty($request->get('tel'))) $schoolinfo['telephoneNumber'] = $request->get('tel');
-		if (!empty($request->get('postal'))) $schoolinfo['postalCode'] = $request->get('postal');
-		if (!empty($request->get('address'))) $schoolinfo['street'] = $request->get('address');
-		if (!empty($request->get('mbox'))) $schoolinfo['postOfficeBox'] = $request->get('mbox');
-		if (!empty($request->get('www'))) $schoolinfo['wWWHomePage'] = $request->get('www');
-		if (!empty($request->get('ipv4'))) $schoolinfo['tpIpv4'] = $request->get('ipv4');
-		if (!empty($request->get('ipv6'))) $schoolinfo['tpIpv6'] = $request->get('ipv6');
-		if (!empty($request->get('admins'))) $schoolinfo['tpAdministrator'] = $request->get('admins');
-		$schoolinfo['dn'] = "dc=$dc,".config('ldap.rdn');
-		if (!$openldap->createEntry($schoolinfo)) {
-		    return response()->json([ 'error' => '教育機構建立失敗：' . $openldap->error() ], 500);
-		}
-		$openldap->updateOus($dc, $request->get('ous'));
-		$openldap->updateClasses($dc, $request->get('classes'));
-		$openldap->updateSubjects($dc, $request->get('subjects'));
-		$entry = $openldap->getOrgEntry($dc);
-		$openldap->updateData($entry, $schoolinfo);
-		$json = $openldap->getOrgData($entry);
-		return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
+        $schoolinfo['description'] = $request->get('name');
+        $schoolinfo['tpUniformNumbers'] = $request->get('uno');
+        if (!empty($request->get('fax'))) {
+            $schoolinfo['facsimileTelephoneNumber'] = $request->get('fax');
+        }
+        if (!empty($request->get('tel'))) {
+            $schoolinfo['telephoneNumber'] = $request->get('tel');
+        }
+        if (!empty($request->get('postal'))) {
+            $schoolinfo['postalCode'] = $request->get('postal');
+        }
+        if (!empty($request->get('address'))) {
+            $schoolinfo['street'] = $request->get('address');
+        }
+        if (!empty($request->get('mbox'))) {
+            $schoolinfo['postOfficeBox'] = $request->get('mbox');
+        }
+        if (!empty($request->get('www'))) {
+            $schoolinfo['wWWHomePage'] = $request->get('www');
+        }
+        if (!empty($request->get('ipv4'))) {
+            $schoolinfo['tpIpv4'] = $request->get('ipv4');
+        }
+        if (!empty($request->get('ipv6'))) {
+            $schoolinfo['tpIpv6'] = $request->get('ipv6');
+        }
+        if (!empty($request->get('admins'))) {
+            $schoolinfo['tpAdministrator'] = $request->get('admins');
+        }
+        $schoolinfo['dn'] = "dc=$dc,".config('ldap.rdn');
+        if (!$openldap->createEntry($schoolinfo)) {
+            return response()->json(['error' => '教育機構建立失敗：'.$openldap->error()], 500);
+        }
+        $openldap->updateOus($dc, $request->get('ous'));
+        $openldap->updateClasses($dc, $request->get('classes'));
+        $openldap->updateSubjects($dc, $request->get('subjects'));
+        $entry = $openldap->getOrgEntry($dc);
+        $openldap->updateData($entry, $schoolinfo);
+        $json = $openldap->getOrgData($entry);
+
+        return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
     }
 
     public function schoolUpdate(Request $request, $dc)
     {
-		$validatedData = $request->validate([
-			'name' => 'nullable|string',
-			'type' => 'nullable|string',
-			'area' => 'nullable|string',
-			'fax' => 'nullable|string',
-			'tel' => 'nullable|string',
-			'postal' => 'nullable|digits_between:3,5',
-			'address' => 'nullable|string',
-			'mbox' => 'nullable|digits:3',
-			'www' => 'nullable|url',
-			'uno' => 'nullable|string|size:6',
-			'ipv4' => new ipv4cidr,
-			'ipv6' => new ipv6cidr,
-		]);
+        $validatedData = $request->validate([
+            'name' => 'nullable|string',
+            'type' => 'nullable|string',
+            'area' => 'nullable|string',
+            'fax' => 'nullable|string',
+            'tel' => 'nullable|string',
+            'postal' => 'nullable|digits_between:3,5',
+            'address' => 'nullable|string',
+            'mbox' => 'nullable|digits:3',
+            'www' => 'nullable|url',
+            'uno' => 'nullable|string|size:6',
+            'ipv4' => new ipv4cidr(),
+            'ipv6' => new ipv6cidr(),
+        ]);
         $schoolinfo = array();
-		$openldap = new LdapServiceProvider();
-        if (!empty($request->get('area'))) $schoolinfo['st'] = $request->get('area');
-		if (!empty($request->get('name'))) $schoolinfo['description'] = $request->get('name');
-		if (!empty($request->get('fax'))) $schoolinfo['facsimileTelephoneNumber'] = $request->get('fax');
-		if (!empty($request->get('tel'))) $schoolinfo['telephoneNumber'] = $request->get('tel');
-		if (!empty($request->get('postal'))) $schoolinfo['postalCode'] = $request->get('postal');
-		if (!empty($request->get('address'))) $schoolinfo['street'] = $request->get('address');
-		if (!empty($request->get('mbox'))) $schoolinfo['postOfficeBox'] = $request->get('mbox');
-		if (!empty($request->get('www'))) $schoolinfo['wWWHomePage'] = $request->get('www');
-		if (!empty($request->get('uno'))) $schoolinfo['tpUniformNumbers'] = $request->get('uno');
-		if (!empty($request->get('ipv4'))) $schoolinfo['tpIpv4'] = $request->get('ipv4');
-		if (!empty($request->get('ipv6'))) $schoolinfo['tpIpv6'] = $request->get('ipv6');
-		if (!empty($request->get('admins'))) $schoolinfo['tpAdministrator'] = $request->get('admins');
-		$openldap->updateOus($dc, $request->get('ous'));
-		$openldap->updateClasses($dc, $request->get('classes'));
-		$openldap->updateSubjects($dc, $request->get('subjects'));
-		$entry = $openldap->getOrgEntry($dc);
-		$openldap->updateData($entry, $schoolinfo);
-		$json = $openldap->getOrgData($entry);
-		return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
+        $openldap = new LdapServiceProvider();
+        if (!empty($request->get('area'))) {
+            $schoolinfo['st'] = $request->get('area');
+        }
+        if (!empty($request->get('name'))) {
+            $schoolinfo['description'] = $request->get('name');
+        }
+        if (!empty($request->get('fax'))) {
+            $schoolinfo['facsimileTelephoneNumber'] = $request->get('fax');
+        }
+        if (!empty($request->get('tel'))) {
+            $schoolinfo['telephoneNumber'] = $request->get('tel');
+        }
+        if (!empty($request->get('postal'))) {
+            $schoolinfo['postalCode'] = $request->get('postal');
+        }
+        if (!empty($request->get('address'))) {
+            $schoolinfo['street'] = $request->get('address');
+        }
+        if (!empty($request->get('mbox'))) {
+            $schoolinfo['postOfficeBox'] = $request->get('mbox');
+        }
+        if (!empty($request->get('www'))) {
+            $schoolinfo['wWWHomePage'] = $request->get('www');
+        }
+        if (!empty($request->get('uno'))) {
+            $schoolinfo['tpUniformNumbers'] = $request->get('uno');
+        }
+        if (!empty($request->get('ipv4'))) {
+            $schoolinfo['tpIpv4'] = $request->get('ipv4');
+        }
+        if (!empty($request->get('ipv6'))) {
+            $schoolinfo['tpIpv6'] = $request->get('ipv6');
+        }
+        if (!empty($request->get('admins'))) {
+            $schoolinfo['tpAdministrator'] = $request->get('admins');
+        }
+        $openldap->updateOus($dc, $request->get('ous'));
+        $openldap->updateClasses($dc, $request->get('classes'));
+        $openldap->updateSubjects($dc, $request->get('subjects'));
+        $entry = $openldap->getOrgEntry($dc);
+        $openldap->updateData($entry, $schoolinfo);
+        $json = $openldap->getOrgData($entry);
+
+        return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
     }
 
-	public function schoolRemove(Request $request, $dc)
+    public function schoolRemove(Request $request, $dc)
     {
         $openldap = new LdapServiceProvider();
         $entry = $openldap->getOrgEntry($dc);
-		if (!$entry) return response()->json([ 'error' => '找不到指定的教育機構'], 404);
-		$result = $openldap->deleteEntry($entry);
-		if ($result)
-		    return response()->json([ 'success' => '指定的教育機構已經刪除'], 410);
-		else
-		    return response()->json([ 'error' => '指定的教育機構刪除失敗：' . $openldap->error() ], 500);
+        if (!$entry) {
+            return response()->json(['error' => '找不到指定的教育機構'], 404);
+        }
+        $result = $openldap->deleteEntry($entry);
+        if ($result) {
+            return response()->json(['success' => '指定的教育機構已經刪除'], 410);
+        } else {
+            return response()->json(['error' => '指定的教育機構刪除失敗：'.$openldap->error()], 500);
+        }
     }
 
     public function peopleSearch(Request $request)
@@ -168,129 +221,197 @@ class v2_adminController extends Controller
         $openldap = new LdapServiceProvider();
         $condition = array();
         $org = $request->get('o');
-        if ($org) $condition[] = "(o=$org)";
+        if ($org) {
+            $condition[] = "(o=$org)";
+        }
         $role = $request->get('role');
-        if ($role) $condition[] = "(employeeType=$role)";
+        if ($role) {
+            $condition[] = "(employeeType=$role)";
+        }
         $idno = $request->get('idno');
-        if ($idno) $condition[] = "(cn=$idno)";
+        if ($idno) {
+            $condition[] = "(cn=$idno)";
+        }
         $uid = $request->get('uid');
-        if ($uid) $condition[] = "(uid=$uid)";
+        if ($uid) {
+            $condition[] = "(uid=$uid)";
+        }
         $sysid = $request->get('sysid');
-        if ($sysid) $condition[] = "(employeeNumber=$sysid)";
+        if ($sysid) {
+            $condition[] = "(employeeNumber=$sysid)";
+        }
         $gender = $request->get('gender');
-        if ($gender) $condition[] = "(gender=$gender)";
+        if ($gender) {
+            $condition[] = "(gender=$gender)";
+        }
         $name = $request->get('name');
-        if ($name) $condition[] = "(displayName=*$name*)";
+        if ($name) {
+            $condition[] = "(displayName=*$name*)";
+        }
         $email = $request->get('email');
-        if ($email) $condition[] = "(mail=*$email*)";
+        if ($email) {
+            $condition[] = "(mail=*$email*)";
+        }
         $tel = $request->get('tel');
-        if ($tel) $condition[] = "(|(mobile=$tel)(telephoneNumber=$tel))";
+        if ($tel) {
+            $condition[] = "(|(mobile=$tel)(telephoneNumber=$tel))";
+        }
         if (count($condition) == 0) {
-            return response()->json([ 'error' => '請提供搜尋條件'], 500);
+            return response()->json(['error' => '請提供搜尋條件'], 500);
         } else {
             $filter = '(&';
             foreach ($condition as $c) {
                 $filter .= $c;
             }
-        
+
             $filter .= '(inetUserStatus=active))';
-            $people = $openldap->findUsers($filter, "entryUUID");
+            $people = $openldap->findUsers($filter, 'entryUUID');
             $json = array();
-            if ($people)
-	    	    foreach ($people as $one) {
-	        	    $json[] = $one['entryUUID'];
-		        }
-            if ($json)
+            if ($people) {
+                foreach ($people as $one) {
+                    $json[] = $one['entryUUID'];
+                }
+            }
+            if ($json) {
                 return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
-            else
-                return response()->json([ 'error' => "找不到符合條件的人員"], 404);
+            } else {
+                return response()->json(['error' => '找不到符合條件的人員'], 404);
+            }
         }
     }
 
     public function peopleAdd(Request $request)
     {
-		$validatedData = $request->validate([
-			'school' => 'required|string',
-			'idno' => [new idno, new idnoAvail],
-			'lastname' => 'required|string',
-			'firstname' => 'required|string',
-			'type' => 'required|string',
-		]);
+        $validatedData = $request->validate([
+            'school' => 'required|string',
+            'idno' => [new idno(), new idnoAvail()],
+            'lastname' => 'required|string',
+            'firstname' => 'required|string',
+            'type' => 'required|string',
+        ]);
         $openldap = new LdapServiceProvider();
         $idno = strtoupper($request->get('idno'));
-        if (empty($idno)) return response()->json(["error" => "請提供身分證字號"], 400);
+        if (empty($idno)) {
+            return response()->json(['error' => '請提供身分證字號'], 400);
+        }
         $entry = $openldap->getUserEntry($idno);
-        if ($entry) return response()->json(["error" => "該使用者已經存在"], 400);
-        if (empty($request->get('type'))) return response()->json(["error" => "請提供該使用者的身份"], 400);
-        if (empty($request->get('lastname')) || empty($request->get('firstname'))) return response()->json(["error" => "請提供該使用者的真實姓名"], 400);
-		$info = array();
-		$info['dn'] = "cn=".$idno.",".config('ldap.userdn');
-		$info["objectClass"] = array("tpeduPerson","inetUser");
- 		$info["inetUserStatus"] = "Active";
-        $info["cn"] = $idno;
-	    if (!empty($request->get('password'))) {
-            $info["userPassword"] = $openldap->make_ssha_password($request->get('password'));
+        if ($entry) {
+            return response()->json(['error' => '該使用者已經存在'], 400);
+        }
+        if (empty($request->get('type'))) {
+            return response()->json(['error' => '請提供該使用者的身份'], 400);
+        }
+        if (empty($request->get('lastname')) || empty($request->get('firstname'))) {
+            return response()->json(['error' => '請提供該使用者的真實姓名'], 400);
+        }
+        $info = array();
+        $info['dn'] = 'cn='.$idno.','.config('ldap.userdn');
+        $info['objectClass'] = array('tpeduPerson', 'inetUser');
+        $info['inetUserStatus'] = 'Active';
+        $info['cn'] = $idno;
+        if (!empty($request->get('password'))) {
+            $info['userPassword'] = $openldap->make_ssha_password($request->get('password'));
         } else {
-            $info["userPassword"] = $openldap->make_ssha_password(substr($idno, -6));
+            $info['userPassword'] = $openldap->make_ssha_password(substr($idno, -6));
         }
         $orgs = array();
         $sch = $request->get('school');
-        if (empty($sch)) return response()->json(["error" => "請提供所屬機關學校"], 400);
-        if (is_array($sch))
+        if (empty($sch)) {
+            return response()->json(['error' => '請提供所屬機關學校'], 400);
+        }
+        if (is_array($sch)) {
             $orgs = $sch;
-        else
+        } else {
             $orgs[] = $sch;
+        }
         $educloud = array();
-		foreach ($orgs as $o) {
-			$entry = $openldap->getOrgEntry($o);
-			$data = $openldap->getOrgData($entry, 'tpUniformNumbers');
-			$sid = $data['tpUniformNumbers'];
-			$educloud[] = json_encode(array("sid" => $sid, "role" => $request->get('type')), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
-		}
+        foreach ($orgs as $o) {
+            $entry = $openldap->getOrgEntry($o);
+            $data = $openldap->getOrgData($entry, 'tpUniformNumbers');
+            $sid = $data['tpUniformNumbers'];
+            $educloud[] = json_encode(array('sid' => $sid, 'role' => $request->get('type')), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
+        }
         $info['o'] = $orgs;
         $info['info'] = $educloud;
-		$info['employeeType'] = $request->get('type');
-		$info['sn'] = $request->get('lastname');
-		$info['givenName'] = $request->get('firstname');
-		$info['displayName'] = $info['sn'].$info['givenName'];
-        if ($request->get('type') != "學生") {
-            if (!empty($request->get('unit'))) $info['ou'] = $request->get('unit');
-            if (!empty($request->get('role'))) $info['title'] = $request->get('role');
-            if (!empty($request->get('tclass'))) $info['tpTeachClass'] = $request->get('tclass');
+        $info['employeeType'] = $request->get('type');
+        $info['sn'] = $request->get('lastname');
+        $info['givenName'] = $request->get('firstname');
+        $info['displayName'] = $info['sn'].$info['givenName'];
+        if ($request->get('type') != '學生') {
+            if (!empty($request->get('unit'))) {
+                $info['ou'] = $request->get('unit');
+            }
+            if (!empty($request->get('role'))) {
+                $info['title'] = $request->get('role');
+            }
+            if (!empty($request->get('tclass'))) {
+                $info['tpTeachClass'] = $request->get('tclass');
+            }
         } else {
-            if (empty($request->get('stdno'))) return response()->json(["error" => "請提供學號"], 400);
+            if (empty($request->get('stdno'))) {
+                return response()->json(['error' => '請提供學號'], 400);
+            }
             $info['employeeNumber'] = $request->get('stdno');
-            if (empty($request->get('class'))) return response()->json(["error" => "請提供就讀班級"], 400);
+            if (empty($request->get('class'))) {
+                return response()->json(['error' => '請提供就讀班級'], 400);
+            }
             $info['tpClass'] = $request->get('class');
-            if (empty($request->get('seat'))) return response()->json(["error" => "請提供學生座號"], 400);
+            if (empty($request->get('seat'))) {
+                return response()->json(['error' => '請提供學生座號'], 400);
+            }
             $info['tpSeat'] = $request->get('seat');
         }
-		if (!empty($request->get('memo'))) $info['tpCharacter'] = $request->get('memo');
-		if (!empty($request->get('gender'))) $info['gender'] = $request->get('gender');
-		if (!empty($request->get('birthdate'))) $info['birthDate'] = $request->get('birthdate')."000000Z";
-		if (!empty($request->get('email'))) $info['mail'] = $request->get('email');
-		if (!empty($request->get('mobile'))) $info['mobile'] = $request->get('mobile');
-		if (!empty($request->get('fax'))) $info['facsimileTelephoneNumber'] = $request->get('fax');
-		if (!empty($request->get('otel'))) $info['telephoneNumber'] = $request->get('otel');
-		if (!empty($request->get('htel'))) $info['homePhone'] = $request->get('htel');
-		if (!empty($request->get('address'))) $info['registeredAddress'] = $request->get('address');
-		if (!empty($request->get('conn_address'))) $info['homePostalAddress'] = $request->get('conn_address');
-		if (!empty($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
-		$openldap->createEntry($info);
-		$entry = $openldap->getUserEntry($request->get('idno'));
-		$json = $openldap->getUserData($entry);
-        if ($json)
+        if (!empty($request->get('memo'))) {
+            $info['tpCharacter'] = $request->get('memo');
+        }
+        if (!empty($request->get('gender'))) {
+            $info['gender'] = $request->get('gender');
+        }
+        if (!empty($request->get('birthdate'))) {
+            $info['birthDate'] = $request->get('birthdate').'000000Z';
+        }
+        if (!empty($request->get('email'))) {
+            $info['mail'] = $request->get('email');
+        }
+        if (!empty($request->get('mobile'))) {
+            $info['mobile'] = $request->get('mobile');
+        }
+        if (!empty($request->get('fax'))) {
+            $info['facsimileTelephoneNumber'] = $request->get('fax');
+        }
+        if (!empty($request->get('otel'))) {
+            $info['telephoneNumber'] = $request->get('otel');
+        }
+        if (!empty($request->get('htel'))) {
+            $info['homePhone'] = $request->get('htel');
+        }
+        if (!empty($request->get('address'))) {
+            $info['registeredAddress'] = $request->get('address');
+        }
+        if (!empty($request->get('conn_address'))) {
+            $info['homePostalAddress'] = $request->get('conn_address');
+        }
+        if (!empty($request->get('www'))) {
+            $info['wWWHomePage'] = $request->get('www');
+        }
+        $openldap->createEntry($info);
+        $entry = $openldap->getUserEntry($request->get('idno'));
+        $json = $openldap->getUserData($entry);
+        if ($json) {
             return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
-        else
-            return response()->json([ 'error' => '人員新增失敗：' . $openldap->error() ], 404);
+        } else {
+            return response()->json(['error' => '人員新增失敗：'.$openldap->error()], 404);
+        }
     }
-   
+
     public function peopleUpdate(Request $request, $uuid)
     {
         $openldap = new LdapServiceProvider();
         $dc = strtolower($request->get('o'));
-		$entry = $openldap->getUserEntry($uuid);
-		if (!$entry) return response()->json([ 'error' => '找不到指定的人員'], 404);
+        $entry = $openldap->getUserEntry($uuid);
+        if (!$entry) {
+            return response()->json(['error' => '找不到指定的人員'], 404);
+        }
         $person = $openldap->getUserData($entry);
         $info = array();
         if (is_array($person['o']) && !in_array($dc, $person['o'])) {
@@ -302,7 +423,7 @@ class v2_adminController extends Controller
                 $entry = $openldap->getOrgEntry($o);
                 $data = $openldap->getOrgData($entry, 'tpUniformNumbers');
                 $sid = $data['tpUniformNumbers'];
-                $educloud[] = json_encode(array("sid" => $sid, "role" => $request->get('type')), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
+                $educloud[] = json_encode(array('sid' => $sid, 'role' => $request->get('type')), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
             }
             $info['info'] = $educloud;
         } elseif (!is_array($person['o']) && $person['o'] != $dc) {
@@ -310,12 +431,18 @@ class v2_adminController extends Controller
             $entry = $openldap->getOrgEntry($dc);
             $data = $openldap->getOrgData($entry, 'tpUniformNumbers');
             $sid = $data['tpUniformNumbers'];
-            $info['info'] = json_encode(array("sid" => $sid, "role" => $request->get('type')), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
+            $info['info'] = json_encode(array('sid' => $sid, 'role' => $request->get('type')), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
         }
-        if (!empty($request->get('lastname'))) $info['sn'] = $request->get('lastname');
-		if (!empty($request->get('firstname'))) $info['givenName'] = $request->get('firstname');
-		if (!empty($request->get('lastname')) && !empty($request->get('firstname'))) $info['displayName'] = $info['sn'].$info['givenName'];
-        if ($person['employeeType'] != "學生") {
+        if (!empty($request->get('lastname'))) {
+            $info['sn'] = $request->get('lastname');
+        }
+        if (!empty($request->get('firstname'))) {
+            $info['givenName'] = $request->get('firstname');
+        }
+        if (!empty($request->get('lastname')) && !empty($request->get('firstname'))) {
+            $info['displayName'] = $info['sn'].$info['givenName'];
+        }
+        if ($person['employeeType'] != '學生') {
             if (!empty($request->get('unit'))) {
                 $ous = array();
                 $units = array();
@@ -327,7 +454,9 @@ class v2_adminController extends Controller
                     }
                     foreach ($ous as $ou_pair) {
                         $a = explode(',', $ou_pair);
-                        if (count($a) == 2 && $a[0] != $dc) $units[] = $ou_pair;
+                        if (count($a) == 2 && $a[0] != $dc) {
+                            $units[] = $ou_pair;
+                        }
                     }
                 }
                 if (is_array($request->get('unit'))) {
@@ -348,7 +477,9 @@ class v2_adminController extends Controller
                     }
                     foreach ($titles as $title_pair) {
                         $a = explode(',', $title_pair);
-                        if (count($a) == 3 && $a[0] != $dc) $roles[] = $title_pair;
+                        if (count($a) == 3 && $a[0] != $dc) {
+                            $roles[] = $title_pair;
+                        }
                     }
                 }
                 if (is_array($request->get('role'))) {
@@ -368,7 +499,9 @@ class v2_adminController extends Controller
                     }
                     foreach ($tclass as $pair) {
                         $a = explode(',', $pair);
-                        if (count($a) == 3 && $a[0] != $dc) $assign[] = $pair;
+                        if (count($a) == 3 && $a[0] != $dc) {
+                            $assign[] = $pair;
+                        }
                     }
                 }
                 if (is_array($request->get('tclass'))) {
@@ -379,22 +512,50 @@ class v2_adminController extends Controller
                 $info['tpTeachClass'] = $assign;
             }
         } else {
-            if (!empty($request->get('stdno'))) $info['employeeNumber'] = $request->get('stdno');
-            if (!empty($request->get('class'))) $info['tpClass'] = $request->get('class');
-            if (!empty($request->get('seat'))) $info['tpSeat'] = $request->get('seat');
+            if (!empty($request->get('stdno'))) {
+                $info['employeeNumber'] = $request->get('stdno');
+            }
+            if (!empty($request->get('class'))) {
+                $info['tpClass'] = $request->get('class');
+            }
+            if (!empty($request->get('seat'))) {
+                $info['tpSeat'] = $request->get('seat');
+            }
         }
-		if (!empty($request->get('memo'))) $info['tpCharacter'] = $request->get('memo');
-		if (!empty($request->get('gender'))) $info['gender'] = $request->get('gender');
-		if (!empty($request->get('birthdate'))) $info['birthDate'] = $request->get('birthdate')."000000Z";
-		if (!empty($request->get('email'))) $info['mail'] = $request->get('email');
-		if (!empty($request->get('mobile'))) $info['mobile'] = $request->get('mobile');
-		if (!empty($request->get('fax'))) $info['facsimileTelephoneNumber'] = $request->get('fax');
-		if (!empty($request->get('otel'))) $info['telephoneNumber'] = $request->get('otel');
-		if (!empty($request->get('htel'))) $info['homePhone'] = $request->get('htel');
-		if (!empty($request->get('address'))) $info['registeredAddress'] = $request->get('address');
-		if (!empty($request->get('conn_address'))) $info['homePostalAddress'] = $request->get('conn_address');
-		if (!empty($request->get('www'))) $info['wWWHomePage'] = $request->get('www');
-		$openldap->updateData($entry, $info);
+        if (!empty($request->get('memo'))) {
+            $info['tpCharacter'] = $request->get('memo');
+        }
+        if (!empty($request->get('gender'))) {
+            $info['gender'] = $request->get('gender');
+        }
+        if (!empty($request->get('birthdate'))) {
+            $info['birthDate'] = $request->get('birthdate').'000000Z';
+        }
+        if (!empty($request->get('email'))) {
+            $info['mail'] = $request->get('email');
+        }
+        if (!empty($request->get('mobile'))) {
+            $info['mobile'] = $request->get('mobile');
+        }
+        if (!empty($request->get('fax'))) {
+            $info['facsimileTelephoneNumber'] = $request->get('fax');
+        }
+        if (!empty($request->get('otel'))) {
+            $info['telephoneNumber'] = $request->get('otel');
+        }
+        if (!empty($request->get('htel'))) {
+            $info['homePhone'] = $request->get('htel');
+        }
+        if (!empty($request->get('address'))) {
+            $info['registeredAddress'] = $request->get('address');
+        }
+        if (!empty($request->get('conn_address'))) {
+            $info['homePostalAddress'] = $request->get('conn_address');
+        }
+        if (!empty($request->get('www'))) {
+            $info['wWWHomePage'] = $request->get('www');
+        }
+        $openldap->updateData($entry, $info);
         if (!empty($request->get('idno'))) {
             $idno = $request->get('idno');
             if ($person['cn'] != $idno) {
@@ -404,72 +565,90 @@ class v2_adminController extends Controller
                     $user = $model->newQuery()
                     ->where('idno', $person['cn'])
                     ->first();
-                    if ($user) $user->delete();
+                    if ($user) {
+                        $user->delete();
+                    }
                 }
             }
         }
         $entry = $openldap->getUserEntry($uuid);
-		$json = $openldap->getUserData($entry);
-		return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
+        $json = $openldap->getUserData($entry);
+
+        return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
     }
 
     public function peopleRemove(Request $request, $uuid)
     {
         $openldap = new LdapServiceProvider();
         $entry = $openldap->getUserEntry($uuid);
-		if (!$entry) return response()->json([ 'error' => '找不到指定的人員'], 404);
-        $result = $openldap->updateData($entry,  [ 'inetUserStatus' => 'deleted' ]);
-//		$result = $openldap->deleteEntry($entry);
-		if ($result)
-		    return response()->json([ 'success' => '指定的人員已經刪除'], 410);
-		else
-		    return response()->json([ 'error' => '指定的人員刪除失敗：' . $openldap->error() ], 500);
+        if (!$entry) {
+            return response()->json(['error' => '找不到指定的人員'], 404);
+        }
+        $result = $openldap->updateData($entry, ['inetUserStatus' => 'deleted']);
+        //		$result = $openldap->deleteEntry($entry);
+        if ($result) {
+            return response()->json(['success' => '指定的人員已經刪除'], 410);
+        } else {
+            return response()->json(['error' => '指定的人員刪除失敗：'.$openldap->error()], 500);
+        }
     }
-    
+
     public function people(Request $request, $uuid)
     {
         $openldap = new LdapServiceProvider();
         $user = User::where('uuid', $uuid)->first();
-		if (isset($user->is_parent) && $user->is_parent) {
-			$json = array();
+        if (isset($user->is_parent) && $user->is_parent) {
+            $json = array();
             $json['cn'] = $user->idno;
             $json['employeeType'] = '家長';
-			$json['entryUUID'] = $user->uuid;
-			$json['displayName'] = $user->name;
-			$json['mail'] = $user->email;
-			$json['mobile'] = $user->mobile;
-			$kids = PSLink::where('parent_idno', $user->idno)->where('verified', 1)->get();
-			foreach ($kids as $kid) {
-				$idno = $kid->student_idno;
-				$uuid = $openldap->getUserUUID($idno);
-				if ($uuid) $json['child'][] = $uuid;
-			}
-		} else {
+            $json['entryUUID'] = $user->uuid;
+            $json['displayName'] = $user->name;
+            $json['mail'] = $user->email;
+            $json['mobile'] = $user->mobile;
+            $kids = PSLink::where('parent_idno', $user->idno)->where('verified', 1)->get();
+            foreach ($kids as $kid) {
+                $idno = $kid->student_idno;
+                $uuid = $openldap->getUserUUID($idno);
+                if ($uuid) {
+                    $json['child'][] = $uuid;
+                }
+            }
+        } else {
             $entry = $openldap->getUserEntry($uuid);
-	    	if (!$entry) return response()->json([ 'error' => '找不到指定的人員'], 404);
-		    $json = $openldap->getUserData($entry);
-            if (!$json) return response()->json([ 'error' => '找不到指定的人員'], 404);
+            if (!$entry) {
+                return response()->json(['error' => '找不到指定的人員'], 404);
+            }
+            $json = $openldap->getUserData($entry);
+            if (!$json) {
+                return response()->json(['error' => '找不到指定的人員'], 404);
+            }
             if ($json['employeeType'] == '學生') {
-				$kids = PSLink::where('student_idno', $json['cn'])->where('verified', 1)->get();
-				foreach ($kids as $kid) {
-					$idno = $kid->parent_idno;
-					$uuid = $openldap->getUserUUID($idno);
-					if (!$uuid) {
-						$user = User::where('idno', $idno)->first();
-						if ($user) $uuid = $user->uuid;
-					}
-					if ($uuid) $json['parent'][] = $uuid;
-				}
+                $kids = PSLink::where('student_idno', $json['cn'])->where('verified', 1)->get();
+                foreach ($kids as $kid) {
+                    $idno = $kid->parent_idno;
+                    $uuid = $openldap->getUserUUID($idno);
+                    if (!$uuid) {
+                        $user = User::where('idno', $idno)->first();
+                        if ($user) {
+                            $uuid = $user->uuid;
+                        }
+                    }
+                    if ($uuid) {
+                        $json['parent'][] = $uuid;
+                    }
+                }
             } else {
-				$kids = PSLink::where('parent_idno', $json['cn'])->where('verified', 1)->get();
-				foreach ($kids as $kid) {
-					$idno = $kid->student_idno;
-					$uuid = $openldap->getUserUUID($idno);
-					if ($uuid) $json['child'][] = $uuid;
-				}
+                $kids = PSLink::where('parent_idno', $json['cn'])->where('verified', 1)->get();
+                foreach ($kids as $kid) {
+                    $idno = $kid->student_idno;
+                    $uuid = $openldap->getUserUUID($idno);
+                    if ($uuid) {
+                        $json['child'][] = $uuid;
+                    }
+                }
             }
         }
+
         return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
     }
-
 }
