@@ -831,7 +831,7 @@ class v2_schoolController extends Controller
         }
 
         $user = User::where('uuid', $uuid)->first();
-        if ($user->is_parent) {
+        if ($user && $user->is_parent) {
             $person = array();
             $person['cn'] = $user->idno;
             $person['employeeType'] = '家長';
