@@ -2899,12 +2899,12 @@ class SyncController extends Controller
 					foreach ($uids as $uid) {
 						$acc_entry = $openldap->getAccountEntry($uid);
 						$openldap->deleteEntry($acc_entry);
-						$messages[] = "移除假身份人員$name($idno)之帳號：$uid";
+						$messages[] = "移除假身分人員$name($idno)之帳號：$uid";
 					}
 				}
 				$user_entry = $openldap->getUserEntry($idno);
 				$openldap->deleteEntry($user_entry);
-				$messages[] = "移除假身份人員紀錄：$name($idno)";
+				$messages[] = "移除假身分人員紀錄：$name($idno)";
 				$user = User::where('idno', $idno)->first();
 				if ($user) $user->delete();
 			}

@@ -1150,7 +1150,7 @@ class BureauController extends Controller
     public function bureauGroupForm(Request $request)
     {
 		$model = [ 'mobile' => '聯絡電話', 'mail' => '郵寄清單', 'dn' => '人員目錄', 'entryUUID' => '人員代號（API使用）' ];
-		$fields = [ 'employeeType' => '身份別', 'tpCharacter' => '特殊身份註記', 'inetUserStatus' => '帳號狀態' ];
+		$fields = [ 'employeeType' => '身分別', 'tpCharacter' => '特殊身分註記', 'inetUserStatus' => '帳號狀態' ];
 		$openldap = new LdapServiceProvider();
 		$data = $openldap->getGroups();
 		if (!$data) $data = [];

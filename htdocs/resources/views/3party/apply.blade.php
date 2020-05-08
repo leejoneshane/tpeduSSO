@@ -38,7 +38,7 @@
 					</div>
 					<div class="form-group{{ $errors->has('applicationName') ? ' has-error' : '' }}">
 						<label for="applicationName">應用平臺名稱（網站服務入口）</label>
-						<input type="text" class="form-control" name="applicationName" value="" placeholder="用於顯示在授權頁面，讓使用者得知：何種應用平臺透過單一身份驗證服務進行身份認證" required>
+						<input type="text" class="form-control" name="applicationName" value="" placeholder="用於顯示在授權頁面，讓使用者得知：何種應用平臺透過單一身分驗證服務進行身分認證" required>
 						@if ($errors->has('applicationName'))
 							<p class="help-block">
 								<strong>{{ $errors->first('applicationName') }}</strong>

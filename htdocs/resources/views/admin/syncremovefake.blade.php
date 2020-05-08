@@ -1,7 +1,7 @@
 @extends('layouts.syncboard')
 
 @section('page_heading')
-移除假身份人員
+移除假身分人員
 @endsection
 
 @section('section')

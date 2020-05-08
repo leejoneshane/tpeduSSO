@@ -92,7 +92,7 @@
 					<button id="no" type="button" class="btn btn-primary btn-circle" onclick="add_org()"><i class="fa fa-plus"></i></button>
 				</div>
 			    <div class="form-group">
-					<label>身份別</label>
+					<label>身分別</label>
 					<select id="type" class="form-control" name="type" onchange="switchtype()">
 					@foreach ($types as $type)
 						@if ($type != '學生')
@@ -102,7 +102,7 @@
 					</select>
 				</div>
 			    <div class="form-group{{ $errors->has('character') ? ' has-error' : '' }}">
-					<label style="display:block">特殊身份註記</label>
+					<label style="display:block">特殊身分註記</label>
 					@if (array_key_exists('tpCharacter', $user))
 						@if (is_array($user['tpCharacter']))
 							@foreach ($user['tpCharacter'] as $character)

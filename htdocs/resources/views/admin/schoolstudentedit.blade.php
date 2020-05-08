@@ -82,7 +82,7 @@
 					@endif
 				</div>
 			    <div class="form-group{{ $errors->has('character') ? ' has-error' : '' }}">
-					<label style="display:block">特殊身份註記</label>
+					<label style="display:block">特殊身分註記</label>
 					@if (isset($user) && array_key_exists('tpCharacter', $user))
 						@if (is_array($user['tpCharacter']))
 							@foreach ($user['tpCharacter'] as $character)

@@ -64,7 +64,7 @@
 						<th>帳號</th>
 						<th>身分證字號</th>
 						<th>姓名</th>
-						<th>身份</th>
+						<th>身分</th>
 						<th>管理</th>
 					</tr>
 				</thead>

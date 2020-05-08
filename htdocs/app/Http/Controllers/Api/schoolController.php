@@ -363,7 +363,7 @@ class schoolController extends Controller
             return response()->json(['error' => '該使用者已經存在'], 400, array(JSON_UNESCAPED_UNICODE));
         }
         if (empty($request->get('type'))) {
-            return response()->json(['error' => '請提供該使用者的身份'], 400, array(JSON_UNESCAPED_UNICODE));
+            return response()->json(['error' => '請提供該使用者的身分'], 400, array(JSON_UNESCAPED_UNICODE));
         }
         if (empty($request->get('lastname')) || empty($request->get('firstname'))) {
             return response()->json(['error' => '請提供該使用者的真實姓名'], 400, array(JSON_UNESCAPED_UNICODE));

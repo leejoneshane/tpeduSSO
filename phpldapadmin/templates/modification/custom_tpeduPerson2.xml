@@ -103,7 +103,7 @@
 	<page>1</page>
 </attribute>
 <attribute id="tpCharacter">
-	<display>身份註記</display>
+	<display>身分註記</display>
 	<order>15</order>
 	<page>1</page>
 </attribute>

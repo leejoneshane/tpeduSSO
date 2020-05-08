@@ -57,7 +57,7 @@
 				<input type="text" class="form-control" id="ou" name="ou" value="{{ $ou }}">
 				<label>班級代號：</label>
 				<input type="text" class="form-control" id="clsid" name="clsid" value="{{ $clsid }}">
-				<label>身份證字號：</label>
+				<label>身分證字號：</label>
 				<input type="text" class="form-control" id="idno" name="idno" value="{{ $idno }}">
 				<label>年月：</label>
 				<input type="text" class="form-control" id="ym" name="ym" value="{{ $ym }}">
@@ -89,7 +89,7 @@
 					if (fields == 'sid' && !$('#' + fields).val()) msg.push('學校');
 					if (fields == 'ou' && !$('#' + fields).val()) msg.push('部門代號');
 					if (fields == 'clsid' && !$('#' + fields).val()) msg.push('班級代號');
-					if (fields == 'idno' && !$('#' + fields).val()) msg.push('身份證字號');
+					if (fields == 'idno' && !$('#' + fields).val()) msg.push('身分證字號');
 					if (fields == 'ym' && !$('#' + fields).val()) msg.push('年月');
 					if (msg.length > 0) {
 						alert('請務必輸入' + msg.join('、') + '!');

@@ -99,7 +99,7 @@
                                     <a href="{{ route('sync.remove_parent') }}">移除未連結家長帳號</a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('sync.remove_fake') }}">移除假身份人員</a>
+                                    <a href="{{ route('sync.remove_fake') }}">移除假身分人員</a>
                                 </li>
                                 <li>
                                     <a href="{{ route('sync.remove_deleted') }}">移除標記為已刪除人員</a>

@@ -58,7 +58,7 @@ return [
     'from' => [
         'address' => env('MAIL_ADDRESS', ''),
         
-        'name' => '臺北市教育人員單一身份驗證服務',
+        'name' => '臺北市教育人員單一身分驗證服務',
     ],
 
     /*

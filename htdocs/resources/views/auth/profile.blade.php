@@ -30,7 +30,7 @@
             	<form method="POST" action="{{ route('profile') }}">
             	@csrf
             	    <div class="row">
-            		<div class="col-md-4 text-md-right">身份別</div>
+            		<div class="col-md-4 text-md-right">身分別</div>
             		<div class="col-md-6 text-md-left">{{ !empty($user->ldap['employeeType']) ? $user->ldap['employeeType'] : '家長' }}</div>
                     </div>
             	    <div class="row">

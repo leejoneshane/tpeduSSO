@@ -21,7 +21,7 @@
 				<form class="form-horizontal" method="POST" action="{{ route('parent.applyLink') }}">
 					{{ csrf_field() }}
 					<div class="form-group{{ $errors->has('idno') ? ' has-error' : '' }}">
-					<label for="idno" class="col-md-4 col-form-label text-md-right">學生的身份證字號</label>
+					<label for="idno" class="col-md-4 col-form-label text-md-right">學生的身分證字號</label>
 					<div class="col-md-4">
 						<input id="idno" type="text" class="form-control" name="idno" required>
 						@if ($errors->has('idno'))
