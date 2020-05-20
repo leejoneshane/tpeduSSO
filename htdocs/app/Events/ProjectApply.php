@@ -3,10 +3,9 @@
 namespace App\Events;
 
 use App\Project;
-use App\Events\Event;
 use Illuminate\Queue\SerializesModels;
 
-class ProjectApply extends Event
+class ProjectApply
 {
     use SerializesModels;
 
