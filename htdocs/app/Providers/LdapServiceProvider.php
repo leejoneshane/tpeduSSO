@@ -870,9 +870,9 @@ class LdapServiceProvider extends ServiceProvider
 				$userinfo['school'][$o] = $this->getOrgTitle($o);
 			}
 		}
-		$units = array();
-		$ous = array();
 		if (!empty($orgs) && !empty($userinfo['ou'])) {
+			$units = array();
+			$ous = array();
 			if (is_array($userinfo['ou'])) {
 				$units = $userinfo['ou'];
 			} else {
@@ -883,29 +883,29 @@ class LdapServiceProvider extends ServiceProvider
 				if (count($a) == 2) {
 					$o = $a[0];
 					$ou = $a[1];
-					$ous[] = $ou;
+					$ous[] = $ou_pair;
 					$obj = new \stdClass();
 					$obj->key = $ou_pair;
 					$obj->name = $this->getOuTitle($o, $ou);
-					$userinfo['department'][$o][] = $obj; 
+					$userinfo['department'][$o][] = $obj;					
 				}
 			}
-			if (!is_array($userinfo['ou'])) $userinfo['ou'] = $orgs[0].",".$userinfo['ou'];
-			$roles = array();
+			$userinfo['ou'] = $ous;
 			if (isset($userinfo['title'])) {
+				$roles = array();
+				$titles = array();
 				if (is_array($userinfo['title'])) {
 					$roles = $userinfo['title'];
 				} else {
 					$roles[] = $userinfo['title'];
 				}
-				$titles = array();
 				foreach ($roles as $role_pair) {
 					$a = explode(',' , $role_pair);
 					if (count($a) == 3) {
 						$o = $a[0];
 						$ou = $a[1];
 						$role = $a[2];
-						$titles[] = "$o,$ou,$role";
+						$titles[] = $role_pair;
 						$obj = new \stdClass();
 						$obj->key = $role_pair;
 						$obj->name = $this->getRoleTitle($o, $ou, $role);
