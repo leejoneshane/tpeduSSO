@@ -890,7 +890,11 @@ class LdapServiceProvider extends ServiceProvider
 					$userinfo['department'][$o][] = $obj;					
 				}
 			}
-			$userinfo['ou'] = $ous;
+			if (count($ous) == 1) {
+				$userinfo['ou'] = $ous[0];
+			} else {
+				$userinfo['ou'] = $ous;
+			}
 			if (isset($userinfo['title'])) {
 				$roles = array();
 				$titles = array();
@@ -912,7 +916,11 @@ class LdapServiceProvider extends ServiceProvider
 						$userinfo['titleName'][$o][] = $obj;
 					}
 				}
-				$userinfo['title'] = $titles;
+				if (count($titles) == 1) {
+					$userinfo['title'] = $titles[0];
+				} else {
+					$userinfo['title'] = $titles;
+				}
 			}
 		}
 		if (!empty($orgs) && !empty($userinfo['tpTeachClass'])) {
