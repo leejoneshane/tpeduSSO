@@ -9,7 +9,6 @@ COPY supervisord.conf /etc/supervisord.conf
 WORKDIR /var/www/localhost/htdocs
 
 RUN chmod 755 /usr/local/bin/* \
-    && apk update \
     && apk add --no-cache bash sudo git zip mc curl openssl ca-certificates findutils openldap-clients mysql-client nodejs apache2 \
                           apache2-ssl python php7-pdo php7-bcmath php7-apache2 php7-ldap php7-xmlwriter php7-opcache php7-curl \
                           php7-openssl php7-json php7-phar php7-dom php7-mysqlnd php7-pdo_mysql php7-iconv php7-mcrypt php7-ctype \
