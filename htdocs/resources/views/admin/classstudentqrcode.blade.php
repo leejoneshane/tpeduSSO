@@ -24,6 +24,11 @@
 				學生 QRCODE 一覽表
 			</h4>
 			<div class="col-md-10">
+				<button type="button" class="btn btn-primary"
+				onclick="$('#form').attr('action','{{ route('tutor.generateQrcodeAll', [ 'dc' => $dc, 'ou' => $ou ]) }}');
+						$('#form').submit();">批量製作</button>
+			</div>
+			<div class="col-md-10">
 				<button class="btn btn-success float-right" onclick="window.print();">列印</button>
 			</div>		
 		</div>
