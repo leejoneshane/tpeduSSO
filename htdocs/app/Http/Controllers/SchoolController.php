@@ -2411,22 +2411,9 @@ class SchoolController extends Controller
 		$filter = "(&(o=$dc)(tpClass=$my_field)(employeeType=學生)(!(inetUserStatus=deleted)))";
 		$students = $openldap->findUsers($filter, ["cn", "displayName", "o", "tpClass", "tpSeat", "entryUUID", "uid", "inetUserStatus"]);
 		usort($students, function ($a, $b) { return $a['tpSeat'] <=> $b['tpSeat']; });
-		$cnt = 0;
 		foreach ($students as $k => $st) {
 			$qrcode = GQrcode::where('idno', $st['cn'])->first();
 			if ($qrcode) {
-				$students[$k]['QRCODE'] = $qrcode->generate();
-				$students[$k]['expired'] = $qrcode->expired_at;
-				$cnt ++;
-			}
-		}
-		if ($cnt == 0) {
-			foreach ($students as $k => $st) {
-				GQrcode::create([
-					'idno' => $st['cn'],
-					'expired_at' => Carbon::today()->addDays(config('app.qrcode_expired')),
-				]);
-				$qrcode = GQrcode::where('idno', $st['cn'])->first();
 				$students[$k]['QRCODE'] = $qrcode->generate();
 				$students[$k]['expired'] = $qrcode->expired_at;
 			}
@@ -2464,6 +2451,24 @@ class SchoolController extends Controller
 			'expired_at' => Carbon::today()->addDays(config('app.qrcode_expired')),
 		]);
 		return back()->with("success","已經重新產生 QRCODE！");
+	}
+
+	public function qrcodeGenerateAll(Request $request, $dc, $class)
+    {
+		$openldap = new LdapServiceProvider();
+		$filter = "(&(o=$dc)(tpClass=$class)(employeeType=學生)(!(inetUserStatus=deleted)))";
+		$students = $openldap->findUsers($filter, ["cn", "displayName", "o", "tpClass", "tpSeat", "entryUUID", "uid", "inetUserStatus"]);
+		usort($students, function ($a, $b) { return $a['tpSeat'] <=> $b['tpSeat']; });
+		foreach ($students as $k => $st) {
+			$qrcode = GQrcode::where('idno', $st['cn'])->first();
+			if (!$qrcode) {
+				$qrcode = GQrcode::create([
+					'idno' => $st['cn'],
+					'expired_at' => Carbon::today()->addDays(config('app.qrcode_expired')),
+				]);
+			}
+		}
+		return back()->with("success","已經批量製作全班 QRCODE！");
 	}
 
 	public function qrcodeRemove(Request $request, $dc, $uuid)
