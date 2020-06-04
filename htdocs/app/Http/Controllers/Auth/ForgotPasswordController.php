@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
+use App\User;
 
 class ForgotPasswordController extends Controller
 {
@@ -34,8 +35,8 @@ class ForgotPasswordController extends Controller
     {
         $this->validateEmail($request);
 
-        $user = $this->broker()->getUser($this->credentials($request));
-        if ($user->hasVerifiedEmail()) {
+        $user = User::where('email', $request->only('email'))->first();
+        if ($user && $user->hasVerifiedEmail()) {
             $response = $this->broker()->sendResetLink($this->credentials($request));
             return $response == Password::RESET_LINK_SENT
                         ? $this->sendResetLinkResponse($request, $response)
