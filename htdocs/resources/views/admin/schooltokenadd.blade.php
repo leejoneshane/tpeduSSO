@@ -34,7 +34,8 @@
                                     <div class="checkbox">
                                         <label>
                                             @if (in_array($scope->id, ['school', 'schoolAdmin']))
-                                            <input type="checkbox" name="scopes[]" value="{{ $scope->id }}" checked disabled>
+                                            <input type="hidden" name="scopes[]" value="{{ $scope->id }}">
+                                            <input type="checkbox" checked disabled>
                                                 {{ $scope->id }}（必要）
                                             @elseif ($scope->id == 'admin')
                                             <input type="checkbox" name="scopes[]" value="{{ $scope->id }}" disabled>
