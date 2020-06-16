@@ -7,7 +7,7 @@
 @section('section')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-6" style="margin-left: 25%">
+        <div class="col-md-10" style="margin-left: 25%">
             <div class="card card-default" style="margin-top: 20px">
                 <div class="card-header">全校授權金鑰</div>
                 <div class="card-body">
@@ -16,7 +16,7 @@
                         您可以提供此金鑰給您信任的網站或手機應用程式，以便開發商能代理您的身分對學校所有人員個資進行資料操作！
                     </p>
 
-                    <textarea class="form-control" rows="10">{{ $token->accessToken }}</textarea>
+                    <textarea class="form-control" rows="12" style="overflow-wrap: anywhere;line-break: anywhere;">{{ $token->accessToken }}</textarea>
                 </div>
                 <div class="card-footer text-md-center">
                     <a class="btn btn-secondary" href="{{ route('school.tokens', [ 'dc' => $dc ]) }}">關閉</a>
