@@ -18,13 +18,28 @@ class AuthenticateSchoolAdmin
         }
         $user = Auth::guard($guard)->user();
         $dc = $request->route('dc');
-        if ($user->is_parent || !is_array($user->ldap['adminSchools']) || !in_array($dc, $user->ldap['adminSchools'])) {
+        if ($user->is_parent) {
+            $valid = false;
+        } else {
+            $valid = false;
+            if (is_array($user->ldap['adminSchools'])) {
+                if (in_array($dc, $user->ldap['adminSchools'])) {
+                    $valid = true;
+                }
+            } else {
+                if ($dc == $user->ldap['adminSchools']) {
+                    $valid = true;
+                }
+            }
+        }
+        if (!$valid) {
             if ($request->ajax() || $request->wantsJson()) {
                 return response('Unauthorized.', 401);
             } else {
                 return redirect('/');
             }
         }
+
         return $next($request);
     }
 }
