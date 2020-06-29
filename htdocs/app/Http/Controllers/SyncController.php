@@ -1810,7 +1810,11 @@ class SyncController extends Controller
 					$info['title'] = array_values(array_unique($roles));
 					$info['info'] = array_values(array_unique($educloud));
 					if (!empty($assign)) $info['tpTeachClass'] = array_values(array_unique($assign));
-					if (!empty($data['class'])) $info['tpTutorClass'] = $data['class'];
+					if (empty($data['class'])) {
+						$info['tpTutorClass'] = [];
+					} else {
+						$info['tpTutorClass'] = $data['class'];
+					}
 					$info['inetUserStatus'] = 'active';
 					$info['employeeType'] = $role;
 					$info['employeeNumber'] = $teaid;
@@ -1890,7 +1894,11 @@ class SyncController extends Controller
 					$info['title'] = array_values(array_unique($roles));
 					$info['info'] = json_encode(array("sid" => $sid, "role" => $role), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
 					if (!empty($assign)) $info['tpTeachClass'] = array_values(array_unique($assign));
-					if (!empty($data['class'])) $info['tpTutorClass'] = $data['class'];
+					if (empty($data['class'])) {
+						$info['tpTutorClass'] = [];
+					} else {
+						$info['tpTutorClass'] = $data['class'];
+					}
 					$info['inetUserStatus'] = 'active';
 					$info['employeeType'] = $role;
 					$info['employeeNumber'] = $teaid;

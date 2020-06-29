@@ -1877,6 +1877,12 @@ class SchoolController extends Controller
 		$openldap = new LdapServiceProvider();
 		$idno = $request->get($class.'teacher');
 		if (!empty($idno)) {
+			$org_teacher = $openldap->findUsers("(&(o=$dc)(tpTutorClass=$class))", 'cn');
+			if ($org_teacher) {
+				$org_idno = $org_teacher[0]['cn'];
+				$teacher_entry = $openldap->getUserEntry($org_idno);
+				if ($teacher_entry) $openldap->deleteData($teacher_entry, [ 'tpTutorClass' => [] ]);
+			}
 			$teacher = $openldap->getUserEntry($idno);
 			if ($teacher) $openldap->updateData($teacher, [ 'tpTutorClass' => $class ]);
 		}
