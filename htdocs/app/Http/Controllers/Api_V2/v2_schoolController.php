@@ -781,6 +781,64 @@ class v2_schoolController extends Controller
         return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
     }
 
+    public function peopleRestorePass(Request $request, $dc)
+    {
+        $openldap = new LdapServiceProvider();
+        $user = $request->user();
+        $entry = $openldap->getOrgEntry($dc);
+        $data = $openldap->getOrgData($entry, 'tpAdministrator');
+        if (is_array($data['tpAdministrator'])) {
+            if (!in_array($user->idno, $data['tpAdministrator'])) {
+                return response()->json(['error' => '你未被權限管理此機關學校'], 403, array(JSON_UNESCAPED_UNICODE));
+            }
+        } elseif ($user->idno != $data['tpAdministrator']) {
+            return response()->json(['error' => '你未被權限管理此機關學校'], 403, array(JSON_UNESCAPED_UNICODE));
+        }
+
+        $uuids = json_decode($request->getContent(), true);
+        if (is_array($uuids)) {
+            $messages = array();
+            foreach ($uuids as $uuid) {
+                $entry = $openldap->getUserEntry($uuid);
+                if ($entry) {
+                    $person = $openldap->getUserData($entry);
+                    $orgs = array();
+                    if (is_array($person['o'])) {
+                        $orgs = $person['o'];
+                    } else {
+                        $orgs[] = $person['o'];
+                    }
+                    if (in_array($dc, $orgs)) {
+                        $password = substr($person['cn'], -6);
+                        $ssha = $openldap->make_ssha_password($password);
+                        $new_passwd = array('userPassword' => $ssha);
+                        $openldap->updateData($entry, $new_passwd);
+
+                        $accounts = $openldap->findAccounts('cn='.$person['cn'], 'uid');
+                        foreach ($accounts as $account) {
+                            $account_entry = $openldap->getAccountEntry($account['uid']);
+                            if ($account_entry) {
+                                $openldap->updateData($account_entry, $new_passwd);
+                            }
+                        }
+
+                        $user = User::where('uuid', $uuid)->first();
+                        if ($user) {
+                            $user->password = \Hash::make($password);
+                            $user->save();
+                        }
+                        $messages[] = "$uuid 密碼已經還原";
+                    } else {
+                        $messages[] = "查無人員 $uuid ，無法還原密碼";
+                    }
+                }
+            }
+            $json = array('log' => $messages);
+
+            return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
+        }
+    }
+
     public function peopleRemove(Request $request, $dc, $uuid)
     {
         $openldap = new LdapServiceProvider();

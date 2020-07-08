@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -66,6 +64,7 @@ Route::group(['prefix' => 'v2'], function () {
         Route::patch('school/{dc}/people/{uuid}', 'Api_V2\v2_schoolController@peopleUpdate')->middleware('scope:schoolAdmin');
         Route::delete('school/{dc}/people/{uuid}', 'Api_V2\v2_schoolController@peopleRemove')->middleware('scope:schoolAdmin');
         Route::get('school/{dc}/people/{uuid}', 'Api_V2\v2_schoolController@people')->middleware('scope:schoolAdmin');
+        Route::patch('school/{dc}/password/restore', 'Api\v2_schoolController@peopleRestorePass')->middleware('scope:schoolAdmin');
     });
 
     Route::group(['middleware' => 'privileged'], function () {
