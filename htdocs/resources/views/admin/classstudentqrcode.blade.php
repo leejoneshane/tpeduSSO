@@ -23,16 +23,6 @@
 			<h4>
 				學生 QRCODE 一覽表
 			</h4>
-			<div class="col-md-10">
-				<button type="button" class="btn btn-primary"
-				onclick="$('#form').attr('action','{{ route('tutor.generateQrcodeAll', [ 'dc' => $dc, 'ou' => $ou ]) }}');
-						$('#form').submit();">批量製作</button>
-			</div>
-			<div class="col-md-10">
-				<button class="btn btn-success float-right" onclick="window.print();">列印</button>
-			</div>		
-		</div>
-		<div class="panel-body">
 			<p style="color:red">使用學生 Qrcode 注意事項：
 				<ul>
 					<li>學生 Qrcode 僅用於確認家長與學生之親子關係。如家長帳號已經與學生帳號綁定關係，則無須再次產生學生 Qrcode。</li>
@@ -43,6 +33,14 @@
 					<li>如遇有多位家長想綁定同一學生，須再次產生新的 Qrcode，每位學生同時只能產生一個 Qrcode。</li>
 				</ul>
 			</p>
+		</div>
+		<div class="panel-body">
+			<div class="input-group custom-search-form">
+				<button type="button" class="btn btn-primary"
+				onclick="$('#form').attr('action','{{ route('tutor.generateQrcodeAll', [ 'dc' => $dc, 'ou' => $ou ]) }}');
+						$('#form').submit();">批量製作</button>
+				<button class="btn btn-success float-right" onclick="window.print();">列印</button>
+			</div>		
 			<hr>
 			<table class="table table-hover">
 				<thead>
