@@ -2749,13 +2749,15 @@ class SchoolController extends Controller
         $students = $openldap->findUsers($filter, ['cn', 'displayName', 'o', 'tpClass', 'tpSeat', 'entryUUID', 'uid', 'inetUserStatus']);
         usort($students, function ($a, $b) { return $a['tpSeat'] <=> $b['tpSeat']; });
         foreach ($students as $k => $st) {
-            $qrcode = GQrcode::where('idno', $st['cn'])->first();
-            if (!$qrcode) {
-                $qrcode = GQrcode::create([
-                    'idno' => $st['cn'],
-                    'expired_at' => Carbon::today()->addDays(config('app.qrcode_expired')),
-                ]);
-            }
+			if ($st['cn']) {
+				$qrcode = GQrcode::where('idno', $st['cn'])->first();
+				if (!$qrcode) {
+					$qrcode = GQrcode::create([
+						'idno' => $st['cn'],
+						'expired_at' => Carbon::today()->addDays(config('app.qrcode_expired')),
+					]);
+				}	
+			}
         }
 
         return back()->with('success', '已經批量製作全班 QRCODE！');
