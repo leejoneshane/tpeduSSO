@@ -105,7 +105,7 @@ Route::group(['prefix' => 'tutor', 'middleware' => 'auth.tutor'], function () {
     Route::post('{dc}/link/{id}/verify', 'SchoolController@verifyLink')->name('tutor.verifyLink');
     Route::get('{dc}/{ou}/qrcode', 'TutorController@classQrcodeForm')->name('tutor.qrcode');
     Route::post('{dc}/qrcode/{uuid}', 'SchoolController@qrcodeGenerate')->name('tutor.generateQrcode');
-    Route::post('{dc}/qrcode/{ou}', 'SchoolController@qrcodeGenerateAll')->name('tutor.generateQrcodeAll');
+    Route::post('{dc}/qrcode/class/{ou}', 'SchoolController@qrcodeGenerateAll')->name('tutor.generateQrcodeAll');
     Route::post('{dc}/qrcode/{uuid}/remove', 'SchoolController@qrcodeRemove')->name('tutor.removeQrcode');
 });
 
@@ -271,6 +271,6 @@ Route::group(['prefix' => 'school', 'middleware' => 'auth.school'], function () 
     Route::post('{dc}/link/{id}/verify', 'SchoolController@verifyLink')->name('school.verifyLink');
     Route::get('{dc}/qrcode', 'SchoolController@schoolQrcodeForm')->name('school.qrcode');
     Route::post('{dc}/qrcode/{uuid}', 'SchoolController@qrcodeGenerate')->name('school.generateQrcode');
-    Route::post('{dc}/qrcode/{ou}', 'SchoolController@qrcodeGenerateAll')->name('school.generateQrcodeAll');
+    Route::post('{dc}/qrcode/class/{ou}', 'SchoolController@qrcodeGenerateAll')->name('school.generateQrcodeAll');
     Route::post('{dc}/qrcode/{uuid}/remove', 'SchoolController@qrcodeRemove')->name('school.removeQrcode');
 });

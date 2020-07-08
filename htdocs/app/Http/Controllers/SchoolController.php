@@ -2692,7 +2692,7 @@ class SchoolController extends Controller
             $sims = $data['tpSims'];
         }
         $filter = "(&(o=$dc)(tpClass=$my_field)(employeeType=學生)(!(inetUserStatus=deleted)))";
-        $students = $openldap->findUsers($filter, ['cn', 'displayName', 'o', 'tpClass', 'tpSeat', 'entryUUID', 'uid', 'inetUserStatus']);
+        $students = $openldap->findUsers($filter, ['cn', 'displayName', 'tpSeat', 'entryUUID']);
         usort($students, function ($a, $b) { return $a['tpSeat'] <=> $b['tpSeat']; });
         foreach ($students as $k => $st) {
             $qrcode = GQrcode::where('idno', $st['cn'])->first();
@@ -2731,13 +2731,11 @@ class SchoolController extends Controller
     {
         $openldap = new LdapServiceProvider();
         $idno = $openldap->getUserIDNO($uuid);
-        if ($idno) {
-            GQrcode::where('idno', $idno)->delete();
-            GQrcode::create([
-                'idno' => $idno,
-                'expired_at' => Carbon::today()->addDays(config('app.qrcode_expired')),
-            ]);
-        }
+        GQrcode::where('idno', $idno)->delete();
+        GQrcode::create([
+            'idno' => $idno,
+            'expired_at' => Carbon::today()->addDays(config('app.qrcode_expired')),
+        ]);
 
         return back()->with('success', '已經重新產生 QRCODE！');
     }
@@ -2746,18 +2744,16 @@ class SchoolController extends Controller
     {
         $openldap = new LdapServiceProvider();
         $filter = "(&(o=$dc)(tpClass=$class)(employeeType=學生)(!(inetUserStatus=deleted)))";
-        $students = $openldap->findUsers($filter, ['cn', 'displayName', 'o', 'tpClass', 'tpSeat', 'entryUUID', 'uid', 'inetUserStatus']);
+        $students = $openldap->findUsers($filter, ['cn', 'displayName', 'tpSeat', 'entryUUID']);
         usort($students, function ($a, $b) { return $a['tpSeat'] <=> $b['tpSeat']; });
-        foreach ($students as $k => $st) {
-			if ($st['cn']) {
-				$qrcode = GQrcode::where('idno', $st['cn'])->first();
-				if (!$qrcode) {
-					$qrcode = GQrcode::create([
-						'idno' => $st['cn'],
-						'expired_at' => Carbon::today()->addDays(config('app.qrcode_expired')),
-					]);
-				}	
-			}
+        foreach ($students as $st) {
+            $qrcode = GQrcode::where('idno', $st['cn'])->first();
+            if (!$qrcode) {
+                $qrcode = GQrcode::create([
+                    'idno' => $st['cn'],
+                    'expired_at' => Carbon::today()->addDays(config('app.qrcode_expired')),
+                ]);
+            }
         }
 
         return back()->with('success', '已經批量製作全班 QRCODE！');
