@@ -48,23 +48,32 @@ class v2_profileController extends Controller
 
     public function user(Request $request)
     {
+        $json = new \stdClass();
         $user = $request->user();
         if ($user->is_parent) {
-            $json = new \stdClass();
             $json->role = '家長';
             $json->uuid = $user->uuid;
             $json->name = $user->name;
             $json->email = $user->email;
+            if ($user->hasVerifiedEmail()) {
+                $json->email_verified = true;
+            } else {
+                $json->email_verified = false;
+            }
             $json->mobile = $user->mobile;
         } else {
             if (!isset($user->ldap) || !$user->ldap) {
                 return response()->json(['error' => '人員不存在'], 400, [JSON_UNESCAPED_UNICODE]);
             }
-            $json = new \stdClass();
             $json->role = $user->ldap['employeeType'];
             $json->uuid = $user->uuid;
             $json->name = $user->name;
             $json->email = $user->email;
+            if ($user->hasVerifiedEmail()) {
+                $json->email_verified = true;
+            } else {
+                $json->email_verified = false;
+            }
             $json->email_login = $user->ldap['email_login'];
             $json->mobile = $user->mobile;
             $json->mobile_login = $user->ldap['mobile_login'];
@@ -85,13 +94,18 @@ class v2_profileController extends Controller
     public function profile(Request $request)
     {
         $openldap = new LdapServiceProvider();
+        $json = new \stdClass();
         $user = $request->user();
         if ($user->is_parent) {
-            $json = new \stdClass();
             $json->role = '家長';
             $json->uuid = $user->uuid;
             $json->name = $user->name;
             $json->email = $user->email;
+            if ($user->hasVerifiedEmail()) {
+                $json->email_verified = true;
+            } else {
+                $json->email_verified = false;
+            }
             $json->mobile = $user->mobile;
             $kids = PSLink::where('parent_idno', $user->idno)->where('verified', 1)->get();
             foreach ($kids as $kid) {
@@ -105,11 +119,15 @@ class v2_profileController extends Controller
             if (!isset($user->ldap) || !$user->ldap) {
                 return response()->json(['error' => '人員不存在'], 400, [JSON_UNESCAPED_UNICODE]);
             }
-            $json = new \stdClass();
             $json->role = $user->ldap['employeeType'];
             $json->uuid = $user->uuid;
             $json->name = $user->name;
             $json->email = $user->email;
+            if ($user->hasVerifiedEmail()) {
+                $json->email_verified = true;
+            } else {
+                $json->email_verified = false;
+            }
             $json->mobile = $user->mobile;
             if (array_key_exists('gender', $user->ldap)) {
                 $json->gender = $user->ldap['gender'];
