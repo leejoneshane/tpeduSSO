@@ -2,11 +2,11 @@
 
 namespace App\Notifications;
 
+use App\Project;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use App\Project;
+use Illuminate\Notifications\Notification;
 
 class ProjectAllowedNotification extends Notification implements ShouldQueue
 {
@@ -27,7 +27,8 @@ class ProjectAllowedNotification extends Notification implements ShouldQueue
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed  $notifiable
+     * @param mixed $notifiable
+     *
      * @return array
      */
     public function via($notifiable)
@@ -38,12 +39,13 @@ class ProjectAllowedNotification extends Notification implements ShouldQueue
     /**
      * Get the mail representation of the notification.
      *
-     * @param  mixed  $notifiable
+     * @param mixed $notifiable
+     *
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
+        return (new MailMessage())
                     ->subject(config('app.name').'通知')
                     ->greeting('恭喜您！')
                     ->line('管理員已經核准您申請的介接專案：'.$this->project->applicationName.'。')

@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api_V2;
 
-use Cookie;
-use App\Providers\LdapServiceProvider;
 use App\Http\Controllers\Controller;
+use App\Providers\LdapServiceProvider;
+use App\PSLink;
+use App\User;
+use Cookie;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\User;
-use App\PSLink;
 
 class v2_profileController extends Controller
 {
@@ -58,7 +58,7 @@ class v2_profileController extends Controller
             $json->mobile = $user->mobile;
         } else {
             if (!isset($user->ldap) || !$user->ldap) {
-                return response()->json(['error' => '人員不存在'], 400, array(JSON_UNESCAPED_UNICODE));
+                return response()->json(['error' => '人員不存在'], 400, [JSON_UNESCAPED_UNICODE]);
             }
             $json = new \stdClass();
             $json->role = $user->ldap['employeeType'];
@@ -70,7 +70,7 @@ class v2_profileController extends Controller
             $json->mobile_login = $user->ldap['mobile_login'];
         }
 
-        return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
+        return response()->json($json, 200, [JSON_UNESCAPED_UNICODE]);
     }
 
     public function idno(Request $request)
@@ -89,6 +89,10 @@ class v2_profileController extends Controller
         if ($user->is_parent) {
             $json = new \stdClass();
             $json->role = '家長';
+            $json->uuid = $user->uuid;
+            $json->name = $user->name;
+            $json->email = $user->email;
+            $json->mobile = $user->mobile;
             $kids = PSLink::where('parent_idno', $user->idno)->where('verified', 1)->get();
             foreach ($kids as $kid) {
                 $idno = $kid->student_idno;
@@ -99,10 +103,14 @@ class v2_profileController extends Controller
             }
         } else {
             if (!isset($user->ldap) || !$user->ldap) {
-                return response()->json(['error' => '人員不存在'], 400, array(JSON_UNESCAPED_UNICODE));
+                return response()->json(['error' => '人員不存在'], 400, [JSON_UNESCAPED_UNICODE]);
             }
             $json = new \stdClass();
             $json->role = $user->ldap['employeeType'];
+            $json->uuid = $user->uuid;
+            $json->name = $user->name;
+            $json->email = $user->email;
+            $json->mobile = $user->mobile;
             if (array_key_exists('gender', $user->ldap)) {
                 $json->gender = $user->ldap['gender'];
             }
@@ -170,7 +178,7 @@ class v2_profileController extends Controller
             }
         }
 
-        return response()->json($json, 200, array(JSON_UNESCAPED_UNICODE));
+        return response()->json($json, 200, [JSON_UNESCAPED_UNICODE]);
     }
 
     public function updateUser(Request $request)
@@ -178,24 +186,24 @@ class v2_profileController extends Controller
         $openldap = new LdapServiceProvider();
         $user = $request->user();
         if ($user->is_parent) {
-            return response()->json(['error' => '家長帳號不支援此功能！'], 400, array(JSON_UNESCAPED_UNICODE));
+            return response()->json(['error' => '家長帳號不支援此功能！'], 400, [JSON_UNESCAPED_UNICODE]);
         }
         if (!isset($user->ldap) || !$user->ldap) {
-            return response()->json(['error' => '人員不存在'], 400, array(JSON_UNESCAPED_UNICODE));
+            return response()->json(['error' => '人員不存在'], 400, [JSON_UNESCAPED_UNICODE]);
         }
-        $userinfo = array();
+        $userinfo = [];
         $email = $request->get('email');
         $mobile = $request->get('mobile');
         $messages = '';
         if (!empty($email)) {
             if ($email == $user->email) {
-                return response()->json(['error' => '新電子郵件信箱不可以和舊的相同'], 400, array(JSON_UNESCAPED_UNICODE));
+                return response()->json(['error' => '新電子郵件信箱不可以和舊的相同'], 400, [JSON_UNESCAPED_UNICODE]);
             }
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                return response()->json(['error' => '電子郵件信箱格式不正確'], 400, array(JSON_UNESCAPED_UNICODE));
+                return response()->json(['error' => '電子郵件信箱格式不正確'], 400, [JSON_UNESCAPED_UNICODE]);
             }
             if (!$openldap->emailAvailable($user->idno, $email)) {
-                return response()->json(['error' => '電子郵件信箱已經被使用'], 400, array(JSON_UNESCAPED_UNICODE));
+                return response()->json(['error' => '電子郵件信箱已經被使用'], 400, [JSON_UNESCAPED_UNICODE]);
             }
             $userinfo['mail'] = $email;
             $user->email = $userinfo['mail'];
@@ -203,13 +211,13 @@ class v2_profileController extends Controller
         }
         if (!empty($mobile)) {
             if ($mobile == $user->mobile) {
-                return response()->json(['error' => '新行動電話不可以和舊的相同'], 400, array(JSON_UNESCAPED_UNICODE));
+                return response()->json(['error' => '新行動電話不可以和舊的相同'], 400, [JSON_UNESCAPED_UNICODE]);
             }
             if (!is_numeric($mobile) || strlen($mobile) != 10) {
-                return response()->json(['error' => '行動電話格式不正確'], 400, array(JSON_UNESCAPED_UNICODE));
+                return response()->json(['error' => '行動電話格式不正確'], 400, [JSON_UNESCAPED_UNICODE]);
             }
             if (!$openldap->mobileAvailable($user->idno, $mobile)) {
-                return response()->json(['error' => '行動電話已經被使用'], 400, array(JSON_UNESCAPED_UNICODE));
+                return response()->json(['error' => '行動電話已經被使用'], 400, [JSON_UNESCAPED_UNICODE]);
             }
             $userinfo['mobile'] = $mobile;
             $user->mobile = $userinfo['mobile'];
@@ -243,10 +251,10 @@ class v2_profileController extends Controller
             $messages .= '使用行動電話登入的功能已經關閉 ';
         }
         if (empty($messages)) {
-            return response()->json(['error' => '更新帳號資訊時發生錯誤'], 400, array(JSON_UNESCAPED_UNICODE));
+            return response()->json(['error' => '更新帳號資訊時發生錯誤'], 400, [JSON_UNESCAPED_UNICODE]);
         }
 
-        return response()->json(['success' => $messages], 200, array(JSON_UNESCAPED_UNICODE));
+        return response()->json(['success' => $messages], 200, [JSON_UNESCAPED_UNICODE]);
     }
 
     public function updateAccount(Request $request)
@@ -254,12 +262,12 @@ class v2_profileController extends Controller
         $openldap = new LdapServiceProvider();
         $user = $request->user();
         if ($user->is_parent) {
-            return response()->json(['error' => '家長帳號不支援此功能！'], 400, array(JSON_UNESCAPED_UNICODE));
+            return response()->json(['error' => '家長帳號不支援此功能！'], 400, [JSON_UNESCAPED_UNICODE]);
         }
         if (!isset($user->ldap) || !$user->ldap) {
-            return response()->json(['error' => '人員不存在'], 400, array(JSON_UNESCAPED_UNICODE));
+            return response()->json(['error' => '人員不存在'], 400, [JSON_UNESCAPED_UNICODE]);
         }
-        $userinfo = array();
+        $userinfo = [];
         $account = $request->get('account');
         $password = $request->get('password');
         $messages = '';
@@ -274,19 +282,19 @@ class v2_profileController extends Controller
         }
         if (!empty($account) && !empty($current)) {
             if ($account == $current) {
-                return response()->json(['error' => '新帳號不可以與舊帳號相同'], 400, array(JSON_UNESCAPED_UNICODE));
+                return response()->json(['error' => '新帳號不可以與舊帳號相同'], 400, [JSON_UNESCAPED_UNICODE]);
             }
             if (strlen($account) < 6) {
-                return response()->json(['error' => '帳號至少要六個字元'], 400, array(JSON_UNESCAPED_UNICODE));
+                return response()->json(['error' => '帳號至少要六個字元'], 400, [JSON_UNESCAPED_UNICODE]);
             }
             if (!$openldap->accountAvailable($user->idno, $account)) {
-                return response()->json(['error' => '帳號已經被使用'], 400, array(JSON_UNESCAPED_UNICODE));
+                return response()->json(['error' => '帳號已經被使用'], 400, [JSON_UNESCAPED_UNICODE]);
             }
             if (is_numeric($account)) {
-                return response()->json(['error' => '帳號應包含數字以外的字元'], 400, array(JSON_UNESCAPED_UNICODE));
+                return response()->json(['error' => '帳號應包含數字以外的字元'], 400, [JSON_UNESCAPED_UNICODE]);
             }
             if (strpos($account, '@')) {
-                return response()->json(['error' => '帳號不可以是電子郵件'], 400, array(JSON_UNESCAPED_UNICODE));
+                return response()->json(['error' => '帳號不可以是電子郵件'], 400, [JSON_UNESCAPED_UNICODE]);
             }
             $entry = $openldap->getUserEntry($user->idno);
             $openldap->renameAccount($entry, $current, $account);
@@ -294,7 +302,7 @@ class v2_profileController extends Controller
         }
         if (!empty($password)) {
             if (strlen($password) < 6) {
-                return response()->json(['error' => '密碼至少要六個字元'], 400, array(JSON_UNESCAPED_UNICODE));
+                return response()->json(['error' => '密碼至少要六個字元'], 400, [JSON_UNESCAPED_UNICODE]);
             }
             $user->resetLdapPassword($password);
             $user->password = \Hash::make($password);
@@ -302,9 +310,9 @@ class v2_profileController extends Controller
             $messages .= '密碼更新完成';
         }
         if (empty($messages)) {
-            return response()->json(['error' => '更新帳號資訊時發生錯誤'], 400, array(JSON_UNESCAPED_UNICODE));
+            return response()->json(['error' => '更新帳號資訊時發生錯誤'], 400, [JSON_UNESCAPED_UNICODE]);
         }
 
-        return response()->json(['success' => $messages], 200, array(JSON_UNESCAPED_UNICODE));
+        return response()->json(['success' => $messages], 200, [JSON_UNESCAPED_UNICODE]);
     }
 }
