@@ -56,9 +56,9 @@ class v2_profileController extends Controller
             $json->name = $user->name;
             $json->email = $user->email;
             if ($user->hasVerifiedEmail()) {
-                $json->email_verified = true;
+                $json->email_verified = 'true';
             } else {
-                $json->email_verified = false;
+                $json->email_verified = 'false';
             }
             $json->mobile = $user->mobile;
         } else {
@@ -70,9 +70,9 @@ class v2_profileController extends Controller
             $json->name = $user->name;
             $json->email = $user->email;
             if ($user->hasVerifiedEmail()) {
-                $json->email_verified = true;
+                $json->email_verified = 'true';
             } else {
-                $json->email_verified = false;
+                $json->email_verified = 'false';
             }
             $json->email_login = $user->ldap['email_login'];
             $json->mobile = $user->mobile;
@@ -102,9 +102,9 @@ class v2_profileController extends Controller
             $json->name = $user->name;
             $json->email = $user->email;
             if ($user->hasVerifiedEmail()) {
-                $json->email_verified = true;
+                $json->email_verified = 'true';
             } else {
-                $json->email_verified = false;
+                $json->email_verified = 'false';
             }
             $json->mobile = $user->mobile;
             $kids = PSLink::where('parent_idno', $user->idno)->where('verified', 1)->get();
@@ -124,9 +124,9 @@ class v2_profileController extends Controller
             $json->name = $user->name;
             $json->email = $user->email;
             if ($user->hasVerifiedEmail()) {
-                $json->email_verified = true;
+                $json->email_verified = 'true';
             } else {
-                $json->email_verified = false;
+                $json->email_verified = 'false';
             }
             $json->mobile = $user->mobile;
             if (array_key_exists('gender', $user->ldap)) {
