@@ -55,10 +55,11 @@ class Tpedu extends OAuth2
         $response = $this->apiRequest('profile');
 
         $data = new Data\Collection($response);
+        $org = $data->exists('organization') ? $data->get('organization') : null;
 
-        if ($data->exists('error')) {
+        if ($data->exists('error') || !$org) {
             throw new UnexpectedApiResponseException('Provider API returned an unexpected response.'.$data->get('error'));
-        } elseif (key($data->get('school')) != 'meps' && $data->get('role') == '家長') {
+        } elseif (!property_exists($org, 'meps') && $data->get('role') == '家長') {
             throw new UnexpectedApiResponseException('Only our School teachers and students can login!');
         }
 
@@ -69,7 +70,7 @@ class Tpedu extends OAuth2
             $userProfile->data['groups'] = ['學生', $data->get('class')];
         } else {
             $userProfile->identifier = $data->get('teacherId');
-            $userProfile->data['groups'] = (array) ($data->get('unit'))['meps'];
+            $userProfile->data['groups'] = (array) ($data->get('unit'))->meps;
             $userProfile->data['groups'][] = '教師';
         }
         $userProfile->displayName = $data->get('name');
