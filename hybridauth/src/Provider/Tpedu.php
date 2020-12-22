@@ -50,29 +50,14 @@ class Tpedu extends OAuth2
     /**
      * {@inheritdoc}
      */
-    protected function initialize()
-    {
-        parent::initialize();
-
-        if ($this->isRefreshTokenAvailable()) {
-            $this->tokenRefreshParameters += [
-                'client_id' => $this->clientId,
-                'client_secret' => $this->clientSecret,
-            ];
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getUserProfile()
     {
         $response = $this->apiRequest('profile');
 
         $data = new Data\Collection($response);
 
-        if (!$data->exists('role')) {
-            throw new UnexpectedApiResponseException('Provider API returned an unexpected response.');
+        if ($data->exists('error')) {
+            throw new UnexpectedApiResponseException('Provider API returned an unexpected response.'.$data->get('error'));
         } elseif ($data->get('role') == '家長') {
             throw new UnexpectedApiResponseException('Parents can not login!');
         }
@@ -84,7 +69,7 @@ class Tpedu extends OAuth2
             $userProfile->data['groups'] = ['學生', $data->get('class')];
         } else {
             $userProfile->identifier = $data->get('teacherId');
-            $userProfile->data['groups'] = $data->get('unit');
+            $userProfile->data['groups'] = (array) $data->get('unit');
             $userProfile->data['groups'][] = '教師';
         }
         $userProfile->displayName = $data->get('name');
