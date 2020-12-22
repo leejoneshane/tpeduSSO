@@ -40,7 +40,7 @@ class Tpedu extends OAuth2
     /**
      * {@inheritdoc}
      */
-    protected $apiDocumentation = 'https://github.com/leejoneshane/tpeduSSO/blob/master/%E8%87%BA%E5%8C%97%E5%B8%82%E6%95%99%E8%82%B2%E4%BA%BA%E5%93%A1%E5%96%AE%E4%B8%80%E8%BA%AB%E5%88%86%E9%A9%97%E8%AD%89%E8%B3%87%E6%96%99%E4%BB%8B%E6%8E%A5%E6%89%8B%E5%86%8AV2.04.docx?raw=true';
+    protected $apiDocumentation = 'https://github.com/leejoneshane/tpeduSSO/';
 
     /**
      * Currently authenticated user.
