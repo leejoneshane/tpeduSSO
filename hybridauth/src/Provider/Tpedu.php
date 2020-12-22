@@ -70,8 +70,11 @@ class Tpedu extends OAuth2
             $userProfile->data['groups'] = ['學生', $data->get('class')];
         } else {
             $userProfile->identifier = $data->get('teacherId');
-            $userProfile->data['groups'] = (array) ($data->get('unit'))->meps;
             $userProfile->data['groups'][] = '教師';
+            $units = $data->get('unit')->meps;
+            foreach ($units as $dept) {
+                $userProfile->data['groups'][] = $dept->name;
+            }
         }
         $userProfile->displayName = $data->get('name');
         $userProfile->gender = $data->get('gender');
