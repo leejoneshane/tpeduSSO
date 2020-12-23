@@ -141,6 +141,9 @@ class v2_profileController extends Controller
             if (array_key_exists('school', $user->ldap)) {
                 $json->organization = $user->ldap['school'];
             }
+            if (array_key_exists('tpAdminSchools', $user->ldap)) {
+                $json->isAdmin = 'yes';
+            }
             if ($json->role == '學生') {
                 if (array_key_exists('employeeNumber', $user->ldap)) {
                     $json->studentId = $user->ldap['employeeNumber'];
