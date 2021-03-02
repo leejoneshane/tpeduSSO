@@ -449,23 +449,23 @@ class LdapServiceProvider extends ServiceProvider
 			$entry = $this->getOuEntry($dc, $ou->id);
 			if ($entry) {
 				$this->updateData($entry, array( "description" => $ou->name));
-				foreach ($ou->roles as $role => $desc) {
-					if (empty($role) || empty($desc)) return false;
-					$role_entry = $this->getRoleEntry($dc, $ou->id, $role);
+				foreach ($ou->roles as $role) {
+					if (empty($role->id) || empty($role->name)) return false;
+					$role_entry = $this->getRoleEntry($dc, $ou->id, $role->id);
 					if ($role_entry) {
-						$this->updateData($role_entry, array( "description" => $desc));
+						$this->updateData($role_entry, array( "description" => $role->name));
 					} else {
-						$dn = "cn=$role,ou=$ou->id,dc=$dc,".config('ldap.rdn');
-						$this->createEntry(array( "dn" => $dn, "ou" => $ou->id, "cn" => $role, "description" => $desc));
+						$dn = "cn=$role->id,ou=$ou->id,dc=$dc,".config('ldap.rdn');
+						$this->createEntry(array( "dn" => $dn, "ou" => $ou->id, "cn" => $role->id, "description" => $role->name));
 					}
 				}
 			} else {
 				$dn = "ou=$ou->id,dc=$dc,".config('ldap.rdn');
 				$this->createEntry(array( "dn" => $dn, "ou" => $ou->id, "businessCategory" => "行政部門", "description" => $ou->name));
-				foreach ($ou->roles as $role => $desc) {
-					if (empty($role) || empty($desc)) return false;
-					$dn = "cn=$role,ou=$ou->id,dc=$dc,".config('ldap.rdn');
-					$this->createEntry(array( "dn" => $dn, "ou" => $ou->id, "cn" => $role, "description" => $desc));
+				foreach ($ou->roles as $role) {
+					if (empty($role->id) || empty($role->name)) return false;
+					$dn = "cn=$role->id,ou=$ou->id,dc=$dc,".config('ldap.rdn');
+					$this->createEntry(array( "dn" => $dn, "ou" => $ou->id, "cn" => $role->id, "description" => $role->name));
 				}
 			}
 		}
@@ -476,14 +476,14 @@ class LdapServiceProvider extends ServiceProvider
     {
 		if (empty($dc) || empty($classes)) return false;
 		$this->administrator();
-		foreach ($classes as $class => $title) {
-			if (empty($class) || empty($title)) return false;
-			$entry = $this->getOuEntry($dc, $class);
+		foreach ($classes as $class) {
+			if (empty($class->id) || empty($title->name)) return false;
+			$entry = $this->getOuEntry($dc, $class->id);
 			if ($entry) {
-				$this->updateData($entry, array( "description" => $title));
+				$this->updateData($entry, array( "description" => $class->name));
 			} else {
-				$dn = "ou=$class,dc=$dc,".config('ldap.rdn');
-				$this->createEntry(array( "dn" => $dn, "ou" => $class, "businessCategory" => "教學班級", "description" => $title));
+				$dn = "ou=$class->id,dc=$dc,".config('ldap.rdn');
+				$this->createEntry(array( "dn" => $dn, "ou" => $class->id, "businessCategory" => "教學班級", "description" => $class->name));
 			}
 		}
 		return true;

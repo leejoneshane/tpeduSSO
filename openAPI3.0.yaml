@@ -1,0 +1,1350 @@
+openapi: 3.0.0
+servers:
+  - description: 臺北市教育局單一身份驗證服務伺服器
+    url: https://ldap.tp.edu.tw/api/v2/
+info:
+  version: '2.0'
+  title: 臺北市教育局單一身份驗證服務
+  description: |-
+    這是「臺北市教育局單一身份驗證服務」開發專案所提供的REST服務，用來提供各級學程教育開放資料，資料內容依照個資法規定劃分為：公開資料及個人資料。前者可使用專案授權取得，後者需透過使用者行使同意權方能取得，由於個人資料中包含有未滿13歲之學童個資，因此申請介接專案之廠商或學校，若服務對象包含13歲以下之學童，依法應取得家長之書面同意始能申請介接。
+    本服務依照各種不同應用場合，提供四種不同的授權方法進行資料介接：專案授權、個資授權、代理授權、特權專案。不同授權模式之使用時機說明如下：
+    專案授權：存取無需使用者介入之學校公開資料，此範圍之資料為移除個資之軌跡資料，當須揭露相關當事人時，以其 UUID 代替。UUID 可由個資授權及代理授權查詢出真實資料。
+    個資授權：存取教育人員個資，應經過個資當事人行使同意權才能取得。個資當事人隨時可以透過服務網站終止授權，當授權終止時介接專案將無法再取得當事人個資。
+    代理授權：由依法保存和運用個資之機關學校，因執行法定業務之需求，將其一部份業務委託廠商進行系統開發時，可以無需個資當事人同意利用其個資，詳細規定請參閱個資法。為滿足此需求，系統提供代理授權功能。使用方法為：學校系統管理人員透過服務網站建立個人存取金鑰，將個人存取金鑰交付廠商，廠商可透過此金鑰存取學校系統管理人員所設定之特定資料範圍。若學校要終止此項授權，只要透過服務網站移除該金鑰即可。代理授權對個資當事人權益的影響巨大，請務必進行法律諮詢後再實施。
+    特權專案：經教育局認定可以管理全域資料的專案。無需學校管理員或資料當事人之授權，可以進行全部資料操作。
+security:
+  - proxy: []
+  - user:
+    - me
+    - email
+    - user
+    - idno
+    - profile
+    - account
+  - project:
+    - school
+    - admin
+paths:
+  /school:
+    parameters:
+    - name: sid
+      in: query
+      description: 依照統計代碼搜尋學校
+      schema:
+        type: integer
+    - name: area
+      in: query
+      description: 依照行政區搜尋學校
+      schema:
+        type: string
+    - name: name
+      in: query
+      description: 依照全銜搜尋學校
+      schema:
+        type: string
+    get:
+      summary: 取得學校清單
+      security:
+        - project:
+          - school
+      description: 取得臺北市高中(含)以下各級學校清單
+      responses:
+        '200':
+          description: 學校清單
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    o:
+                      type: string
+                      title: 學校網域代碼
+                    st:
+                      type: string
+                      title: 學校所在行政區
+                    tpUniformNumbers:
+                      type: integer
+                      title: 學校統計編號
+                    "description":
+                      type: string
+                      title: 學校全銜
+  /school/{dc}:
+    parameters:
+    - name: dc
+      in: path
+      description: 學校網域代碼
+      required: true
+      schema:
+        type: string
+    get:
+      summary: 取得指定學校資料
+      security:
+        - project:
+          - school
+      responses:
+        '200':
+          description: 學校資料
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/org'
+    patch:
+      summary: 修改學校資訊
+      security:
+        - project:
+          - proxy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fax:
+                  title: 傳真號碼
+                  type: string
+                tel:
+                  title: 聯絡電話
+                  type: string
+                ipv4:
+                  title: 學校使用的 IPv4 網段
+                  type: string
+                ipv6:
+                  title: 學校使用的 IPv6 網段
+                  type: string
+                admins:
+                  title: 指派學校系統管理員
+                  type: array
+                  items:
+                    type: string
+                ous:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        title: 行政單位代號
+                        type: string
+                      name:
+                        title: 行政單位名稱
+                        type: string
+                      roles:
+                        title: 職務清單
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              title: 職務代號
+                              type: string
+                            name:
+                              title: 職務名稱
+                              type: string
+                subjects:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        title: 課程（科目）代號
+                        type: string
+                      domain:
+                        title: 學科領域
+                        type: string
+                      "title":
+                        title: 課程（科目）名稱
+                        type: string
+                classes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        title: 班級代號
+                        type: string
+                      name:
+                        title: 班級名稱
+                        type: string
+      responses:
+        '200':
+          description: 學校資料
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/org'
+  /school/{dc}/people:
+    parameters:
+    - name: dc
+      in: path
+      description: 學校網域代碼
+      required: true
+      schema:
+        type: string
+    - name: idno
+      in: query
+      description: 依照身分證字號搜尋人員（包含：家長、學生、教師）
+      schema:
+        type: integer
+    - name: sysid
+      in: query
+      description: 依照校務行政系統編號（學號或教師編號）搜尋人員（包含：家長、學生、教師）
+      schema:
+        type: string
+    - name: type
+      in: query
+      description: 指定搜尋對象，例如：家長、學生、教師
+      schema:
+        type: string
+    - name: name
+      in: query
+      description: 依照姓名搜尋人員（包含：家長、學生、教師）
+      schema:
+        type: string
+    - name: gender
+      in: query
+      description: 指定搜尋對象的性別
+      schema:
+        type: string
+    - name: tel
+      in: query
+      description: 依照聯絡電話搜尋人員（包含：家長、學生、教師）
+      schema:
+        type: string
+    - name: email
+      in: query
+      description: 依照電子郵件地址搜尋人員（包含：家長、學生、教師）
+      schema:
+        type: string
+    get:
+      summary: 搜尋符合條件的人員
+      security:
+        - project:
+          - school
+      description: 通常 idno 和 sysid 會單獨使用，其他條件可以複合搜尋
+      responses:
+        '200':
+          description: 人員 UUID 清單
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/uuid_list'
+    post:
+      summary: 新增人員
+      security:
+        - project:
+          - proxy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/people_form'
+      responses:
+        '200':
+          description: 人員詳細資訊
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/people'
+  /school/{dc}/people/{uuid}:
+    parameters:
+    - name: dc
+      in: path
+      description: 學校網域代碼
+      required: true
+      schema:
+        type: string
+    - name: uuid
+      in: path
+      description: 人員 UUID
+      required: true
+      schema:
+        type: string
+        format: uuid
+    get:
+      summary: 取得指定人員詳細資訊
+      security:
+        - project:
+          - proxy
+      responses:
+        '200':
+          description: 人員詳細資訊
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/people'
+    patch:
+      summary: 修改指定人員詳細資訊
+      security:
+        - project:
+          - proxy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/people_form'
+      responses:
+        '200':
+          description: 人員詳細資訊
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/people'
+    delete:
+      summary: 修改指定人員詳細資訊
+      security:
+        - project:
+          - proxy
+      responses:
+        '200':
+          description: 人員已刪除
+  /school/{dc}/teachers:
+    parameters:
+    - name: dc
+      in: path
+      description: 學校網域代碼
+      required: true
+      schema:
+        type: string
+    get:
+      summary: 取得學校教師清單
+      security:
+        - project:
+          - school
+      responses:
+        '200':
+          description: 教師 UUID 清單
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/uuid_list'
+  /school/{dc}/ou:
+    parameters:
+    - name: dc
+      in: path
+      description: 學校網域代碼
+      required: true
+      schema:
+        type: string
+    get:
+      summary: 取得行政單位清單
+      security:
+        - project:
+          - school
+      responses:
+        '200':
+          description: 行政單位清單
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    ou:
+                      type: string
+                      title: 行政單位代號
+                    "description":
+                      type: string
+                      title: 行政單位名稱
+  /school/{dc}/ou/{ou}:
+    parameters:
+    - name: dc
+      in: path
+      description: 學校網域代碼
+      required: true
+      schema:
+        type: string
+    - name: ou
+      in: path
+      description: 行政單位代號
+      required: true
+      schema:
+        type: string
+    get:
+      summary: 取得指定的行政單位資料
+      security:
+        - project:
+          - school
+      responses:
+        '200':
+          description: 行政單位資料
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ou:
+                    type: string
+                    title: 行政單位代號
+                  businessCategory:
+                    type: string
+                    title: 部門分類
+                  "description":
+                    type: string
+                    title: 行政單位名稱
+  /school/{dc}/ou/{ou}/teachers:
+    parameters:
+    - name: dc
+      in: path
+      description: 學校網域代碼
+      required: true
+      schema:
+        type: string
+    - name: ou
+      in: path
+      description: 行政單位代號
+      required: true
+      schema:
+        type: string
+    get:
+      summary: 取得行政單位在職人員清單
+      security:
+        - project:
+          - school
+      responses:
+        '200':
+          description: 在職人員 UUID 清單
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/uuid_list'
+  /school/{dc}/ou/{ou}/role:
+    parameters:
+    - name: dc
+      in: path
+      description: 學校網域代碼
+      required: true
+      schema:
+        type: string
+    - name: ou
+      in: path
+      description: 行政單位代號
+      required: true
+      schema:
+        type: string
+    get:
+      summary: 取得行政單位職務清單
+      security:
+        - project:
+          - school
+      responses:
+        '200':
+          description: 職務清單
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    cn:
+                      type: string
+                      title: 職務代號
+                    "description":
+                      type: string
+                      title: 職務名稱
+  /school/{dc}/ou/{ou}/role/{role}:
+    parameters:
+    - name: dc
+      in: path
+      description: 學校網域代碼
+      required: true
+      schema:
+        type: string
+    - name: ou
+      in: path
+      description: 行政單位代號
+      required: true
+      schema:
+        type: string
+    - name: role
+      in: path
+      description: 職務代號
+      required: true
+      schema:
+        type: string
+    get:
+      summary: 取得指定的職務資料
+      security:
+        - project:
+          - school
+      responses:
+        '200':
+          description: 職務資料
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ou:
+                    type: string
+                    title: 行政單位代號
+                  cn:
+                    type: string
+                    title: 職務代號
+                  "description":
+                    type: string
+                    title: 職務名稱
+  /school/{dc}/ou/{ou}/role/{role}/teachers:
+    parameters:
+    - name: dc
+      in: path
+      description: 學校網域代碼
+      required: true
+      schema:
+        type: string
+    - name: ou
+      in: path
+      description: 行政單位代號
+      required: true
+      schema:
+        type: string
+    - name: role
+      in: path
+      description: 職務代號
+      required: true
+      schema:
+        type: string
+    get:
+      summary: 取得職務在職人員清單
+      security:
+        - project:
+          - school
+      responses:
+        '200':
+          description: 在職人員 UUID 清單
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/uuid_list'
+  /school/{dc}/subject:
+    parameters:
+    - name: dc
+      in: path
+      description: 學校網域代碼
+      required: true
+      schema:
+        type: string
+    get:
+      summary: 取得課程（科目）清單
+      security:
+        - project:
+          - school
+      responses:
+        '200':
+          description: 課程（科目）清單
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    tpSubject:
+                      type: string
+                      title: 課程（科目）代號
+                    tpSubjectDomain:
+                      type: string
+                      title: 學科領域
+                    "description":
+                      type: string
+                      title: 課程（科目）名稱
+  /school/{dc}/subject/{subject}:
+    parameters:
+    - name: dc
+      in: path
+      description: 學校網域代碼
+      required: true
+      schema:
+        type: string
+    - name: subject
+      in: path
+      description: 課程（科目）代碼
+      required: true
+      schema:
+        type: string        
+    get:
+      summary: 取得課程（科目）資料
+      security:
+        - project:
+          - school
+      responses:
+        '200':
+          description: 課程（科目）資料
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tpSubject:
+                    type: string
+                    title: 課程（科目）代號
+                  tpSubjectDomain:
+                    type: string
+                    title: 學科領域
+                  "description":
+                    type: string
+                    title: 課程（科目）名稱
+  /school/{dc}/subject/{subject}/teachers:
+    parameters:
+    - name: dc
+      in: path
+      description: 學校網域代碼
+      required: true
+      schema:
+        type: string
+    - name: subject
+      in: path
+      description: 課程（科目）代碼
+      required: true
+      schema:
+        type: string        
+    get:
+      summary: 取得課程（科目）任課教師清單
+      security:
+        - project:
+          - school
+      responses:
+        '200':
+          description: 任課教師 UUID 清單
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/uuid_list'
+  /school/{dc}/subject/{subject}/classes:
+    parameters:
+    - name: dc
+      in: path
+      description: 學校網域代碼
+      required: true
+      schema:
+        type: string
+    - name: subject
+      in: path
+      description: 課程（科目）代碼
+      required: true
+      schema:
+        type: string        
+    get:
+      summary: 取得課程（科目）授課班級清單
+      security:
+        - project:
+          - school
+      responses:
+        '200':
+          description: 班級代號清單
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /school/{dc}/class:
+    parameters:
+    - name: dc
+      in: path
+      description: 學校網域代碼
+      required: true
+      schema:
+        type: string
+    get:
+      summary: 取得學校班級清單
+      security:
+        - project:
+          - school
+      responses:
+        '200':
+          description: 班級資料清單
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    ou:
+                      type: string
+                      title: 班級代號
+                    "description":
+                      type: string
+                      title: 班級名稱
+                    grade:
+                      type: integer
+                      title: 年級
+                    tutor:
+                      title: 導師 UUID 清單
+                      $ref: '#/components/schemas/uuid_list'
+  /school/{dc}/class/{class}:
+    parameters:
+    - name: dc
+      in: path
+      description: 學校網域代碼
+      required: true
+      schema:
+        type: string
+    - name: class
+      in: path
+      description: 班級代碼
+      required: true
+      schema:
+        type: string
+    get:
+      summary: 取得學校班級資料
+      security:
+        - project:
+          - school
+      responses:
+        '200':
+          description: 班級資料
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ou:
+                    type: string
+                    title: 班級代號
+                  "description":
+                    type: string
+                    title: 班級名稱
+                  grade:
+                    type: integer
+                    title: 年級
+                  tutor:
+                    title: 導師 UUID 清單
+                    $ref: '#/components/schemas/uuid_list'
+  /school/{dc}/class/{class}/students:
+    parameters:
+    - name: dc
+      in: path
+      description: 學校網域代碼
+      required: true
+      schema:
+        type: string
+    - name: class
+      in: path
+      description: 班級代碼
+      required: true
+      schema:
+        type: string
+    get:
+      summary: 取得班級學生清單
+      security:
+        - project:
+          - school
+      responses:
+        '200':
+          description: 學生 UUID 清單
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/uuid_list'
+  /school/{dc}/class/{class}/parents:
+    parameters:
+    - name: dc
+      in: path
+      description: 學校網域代碼
+      required: true
+      schema:
+        type: string
+    - name: class
+      in: path
+      description: 班級代碼
+      required: true
+      schema:
+        type: string
+    get:
+      summary: 取得班級家長清單
+      security:
+        - project:
+          - school
+      responses:
+        '200':
+          description: 家長 UUID 清單
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/uuid_list'
+  /school/{dc}/class/{class}/teachers:
+    parameters:
+    - name: dc
+      in: path
+      description: 學校網域代碼
+      required: true
+      schema:
+        type: string
+    - name: class
+      in: path
+      description: 班級代碼
+      required: true
+      schema:
+        type: string
+    get:
+      summary: 取得班級教師清單
+      security:
+        - project:
+          - school
+      responses:
+        '200':
+          description: 教師 UUID 清單
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/uuid_list'
+  /school/{dc}/class/{class}/subjects:
+    parameters:
+    - name: dc
+      in: path
+      description: 學校網域代碼
+      required: true
+      schema:
+        type: string
+    - name: class
+      in: path
+      description: 班級代碼
+      required: true
+      schema:
+        type: string
+    get:
+      summary: 取得班級課程（授課科目）清單
+      security:
+        - project:
+          - school
+      responses:
+        '200':
+          description: 課程（科目）代號清單
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /email:
+    get:
+      summary: 取得登入者的電子郵件
+      security:
+        - project:
+          - user
+      responses:
+        '200':
+          description: 電子郵件
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    title: 電子郵件
+                    type: string
+  /me:
+    get:
+      summary: 取得登入者的姓名和電子郵件
+      security:
+        - project:
+          - user
+      responses:
+        '200':
+          description: 基本資訊
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    title: 姓名
+                    type: string
+                  email:
+                    title: 電子郵件
+                    type: string
+  /idno:
+    get:
+      summary: 取得登入者的身分證字號
+      security:
+        - project:
+          - user
+      responses:
+        '200':
+          description: 身分證字號
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  idno:
+                    title: 身分證字號
+                    type: string
+  /user:
+    get:
+      summary: 取得登入者的一般資訊
+      security:
+        - project:
+          - user
+      responses:
+        '200':
+          description: 一般資訊
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  role:
+                    title: 角色，例如：家長、學生、教師
+                    type: string
+                  uuid:
+                    title: UUID
+                    type: string
+                    format: uuid
+                  name:
+                    title: 姓名
+                    type: string
+                  email:
+                    title: 電子郵件
+                    type: string
+                  email_login:
+                    title: 可使用電子郵件登入
+                    type: boolean
+                  mobile:
+                    title: 手機號碼
+                    type: string
+                  mobile_login:
+                    title: 可使用手機號碼登入
+                    type: boolean
+    patch:
+      summary: 修改登入者的一般資訊
+      security:
+        - project:
+          - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  title: 電子郵件地址
+                  type: string
+                mobile:
+                  title: 手機號碼
+                  type: string
+                email_login:
+                  title: 使用電子郵件登入
+                  type: boolean
+                mobile_login:
+                  title: 使用手機號碼登入
+                  type: boolean
+      responses:
+        '200':
+          description: 處理結果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /profile:
+    get:
+      summary: 取得登入者的身份識別資訊
+      security:
+        - project:
+          - user
+      responses:
+        '200':
+          description: 人員詳細資訊
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/people'
+  /account:
+    patch:
+      summary: 修改登入者的帳號密碼
+      security:
+        - project:
+          - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                account:
+                  title: 新帳號
+                  type: string
+                password:
+                  title: 新密碼
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: 處理結果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /logout:
+    get:
+      security:
+        - project:
+          - user
+      responses:
+        '200':
+          description: 登出成功
+  /validate/{token}:
+    parameters:
+    - name: token
+      in: path
+      description: token 存取金鑰
+      required: true
+      schema:
+        type: string
+    get:
+      security:
+        - project:
+          - school
+      responses:
+        '200':
+          description: 取得 token 詳細資訊
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    title: 使用金鑰的使用者 UUID
+                    type: string
+                    format: uuid
+                  personal:
+                    title: 是個人存取金鑰
+                    type: boolean
+                  client_id:
+                    title: 專案代號
+                    type: string
+                  scopes:
+                    title: 授權範圍
+                    type: array
+                    items:
+                      type: string
+  /clients:
+    get:
+      security:
+        - project:
+          - school
+      responses:
+        '200':
+          description: 取得專案清單
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      title: 專案代號
+                      type: string
+                    name:
+                      title: 專案名稱
+                      type: string
+  /scopes:
+    get:
+      security:
+        - project:
+          - school
+      responses:
+        '200':
+          description: 取得授權範圍清單
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      title: 授權範圍代號
+                      type: string
+                    "description":
+                      title: 授權範圍描述
+                      type: string
+components:
+  securitySchemes:
+    proxy:
+      type: http
+      scheme: bearer
+    user:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: 'https://ldap.tp.edu.tw/oauth/authorize'
+          tokenUrl: 'https://ldap.tp.edu.tw/oauth/token'
+          scopes:
+            me: 想要取得您的電子郵件和姓名
+            email: 想要取得您的電子郵件
+            user: 想要取得您的識別代號、姓名、電子郵件、手機號碼等資訊
+            idno: 想要取得您的身分證字號
+            profile: 想要取得您的身分、所屬機構、單位職稱、任教班級、任教科目、就讀年班等資訊
+            account: 想要修改您的自訂帳號、電子郵件、手機號碼和密碼
+    project:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: 'https://ldap.tp.edu.tw/oauth/token'
+          scopes:
+            school: 想要讀取學校公開資訊
+            admin: 想要更新所有學校資訊，以及增刪修所有學校人員
+  schemas:
+    org:
+      type: object
+      properties:
+        entryUUID:
+          type: string
+          format: uuid
+          title: 學校唯一編號
+        modifyTimestamp:
+          type: integer
+          format: timestamp
+          title: 資料更新時間
+        o:
+          type: string
+          title: 學校網域代碼
+        businessCategory:
+          type: string
+          title: 學校層級
+        st:
+          type: string
+          title: 學校所在行政區
+        "description":
+          type: string
+          title: 學校全銜
+        facsimileTelephoneNumber:
+          type: string
+          title: 傳真號碼
+        telephoneNumber:
+          type: string
+          title: 聯絡電話（代表號）
+        postalCode:
+          type: string
+          title: 郵遞區號
+        street:
+          type: string
+          title: 通訊地址
+        postOfficeBox:
+          type: string
+          title: 教育局聯絡箱編號
+        wWWHomePage:
+          type: string
+          title: 學校官方網站網址
+        tpUniformNumbers:
+          type: integer
+          title: 學校統計編號
+        tpSims:
+          type: string
+          title: 校務行政系統代號
+        tpIpv4:
+          type: string
+          title: 學校使用的 IPv4 網段
+        tpIpv6:
+          type: string
+          title: 學校使用的 IPv6 網段
+    uuid_list:
+      type: array
+      items:
+        type: string
+        format: uuid
+    people:
+      type: object
+      properties:
+        role:
+          title: 角色，例如：家長、學生、教師
+          type: string
+        uuid:
+          title: UUID
+          type: string
+          format: uuid
+        name:
+          title: 姓名
+          type: string
+        email:
+          title: 電子郵件
+          type: string
+        email_verified:
+          title: 電子郵件已經驗證
+          type: boolean
+        mobile:
+          title: 手機號碼
+          type: string
+      discriminator:
+        propertyName: role
+        mapping:
+          "家長": parent
+          "學生": student
+          "教師": teacher
+    parent:
+      description: 家長資料
+      allOf:
+      - $ref: '#/components/schemas/people'
+      - type: object
+        properties:
+          child:
+            title: 就學中的子女
+            $ref: '#/components/schemas/uuid_list'
+    student:
+      description: 學生資料
+      allOf:
+      - $ref: '#/components/schemas/people'
+      - type: object
+        properties:
+          gender:
+            title: 性別
+            type: integer
+          birthDate:
+            title: 出生日期
+            type: string
+            format: date
+          o:
+            title: 學校網域代碼
+            type: string
+          organization:
+            title: 學校全銜
+            type: string
+          studentId:
+            title: 學號
+            type: string
+          class:
+            title: 就讀班級代號
+            type: string
+          className:
+            title: 就讀班級名稱
+            type: string
+          seat:
+            title: 座號
+            type: string
+          parent:
+            title: 家長 UUID 清單
+            $ref: '#/components/schemas/uuid_list'
+          character:
+            title: 特殊身份註記
+            type: string
+    teacher:
+      description: 教師資料
+      allOf:
+      - $ref: '#/components/schemas/people'
+      - type: object
+        properties:
+          gender:
+            title: 性別
+            type: integer
+          birthDate:
+            title: 出生日期
+            type: string
+            format: date
+          o:
+            title: 學校網域代碼
+            type: string
+          organization:
+            title: 學校全銜
+            type: string
+          isAdmin:
+            title: 是學校系統管理員
+            type: boolean
+          teacherId:
+            title: 教師校務行政系統編號
+            type: integer
+          unit:
+            title: 行政部門代號清單
+            type: array
+            items:
+              type: string
+          "title":
+            title: 職務代號清單
+            type: array
+            items:
+              type: string
+          teachClass:
+            title: 任教班級清單
+            type: array
+            items:
+              type: string
+          tutorClass:
+            title: 擔任導師的班級代號
+            type: string
+          child:
+            title: 就學中的子女
+            $ref: '#/components/schemas/uuid_list'
+          character:
+            title: 特殊身份註記
+            type: string
+    people_form:
+      type: object
+      properties:
+        idno:
+          title: 身分證字號
+          type: string
+        password:
+          title: 密碼
+          type: string
+        "type":
+          title: 人員身份
+          type: string
+        lastname:
+          title: 姓
+          type: string
+        firstname:
+          title: 名
+          type: string
+        unit:
+          title: 主要行政單位
+          type: string
+        role:
+          title: 主要職務
+          type: string
+        tclass:
+          title: 擔任導師的班級
+          type: string
+        memo:
+          title: 特殊身份註記
+          type: string
+        gender:
+          title: 性別
+          type: integer
+        birthdate:
+          title: 出生日期
+          type: string
+          format: date
+        mail:
+          title: 電子郵件地址
+          type: string
+        mobile:
+          title: 手機號碼
+          type: string
+        fax:
+          title: 傳真號碼
+          type: string
+        otel:
+          title: 辦公室電話
+          type: string
+        htel:
+          title: 住家電話
+          type: string
+        address:
+          title: 戶籍地址
+          type: string
+        conn_address:
+          title: 聯絡地址
+          type: string
+        www:
+          title: 個人網頁
+          type: string
+        stdno:
+          title: 學號
+          type: string
+        class:
+          title: 就讀班級
+          type: string
+        seat:
+          title: 座號
+          type: string
